@@ -16,9 +16,9 @@ library(remotes)
 install_github("sysbiolab/PathwaySpace")
 ```
 
-#### Example use
+#### Examples
 
-Try the examples available in the *PathwaySpace* vignettes.
+Follow the *PathwaySpace* vignette and try to make some *brain plots*!
 
 ```r
 library(PathwaySpace)
