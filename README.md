@@ -13,7 +13,7 @@ install.packages("remotes")
 
 ```r
 library(remotes)
-install_github("sysbiolab/PathwaySpace")
+install_github("sysbiolab/PathwaySpace", build_vignettes=TRUE)
 ```
 
 #### Examples
