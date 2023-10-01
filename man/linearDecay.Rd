@@ -7,7 +7,7 @@
 linearDecay(x, signal, ...)
 }
 \arguments{
-\item{x}{A numeric vector of distances.}
+\item{x}{A numeric vector of distances (in [0,1]).}
 
 \item{signal}{A single numeric value representing a signal.}
 
