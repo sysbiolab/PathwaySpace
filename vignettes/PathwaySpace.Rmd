@@ -34,7 +34,7 @@ knitr::include_graphics("figures/fig1.png")
 
 # Quick start
 
-```{r Load libs, eval=TRUE, message=FALSE}
+```{r Load packages - quick start, eval=TRUE, message=FALSE}
 #--- Load required packages for this section
 library(PathwaySpace)
 library(igraph)
@@ -107,6 +107,8 @@ vertexSignal(pspace1)
 
 # Signal projection
 
+## Circular projection
+
 Following that, we will use the `circularProjection()` function to project the network signals, using the `weibullDecay()` function with default settings. We set `knn = 1`, defining the contributing vertices for signal convolution. In this case, each *null-signal position* will receive the projection from a single *vertex-signal position* (*i.e.* from the nearest signal source in the pathway space). We then create a landscape image using the `plotPathwaySpace()` function.
 
 ```{r Circular projection - 1, eval=FALSE, message=FALSE, out.width="50%"}
@@ -119,11 +121,11 @@ plotPathwaySpace(pspace1, marks = TRUE)
 
 ```{r fig2.png, eval=FALSE, message=FALSE, echo=FALSE}
 gg <- plotPathwaySpace(pspace1, marks = TRUE)
-ggsave(filename = "./figures/fig2.png", height=5, width=5, 
-  units="in", device="png", dpi=350, plot=gg)
+ggsave(filename = "./figures/fig2.png", height=3.5, width=4.7, 
+  units="in", device="png", dpi=300, plot=gg)
 ```
 
-```{r fig2, echo=FALSE, out.width = '80%'}
+```{r fig2, echo=FALSE, out.width = '60%'}
 knitr::include_graphics("figures/fig2.png")
 ```
 
@@ -139,11 +141,11 @@ plotPathwaySpace(pspace1, marks = c("n3","n4"), theme = "th2")
 
 ```{r fig3.png, eval=FALSE, message=FALSE, echo=FALSE}
 gg <- plotPathwaySpace(pspace1, marks = c("n3","n4"))
-ggsave(filename = "./figures/fig3.png", height=5, width=5, 
-  units="in", device="png", dpi=350, plot=gg)
+ggsave(filename = "./figures/fig3.png", height=3.5, width=4.7,
+  units="in", device="png", dpi=300, plot=gg)
 ```
 
-```{r fig3, echo=FALSE, out.width = '80%'}
+```{r fig3, echo=FALSE, out.width = '60%'}
 knitr::include_graphics("figures/fig3.png")
 ```
 
@@ -159,45 +161,17 @@ plotPathwaySpace(pspace1, marks = "n1", theme = "th2")
 
 ```{r fig4.png, eval=FALSE, message=FALSE, echo=FALSE}
 gg <- plotPathwaySpace(pspace1, marks = "n1", theme = "th2")
-ggsave(filename = "./figures/fig4.png", height=5, width=5, 
-  units="in", device="png", dpi=350, plot=gg)
+ggsave(filename = "./figures/fig4.png", height=3.5, width=4.7,
+  units="in", device="png", dpi=300, plot=gg)
 ```
 
-```{r fig4, echo=FALSE, out.width = '80%'}
+```{r fig4, echo=FALSE, out.width = '55%'}
 knitr::include_graphics("figures/fig4.png")
 ```
 
 In this case, we set the `shape` of a 3-parameter Weibull function. This parameter allows a projection to take a variety of shapes. When `shape = 1` the Weibull decay follows an exponential decay, and when `shape > 1` the projection is first convex, then concave with an inflexion point along the decay path.
 
-# Signal types
-
-The *PathwaySpace* accepts binary, integer, and numeric signal types, including `NAs`. When a vertex is assigned with `NA`, it will be excluded from the signal projection, not evaluated by the convolution algorithm. Logical values are also allowed, but it will be treated as binary. Next, we show the projection of a signal that includes negative values.
-
-```{r Signal types, eval=FALSE, message=FALSE, out.width="50%"}
-# Set a negative signal to vertices "n3" and "n4"
-vertexSignal(pspace1)[c("n3","n4")] <- c(-2, -4)
-
-# Re-run the network signal projection for a negative signal
-pspace1 <- circularProjection(pspace1, knn = 2, shape = 2)
-
-# Plot the PathwaySpace image
-plotPathwaySpace(pspace1, bg.color = "white", font.color = "grey20")
-```
-
-```{r fig5.png, eval=FALSE, message=FALSE, echo=FALSE}
-gg <- plotPathwaySpace(pspace1, marks = c("n1","n3","n4","n5"), 
-  bg.color = "white", font.color = "grey20", theme = "th2")
-ggsave(filename = "./figures/fig5.png", height=5, width=5, 
-  units="in", device="png", dpi=350, plot=gg)
-```
-
-```{r fig5, echo=FALSE, out.width = '80%'}
-knitr::include_graphics("figures/fig5.png")
-```
-
-Note that the density scale is represented in `[-1, +1]`. If the signal vector is `>=0`, then it will be rescaled to `[0, 1]`; if the signal vector is `<=0`, it will be rescaled to `[-1, 0]`; and if the signal vector is in `(-Inf, +Inf)`, then it will be rescaled to `[-1, +1]`. To override this signal processing in the `circularProjection()` function, simply set the `rescale` argument to `FALSE`.
-
-# Polar projection
+## Polar projection
 
 In this section we will project the network signal using a polar coordinate system. This representation may be useful for certain types of data, for example, to highlight patterns of signal propagation on directed graphs, especially to explore the orientation aspect of signal flow. To demonstrate this feature we will used the `gtoy2` directed graph, already available in the *PathwaySpace* package.
 
@@ -209,7 +183,7 @@ data("gtoy2")
 plot.igraph(gtoy2)
 ```
 
-```{r Polar projection - 2, eval=TRUE, message=FALSE, out.width="25%"}
+```{r Polar projection - 2, eval=TRUE, message=FALSE}
 # Build a PathwaySpace for the 'gtoy2' igraph
 pspace2 <- buildPathwaySpace(gtoy2, mar = 0.2)
 
@@ -225,14 +199,14 @@ pspace2 <- polarProjection(pspace2, knn = 2, theta = 45, shape = 2)
 plotPathwaySpace(pspace2, theme = "th2", marks = TRUE)
 ```
 
-```{r fig6.png, eval=FALSE, message=FALSE, echo=FALSE}
+```{r fig5.png, eval=FALSE, message=FALSE, echo=FALSE}
 gg <- plotPathwaySpace(pspace2, theme = "th2", marks = TRUE)
-ggsave(filename = "./figures/fig6.png", height=5, width=5, 
-  units="in", device="png", dpi=350, plot=gg)
+ggsave(filename = "./figures/fig5.png", height=3.5, width=4.7,
+  units="in", device="png", dpi=300, plot=gg)
 ```
 
-```{r fig6, echo=FALSE, out.width = '80%'}
-knitr::include_graphics("figures/fig6.png")
+```{r fig5, echo=FALSE, out.width = '55%'}
+knitr::include_graphics("figures/fig5.png")
 ```
 
 ```{r Polar projection - 4, eval=FALSE, message=FALSE, out.width="50%"}
@@ -244,16 +218,45 @@ pspace2 <- polarProjection(pspace2, knn = 2, theta = 45, shape = 2,
 plotPathwaySpace(pspace2, theme = "th2", marks = c("n1","n3","n4","n5"))
 ```
 
-```{r fig7.png, eval=FALSE, message=FALSE, echo=FALSE}
-gg <- plotPathwaySpace(pspace2, theme = "th2", marks = TRUE)
-ggsave(filename = "./figures/fig7.png", height=5, width=5, 
-  units="in", device="png", dpi=350, plot=gg)
+```{r fig6.png, eval=FALSE, message=FALSE, echo=FALSE}
+gg <- plotPathwaySpace(pspace2, theme = "th2", marks = c("n1","n3","n4","n5"))
+ggsave(filename = "./figures/fig6.png", height=3.5, width=4.7,
+  units="in", device="png", dpi=300, plot=gg)
 ```
 
-```{r fig7, echo=FALSE, out.width = '80%'}
+```{r fig6, echo=FALSE, out.width = '55%'}
+knitr::include_graphics("figures/fig6.png")
+```
+
+
+## Signal types
+
+The *PathwaySpace* accepts binary, integer, and numeric signal types, including `NAs`. When a vertex is assigned with `NA`, it will be excluded from the signal projection, not evaluated by the convolution algorithm. Logical values are also allowed, but it will be treated as binary. Next, we show the projection of a signal that includes negative values.
+
+```{r Signal types, eval=FALSE, message=FALSE, out.width="50%"}
+# Set a negative signal to vertices "n3" and "n4"
+vertexSignal(pspace1)[c("n3","n4")] <- c(-2, -4)
+
+# Re-run the network signal projection for a negative signal
+pspace1 <- circularProjection(pspace1, knn = 2, shape = 2)
+
+# Plot the PathwaySpace image
+plotPathwaySpace(pspace1, bg.color = "white", font.color = "grey20",
+  marks = TRUE, mark.color = "magenta")
+```
+
+```{r fig7.png, eval=FALSE, message=FALSE, echo=FALSE}
+gg <- plotPathwaySpace(pspace1, marks = TRUE, mark.color = "magenta", 
+  bg.color = "white", font.color = "grey20", theme = "th2")
+ggsave(filename = "./figures/fig7.png", height=3.5, width=4.7,
+  units="in", device="png", dpi=300, plot=gg)
+```
+
+```{r fig7, echo=FALSE, out.width = '55%'}
 knitr::include_graphics("figures/fig7.png")
 ```
 
+Note that the density scale is represented in `[-1, +1]`. If the signal vector is `>=0`, then it will be rescaled to `[0, 1]`; if the signal vector is `<=0`, it will be rescaled to `[-1, 0]`; and if the signal vector is in `(-Inf, +Inf)`, then it will be rescaled to `[-1, +1]`. To override this signal processing in the `circularProjection()` function, simply set the `rescale` argument to `FALSE`.
 
 # Case study
 

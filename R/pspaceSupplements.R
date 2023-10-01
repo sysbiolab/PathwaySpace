@@ -747,14 +747,14 @@
     gxyz <- getPathwaySpace(pts, "gxyz")
     gxy <- getPathwaySpace(pts, "gxy")
     pts@misc$summits <- .find.summits(gxyz = gxyz,
-        gxy = gxy, maxset = pars$maxset, minsz = pars$minsz,
+        gxy = gxy, maxset = pars$maxset, minsize = pars$minsize,
         threshold = pars$summit_threshold,
         segm_fun = pars$segm_fun, ... = ...)
     return(pts)
 }
 
 #-------------------------------------------------------------------------------
-.find.summits <- function(gxyz, gxy, maxset, minsz, threshold,
+.find.summits <- function(gxyz, gxy, maxset, minsize, threshold,
     segm_fun, ...) {
     lpts <- as.matrix(gxy[, c("X", "Y")])
     #-- apply th
@@ -781,9 +781,9 @@
         rownames(lpts)[idx]
     })
     names(lset) <- seq_along(lset)
-    #--- apply minsz
+    #--- apply minsize
     len <- unlist(lapply(lset, length))
-    len <- which(len < minsz)
+    len <- which(len < minsize)
     if (length(len) > 0) {
         lset <- lset[-len]
         smt[smt %in% len] <- 0
@@ -794,5 +794,6 @@
     }
     #--- get summit outlines
     cset <- .findOutlines(smt)
+    
     return(list(lset = lset, cset = cset, mset = smt, nset = nset))
 }

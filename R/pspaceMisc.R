@@ -58,7 +58,7 @@
 #' @title Toy 'igraph' objects.
 #'
 #' @description Small 'igraph' objects used for workflow demonstrations.
-#' All graphs include 'coordX', 'coordY', and 'signal' vertex attributes.
+#' All graphs include 'x', 'y', and 'name' vertex attributes.
 #'
 #' @format igraph
 #'
@@ -69,12 +69,11 @@
 #' @docType data
 #' @keywords gtoys
 #' @name gtoys
-#' @aliases gtoy1 gtoy2 gtoy3 gtoy3_1 gtoy3_2 gtoy3_3
-#' @return Five igraph objects.
+#' @aliases gtoy1 gtoy2
+#' @return A pre-processed igraph object.
 #' @examples
 #' data(gtoy1)
 #' data(gtoy2)
-#' data(gtoy3)
 NULL
 
 ################################################################################

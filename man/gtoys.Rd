@@ -5,10 +5,6 @@
 \alias{gtoys}
 \alias{gtoy1}
 \alias{gtoy2}
-\alias{gtoy3}
-\alias{gtoy3_1}
-\alias{gtoy3_2}
-\alias{gtoy3_3}
 \title{Toy 'igraph' objects.}
 \format{
 igraph
@@ -20,15 +16,14 @@ This package.
 data(gtoy1)
 }
 \value{
-Five igraph objects.
+A pre-processed igraph object.
 }
 \description{
 Small 'igraph' objects used for workflow demonstrations.
-All graphs include 'coordX', 'coordY', and 'signal' vertex attributes.
+All graphs include 'x', 'y', and 'name' vertex attributes.
 }
 \examples{
 data(gtoy1)
 data(gtoy2)
-data(gtoy3)
 }
 \keyword{gtoys}
