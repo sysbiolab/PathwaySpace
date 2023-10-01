@@ -26,8 +26,8 @@
 #' # note: adjust 'nrc' to increase image resolution
 #' 
 #' @importFrom igraph degree vcount ecount which_mutual
-#' @importFrom igraph as_adjacency_matrix simplify
-#' @importFrom igraph V E 'V<-' 'E<-' is.directed
+#' @importFrom igraph as_edgelist as_adjacency_matrix
+#' @importFrom igraph simplify V E 'V<-' 'E<-' is.directed
 #' @importFrom stats quantile sd
 #' @importFrom scales rescale
 #' @importFrom RANN nn2
@@ -48,6 +48,7 @@ buildPathwaySpace <- function(g, nrc = 500, mar = 0.075, verbose = TRUE) {
         stop("'mar' should be in [0,1]", call. = FALSE)
     }
     #--- validate the igraph object
+    if(verbose) message("Validating 'g' object...")
     g <- .validate.igraph(g)
     #--- build PathwaySpace-class
     pts <- .buildPathwaySpace(g, nrc, mar, verbose)
@@ -547,15 +548,18 @@ setMethod("vertexSignal<-", "PathwaySpace",
 )
 .update.vsignal <- function(pts) {
     vsignal <- vertexSignal(pts)
+    vsignal <- .revise.vertex.signal(vsignal)
+    pts@gxy[,"vsignal"] <- vsignal
+    zscale <- .getSignalScale(vsignal)
+    pts@pars$zscale <- zscale
+    return(pts)
+}
+.revise.vertex.signal <- function(vsignal){
     vsignal[is.nan(vsignal)] <- NA
     vsignal[vsignal == Inf] <- NA
     vsignal[vsignal == -Inf] <- NA
-    pts@gxy[,"vsignal"] <- vsignal
     if (all(is.na(vsignal))) vsignal[] <- 0
-    zscale <- .getSignalScale(vsignal)
-    pts@pars$vsignal <- TRUE
-    pts@pars$zscale <- zscale
-    return(pts)
+    return(vsignal)
 }
 
 #-------------------------------------------------------------------------------
@@ -593,20 +597,21 @@ setMethod("vertexWeight<-", "PathwaySpace",
 )
 .update.vweight <- function(pts) {
     vweight <- vertexWeight(pts)
+    vweight <- .revise.vertex.weight(vweight)
+    pts@pars$vwscale <- .get.vwscale(vweight)
+    pts@gxy[,"vweight"] <- vweight
+    return(pts)
+}
+.revise.vertex.weight <- function(vweight){
     if (all(is.na(vweight))) vweight[] <- 1
     vweight[is.na(vweight)] <- min(vweight, na.rm = TRUE)
     if (sd(vweight) > 0) {
         vweight <- scales::rescale(vweight, to = c(1, 2))
-        pts@pars$vweight <- TRUE
     } else {
         vweight[] <- 1
-        pts@pars$vweight <- FALSE
     }
-    pts@gxy[,"vweight"] <- vweight
-    return(pts)
+    return(vweight)
 }
-
-
 
 
 

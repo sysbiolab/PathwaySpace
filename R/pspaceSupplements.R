@@ -3,25 +3,30 @@
 ################################################################################
 .buildPathwaySpace <- function(g, nrc = 500, mar = 0.075, verbose = TRUE) {
     #--- get graph data
+    if(verbose) message("Extracting 'x', 'y', and 'name' vertex attributes...")
     g <- igraph::simplify(g)
     X <- igraph::V(g)$x
     Y <- igraph::V(g)$y
     vertex <- igraph::V(g)$name
     if(igraph::is.directed(g)){
+        if(verbose) message("Extracting directed edges...")
         edges <- .get.directed.edges(g, vertex)
     } else {
+        if(verbose) message("Extracting undirected edges...")
         edges <- .get.undirected.edges(g, vertex)
     }
-    #--- initiate with binary signal and vweight
-    vsignal <- numeric(length(vertex))
-    vweight <- numeric(length(vertex))
-    vsignal[] <- 0; vweight[] <- 1
+    g <- .validate.vertex.signal(g, verbose)
+    vsignal <- igraph::V(g)$signal
+    vweight <- igraph::V(g)$weight
     names(vsignal) <- names(vweight) <- vertex
+    vsignal <- .revise.vertex.signal(vsignal)
+    vweight <- .revise.vertex.weight(vweight)
     #--- get signal scale and put pars in a list
     zscale <- .getSignalScale(vsignal)
-    pars <- list(nrc = nrc, mar = mar, zscale = zscale,
-        is.directed = igraph::is.directed(g), 
-        vweight = FALSE)
+    vwscale <- .get.vwscale(vweight)
+    pars <- list(nrc = nrc, mar = mar, 
+        zscale = zscale, vwscale=vwscale,
+        is.directed = igraph::is.directed(g))
     #--- combine xy and center nodes
     gxy <- cbind(X = X, Y = Y)
     rownames(gxy) <- vertex
@@ -48,38 +53,29 @@
     idxmutual <- igraph::which_mutual(g)
     E(g)$emode <- 1
     E(g)$emode[idxmutual] <- 2
-    emode <- igraph::as_adjacency_matrix(g, sparse = FALSE, 
-        attr = "emode")
+    emode <- igraph::as_adjacency_matrix(g, sparse = FALSE, attr = "emode")
     bl <- lower.tri(emode) & emode==2
     emode[bl] <- 0
-    edges <- arrayInd(seq_len(prod(dim(emode))), dim(emode), 
-        useNames = TRUE)
+    edges <- arrayInd(seq_len(prod(dim(emode))), dim(emode), useNames = TRUE)
     edges <- as.data.frame(edges)
     colnames(edges) <- c("vertex1", "vertex2")
+    edges$emode <- as.numeric(emode)
+    edges <- edges[edges$emode>0,]
     edges$name1 <- vertex[edges$vertex1]
     edges$name2 <- vertex[edges$vertex2]
-    edges$emode <- as.numeric(emode)
     edges <- edges[order(edges$vertex1,edges$vertex2), ]
-    edges <- edges[edges$emode>0,]
     rownames(edges) <- NULL
     edges$eweight <- 1
     return(edges)
 }
 .get.undirected.edges <- function(g, vertex){
-    E(g)$emode <- 1
-    emode <- igraph::as_adjacency_matrix(g, sparse = FALSE, 
-        attr = "emode")
-    emode[lower.tri(emode)] <- 0
-    edges <- arrayInd(seq_len(prod(dim(emode))), dim(emode), 
-        useNames = TRUE)
+    edges <- as_edgelist(g, names = FALSE)
+    rownames(edges) <- colnames(edges) <- NULL
     edges <- as.data.frame(edges)
     colnames(edges) <- c("vertex1", "vertex2")
     edges$name1 <- vertex[edges$vertex1]
     edges$name2 <- vertex[edges$vertex2]
-    edges$emode <- as.numeric(emode)
     edges <- edges[order(edges$vertex1,edges$vertex2), ]
-    edges <- edges[edges$emode>0,]
-    rownames(edges) <- NULL
     edges$eweight <- 1
     edges$emode <- 0
     return(edges)
@@ -187,6 +183,14 @@
     }
     return(zscale)
 }
+.get.vwscale <- function(vweight){
+    if (sd(vweight, na.rm = TRUE) > 0) {
+        vwscale <- TRUE
+    } else {
+        vwscale <- FALSE
+    }
+    return(vwscale)
+}
 .get.edge.dist <- function(gxy, edges) {
     dts <- sqrt((gxy[edges$name1, "X"] - gxy[edges$name2, "X"])^2 +
         (gxy[edges$name1, "Y"] - gxy[edges$name2, "Y"])^2)
@@ -233,8 +237,8 @@
     gxy <- getPathwaySpace(pts, "gxy")
     lpts <- .pointsInMatrix(pars$nrc)
     nnpg <- .get.knn.dists(lpts, gxy, pars$knn)
-    if (pars$vweight) {
-        if(verbose) message("Scaling projection to vertex degree...")
+    if (pars$vwscale) {
+        if(verbose) message("Scaling projection to vertex weight...")
     }
     #--- compute landscape signal
     if(verbose) message("Running signal processing and convolution...")
@@ -261,7 +265,6 @@
 
 #-------------------------------------------------------------------------------
 .polarProjection <- function(pts, verbose = TRUE, ...) {
-    if(verbose) message("Using polar projection...")
     edges <- getPathwaySpace(pts, "edges")
     if(nrow(edges)==0){
         msg <- paste0("Note, this 'PathwaySpace' object does not ",
@@ -270,14 +273,20 @@
         stop(msg)
     }
     pars <- getPathwaySpace(pts, "pars")
+    if(pars$directional){
+        if(pars$is.directed){
+            message("Using directional polar projection...")
+        } else {
+            stop("'directional' used with undirected graphs.")
+        }
+    } else {
+        if(verbose) message("Using undirectional polar projection...")
+    }
     gxy <- getPathwaySpace(pts, "gxy")
     lpts <- .pointsInMatrix(pars$nrc)
     nnpg <- .get.knn.dists(lpts, gxy, pars$knn)
-    if(!pars$is.directed && pars$directional){
-        stop("'directional' argument cannot be used with undirected graphs.")
-    }
-    if (pars$vweight) {
-        if(verbose) message("Scaling projection to vertex degree...")
+    if (pars$vwscale) {
+        if(verbose) message("Scaling projection to vertex weight...")
     }
     #--- for polar, 'pdist' is applied at edge dist
     rg <- range(edges$edist)
@@ -295,7 +304,6 @@
     gxyz <- .rescale.landscape(xsig = xsig, pars = pars)
     pts@misc$xsig <- xsig
     pts@gxyz <- gxyz
-    # image(.transpose.and.flip(gxyz))
     #---return the gxyz landscape
     x <- gxyz
     x[x == 0] <- NA
@@ -395,7 +403,7 @@
         p_sig <- gxy[p_idx, "vsignal"]
         #--- scaling projection on pdist
         pdist <- pars$pdist
-        if (pars$vweight) {
+        if (pars$vwscale) {
             p_wgt <- gxy[p_idx, "vweight"]
             pdist <- pdist * p_wgt
         }
@@ -447,7 +455,7 @@
         p_sig <- gxy[p_idx, "vsignal"]
         #--- scaling projection on pdist
         pdist <- 1 #controlled at edge dist
-        if (pars$vweight) {
+        if (pars$vwscale) {
             p_wgt <- gxy[p_idx, "vweight"]
             pdist <- pdist * p_wgt
         }
@@ -656,7 +664,7 @@
         p_dst <- nnbg$dist[ii, ]
         #--- scaling projection on pdist
         pdist <- pars$pdist
-        if (pars$vweight) {
+        if (pars$vwscale) {
             p_idx <- nnbg$nn[ii, ]
             p_wgt <- gxy[p_idx, "vweight"]
             pdist <- pdist * p_wgt

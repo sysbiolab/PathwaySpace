@@ -46,7 +46,33 @@
     }
     return(g)
 }
-
+.validate.vertex.signal <- function(g, verbose = TRUE){
+    vsignal <- igraph::V(g)$signal
+    vweight <- igraph::V(g)$weight
+    if (!is.null(vsignal)) {
+        if(verbose) message("Extracting 'signal' from 'g'...", appendLF=FALSE)
+        if(.is_numericVector(vsignal)){
+            if(verbose) message("OK!")
+        } else {
+            if(verbose) message(" not valid (need a numeric vector)")
+            igraph::V(g)$signal <- 0
+        }
+    } else {
+        igraph::V(g)$signal <- 0
+    }
+    if (!is.null(vweight)) {
+        if(verbose) message("Extracting 'weight' from 'g'...", appendLF=FALSE)
+        if(.is_numericVector(vweight)){
+            if(verbose) message("OK!")
+        } else {
+            if(verbose) message(" not valid (need a numeric vector)")
+            igraph::V(g)$weight <- 1
+        }
+    } else {
+        igraph::V(g)$weight <- 1
+    }
+    return(g)
+}
 #-------------------------------------------------------------------------------
 .validate.args <- function(check, name, para) {
     if (check == "numeric_vec") {

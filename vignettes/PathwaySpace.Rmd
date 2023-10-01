@@ -40,7 +40,7 @@ library(PathwaySpace)
 library(igraph)
 ```
 
-## Setting up basic input data
+## Setting basic input data
 
 This section will create an *igraph* object containing a binary signal associated to each vertex. The graph layout is configured manually to ensure that users can easily view all the relevant arguments needed to prepare the input data for the *PathwaySpace* package. The *igraph*'s `make_star()` function creates a star-like graph and the `V()` function is used to set attributes for the vertices. The *PathwaySpace* package will require that all vertives have `x`, `y`, and `name` attributes.
 
@@ -67,7 +67,7 @@ V(gtoy1)$size <- 20
 plot.igraph(gtoy1)
 ```
 
-## Making a *PathwaySpace-class* object
+## Creating a *PathwaySpace*
 
 Next, we will create a *PathwaySpace-class* object using the `buildPathwaySpace()` constructor. This function will check the validity of the *igraph* object. It will also calculate pairwise distances between vertices, subsequently required by the signal projection methods. Note that for this example we adjusted `mar = 0.2`. This argument sets the outer margins as a fraction of the 2D image space on which the convolution operation will project the signal.
 
