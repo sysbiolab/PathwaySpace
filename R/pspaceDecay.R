@@ -3,7 +3,7 @@
 #' @description The \code{weibullDecay} function is used by
 #' PathwaySpace's methods for signal convolution and projection.
 #'
-#' @param x A numeric vector of distances.
+#' @param x A numeric vector of distances (in [0,1]).
 #' @param signal A single numeric value representing a signal.
 #' @param decay The rate (in [0,1]) at which the signal decays.
 #' This term indicates how much the \code{signal} decreases at a certain
@@ -36,7 +36,7 @@ attributes(weibullDecay)$name <- "weibullDecay"
 #' @description The \code{expDecay} function is used by PathwaySpace's methods
 #' for signal convolution and projection.
 #'
-#' @param x A numeric vector of distances.
+#' @param x A numeric vector of distances (in [0,1]).
 #' @param signal A single numeric value representing a signal.
 #' @param decay The rate (in [0,1]) at which the signal decays.
 #' This term indicates how much the \code{signal} decreases at a certain
@@ -68,7 +68,7 @@ attributes(expDecay)$name <- "expDecay"
 #' @description The \code{linearDecay} function is used by PathwaySpace's
 #' methods for signal convolution and projection.
 #'
-#' @param x A numeric vector of distances.
+#' @param x A numeric vector of distances (in [0,1]).
 #' @param signal A single numeric value representing a signal.
 #' @param ... Not used; argument implemented for call compatibility with
 #' \code{\link{weibullDecay}} and \code{\link{expDecay}} functions.

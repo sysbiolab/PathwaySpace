@@ -209,6 +209,8 @@ ggsave(filename = "./figures/fig5.png", height=3.5, width=4.7,
 knitr::include_graphics("figures/fig5.png")
 ```
 
+Note that this projection emphasizes signals along the edges of the network. In order to also consider the direction of edges, next we set `directional = TRUE`.
+
 ```{r Polar projection - 4, eval=FALSE, message=FALSE, out.width="50%"}
 # Re-run the network signal projection using 'directional = TRUE'
 pspace2 <- polarProjection(pspace2, knn = 2, theta = 45, shape = 2, 
@@ -228,6 +230,7 @@ ggsave(filename = "./figures/fig6.png", height=3.5, width=4.7,
 knitr::include_graphics("figures/fig6.png")
 ```
 
+This updated *PathwaySpace* polar projection emphasizes the signal flow into a defined direction (see the directional patterns within the *igraph* network plot at the top of this section). However, when interpreting the results, users must be aware that this method may introduce distortions. For example, depending on the network's structure, the polar projection may not capture all aspects of a directed graph, such as cyclic dependencies, feedforward and feedback loops, or other intricate edge interplays.
 
 ## Signal types
 
@@ -257,6 +260,7 @@ knitr::include_graphics("figures/fig7.png")
 ```
 
 Note that the density scale is represented in `[-1, +1]`. If the signal vector is `>=0`, then it will be rescaled to `[0, 1]`; if the signal vector is `<=0`, it will be rescaled to `[-1, 0]`; and if the signal vector is in `(-Inf, +Inf)`, then it will be rescaled to `[-1, +1]`. To override this signal processing in the `circularProjection()` function, simply set the `rescale` argument to `FALSE`.
+
 
 # Case study
 
