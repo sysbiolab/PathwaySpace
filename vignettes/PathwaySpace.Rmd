@@ -4,7 +4,7 @@ author: "The Cancer Genome Atlas Analysis Network."
 date: "`r BiocStyle::doc_date()`"
 package: "PathwaySpace"
 bibliography: bibliography.bib
-abstract: "<p>The *PathwaySpace* is an R package that creates landscape images from graphs containing vertices (nodes), edges (lines), and a signal associated with the vertices. The package processes the signal using a convolution algorithm that considers the graph's topology to project the signal on a 2D space. The *PathwaySpace* could have various applications, such as visualizing network data in a graphical format that highlights the relationships and signal strengths between vertices. It can be particularly useful for understanding the influence of signals through complex networks. By combining graph theory, signal processing, and visualization, the *PathwaySpace* package provides a novel way of representing network signals.</p>"
+abstract: "<p>*PathwaySpace* is an R package that creates landscape images from graphs containing vertices (nodes), edges (lines), and a signal associated with the vertices. The package processes the signal using a convolution algorithm that considers the graph's topology to project the signal on a 2D space. *PathwaySpace* could have various applications, such as visualizing network data in a graphical format that highlights the relationships and signal strengths between vertices. It can be particularly useful for understanding the influence of signals through complex networks. By combining graph theory, signal processing, and visualization, the *PathwaySpace* package provides a novel way of representing network signals.</p>"
 output: 
   BiocStyle::html_document:
     theme: flatly
