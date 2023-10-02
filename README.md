@@ -19,7 +19,7 @@ BiocManager::install("BiocGenerics")
 BiocManager::install("msigdb")
 ```
 
-### Install the PathwaySpace package
+#### Install the PathwaySpace package
 
 ```r
 install.packages("remotes")
