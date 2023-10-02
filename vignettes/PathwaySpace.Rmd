@@ -119,10 +119,10 @@ pspace1 <- circularProjection(pspace1, knn = 1, pdist = 0.4)
 plotPathwaySpace(pspace1, marks = TRUE)
 ```
 
-```{r fig2.png, eval=FALSE, message=FALSE, echo=FALSE, purl=FALSE}
-gg <- plotPathwaySpace(pspace1, marks = TRUE)
-ggsave(filename = "./figures/fig2.png", height=3.5, width=4.7, 
-  units="in", device="png", dpi=300, plot=gg)
+```{r fig2.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+# gg <- plotPathwaySpace(pspace1, marks = TRUE)
+# ggsave(filename = "./figures/fig2.png", height=3.5, width=4.7, 
+#   units="in", device="png", dpi=300, plot=gg)
 ```
 
 ```{r fig2, echo=FALSE, out.width = '60%', purl=FALSE}
@@ -139,10 +139,10 @@ pspace1 <- circularProjection(pspace1, knn = 2, pdist = 0.4)
 plotPathwaySpace(pspace1, marks = c("n3","n4"), theme = "th2")
 ```
 
-```{r fig3.png, eval=FALSE, message=FALSE, echo=FALSE, purl=FALSE}
-gg <- plotPathwaySpace(pspace1, marks = c("n3","n4"))
-ggsave(filename = "./figures/fig3.png", height=3.5, width=4.7,
-  units="in", device="png", dpi=300, plot=gg)
+```{r fig3.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+# gg <- plotPathwaySpace(pspace1, marks = c("n3","n4"))
+# ggsave(filename = "./figures/fig3.png", height=3.5, width=4.7,
+#   units="in", device="png", dpi=300, plot=gg)
 ```
 
 ```{r fig3, echo=FALSE, out.width = '60%', purl=FALSE}
@@ -159,10 +159,10 @@ pspace1 <- circularProjection(pspace1, knn = 2, pdist = 0.2, shape = 2)
 plotPathwaySpace(pspace1, marks = "n1", theme = "th2")
 ```
 
-```{r fig4.png, eval=FALSE, message=FALSE, echo=FALSE, purl=FALSE}
-gg <- plotPathwaySpace(pspace1, marks = "n1", theme = "th2")
-ggsave(filename = "./figures/fig4.png", height=3.5, width=4.7,
-  units="in", device="png", dpi=300, plot=gg)
+```{r fig4.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+# gg <- plotPathwaySpace(pspace1, marks = "n1", theme = "th2")
+# ggsave(filename = "./figures/fig4.png", height=3.5, width=4.7,
+#   units="in", device="png", dpi=300, plot=gg)
 ```
 
 ```{r fig4, echo=FALSE, out.width = '55%', purl=FALSE}
@@ -199,10 +199,10 @@ pspace2 <- polarProjection(pspace2, knn = 2, theta = 45, shape = 2)
 plotPathwaySpace(pspace2, theme = "th2", marks = TRUE)
 ```
 
-```{r fig5.png, eval=FALSE, message=FALSE, echo=FALSE, purl=FALSE}
-gg <- plotPathwaySpace(pspace2, theme = "th2", marks = TRUE)
-ggsave(filename = "./figures/fig5.png", height=3.5, width=4.7,
-  units="in", device="png", dpi=300, plot=gg)
+```{r fig5.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+# gg <- plotPathwaySpace(pspace2, theme = "th2", marks = TRUE)
+# ggsave(filename = "./figures/fig5.png", height=3.5, width=4.7,
+#   units="in", device="png", dpi=300, plot=gg)
 ```
 
 ```{r fig5, echo=FALSE, out.width = '55%', purl=FALSE}
@@ -220,10 +220,10 @@ pspace2 <- polarProjection(pspace2, knn = 2, theta = 45, shape = 2,
 plotPathwaySpace(pspace2, theme = "th2", marks = c("n1","n3","n4","n5"))
 ```
 
-```{r fig6.png, eval=FALSE, message=FALSE, echo=FALSE, purl=FALSE}
-gg <- plotPathwaySpace(pspace2, theme = "th2", marks = c("n1","n3","n4","n5"))
-ggsave(filename = "./figures/fig6.png", height=3.5, width=4.7,
-  units="in", device="png", dpi=300, plot=gg)
+```{r fig6.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+# gg <- plotPathwaySpace(pspace2, theme = "th2", marks = c("n1","n3","n4","n5"))
+# ggsave(filename = "./figures/fig6.png", height=3.5, width=4.7,
+#   units="in", device="png", dpi=300, plot=gg)
 ```
 
 ```{r fig6, echo=FALSE, out.width = '55%', purl=FALSE}
@@ -252,11 +252,11 @@ plotPathwaySpace(pspace1, bg.color = "white", font.color = "grey20",
   marks = TRUE, mark.color = "magenta")
 ```
 
-```{r fig7.png, eval=FALSE, message=FALSE, echo=FALSE, purl=FALSE}
-gg <- plotPathwaySpace(pspace1, marks = TRUE, mark.color = "magenta", 
-  bg.color = "white", font.color = "grey20", theme = "th2")
-ggsave(filename = "./figures/fig7.png", height=3.5, width=4.7,
-  units="in", device="png", dpi=300, plot=gg)
+```{r fig7.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+# gg <- plotPathwaySpace(pspace1, marks = TRUE, mark.color = "magenta", 
+#   bg.color = "white", font.color = "grey20", theme = "th2")
+# ggsave(filename = "./figures/fig7.png", height=3.5, width=4.7,
+#   units="in", device="png", dpi=300, plot=gg)
 ```
 
 ```{r fig7, echo=FALSE, out.width = '55%', purl=FALSE}
@@ -287,7 +287,7 @@ https://bioconductor.org/packages/RedeR/
 * Csardi G and Nepusz T. "The Igraph Software Package for Complex Network Research." *InterJournal*, ComplexSystems:1695, 2006. https://igraph.org
 
 # Session information
-```{r label='Session information', eval=TRUE, echo=FALSE, purl=FALSE}
+```{r label='Session information', eval=TRUE, echo=FALSE}
 sessionInfo()
 ```
 
