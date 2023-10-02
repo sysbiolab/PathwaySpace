@@ -129,7 +129,7 @@ ggsave(filename = "./figures/fig2.png", height=3.5, width=4.7,
 knitr::include_graphics("figures/fig2.png")
 ```
 
-The `pdist` term determines a distance unit for the signal convolution related to the pathway space. This distance will affect the extent over which the convolution operation projects the signal in the pathway space. Next, we reassess the same *PathwaySpace* object using `knn = 2`. The user can also customize a few arguments in `plotPathwaySpace()` function, which is a wrapper to create dedicated *ggplot* graphics for *PathwaySpace-class* objects. 
+The `pdist` term determines a distance unit for the signal convolution related to the pathway space. This distance unit will affect the extent over which the convolution operation projects the signal in the pathway space. Next, we reassess the same *PathwaySpace* object using `knn = 2`. The user can also customize a few arguments in `plotPathwaySpace()` function, which is a wrapper to create dedicated *ggplot* graphics for *PathwaySpace-class* objects. 
 
 ```{r Circular projection - 2, eval=FALSE, message=FALSE, out.width="50%"}
 # Re-run the network signal projection with 'knn = 2'
@@ -234,13 +234,17 @@ This updated *PathwaySpace* polar projection emphasizes the signal flow into a d
 
 ## Signal types
 
-The *PathwaySpace* accepts binary, integer, and numeric signal types, including `NAs`. When a vertex is assigned with `NA`, it will be excluded from the signal projection, not evaluated by the convolution algorithm. Logical values are also allowed, but it will be treated as binary. Next, we show the projection of a signal that includes negative values.
+The *PathwaySpace* accepts binary, integer, and numeric signal types, including `NAs`. When a vertex is assigned with `NA`, it will be excluded from the signal projection, not evaluated by the convolution algorithm. Logical values are also allowed, but it will be treated as binary. Next, we show the projection of a signal that includes negative values, using the `pspace1` object created previously.
 
 ```{r Signal types, eval=FALSE, message=FALSE, out.width="50%"}
 # Set a negative signal to vertices "n3" and "n4"
 vertexSignal(pspace1)[c("n3","n4")] <- c(-2, -4)
 
-# Re-run the network signal projection for a negative signal
+# Check updated signal vector
+vertexSignal(pspace1)
+#  4  3 -2 -4  2 
+
+# Re-run the network signal projection
 pspace1 <- circularProjection(pspace1, knn = 2, shape = 2)
 
 # Plot the PathwaySpace image
@@ -259,8 +263,7 @@ ggsave(filename = "./figures/fig7.png", height=3.5, width=4.7,
 knitr::include_graphics("figures/fig7.png")
 ```
 
-Note that the density scale is represented in `[-1, +1]`. If the signal vector is `>=0`, then it will be rescaled to `[0, 1]`; if the signal vector is `<=0`, it will be rescaled to `[-1, 0]`; and if the signal vector is in `(-Inf, +Inf)`, then it will be rescaled to `[-1, +1]`. To override this signal processing in the `circularProjection()` function, simply set the `rescale` argument to `FALSE`.
-
+Note that the original signal vector was rescale to `[-1, +1]`. If the signal vector is `>=0`, then it will be rescaled to `[0, 1]`; if the signal vector is `<=0`, it will be rescaled to `[-1, 0]`; and if the signal vector is in `(-Inf, +Inf)`, then it will be rescaled to `[-1, +1]`. To override this signal processing, simply set the `rescale` argument to `FALSE` in the projection functions.
 
 # Case study
 

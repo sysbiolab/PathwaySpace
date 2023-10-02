@@ -7,11 +7,22 @@ The *PathwaySpace* could have various applications, such as visualizing network 
 
 #### Installation
 
-```r
-install.packages("remotes")
-```
+# Install dependencies to build the package's vignettes
 
 ```r
+install.packages("knitr")
+install.packages("rmarkdown")
+install.packages("RUnit")
+install.packages("BiocManager")
+BiocManager::install("BiocStyle")
+BiocManager::install("BiocGenerics")
+BiocManager::install("msigdb")
+```
+
+# Install the PathwaySpace package
+
+```r
+install.packages("remotes")
 library(remotes)
 install_github("sysbiolab/PathwaySpace", build_vignettes=TRUE)
 ```
