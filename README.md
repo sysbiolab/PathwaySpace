@@ -35,6 +35,6 @@ library(PathwaySpace)
 vignette("PathwaySpace")
 ```
 
-#### Licenses
+### Licenses
 
 The *PathwaySpace* package is distributed under [Artistic-2.0](https://www.r-project.org/Licenses/Artistic-2.0)
