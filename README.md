@@ -15,7 +15,7 @@ install.packages("RUnit")
 install.packages("BiocManager")
 BiocManager::install("BiocStyle")
 BiocManager::install("BiocGenerics")
-BiocManager::install("msigdb")
+BiocManager::install("msigdbr")
 ```
 
 ##### Install the PathwaySpace package
