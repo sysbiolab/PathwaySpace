@@ -23,8 +23,7 @@ BiocManager::install("msigdb")
 
 ```r
 install.packages("remotes")
-library(remotes)
-install_github("sysbiolab/PathwaySpace", build_vignettes=TRUE)
+remotes::install_github("sysbiolab/PathwaySpace", build_vignettes=TRUE)
 ```
 
 ### Examples
