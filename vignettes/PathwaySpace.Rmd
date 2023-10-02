@@ -20,7 +20,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, purl=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -28,7 +28,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 For a given *igraph* object containing vertices, edges, and a signal associated with the vertices, the *PathwaySpace* performs a convolution operation, which involves a weighted combination of neighboring node signals based on the graph structure. **Figure 1** illustrates the convolution operation problem. Each vertex's signal is placed at a specific position in the 2D space. The `x` and `y` coordinates of this space correspond either to vertex-signal positions (*e.g.* red, green, and blue lollipops in **Fig.1A**) or null-signal positions for which no signal information is available (question marks in **Fig.1A**). Our model considers the vertex-signal positions as source points (or transmitters) and the null-signal positions as end points (or receivers). The signal values from vertex-signal positions are then projected to the null-signal positions according to a decay function, which will control how the signal values attenuate as they propagate across the 2D space. Available decay functions include linear [@Linear2023], exponential [@Exponential2017], and Weibull [@Weibull2018] functions (**Fig.1B**). For a given null-signal position, a k-nearest neighbors (kNN) algorithm is used to define the contributing vertices for signal convolution. The convolution operation combines the signals from these contributing vertices, considering their distances and signal strengths, and applies the decay function to model the attenuation of the signal. Users can adjust both the decay function's parameters and the value of k in the kNN algorithm. These parameters control how the signal decays, allowing users to explore different scenarios and observe how varying parameters influence the landscape image. The resulting image forms geodesic paths in which the signal has been projected from vertex- to null-signal positions, using a density metric to measure the signal intensity along these paths.
 
-```{r fig1, echo=FALSE, fig.cap="Signal processing addressed by the *PathwaySpace* package. **A**) Representation of a graph superimposed on a 2D coordinate system. Each lollipop icon represents a graph vertex (referred to as vertex-signal positions), while question marks highlight points in the 2D space where no signal information is available (referred to as null-signal positions). **B**) Signal decay profiles of linear, exponential, and Weibull decay functions.", out.width = '80%'}
+```{r fig1, echo=FALSE, fig.cap="Signal processing addressed by the *PathwaySpace* package. **A**) Representation of a graph superimposed on a 2D coordinate system. Each lollipop icon represents a graph vertex (referred to as vertex-signal positions), while question marks highlight points in the 2D space where no signal information is available (referred to as null-signal positions). **B**) Signal decay profiles of linear, exponential, and Weibull decay functions.", out.width = '80%', purl=FALSE}
 knitr::include_graphics("figures/fig1.png")
 ```
 
@@ -119,13 +119,13 @@ pspace1 <- circularProjection(pspace1, knn = 1, pdist = 0.4)
 plotPathwaySpace(pspace1, marks = TRUE)
 ```
 
-```{r fig2.png, eval=FALSE, message=FALSE, echo=FALSE}
+```{r fig2.png, eval=FALSE, message=FALSE, echo=FALSE, purl=FALSE}
 gg <- plotPathwaySpace(pspace1, marks = TRUE)
 ggsave(filename = "./figures/fig2.png", height=3.5, width=4.7, 
   units="in", device="png", dpi=300, plot=gg)
 ```
 
-```{r fig2, echo=FALSE, out.width = '60%'}
+```{r fig2, echo=FALSE, out.width = '60%', purl=FALSE}
 knitr::include_graphics("figures/fig2.png")
 ```
 
@@ -139,13 +139,13 @@ pspace1 <- circularProjection(pspace1, knn = 2, pdist = 0.4)
 plotPathwaySpace(pspace1, marks = c("n3","n4"), theme = "th2")
 ```
 
-```{r fig3.png, eval=FALSE, message=FALSE, echo=FALSE}
+```{r fig3.png, eval=FALSE, message=FALSE, echo=FALSE, purl=FALSE}
 gg <- plotPathwaySpace(pspace1, marks = c("n3","n4"))
 ggsave(filename = "./figures/fig3.png", height=3.5, width=4.7,
   units="in", device="png", dpi=300, plot=gg)
 ```
 
-```{r fig3, echo=FALSE, out.width = '60%'}
+```{r fig3, echo=FALSE, out.width = '60%', purl=FALSE}
 knitr::include_graphics("figures/fig3.png")
 ```
 
@@ -159,13 +159,13 @@ pspace1 <- circularProjection(pspace1, knn = 2, pdist = 0.2, shape = 2)
 plotPathwaySpace(pspace1, marks = "n1", theme = "th2")
 ```
 
-```{r fig4.png, eval=FALSE, message=FALSE, echo=FALSE}
+```{r fig4.png, eval=FALSE, message=FALSE, echo=FALSE, purl=FALSE}
 gg <- plotPathwaySpace(pspace1, marks = "n1", theme = "th2")
 ggsave(filename = "./figures/fig4.png", height=3.5, width=4.7,
   units="in", device="png", dpi=300, plot=gg)
 ```
 
-```{r fig4, echo=FALSE, out.width = '55%'}
+```{r fig4, echo=FALSE, out.width = '55%', purl=FALSE}
 knitr::include_graphics("figures/fig4.png")
 ```
 
@@ -199,13 +199,13 @@ pspace2 <- polarProjection(pspace2, knn = 2, theta = 45, shape = 2)
 plotPathwaySpace(pspace2, theme = "th2", marks = TRUE)
 ```
 
-```{r fig5.png, eval=FALSE, message=FALSE, echo=FALSE}
+```{r fig5.png, eval=FALSE, message=FALSE, echo=FALSE, purl=FALSE}
 gg <- plotPathwaySpace(pspace2, theme = "th2", marks = TRUE)
 ggsave(filename = "./figures/fig5.png", height=3.5, width=4.7,
   units="in", device="png", dpi=300, plot=gg)
 ```
 
-```{r fig5, echo=FALSE, out.width = '55%'}
+```{r fig5, echo=FALSE, out.width = '55%', purl=FALSE}
 knitr::include_graphics("figures/fig5.png")
 ```
 
@@ -220,13 +220,13 @@ pspace2 <- polarProjection(pspace2, knn = 2, theta = 45, shape = 2,
 plotPathwaySpace(pspace2, theme = "th2", marks = c("n1","n3","n4","n5"))
 ```
 
-```{r fig6.png, eval=FALSE, message=FALSE, echo=FALSE}
+```{r fig6.png, eval=FALSE, message=FALSE, echo=FALSE, purl=FALSE}
 gg <- plotPathwaySpace(pspace2, theme = "th2", marks = c("n1","n3","n4","n5"))
 ggsave(filename = "./figures/fig6.png", height=3.5, width=4.7,
   units="in", device="png", dpi=300, plot=gg)
 ```
 
-```{r fig6, echo=FALSE, out.width = '55%'}
+```{r fig6, echo=FALSE, out.width = '55%', purl=FALSE}
 knitr::include_graphics("figures/fig6.png")
 ```
 
@@ -252,14 +252,14 @@ plotPathwaySpace(pspace1, bg.color = "white", font.color = "grey20",
   marks = TRUE, mark.color = "magenta")
 ```
 
-```{r fig7.png, eval=FALSE, message=FALSE, echo=FALSE}
+```{r fig7.png, eval=FALSE, message=FALSE, echo=FALSE, purl=FALSE}
 gg <- plotPathwaySpace(pspace1, marks = TRUE, mark.color = "magenta", 
   bg.color = "white", font.color = "grey20", theme = "th2")
 ggsave(filename = "./figures/fig7.png", height=3.5, width=4.7,
   units="in", device="png", dpi=300, plot=gg)
 ```
 
-```{r fig7, echo=FALSE, out.width = '55%'}
+```{r fig7, echo=FALSE, out.width = '55%', purl=FALSE}
 knitr::include_graphics("figures/fig7.png")
 ```
 
@@ -287,7 +287,7 @@ https://bioconductor.org/packages/RedeR/
 * Csardi G and Nepusz T. "The Igraph Software Package for Complex Network Research." *InterJournal*, ComplexSystems:1695, 2006. https://igraph.org
 
 # Session information
-```{r label='Session information', eval=TRUE, echo=FALSE}
+```{r label='Session information', eval=TRUE, echo=FALSE, purl=FALSE}
 sessionInfo()
 ```
 
