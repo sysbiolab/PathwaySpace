@@ -5,9 +5,9 @@ The *PathwaySpace* is an R package that creates landscape images from graphs con
 The *PathwaySpace* could have various applications, such as visualizing network data in a graphical format that highlights the relationships and signal strengths between vertices. 
 
 
-#### Installation
+### Installation
 
-# Install dependencies to build the package's vignettes
+#### Install dependencies to build the package's vignettes
 
 ```r
 install.packages("knitr")
@@ -19,7 +19,7 @@ BiocManager::install("BiocGenerics")
 BiocManager::install("msigdb")
 ```
 
-# Install the PathwaySpace package
+#### Install the PathwaySpace package
 
 ```r
 install.packages("remotes")
@@ -27,7 +27,7 @@ library(remotes)
 install_github("sysbiolab/PathwaySpace", build_vignettes=TRUE)
 ```
 
-#### Examples
+### Examples
 
 Follow the *PathwaySpace* vignette and try to make some *brain plots*!
 
