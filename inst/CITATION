@@ -1,8 +1,8 @@
 
 citEntry(entry = "Manual",
-author = "Victor, Apolonio and Chagas, Vinicius S and Castro, Mauro AA",
+author = "The Cancer Genome Atlas Analysis Network",
 title = "PathwaySpace: Spatial projection of network signals along geodesic paths.",
 year = "2023",
 note = "R package",
-textVersion = "Chagas VS, Apolonio V, ..., Castro MAA. PathwaySpace: Spatial projection of network signals along geodesic paths. R package, 2023."
+textVersion = "The Cancer Genome Atlas Analysis Network. PathwaySpace: Spatial projection of network signals along geodesic paths. R package, 2023."
 )
