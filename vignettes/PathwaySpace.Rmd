@@ -62,7 +62,7 @@ Our `gtoy1` graph is now ready for the *PathwaySpace* package. We can check its 
 V(gtoy1)$size <- 20
 ```
 
-```{r Making a toy igraph - 2, eval=TRUE, message=FALSE, out.width="30%"}
+```{r Making a toy igraph - 2, eval=TRUE, message=FALSE, out.width="40%"}
 # Check the graph layout
 plot.igraph(gtoy1)
 ```
@@ -111,7 +111,7 @@ vertexSignal(pspace1)
 
 Following that, we will use the `circularProjection()` function to project the network signals, using the `weibullDecay()` function with default settings. We set `knn = 1`, defining the contributing vertices for signal convolution. In this case, each *null-signal position* will receive the projection from a single *vertex-signal position* (*i.e.* from the nearest signal source in the pathway space). We then create a landscape image using the `plotPathwaySpace()` function.
 
-```{r Circular projection - 1, eval=FALSE, message=FALSE, out.width="50%"}
+```{r Circular projection - 1, eval=FALSE, message=FALSE, out.width="70%"}
 # Run network signal projection
 pspace1 <- circularProjection(pspace1, knn = 1, pdist = 0.4)
 
@@ -125,13 +125,13 @@ plotPathwaySpace(pspace1, marks = TRUE)
 #   units="in", device="png", dpi=300, plot=gg)
 ```
 
-```{r fig2, echo=FALSE, out.width = '60%', purl=FALSE}
+```{r fig2, echo=FALSE, out.width = '70%', purl=FALSE}
 knitr::include_graphics("figures/fig2.png")
 ```
 
 The `pdist` term determines a distance unit for the signal convolution related to the pathway space. This distance unit will affect the extent over which the convolution operation projects the signal in the pathway space. Next, we reassess the same *PathwaySpace* object using `knn = 2`. The user can also customize a few arguments in `plotPathwaySpace()` function, which is a wrapper to create dedicated *ggplot* graphics for *PathwaySpace-class* objects. 
 
-```{r Circular projection - 2, eval=FALSE, message=FALSE, out.width="50%"}
+```{r Circular projection - 2, eval=FALSE, message=FALSE, out.width="70%"}
 # Re-run the network signal projection with 'knn = 2'
 pspace1 <- circularProjection(pspace1, knn = 2, pdist = 0.4)
 
@@ -145,13 +145,13 @@ plotPathwaySpace(pspace1, marks = c("n3","n4"), theme = "th2")
 #   units="in", device="png", dpi=300, plot=gg)
 ```
 
-```{r fig3, echo=FALSE, out.width = '60%', purl=FALSE}
+```{r fig3, echo=FALSE, out.width = '70%', purl=FALSE}
 knitr::include_graphics("figures/fig3.png")
 ```
 
 The decay function used in the signal projection was passed to the `circularProjection()` function by the `decay_fun` argument. The user can pass additional arguments to the decay function using the `...` argument, for example:
 
-```{r Circular projection - 3, eval=FALSE, message=FALSE, out.width="50%"}
+```{r Circular projection - 3, eval=FALSE, message=FALSE, out.width="70%"}
 # Re-run the network signal projection, passing 'shape' to the decay function
 pspace1 <- circularProjection(pspace1, knn = 2, pdist = 0.2, shape = 2)
 
@@ -165,7 +165,7 @@ plotPathwaySpace(pspace1, marks = "n1", theme = "th2")
 #   units="in", device="png", dpi=300, plot=gg)
 ```
 
-```{r fig4, echo=FALSE, out.width = '55%', purl=FALSE}
+```{r fig4, echo=FALSE, out.width = '75%', purl=FALSE}
 knitr::include_graphics("figures/fig4.png")
 ```
 
@@ -175,7 +175,7 @@ In this case, we set the `shape` of a 3-parameter Weibull function. This paramet
 
 In this section we will project the network signal using a polar coordinate system. This representation may be useful for certain types of data, for example, to highlight patterns of signal propagation on directed graphs, especially to explore the orientation aspect of signal flow. To demonstrate this feature we will used the `gtoy2` directed graph, already available in the *PathwaySpace* package.
 
-```{r Polar projection - 1, eval=TRUE, message=FALSE, out.width="25%"}
+```{r Polar projection - 1, eval=TRUE, message=FALSE, out.width="40%"}
 # Load a pre-processed directed igraph object
 data("gtoy2")
 
@@ -191,7 +191,7 @@ pspace2 <- buildPathwaySpace(gtoy2, mar = 0.2)
 vertexSignal(pspace2) <- 1
 ```
 
-```{r Polar projection - 3, eval=FALSE, message=FALSE, out.width="50%"}
+```{r Polar projection - 3, eval=FALSE, message=FALSE, out.width="70%"}
 # Run the network signal projection using polar coordinates
 pspace2 <- polarProjection(pspace2, knn = 2, theta = 45, shape = 2)
 
@@ -205,13 +205,13 @@ plotPathwaySpace(pspace2, theme = "th2", marks = TRUE)
 #   units="in", device="png", dpi=300, plot=gg)
 ```
 
-```{r fig5, echo=FALSE, out.width = '55%', purl=FALSE}
+```{r fig5, echo=FALSE, out.width = '75%', purl=FALSE}
 knitr::include_graphics("figures/fig5.png")
 ```
 
 Note that this projection emphasizes signals along the edges of the network. In order to also consider the direction of edges, next we set `directional = TRUE`.
 
-```{r Polar projection - 4, eval=FALSE, message=FALSE, out.width="50%"}
+```{r Polar projection - 4, eval=FALSE, message=FALSE, out.width="70%"}
 # Re-run the network signal projection using 'directional = TRUE'
 pspace2 <- polarProjection(pspace2, knn = 2, theta = 45, shape = 2, 
   directional = TRUE)
@@ -226,7 +226,7 @@ plotPathwaySpace(pspace2, theme = "th2", marks = c("n1","n3","n4","n5"))
 #   units="in", device="png", dpi=300, plot=gg)
 ```
 
-```{r fig6, echo=FALSE, out.width = '55%', purl=FALSE}
+```{r fig6, echo=FALSE, out.width = '75%', purl=FALSE}
 knitr::include_graphics("figures/fig6.png")
 ```
 
@@ -236,7 +236,7 @@ This updated *PathwaySpace* polar projection emphasizes the signal flow into a d
 
 The *PathwaySpace* accepts binary, integer, and numeric signal types, including `NAs`. When a vertex is assigned with `NA`, it will be excluded from the signal projection, not evaluated by the convolution algorithm. Logical values are also allowed, but it will be treated as binary. Next, we show the projection of a signal that includes negative values, using the `pspace1` object created previously.
 
-```{r Signal types, eval=FALSE, message=FALSE, out.width="50%"}
+```{r Signal types, eval=FALSE, message=FALSE, out.width="70%"}
 # Set a negative signal to vertices "n3" and "n4"
 vertexSignal(pspace1)[c("n3","n4")] <- c(-2, -4)
 
@@ -259,7 +259,7 @@ plotPathwaySpace(pspace1, bg.color = "white", font.color = "grey20",
 #   units="in", device="png", dpi=300, plot=gg)
 ```
 
-```{r fig7, echo=FALSE, out.width = '55%', purl=FALSE}
+```{r fig7, echo=FALSE, out.width = '75%', purl=FALSE}
 knitr::include_graphics("figures/fig7.png")
 ```
 
