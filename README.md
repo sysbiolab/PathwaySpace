@@ -11,10 +11,8 @@
 ```r
 install.packages("knitr")
 install.packages("rmarkdown")
-install.packages("RUnit")
 install.packages("BiocManager")
 BiocManager::install("BiocStyle")
-BiocManager::install("BiocGenerics")
 BiocManager::install("msigdbr")
 ```
 
