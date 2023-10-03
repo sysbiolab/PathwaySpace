@@ -4,7 +4,7 @@
 
 *PathwaySpace* could have various applications, such as visualizing network data in a graphical format that highlights the relationships and signal strengths between vertices. 
 
-### Installation
+### Installation in R (>=4.3)
 
 ##### Install dependencies to build the package's vignettes
 
