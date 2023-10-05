@@ -13,6 +13,18 @@ h1.title.toc-ignore {
   font-size: 22pt;
 }
 
+h1 {
+  font-size: 18pt;
+}
+
+h2 {
+  font-size: 16pt;
+}
+
+h3, h4, h5 {
+  font-size: 14pt;
+}
+
 p {
   padding: 0 0 0 0;
 }
@@ -24,7 +36,7 @@ pre, code {
 
 P > img {
   padding: 0 0 0 0;
-  margin: 35px auto 15px auto;
+  margin: 15px auto 15px auto;
 }
 
 span.header-section-number {
