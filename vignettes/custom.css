@@ -59,8 +59,16 @@ h1.title {
     border-bottom: 0px;
 }
 
-h4.author {
+p.author-name, h4.author {
     font-size: 14pt;
+    font-weight: bold;
+    font-style: italic;
+    text-align: left;
+    color: #333333;
+}
+
+h4.date {
+    font-size: 11pt;
     font-weight: bold;
     font-style: italic;
     text-align: left;
