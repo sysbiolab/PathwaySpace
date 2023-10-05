@@ -11,6 +11,8 @@
 ```r
 install.packages("knitr")
 install.packages("rmarkdown")
+install.packages("BiocManager")
+BiocManager::install("BiocStyle")
 ```
 
 ##### Install the PathwaySpace package
