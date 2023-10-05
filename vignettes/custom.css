@@ -9,12 +9,24 @@ h1, h2, h3, h4, h5, h6 {
   margin: 1.2em 0 0.6em 0;
 }
 
-h1.title.toc-ignore {
-  font-size: 20pt;
-}
-
 h1 {
   font-size: 18pt;
+  padding: 0 0 0 0;
+  text-indent: 0;
+  margin: 1.2em 0 0.6em 0;
+  line-height: 1.4em;
+  border-bottom: 2px #1a81c2 solid;
+}
+
+p.abstract {
+  text-align: left;
+  padding: 0 0 0 0;
+  text-indent: 0;
+  margin: 1.2em 0 0.0 0;
+}
+
+div.abstract {
+    width: 100%;
 }
 
 h2 {
@@ -27,11 +39,7 @@ h3, h4, h5 {
 
 p {
   padding: 0 0 0 0;
-}
-
-pre, code {
-  padding: 0 0 0 0;
-  margin: 0 0 0.5em 0;
+  text-align: justify;
 }
 
 P > img {
@@ -43,8 +51,20 @@ span.header-section-number {
   width: 35px;
 }
 
-div#TOC > ul, ul {
-  padding: 0 15px 0 35px;
+h1.title {
+    font-size: 20pt;
+    color: #87b13f;
+    line-height: 1.1em;
+    margin-top: 25px;
+    border-bottom: 0px;
+}
+
+h4.author {
+    font-size: 14pt;
+    font-weight: bold;
+    font-style: italic;
+    text-align: left;
+    color: #555555;
 }
 
 th {
@@ -88,6 +108,18 @@ code.r {
     border: 0.5px solid #e6e6e6;
 }
 
+code {
+  padding: 0 0 0 0;
+  margin: 0 0 0.5em 0;
+  color: #000440;
+}
+
+pre {
+  padding: 0 0 0 0;
+  margin: 0 0 0.5em 0;
+  color: #333333;
+}
+
 br.small {
     content: " ";
     display: block;
@@ -96,6 +128,11 @@ br.small {
 
 img {
   padding: 0px 0px 0px 0px;
+}
+
+ol, ul {
+    padding: 0px 0 0px 20px;
+    list-style: square;
 }
 
 .tocify {
