@@ -1,14 +1,12 @@
 ---
 title: "*PathwaySpace*: Spatial projection of network signals along geodesic paths."
 author: "The Cancer Genome Atlas Analysis Network."
-date: "`r BiocStyle::doc_date()`"
-package: "PathwaySpace"
+date: "`r Sys.Date()`"
 bibliography: bibliography.bib
 abstract: "<p>*PathwaySpace* is an R package that creates landscape images from graphs containing vertices (nodes), edges (lines), and a signal associated with the vertices. The package processes the signal using a convolution algorithm that considers the graph's topology to project the signal on a 2D space. *PathwaySpace* could have various applications, such as visualizing network data in a graphical format that highlights the relationships and signal strengths between vertices. It can be particularly useful for understanding the influence of signals through complex networks. By combining graph theory, signal processing, and visualization, the *PathwaySpace* package provides a novel way of representing network signals.</p>"
 output: 
-  BiocStyle::html_document:
-    theme: flatly
-    highlight: tango
+  rmarkdown::html_document:
+    theme: cerulean
     self_contained: yes
     toc: true
     toc_float: true
@@ -38,6 +36,7 @@ knitr::include_graphics("figures/fig1.png")
 #--- Load required packages for this section
 library(PathwaySpace)
 library(igraph)
+library(ggplot2)
 ```
 
 ## Setting basic input data
@@ -62,7 +61,7 @@ Our `gtoy1` graph is now ready for the *PathwaySpace* package. We can check its 
 V(gtoy1)$size <- 20
 ```
 
-```{r Making a toy igraph - 2, eval=TRUE, message=FALSE, out.width="40%"}
+```{r Making a toy igraph - 2, eval=TRUE, message=FALSE, out.width="80%"}
 # Check the graph layout
 plot.igraph(gtoy1)
 ```
@@ -78,20 +77,23 @@ pspace1 <- buildPathwaySpace(gtoy1, mar = 0.2)
 
 As a default behavior, the `buildPathwaySpace()` constructor initializes the signal of each vertex as `0`. We can use the `length()`, `names()`, and `vertexSignal()` accessors to get and set vertex signals in the *PathwaySpace* object; for example, in order to get vertex names and signal values:
 
-```{r Setting vertex signal - 1, eval=TRUE, message=FALSE}
+```{r Setting vertex signal - 1, eval=TRUE, message=FALSE, results='hide'}
 # Check the number of vertices in the PathwaySpace object
 length(pspace1)
+## [1] 5
 
 # Check vertex names
 names(pspace1)
+## [1] "n1" "n2" "n3" "n4" "n5"
 
 # Check signal (initialized with '0')
 vertexSignal(pspace1)
+##  0  0  0  0  0
 ```
 
 ...and for setting new signal values in *PathwaySpace* objects:
 
-```{r Setting vertex signal - 2, eval=TRUE, message=FALSE}
+```{r Setting vertex signal - 2, eval=TRUE, message=FALSE, results='hide'}
 # Set new signal to all vertices
 vertexSignal(pspace1) <- c(1, 3, 2, 3, 2)
 
@@ -103,6 +105,7 @@ vertexSignal(pspace1)["n1"] <- 4
 
 # Check updated signal values
 vertexSignal(pspace1)
+##  4  3  2  3  2
 ```
 
 # Signal projection
@@ -175,7 +178,7 @@ In this case, we set the `shape` of a 3-parameter Weibull function. This paramet
 
 In this section we will project the network signal using a polar coordinate system. This representation may be useful for certain types of data, for example, to highlight patterns of signal propagation on directed graphs, especially to explore the orientation aspect of signal flow. To demonstrate this feature we will used the `gtoy2` directed graph, already available in the *PathwaySpace* package.
 
-```{r Polar projection - 1, eval=TRUE, message=FALSE, out.width="40%"}
+```{r Polar projection - 1, eval=TRUE, message=FALSE, out.width="80%"}
 # Load a pre-processed directed igraph object
 data("gtoy2")
 
@@ -230,7 +233,7 @@ plotPathwaySpace(pspace2, theme = "th2", marks = c("n1","n3","n4","n5"))
 knitr::include_graphics("figures/fig6.png")
 ```
 
-This updated *PathwaySpace* polar projection emphasizes the signal flow into a defined direction (see the directional patterns within the *igraph* network plot at the top of this section). However, when interpreting the results, users must be aware that this method may introduce distortions. For example, depending on the network's structure, the polar projection may not capture all aspects of a directed graph, such as cyclic dependencies, feedforward and feedback loops, or other intricate edge interplays.
+This updated *PathwaySpace* polar projection emphasizes the signal flow into a defined direction (see the directional pattern of the *igraph* plot at the top of this section). However, when interpreting the results, users must be aware that this method may introduce distortions. For example, depending on the network's structure, the polar projection may not capture all aspects of a directed graph, such as cyclic dependencies, feedforward and feedback loops, or other intricate edge interplays.
 
 ## Signal types
 
@@ -249,12 +252,12 @@ pspace1 <- circularProjection(pspace1, knn = 2, shape = 2)
 
 # Plot the PathwaySpace image
 plotPathwaySpace(pspace1, bg.color = "white", font.color = "grey20",
-  marks = TRUE, mark.color = "magenta")
+  marks = TRUE, mark.color = "magenta", theme = "th2")
 ```
 
 ```{r fig7.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-# gg <- plotPathwaySpace(pspace1, marks = TRUE, mark.color = "magenta", 
-#   bg.color = "white", font.color = "grey20", theme = "th2")
+# gg <- plotPathwaySpace(pspace1, bg.color = "white", font.color = "grey20",
+#   marks = TRUE, mark.color = "magenta", theme = "th2")
 # ggsave(filename = "./figures/fig7.png", height=3.5, width=4.7,
 #   units="in", device="png", dpi=300, plot=gg)
 ```

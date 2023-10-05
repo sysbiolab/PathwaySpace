@@ -153,15 +153,13 @@ NULL
 #' A data frame listing 'GeneSymbol' and 'Entrez' IDs from the
 #' COSMIC-CGC database (Sondka et al., 2020). These genes are used to
 #' demonstrate the PathwaySpace's summit mapping pipeline, which assigns 
-#' summits to an image graph space.
+#' summits to an image space.
 #'
 #' @format data.frame
 #'
 #' @usage data(CGC_20211118)
 #'
 #' @source COSMIC-CGC database (release v95, tier 1 collection).
-#'
-#' @author Chris Wong, Mauro Castro, and TCGA Network.
 #'
 #' @references
 #' Sondka et al. The COSMIC Cancer Gene Census: describing genetic
@@ -175,6 +173,39 @@ NULL
 #' @return A data.frame object.
 #' @examples
 #' data(CGC_20211118)
+NULL
+
+
+################################################################################
+### Documentation for the 'Hallmarks_v2023_1_Hs_symbols' dataset
+################################################################################
+#' @title A list with Hallmark gene sets (v2023.1).
+#'
+#' @description
+#' A list with Human gene symbols from the MSigDB's Hallmark gene set 
+#' collection (Liberzon et al., 2015). These gene sets are used to
+#' demonstrate the PathwaySpace's summit mapping pipeline, which assigns 
+#' summits to an image space.
+#'
+#' @format list
+#'
+#' @usage data(Hallmarks_v2023_1_Hs_symbols)
+#'
+#' @source MSigDB database (v2023.1).
+#'
+#' @references
+#' Liberzon et al. The Molecular Signatures Database (MSigDB) hallmark 
+#' gene set collection. Cell Systems 1(5):417-425, 2015
+#' Doi: 10.1016/j.cels.2015.12.004.
+#'
+#' @docType data
+#' @keywords Hallmarks_v2023_1_Hs_symbols
+#' @name Hallmarks_v2023_1_Hs_symbols
+#' @aliases Hallmarks_v2023_1_Hs_symbols
+#' @aliases hallmarks
+#' @return A list object.
+#' @examples
+#' data(Hallmarks_v2023_1_Hs_symbols)
 NULL
 
 

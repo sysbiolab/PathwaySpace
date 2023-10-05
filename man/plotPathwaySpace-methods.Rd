@@ -20,7 +20,9 @@
   zlab = "Density",
   slices = 25,
   add.grid = TRUE,
+  grid.color = "white",
   add.contour = TRUE,
+  contour.color = "white",
   marks = FALSE,
   mark.size = 3,
   mark.color = "white",
@@ -72,8 +74,12 @@ the image signal into equally-spaced intervals.}
 the image space. However, gridlines will only appear when the image 
 is decorated with graph silhouettes (see \code{\link{silhouetteMapping}}).}
 
+\item{grid.color}{A color passed to \code{\link{geom_point}}.}
+
 \item{add.contour}{A logical value indicating whether to add contour 
 lines to 'summits' (see \code{\link{summitMapping}}).}
+
+\item{contour.color}{A color passed to \code{\link{geom_tile}}.}
 
 \item{marks}{A logical value indicating whether to add 'marks' to vertex 
 positions. This could be either vertex names or dots 

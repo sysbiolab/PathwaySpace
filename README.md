@@ -4,16 +4,13 @@
 
 *PathwaySpace* could have various applications, such as visualizing network data in a graphical format that highlights the relationships and signal strengths between vertices. 
 
-### Installation in R (>=4.3)
+### Installation in R (>=4.2)
 
 ##### Install dependencies to build the package's vignettes
 
 ```r
 install.packages("knitr")
 install.packages("rmarkdown")
-install.packages("BiocManager")
-BiocManager::install("BiocStyle")
-BiocManager::install("msigdbr")
 ```
 
 ##### Install the PathwaySpace package

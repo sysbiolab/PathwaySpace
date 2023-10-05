@@ -32,8 +32,10 @@
 #' @param add.grid A logical value indicating whether to add gridlines to 
 #' the image space. However, gridlines will only appear when the image 
 #' is decorated with graph silhouettes (see \code{\link{silhouetteMapping}}).
+#' @param grid.color A color passed to \code{\link{geom_point}}.
 #' @param add.contour A logical value indicating whether to add contour 
 #' lines to 'summits' (see \code{\link{summitMapping}}).
+#' @param contour.color A color passed to \code{\link{geom_tile}}.
 #' @param marks A logical value indicating whether to add 'marks' to vertex 
 #' positions. This could be either vertex names or dots 
 #' (when \code{use.dotmark = TRUE}). Alternatively, this could be a vector
@@ -86,8 +88,9 @@ setMethod("plotPathwaySpace", "PathwaySpace",
         bg.color = "grey85", theme.name = c("th0", "th1", "th2", "th3"),
         title = "PathwaySpace", font.size = 1, font.color = "white",
         xlab = "Pathway coordinates 1", ylab = "Pathway coordinates 2", 
-        zlab = "Density", slices = 25, add.grid = TRUE, add.contour = TRUE, 
-        marks = FALSE, mark.size = 3, mark.color = "white", mark.padding = 0.5,
+        zlab = "Density", slices = 25, add.grid = TRUE, grid.color = "white", 
+        add.contour = TRUE, contour.color = "white", marks = FALSE, 
+        mark.size = 3, mark.color = "white", mark.padding = 0.5, 
         mark.line.width = 0.5, use.dotmark = FALSE) {
         #--- validate the pts object and args
         if (!.checkStatus(pts, "Projection")) {
@@ -111,6 +114,8 @@ setMethod("plotPathwaySpace", "PathwaySpace",
         .validate.plot.args("bg.color", bg.color)
         .validate.plot.args("marks", marks)
         .validate.colors("singleColor", "font.color", font.color)
+        .validate.colors("singleColor", "grid.color", grid.color)
+        .validate.colors("singleColor", "contour.color", contour.color)
         .validate.colors("allColors","mark.color", mark.color)
         .validate.colors("allColors","colors", colors)
         
@@ -164,11 +169,12 @@ setMethod("plotPathwaySpace", "PathwaySpace",
         gxyz$Y <- scales::rescale(gxyz$Y)
         gxyz$L <- gridln$L
         #--- get ggplot object
-        ggp <- .get.ggplot(gxyz, xlab, ylab, zlab, cl, add.grid)
+        ggp <- .get.ggplot(gxyz, xlab, ylab, zlab, cl, add.grid, grid.color)
         #--- add contour lines if available
         if (add.contour && !is.null(summits) && length(summits) > 0 
             && sum(cset) > 0) {
-            ggp <- .add.contour(ggp, gxyz, summits, cset, mark.size)
+            ggp <- .add.contour(ggp, gxyz, summits, cset, contour.color, 
+                mark.size)
         }
         #--- add marks if available AQUI!!
         bl <- is.logical(marks) && marks
@@ -234,7 +240,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
 }
 
 #-------------------------------------------------------------------------------
-.get.ggplot <- function(gxyz, xlab, ylab, zlab, cl, add.grid){
+.get.ggplot <- function(gxyz, xlab, ylab, zlab, cl, add.grid, grid.color){
     X <- Y <- Z <- NULL
     ggp <- ggplot2::ggplot(gxyz, ggplot2::aes(X, Y, fill = Z)) +
         ggplot2::scale_x_continuous(name = xlab, breaks = cl$axis.ticks,
@@ -249,15 +255,14 @@ setMethod("plotPathwaySpace", "PathwaySpace",
         ggplot2::coord_fixed() + ggplot2::geom_raster(interpolate = FALSE)
     if (add.grid) {
         dt <- gxyz[gxyz$L == 1, c("X", "Y")]
-        ggp <- ggp + ggplot2::annotate(geom = "point",
-            x = dt$X, y = dt$Y, color = adjustcolor("white",0.6), 
-            size = 0.2, pch = 15)
+        ggp <- ggp + ggplot2::annotate(geom = "point", x = dt$X, 
+            y = dt$Y, color = grid.color, size = 0.2, pch = 15)
     }
     return(ggp)
 }
 
 #-------------------------------------------------------------------------------
-.add.contour <- function(ggp, gxyz, summits, cset, mark.size) {
+.add.contour <- function(ggp, gxyz, summits, cset, contour.color, mark.size) {
     setnames <- names(summits)
     if (is.null(setnames)) {
         setnames <- seq_along(setnames)
@@ -271,14 +276,14 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     for (i in seq_along(concav)) {
         xy.cv <- gxyz[gxyz$C == i, c("X", "Y")]
         xy.tx <- rbind(xy.tx, colMeans(xy.cv))
-        ggp <- ggp + ggplot2::annotate(geom = "tile", x = xy.cv[,
-            1], y = xy.cv[, 2], color = adjustcolor("white", 0.7),
-            fill = adjustcolor("white", 0.7), linewidth = 0.2)
+        ggp <- ggp + ggplot2::annotate(geom = "tile", x = xy.cv[, 1], 
+            y = xy.cv[, 2], color = contour.color,
+            fill = contour.color, linewidth = 0.2)
     }
     rownames(xy.tx) <- setnames
     ggp <- ggp + ggplot2::annotate(geom = "text", x = xy.tx[, 1],
         y = xy.tx[, 2], label = rownames(xy.tx), vjust = 0.5, hjust = 0.5,
-        color = adjustcolor("white", 0.75), size = mark.size, 
+        color = contour.color, size = mark.size, 
         fontface = "bold")
     return(ggp)
 }

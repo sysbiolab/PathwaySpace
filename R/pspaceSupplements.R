@@ -259,7 +259,7 @@
     x[x == 0] <- NA
     sz <- round(sum(abs(x), na.rm = TRUE) / sum(!is.na(x)), 4)
     sz <- ifelse(is.nan(sz), 0, sz)
-    if(verbose) message("Signal intensity: ", sz, " per pixel!")
+    if(verbose) message("Density: ", sz, " per pixel!")
     return(pts)
 }
 
@@ -309,7 +309,7 @@
     x[x == 0] <- NA
     sz <- round(sum(abs(x), na.rm = TRUE) / sum(!is.na(x)), 4)
     sz <- ifelse(is.nan(sz), 0, sz)
-    if(verbose) message("Signal intensity: ", sz, " per pixel!")
+    if(verbose) message("Density: ", sz, " per pixel!")
     return(pts)
 }
 

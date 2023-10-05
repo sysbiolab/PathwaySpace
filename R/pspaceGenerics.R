@@ -32,8 +32,9 @@ setGeneric("plotPathwaySpace",
         bg.color = "grey85", theme.name = c("th0", "th1", "th2", "th3"),
         title = "PathwaySpace", font.size = 1, font.color = "white",
         xlab = "Pathway coordinates 1", ylab = "Pathway coordinates 2", 
-        zlab = "Density", slices = 25, add.grid = TRUE, add.contour = TRUE, 
-        marks = FALSE, mark.size = 3, mark.color = "white", mark.padding = 0.5,
+        zlab = "Density", slices = 25, add.grid = TRUE, grid.color = "white", 
+        add.contour = TRUE, contour.color = "white", marks = FALSE, 
+        mark.size = 3, mark.color = "white", mark.padding = 0.5, 
         mark.line.width = 0.5, use.dotmark = FALSE) {
         standardGeneric("plotPathwaySpace")
     }, package = "PathwaySpace"
