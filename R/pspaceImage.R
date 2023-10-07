@@ -1,6 +1,6 @@
 #' @title Plotting 2D-landscape images for the PathwaySpace package.
 #'
-#' @description \code{plotPathwaySpace} is a wrapper function to 
+#' @description \code{plotImageSpace} is a wrapper function to 
 #' create dedicated ggplot graphics for PathwaySpace-class objects.
 #'
 #' @param pts A \linkS4class{PathwaySpace} class object.
@@ -67,7 +67,7 @@
 #' pts <- silhouetteMapping(pts)
 #'
 #' # Plot a 2D-landscape image
-#' plotPathwaySpace(pts)
+#' plotImageSpace(pts)
 #' 
 #' @import methods
 #' @docType methods
@@ -79,11 +79,11 @@
 #' @importFrom ggrepel geom_text_repel
 #' @importFrom grDevices convertColor col2rgb rgb
 #' @importFrom grDevices adjustcolor colorRampPalette
-#' @rdname plotPathwaySpace-methods
-#' @aliases plotPathwaySpace
+#' @rdname plotImageSpace-methods
+#' @aliases plotImageSpace
 #' @export
 #'
-setMethod("plotPathwaySpace", "PathwaySpace", 
+setMethod("plotImageSpace", "PathwaySpace", 
     function(pts, colors = pspace.cols(), trim.colors = c(3, 2, 1, 2, 3), 
         bg.color = "grey85", theme.name = c("th0", "th1", "th2", "th3"),
         title = "PathwaySpace", font.size = 1, font.color = "white",
@@ -145,7 +145,8 @@ setMethod("plotPathwaySpace", "PathwaySpace",
         if (all(zlim == 0)) zlim[2] <- 1
         #--- trim colors and set theme args
         cl <- .trimcols(colors, bg.color, zlim, pars)
-        cl <- .set.theme.args(theme.name, cl, zlim)
+        cl <- .set.theme.bks(theme.name, cl)
+        cl <- .set.theme.zlim(cl, zlim)
         # slice gxyz image
         bks <- seq(zlim[1], zlim[2], length.out = slices)
         gxyz[, ] <- bks[cut(as.numeric(gxyz), breaks = sort(unique(bks)),
@@ -158,7 +159,6 @@ setMethod("plotPathwaySpace", "PathwaySpace",
             arrayInd(seq_along(gridln), .dim = ldim), gridln)
         colnames(gridln) <- c("Y", "X", "L")
         #--- set main input for ggplot
-        # gxyz <- gxyz[nrow(gxyz):1, ]
         gxyz <- as.numeric(gxyz)
         gxyz <- data.frame(arrayInd(seq_along(gxyz), .dim = ldim), gxyz)
         colnames(gxyz) <- c("Y", "X", "Z")
@@ -176,7 +176,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
             ggp <- .add.contour(ggp, gxyz, summits, cset, contour.color, 
                 mark.size)
         }
-        #--- add marks if available AQUI!!
+        #--- add marks if available
         bl <- is.logical(marks) && marks
         if (bl || is.character(marks)) {
             if(bl) marks <- rownames(gxy)
@@ -358,7 +358,8 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     et1 <- ggplot2::element_text(size = 14 * font.size)
     et2 <- ggplot2::element_text(size = 12 * font.size)
     gg <- gg + ggplot2::theme(axis.title = et1, axis.text = et2,
-        legend.title = et2, legend.text = et2)
+        legend.title = et2, legend.text = et2,
+        panel.background = element_rect(fill = bg.color))
     return(gg)
 }
 .custom.th1 <- function(gg, font.size,
@@ -418,29 +419,32 @@ setMethod("plotPathwaySpace", "PathwaySpace",
         panel.background = element_rect(fill = bg.color))
     return(gg)
 }
-.set.theme.args <- function(theme.name, cl, zlim){
+.set.theme.bks <- function(theme.name, cl=list()){
     if (theme.name %in% c("th2")) {
         cl$axis.ticks <- seq(0.1, 0.9, 0.2)
         cl$xylim <- c(-0.01, 1.01)
         cl$x.position <- "bottom"
-        justify <- "right"
+        cl$justify <- "right"
     } else if (theme.name %in% c("th3")) {
         cl$axis.ticks <- c(0.25, 0.5, 0.75)
         cl$xylim <- c(-0.01, 1.01)
         cl$x.position <- "top"
-        justify <- "centre"
+        cl$justify <- "centre"
     } else {
         cl$axis.ticks <- seq(0, 1, 0.2)
         cl$xylim <- c(-0.05, 1.05)
         cl$x.position <- "bottom"
-        justify <- "right"
+        cl$justify <- "right"
     }
+    return(cl)
+}
+.set.theme.zlim <- function(cl, zlim){
     # adjust labels for z-axis midle and tips
     bks_names <- cl$breaks
     bks_names <- format(bks_names,  trim = TRUE)
     n <- length(bks_names)
     bks_names[!seq_len(n) %in% c(1, ceiling(n/2), n)] <- ""
-    bks_names <- format(bks_names, justify=justify)
+    bks_names <- format(bks_names, justify=cl$justify)
     names(cl$breaks) <- bks_names
     # expand 'zlim' and palette tips
     expand <- TRUE
@@ -453,7 +457,6 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     }
     return(cl)
 }
-
 #-------------------------------------------------------------------------------
 #--- get grid lines
 .getGrid <- function(gxyz, ticks = c(0.2, 0.4, 0.6, 0.8), ndots = 100) {

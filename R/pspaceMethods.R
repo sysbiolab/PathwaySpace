@@ -141,6 +141,7 @@ setMethod("circularProjection", "PathwaySpace", function(pts, knn = 8,
         pts <- .updateStatus(pts, "PolarProjection", FALSE)
     }
     pts <- .removeSummits(pts, verbose)
+    pts <- .removeSilhouette(pts, verbose)
     return(pts)
 })
 
@@ -236,6 +237,7 @@ setMethod("polarProjection", "PathwaySpace", function(pts, knn = 8,
         pts <- .updateStatus(pts, "CircularProjection", FALSE)
     }
     pts <- .removeSummits(pts, verbose)
+    pts <- .removeSilhouette(pts, verbose)
     return(pts)
 })
 

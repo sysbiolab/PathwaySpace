@@ -122,40 +122,40 @@ vertexSignal(pspace1)
 
 ## Circular projection
 
-Following that, we will use the `circularProjection()` function to project the network signals, using the `weibullDecay()` function with default settings. We set `knn = 1`, defining the contributing vertices for signal convolution. In this case, each *null-signal position* will receive the projection from a single *vertex-signal position* (*i.e.* from the nearest signal source in the pathway space). We then create a landscape image using the `plotPathwaySpace()` function.
+Following that, we will use the `circularProjection()` function to project the network signals, using the `weibullDecay()` function with default settings. We set `knn = 1`, defining the contributing vertices for signal convolution. In this case, each *null-signal position* will receive the projection from a single *vertex-signal position* (*i.e.* from the nearest signal source in the pathway space). We then create a landscape image using the `plotImageSpace()` function.
 
 ```{r Circular projection - 1, eval=FALSE, message=FALSE, out.width="70%"}
 # Run network signal projection
 pspace1 <- circularProjection(pspace1, knn = 1, pdist = 0.4)
 
 # Plot a PathwaySpace image
-plotPathwaySpace(pspace1, marks = TRUE)
+plotImageSpace(pspace1, marks = TRUE)
 ```
 
 ```{r fig3.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-# gg <- plotPathwaySpace(pspace1, marks = TRUE)
+# gg <- plotImageSpace(pspace1, marks = TRUE)
 # ggsave(filename = "./figures/fig3.png", height=3.5, width=4.7, 
-#   units="in", device="png", dpi=300, plot=gg)
+#   units="in", device="png", dpi=250, plot=gg)
 ```
 
 ```{r fig3, echo=FALSE, out.width = '70%', purl=FALSE}
 knitr::include_graphics("figures/fig3.png")
 ```
 
-The `pdist` term determines a distance unit for the signal convolution related to the pathway space. This distance unit will affect the extent over which the convolution operation projects the signal in the pathway space. Next, we reassess the same *PathwaySpace* object using `knn = 2`. The user can also customize a few arguments in `plotPathwaySpace()` function, which is a wrapper to create dedicated *ggplot* graphics for *PathwaySpace-class* objects. 
+The `pdist` term determines a distance unit for the signal convolution related to the pathway space. This distance unit will affect the extent over which the convolution operation projects the signal in the pathway space. Next, we reassess the same *PathwaySpace* object using `knn = 2`. The user can also customize a few arguments in `plotImageSpace()` function, which is a wrapper to create dedicated *ggplot* graphics for *PathwaySpace-class* objects. 
 
 ```{r Circular projection - 2, eval=FALSE, message=FALSE, out.width="70%"}
 # Re-run the network signal projection with 'knn = 2'
 pspace1 <- circularProjection(pspace1, knn = 2, pdist = 0.4)
 
 # Plot the PathwaySpace image
-plotPathwaySpace(pspace1, marks = c("n3","n4"), theme = "th2")
+plotImageSpace(pspace1, marks = c("n3","n4"), theme = "th2")
 ```
 
 ```{r fig4.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-# gg <- plotPathwaySpace(pspace1, marks = c("n3","n4"))
+# gg <- plotImageSpace(pspace1, marks = c("n3","n4"), theme = "th2")
 # ggsave(filename = "./figures/fig4.png", height=3.5, width=4.7,
-#   units="in", device="png", dpi=300, plot=gg)
+#   units="in", device="png", dpi=250, plot=gg)
 ```
 
 ```{r fig4, echo=FALSE, out.width = '70%', purl=FALSE}
@@ -169,13 +169,13 @@ The decay function used in the signal projection was passed to the `circularProj
 pspace1 <- circularProjection(pspace1, knn = 2, pdist = 0.2, shape = 2)
 
 # Plot the PathwaySpace image
-plotPathwaySpace(pspace1, marks = "n1", theme = "th2")
+plotImageSpace(pspace1, marks = "n1", theme = "th2")
 ```
 
 ```{r fig5.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-# gg <- plotPathwaySpace(pspace1, marks = "n1", theme = "th2")
+# gg <- plotImageSpace(pspace1, marks = "n1", theme = "th2")
 # ggsave(filename = "./figures/fig5.png", height=3.5, width=4.7,
-#   units="in", device="png", dpi=300, plot=gg)
+#   units="in", device="png", dpi=250, plot=gg)
 ```
 
 ```{r fig5, echo=FALSE, out.width = '75%', purl=FALSE}
@@ -196,6 +196,11 @@ data("gtoy2")
 # plot.igraph(gtoy2)
 ```
 
+```{r Polar projection - 2, eval=FALSE, message=FALSE, out.width="100%"}
+# Check the graph layout
+plot.igraph(gtoy2)
+```
+
 ```{r fig6.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
 # png(filename = "./figures/fig6.png", pointsize=50, width=1600, height=1600)
 # plot.igraph(gtoy2)
@@ -206,7 +211,7 @@ data("gtoy2")
 knitr::include_graphics("figures/fig6.png")
 ```
 
-```{r Polar projection - 2, eval=TRUE, message=FALSE}
+```{r Polar projection - 3, eval=TRUE, message=FALSE}
 # Build a PathwaySpace for the 'gtoy2' igraph
 pspace2 <- buildPathwaySpace(gtoy2, mar = 0.2)
 
@@ -214,18 +219,18 @@ pspace2 <- buildPathwaySpace(gtoy2, mar = 0.2)
 vertexSignal(pspace2) <- 1
 ```
 
-```{r Polar projection - 3, eval=FALSE, message=FALSE, out.width="70%"}
+```{r Polar projection - 4, eval=FALSE, message=FALSE, out.width="70%"}
 # Run the network signal projection using polar coordinates
 pspace2 <- polarProjection(pspace2, knn = 2, theta = 45, shape = 2)
 
 # Plot the PathwaySpace image
-plotPathwaySpace(pspace2, theme = "th2", marks = TRUE)
+plotImageSpace(pspace2, theme = "th2", marks = TRUE)
 ```
 
 ```{r fig7.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-# gg <- plotPathwaySpace(pspace2, theme = "th2", marks = TRUE)
+# gg <- plotImageSpace(pspace2, theme = "th2", marks = TRUE)
 # ggsave(filename = "./figures/fig7.png", height=3.5, width=4.7,
-#   units="in", device="png", dpi=300, plot=gg)
+#   units="in", device="png", dpi=250, plot=gg)
 ```
 
 ```{r fig7, echo=FALSE, out.width = '75%', purl=FALSE}
@@ -234,19 +239,19 @@ knitr::include_graphics("figures/fig7.png")
 
 Note that this projection emphasizes signals along the edges of the network. In order to also consider the direction of edges, next we set `directional = TRUE`.
 
-```{r Polar projection - 4, eval=FALSE, message=FALSE, out.width="70%"}
+```{r Polar projection - 6, eval=FALSE, message=FALSE, out.width="70%"}
 # Re-run the network signal projection using 'directional = TRUE'
 pspace2 <- polarProjection(pspace2, knn = 2, theta = 45, shape = 2, 
   directional = TRUE)
 
 # Plot the PathwaySpace image
-plotPathwaySpace(pspace2, theme = "th2", marks = c("n1","n3","n4","n5"))
+plotImageSpace(pspace2, theme = "th2", marks = c("n1","n3","n4","n5"))
 ```
 
 ```{r fig8.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-# gg <- plotPathwaySpace(pspace2, theme = "th2", marks = c("n1","n3","n4","n5"))
+# gg <- plotImageSpace(pspace2, theme = "th2", marks = c("n1","n3","n4","n5"))
 # ggsave(filename = "./figures/fig8.png", height=3.5, width=4.7,
-#   units="in", device="png", dpi=300, plot=gg)
+#   units="in", device="png", dpi=250, plot=gg)
 ```
 
 ```{r fig8, echo=FALSE, out.width = '75%', purl=FALSE}
@@ -271,15 +276,15 @@ vertexSignal(pspace1)
 pspace1 <- circularProjection(pspace1, knn = 2, shape = 2)
 
 # Plot the PathwaySpace image
-plotPathwaySpace(pspace1, bg.color = "white", font.color = "grey20",
+plotImageSpace(pspace1, bg.color = "white", font.color = "grey20",
   marks = TRUE, mark.color = "magenta", theme = "th2")
 ```
 
 ```{r fig9.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-# gg <- plotPathwaySpace(pspace1, bg.color = "white", font.color = "grey20",
+# gg <- plotImageSpace(pspace1, bg.color = "white", font.color = "grey20",
 #   marks = TRUE, mark.color = "magenta", theme = "th2")
 # ggsave(filename = "./figures/fig9.png", height=3.5, width=4.7,
-#   units="in", device="png", dpi=300, plot=gg)
+#   units="in", device="png", dpi=250, plot=gg)
 ```
 
 ```{r fig9, echo=FALSE, out.width = '75%', purl=FALSE}

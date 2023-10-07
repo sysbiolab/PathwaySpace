@@ -144,6 +144,15 @@
     } 
     return(pts)
 }
+.removeSilhouette <- function(pts, verbose=TRUE){
+    if (.checkStatus(pts, "Silhouette")) {
+        if(verbose) message("-- available silhouette removed.")
+        i <- which(names(pts@misc) == "xfloor")
+        pts@misc <- pts@misc[-i]
+        pts <- .updateStatus(pts, "Silhouette", FALSE)
+    } 
+    return(pts)
+}
 .getSignalScale <- function(zsignal) {
     zscale <- list(range = range(zsignal, na.rm = TRUE))
     zscale$maxsig <- max(abs(zscale$range))

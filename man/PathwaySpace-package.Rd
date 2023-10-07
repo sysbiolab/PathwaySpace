@@ -37,7 +37,7 @@ Maintainer: \tab Mauro Castro \email{mauro.a.castro@gmail.com}\cr
 \tab Mapping summits on a 2D-landscape image.\cr
 \link{getPathwaySpace}: 
 \tab Accessory method for fetching slots from a PathwaySpace object.\cr
-\link{plotPathwaySpace}: 
+\link{plotImageSpace}: 
 \tab Plotting 2D-landscape images for the PathwaySpace package.\cr
 }
 Further information is available in the vignettes by typing

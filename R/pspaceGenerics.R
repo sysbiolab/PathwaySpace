@@ -27,7 +27,7 @@ setGeneric("summitMapping",
     }, package = "PathwaySpace"
 )
 
-setGeneric("plotPathwaySpace", 
+setGeneric("plotImageSpace", 
     function(pts, colors = pspace.cols(), trim.colors = c(3, 2, 1, 2, 3), 
         bg.color = "grey85", theme.name = c("th0", "th1", "th2", "th3"),
         title = "PathwaySpace", font.size = 1, font.color = "white",
@@ -36,7 +36,17 @@ setGeneric("plotPathwaySpace",
         add.contour = TRUE, contour.color = "white", marks = FALSE, 
         mark.size = 3, mark.color = "white", mark.padding = 0.5, 
         mark.line.width = 0.5, use.dotmark = FALSE) {
-        standardGeneric("plotPathwaySpace")
+        standardGeneric("plotImageSpace")
+    }, package = "PathwaySpace"
+)
+
+setGeneric("plotGraphSpace", 
+    function(pts, node.size = 1, edge.width = 0.5, 
+        node.color = "grey50", edge.color = "grey80", bg.color = "grey95",
+        font.size = 1, theme.name = c("th0", "th1", "th2", "th3"),
+        xlab = "Pathway coordinates 1", ylab = "Pathway coordinates 2",
+        marks = FALSE, mark.size = 3, mark.color = "grey20") {
+        standardGeneric("plotGraphSpace")
     }, package = "PathwaySpace"
 )
 

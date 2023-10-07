@@ -20,5 +20,5 @@ pspace.cols()
 
 }
 \seealso{
-\code{\link{plotPathwaySpace}}
+\code{\link{plotImageSpace}}
 }
