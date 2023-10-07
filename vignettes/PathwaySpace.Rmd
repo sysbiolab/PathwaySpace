@@ -191,9 +191,6 @@ In this section we will project the network signal using a polar coordinate syst
 ```{r Polar projection - 1, eval=TRUE, message=FALSE, out.width="100%"}
 # Load a pre-processed directed igraph object
 data("gtoy2")
-
-# Check the graph layout
-# plot.igraph(gtoy2)
 ```
 
 ```{r Polar projection - 2, eval=FALSE, message=FALSE, out.width="100%"}
