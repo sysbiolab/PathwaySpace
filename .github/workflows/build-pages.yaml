@@ -23,8 +23,21 @@ jobs:
       - uses: r-lib/actions/setup-renv@v2
         with:
           cache-version: 1
-      
+
+      - name: Prepare Git
+        run: |-
+          git config user.name github-actions[bot]
+          git config user.email github-actions[bot]@github.com
+          git checkout --orphan gh-pages
+
       - name: build-vignettes
         run: |
           Rscript -e 'devtools::load_all()'
           Rscript -e 'devtools::build_vignettes()'
+          git add -f ≈
+          git commit -m 'Update github page' doc
+
+      - name: Push docs to Github Pages
+        run: |-
+          git status
+          git push origin `git subtree split --prefix doc gh-pages`:gh-pages --force
