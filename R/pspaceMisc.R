@@ -37,7 +37,7 @@
 #' \tab Mapping summits on a 2D-landscape image.\cr
 #' \link{getPathwaySpace}: 
 #' \tab Accessory method for fetching slots from a PathwaySpace object.\cr
-#' \link{plotImageSpace}: 
+#' \link{plotPathwaySpace}: 
 #' \tab Plotting 2D-landscape images for the PathwaySpace package.\cr
 #' }
 #' Further information is available in the vignettes by typing
@@ -213,7 +213,7 @@ NULL
 #'
 #' @param n Number of colors.
 #' @return A vector with hexadecimal color codes.
-#' @seealso \code{\link{plotImageSpace}}
+#' @seealso \code{\link{plotPathwaySpace}}
 #' @examples
 #' pspace.cols()
 #'

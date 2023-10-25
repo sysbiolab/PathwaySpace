@@ -1,6 +1,6 @@
 #' @title Plotting 2D-landscape images for the PathwaySpace package.
 #'
-#' @description \code{plotImageSpace} is a wrapper function to 
+#' @description \code{plotPathwaySpace} is a wrapper function to 
 #' create dedicated ggplot graphics for PathwaySpace-class objects.
 #'
 #' @param pts A \linkS4class{PathwaySpace} class object.
@@ -67,7 +67,7 @@
 #' pts <- silhouetteMapping(pts)
 #'
 #' # Plot a 2D-landscape image
-#' plotImageSpace(pts)
+#' plotPathwaySpace(pts)
 #' 
 #' @import methods
 #' @docType methods
@@ -79,11 +79,12 @@
 #' @importFrom ggrepel geom_text_repel
 #' @importFrom grDevices convertColor col2rgb rgb
 #' @importFrom grDevices adjustcolor colorRampPalette
-#' @rdname plotImageSpace-methods
-#' @aliases plotImageSpace
+#' @importFrom GraphSpace igraphSpace
+#' @rdname plotPathwaySpace-methods
+#' @aliases plotPathwaySpace
 #' @export
 #'
-setMethod("plotImageSpace", "PathwaySpace", 
+setMethod("plotPathwaySpace", "PathwaySpace", 
     function(pts, colors = pspace.cols(), trim.colors = c(3, 2, 1, 2, 3), 
         bg.color = "grey85", theme.name = c("th0", "th1", "th2", "th3"),
         title = "PathwaySpace", font.size = 1, font.color = "white",
