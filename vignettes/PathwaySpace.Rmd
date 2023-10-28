@@ -98,6 +98,7 @@ names(pspace1)
 
 # Check signal (initialized with '0')
 vertexSignal(pspace1)
+## n1 n2 n3 n4 n5 
 ##  0  0  0  0  0
 ```
 
@@ -115,6 +116,7 @@ vertexSignal(pspace1)["n1"] <- 4
 
 # Check updated signal values
 vertexSignal(pspace1)
+## n1 n2 n3 n4 n5 
 ##  4  3  2  3  2
 ```
 
@@ -190,7 +192,7 @@ In this section we will project the network signal using a polar coordinate syst
 
 ```{r Polar projection - 1, eval=TRUE, message=FALSE, out.width="100%"}
 # Load a pre-processed directed igraph object
-data("gtoy2")
+data("gtoy2", package = "PathwaySpace")
 ```
 
 ```{r Polar projection - 2, eval=FALSE, message=FALSE, out.width="100%"}
@@ -289,6 +291,7 @@ knitr::include_graphics("figures/fig9.png")
 ```
 
 Note that the original signal vector was rescale to `[-1, +1]`. If the signal vector is `>=0`, then it will be rescaled to `[0, 1]`; if the signal vector is `<=0`, it will be rescaled to `[-1, 0]`; and if the signal vector is in `(-Inf, +Inf)`, then it will be rescaled to `[-1, +1]`. To override this signal processing, simply set the `rescale` argument to `FALSE` in the projection functions.
+
 
 # Case study
 

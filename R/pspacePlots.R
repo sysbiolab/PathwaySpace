@@ -79,7 +79,7 @@
 #' @importFrom ggrepel geom_text_repel
 #' @importFrom grDevices convertColor col2rgb rgb
 #' @importFrom grDevices adjustcolor colorRampPalette
-#' @importFrom GraphSpace igraphSpace
+#' @importFrom GraphSpace plotGraphSpace
 #' @rdname plotPathwaySpace-methods
 #' @aliases plotPathwaySpace
 #' @export
