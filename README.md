@@ -19,7 +19,7 @@ BiocManager::install("BiocStyle")
 
 ```r
 install.packages("remotes")
-remotes::install_github("sysbiolab/GraphSpace", build_vignettes=TRUE)
+remotes::install_github("sysbiolab/RGraphSpace", build_vignettes=TRUE)
 remotes::install_github("sysbiolab/PathwaySpace", build_vignettes=TRUE)
 ```
 
