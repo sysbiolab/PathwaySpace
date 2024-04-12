@@ -18,8 +18,7 @@
 #' @method silhouetteMapping \code{\link{silhouetteMapping}}
 #' @method summitMapping \code{\link{summitMapping}}
 #' @method getPathwaySpace \code{\link{getPathwaySpace}}
-#' @method plotImageSpace \code{\link{plotImageSpace}}
-#' @method plotGraphSpace \code{\link{plotGraphSpace}}
+#' @method plotPathwaySpace \code{\link{plotPathwaySpace}}
 #' @aliases PathwaySpace-class
 #' @return An S4 class object.
 #' @section Constructor:
