@@ -27,7 +27,7 @@
 #' 
 #' @importFrom igraph degree vcount ecount which_mutual
 #' @importFrom igraph as_edgelist as_adjacency_matrix
-#' @importFrom igraph simplify V E 'V<-' 'E<-' is.directed
+#' @importFrom igraph simplify V E 'V<-' 'E<-' is_directed
 #' @importFrom stats quantile sd
 #' @importFrom scales rescale
 #' @importFrom RANN nn2
@@ -140,8 +140,8 @@ setMethod("circularProjection", "PathwaySpace", function(pts, knn = 8,
         if(verbose) message("-- polar projection replaced by circular.")
         pts <- .updateStatus(pts, "PolarProjection", FALSE)
     }
-    pts <- .removeSummits(pts, verbose)
-    pts <- .removeSilhouette(pts, verbose)
+    # pts <- .removeSummits(pts, verbose)
+    # pts <- .removeSilhouette(pts, verbose)
     return(pts)
 })
 
@@ -236,8 +236,8 @@ setMethod("polarProjection", "PathwaySpace", function(pts, knn = 8,
         if(verbose) message("-- circular projection replaced by polar.")
         pts <- .updateStatus(pts, "CircularProjection", FALSE)
     }
-    pts <- .removeSummits(pts, verbose)
-    pts <- .removeSilhouette(pts, verbose)
+    # pts <- .removeSummits(pts, verbose)
+    # pts <- .removeSilhouette(pts, verbose)s
     return(pts)
 })
 
@@ -317,7 +317,7 @@ setMethod("silhouetteMapping", "PathwaySpace", function(pts, baseline = 0.01,
     if(verbose) message("Mapping graph silhouette...")
     pts <- .silhouetteCircular(pts, verbose)
     pts <- .updateStatus(pts, "Silhouette")
-    pts <- .removeSummits(pts, verbose)
+    # pts <- .removeSummits(pts, verbose)
     return(pts)
 })
 

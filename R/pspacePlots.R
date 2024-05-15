@@ -27,6 +27,8 @@
 #' @param xlab The title for the 'x' axis of a 2D-image space.
 #' @param ylab The title for the 'y' axis of a 2D-image space.
 #' @param zlab The title for the 'z' axis of the image signal.
+#' @param zlim The 'z' limits of the plot (a numeric vector with two numbers).
+#' If NULL, limits are determined from the range of the input values.
 #' @param slices A single positive integer value used to split 
 #' the image signal into equally-spaced intervals.
 #' @param add.grid A logical value indicating whether to add gridlines to 
@@ -36,10 +38,10 @@
 #' @param add.contour A logical value indicating whether to add contour 
 #' lines to 'summits' (see \code{\link{summitMapping}}).
 #' @param contour.color A color passed to \code{\link{geom_tile}}.
+#' @param label.summits A logical value indicating whether to label summits,
+#' (when summits are available).
 #' @param marks A logical value indicating whether to add 'marks' to vertex 
-#' positions. This could be either vertex names or dots 
-#' (when \code{use.dotmark = TRUE}). Alternatively, this could be a vector
-#' listing vertex names.
+#' positions. Alternatively, this could be a vector listing vertex names.
 #' @param mark.size A font size argument passed to \code{\link{geom_text}}.
 #' @param mark.color A color passed to \code{\link{geom_text_repel}}.
 #' @param mark.padding A box padding argument passed to 
@@ -89,10 +91,11 @@ setMethod("plotPathwaySpace", "PathwaySpace",
         bg.color = "grey85", theme.name = c("th0", "th1", "th2", "th3"),
         title = "PathwaySpace", font.size = 1, font.color = "white",
         xlab = "Pathway coordinates 1", ylab = "Pathway coordinates 2", 
-        zlab = "Density", slices = 25, add.grid = TRUE, grid.color = "white", 
-        add.contour = TRUE, contour.color = "white", marks = FALSE, 
-        mark.size = 3, mark.color = "white", mark.padding = 0.5, 
-        mark.line.width = 0.5, use.dotmark = FALSE) {
+        zlab = "Density", zlim = NULL, slices = 25, add.grid = TRUE, 
+        grid.color = "white", add.contour = TRUE, contour.color = "white",
+        label.summits = TRUE, marks = FALSE, mark.size = 3, 
+        mark.color = "white", mark.padding = 0.5, mark.line.width = 0.5, 
+        use.dotmark = FALSE) {
         #--- validate the pts object and args
         if (!.checkStatus(pts, "Projection")) {
             stop("NOTE: 'pts' needs to be evaluated by a 'projection' method!",
@@ -107,6 +110,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
         .validate.args("singleInteger", "slices", slices)
         .validate.args("singleLogical", "add.grid", add.grid)
         .validate.args("singleLogical", "add.contour", add.contour)
+        .validate.args("singleLogical", "label.summits", label.summits)
         .validate.args("singleNumber", "mark.padding", mark.padding)
         .validate.args("singleLogical", "use.dotmark", use.dotmark)
         .validate.args("numeric_vec","mark.size", mark.size)
@@ -119,7 +123,11 @@ setMethod("plotPathwaySpace", "PathwaySpace",
         .validate.colors("singleColor", "contour.color", contour.color)
         .validate.colors("allColors","mark.color", mark.color)
         .validate.colors("allColors","colors", colors)
-        
+        if(!is.null(zlim)) {
+          .validate.args("numeric_vec", "zlim", zlim)
+          if(length(zlim)!=2) 
+            stop("'zlim' should be a numeric vector of lenght 2.")
+        }
         #--- get slots from pts
         gxy <- getPathwaySpace(pts, "gxy")
         gxyz <- getPathwaySpace(pts, "gxyz")
@@ -132,14 +140,24 @@ setMethod("plotPathwaySpace", "PathwaySpace",
         if(!is.null(trim.colors)){
             colors <- .pspacePalette(colors, trim.colors)
         }
+        if(pars$zscale$scale.type=="negpos"){
+          slices <- ceiling(slices/2) * 2
+        }
         # set scale
-        if(pars$rescale){
-            zlim <- pars$zscale$scaling
-            if(pars$zscale$scale.type=="negpos"){
-                slices <- ceiling(slices/2) * 2
+        if(is.null(zlim)){
+            if(pars$rescale){
+              zlim <- pars$zscale$scaling
+            } else {
+              # zlim <- pars$zscale$range
+              mx <- pars$zscale$maxsig
+              if(pars$zscale$scale.type=="negpos"){
+                zlim <- c(-mx, mx)
+              } else if(pars$zscale$scale.type=="neg"){
+                zlim <- c(-mx, 0)
+              } else {
+                zlim <- c(0, mx)
+              }
             }
-        } else {
-            zlim <- pars$zscale$range
         }
         gxyz[gxyz < zlim[1]] <- zlim[1]
         gxyz[gxyz > zlim[2]] <- zlim[2]
@@ -173,9 +191,9 @@ setMethod("plotPathwaySpace", "PathwaySpace",
         ggp <- .get.ggplot(gxyz, xlab, ylab, zlab, cl, add.grid, grid.color)
         #--- add contour lines if available
         if (add.contour && !is.null(summits) && length(summits) > 0 
-            && sum(cset) > 0) {
-            ggp <- .add.contour(ggp, gxyz, summits, cset, contour.color, 
-                mark.size)
+          && sum(cset) > 0) {
+            ggp <- .add.contour(ggp, gxyz, summits, cset, 
+              contour.color, mark.size, label.summits)
         }
         #--- add marks if available
         bl <- is.logical(marks) && marks
@@ -263,7 +281,8 @@ setMethod("plotPathwaySpace", "PathwaySpace",
 }
 
 #-------------------------------------------------------------------------------
-.add.contour <- function(ggp, gxyz, summits, cset, contour.color, mark.size) {
+.add.contour <- function(ggp, gxyz, summits, cset, contour.color, 
+    mark.size, label.summits) {
     setnames <- names(summits)
     if (is.null(setnames)) {
         setnames <- seq_along(setnames)
@@ -282,10 +301,12 @@ setMethod("plotPathwaySpace", "PathwaySpace",
             fill = contour.color, linewidth = 0.2)
     }
     rownames(xy.tx) <- setnames
-    ggp <- ggp + ggplot2::annotate(geom = "text", x = xy.tx[, 1],
+    if(label.summits){
+      ggp <- ggp + ggplot2::annotate(geom = "text", x = xy.tx[, 1],
         y = xy.tx[, 2], label = rownames(xy.tx), vjust = 0.5, hjust = 0.5,
         color = contour.color, size = mark.size, 
         fontface = "bold")
+    }
     return(ggp)
 }
 
@@ -410,6 +431,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
         legend.margin = margin(0, 0, 0, 0),
         legend.position = "bottom", plot.margin = margin(5, 5, 5, 5), 
         legend.box.margin = margin(0, 0, 0, 0), 
+        legend.text.align = 0.5,
         legend.background = element_blank(),
         legend.box.background = element_blank(),
         plot.background = element_blank(), 
@@ -445,7 +467,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     bks_names <- format(bks_names,  trim = TRUE)
     n <- length(bks_names)
     bks_names[!seq_len(n) %in% c(1, ceiling(n/2), n)] <- ""
-    bks_names <- format(bks_names, justify=cl$justify)
+    # bks_names <- format(bks_names, justify=cl$justify)
     names(cl$breaks) <- bks_names
     # expand 'zlim' and palette tips
     expand <- TRUE
@@ -507,9 +529,9 @@ setMethod("plotPathwaySpace", "PathwaySpace",
             colors <- colors[-length(colors)]
         }
         cols <- colorRampPalette(c(colors,bg.color))(16)
-        bg <- cols[length(colors)]
-        cols <- cols[-length(colors)]
-    } else if(pars$rescale && pars$zscale$scale.type=="negpos") {
+        bg <- cols[length(cols)]
+        cols <- cols[-length(cols)]
+    } else if(pars$zscale$scale.type=="negpos") {
         if (is.null(bg.color)) {
             if (length(colors) %% 2 == 1){
                 bg.color <- colors[(length(colors)+1)/2]
@@ -526,7 +548,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
             } 
         }
         cols <- colorRampPalette(colors)(17)
-        bg <- cols[-9]
+        bg <- cols[9]
     } else {
         if (is.null(bg.color)) {
             bg.color <- colors[1]
