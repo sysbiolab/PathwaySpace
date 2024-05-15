@@ -32,7 +32,8 @@ jobs:
           libssl-dev \
           libcurl4-openssl-dev \
           libharfbuzz-dev \
-          libfribidi-dev
+          libfribidi-dev \
+          libglpk-dev
           Rscript -e 'install.packages("devtools")'
 
       - name: Prepare Git
