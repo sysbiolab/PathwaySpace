@@ -33,7 +33,7 @@ jobs:
           libcurl4-openssl-dev \
           libharfbuzz-dev \
           libfribidi-dev \
-          libglpk-dev
+          libglpk40
           Rscript -e 'install.packages("devtools")'
 
       - name: Prepare Git
