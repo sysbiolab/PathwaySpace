@@ -18,11 +18,13 @@
   xlab = "Pathway coordinates 1",
   ylab = "Pathway coordinates 2",
   zlab = "Density",
+  zlim = NULL,
   slices = 25,
   add.grid = TRUE,
   grid.color = "white",
   add.contour = TRUE,
   contour.color = "white",
+  label.summits = TRUE,
   marks = FALSE,
   mark.size = 3,
   mark.color = "white",
@@ -67,6 +69,9 @@ ggplot object.}
 
 \item{zlab}{The title for the 'z' axis of the image signal.}
 
+\item{zlim}{The 'z' limits of the plot (a numeric vector with two numbers).
+If NULL, limits are determined from the range of the input values.}
+
 \item{slices}{A single positive integer value used to split 
 the image signal into equally-spaced intervals.}
 
@@ -81,10 +86,11 @@ lines to 'summits' (see \code{\link{summitMapping}}).}
 
 \item{contour.color}{A color passed to \code{\link{geom_tile}}.}
 
+\item{label.summits}{A logical value indicating whether to label summits,
+(when summits are available).}
+
 \item{marks}{A logical value indicating whether to add 'marks' to vertex 
-positions. This could be either vertex names or dots 
-(when \code{use.dotmark = TRUE}). Alternatively, this could be a vector
-listing vertex names.}
+positions. Alternatively, this could be a vector listing vertex names.}
 
 \item{mark.size}{A font size argument passed to \code{\link{geom_text}}.}
 

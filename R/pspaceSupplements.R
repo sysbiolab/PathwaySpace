@@ -8,7 +8,7 @@
     X <- igraph::V(g)$x
     Y <- igraph::V(g)$y
     vertex <- igraph::V(g)$name
-    if(igraph::is.directed(g)){
+    if(igraph::is_directed(g)){
         if(verbose) message("Extracting directed edges...")
         edges <- .get.directed.edges(g, vertex)
     } else {
@@ -26,7 +26,7 @@
     vwscale <- .get.vwscale(vweight)
     pars <- list(nrc = nrc, mar = mar, 
         zscale = zscale, vwscale=vwscale,
-        is.directed = igraph::is.directed(g))
+        is.directed = igraph::is_directed(g))
     #--- combine xy and center nodes
     gxy <- cbind(X = X, Y = Y)
     rownames(gxy) <- vertex
@@ -259,8 +259,13 @@
     pts@misc$xsig <- xsig
     # image(.transpose.and.flip(xsig))
     #--- rescale xsig to the original signal
-    gxyz <- .rescale.landscape(xsig = xsig, pars = pars)
-    range(gxyz)
+    # use silhouette if available
+    if (.checkStatus(pts, "Silhouette")){
+      xfloor <- pts@misc$xfloor
+      gxyz <- .rescale.landscape(xsig = xsig, pars = pars, xfloor = xfloor)
+    } else {
+      gxyz <- .rescale.landscape(xsig = xsig, pars = pars)
+    }
     pts@gxyz <- gxyz
     # image(.transpose.and.flip(gxyz))
     #---return the gxyz landscape
@@ -335,13 +340,15 @@
         } else if (pars$zscale$signal.type == "binary") {
             x <- scales::rescale(xsig, to = pars$zscale$scaling)
         } else {
-            to <- pars$zscale$scaling
             endpoints <- c(0.01, 1e-04)
             if (pars$zscale$scale.type == "negpos") {
+                to <- pars$zscale$range/pars$zscale$maxsig
                 x <- .rescale.negpos(xsig, pars, to, endpoints = endpoints)
             } else if (pars$zscale$scale.type == "pos") {
+                to <- pars$zscale$scaling
                 x <- .rescale.pos(xsig, pars, to, endpoints = endpoints)
             } else if (pars$zscale$scale.type == "neg") {
+                to <- pars$zscale$scaling
                 x <- .rescale.neg(xsig, pars, to, endpoints = endpoints)
             }
             #- maybe export 'endpoints' in future versions;
@@ -370,7 +377,6 @@
     xn[xn > qt[2]] <- NA
     xn <- scales::rescale(xn, to = c(to[1], 0))
     # update xsig
-    xsig[, ] <- 0
     xsig[!is.na(xn)] <- xn[!is.na(xn)]
     xsig[!is.na(xp)] <- xp[!is.na(xp)]
     return(xsig)
