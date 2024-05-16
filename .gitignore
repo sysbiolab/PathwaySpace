@@ -8,3 +8,6 @@ renv
 .DS_Store
 doc
 .Rproj.user
+PathwaySpace.Rcheck
+..Rcheck
+*.tar.gz
