@@ -13,8 +13,6 @@ test_that("Execution test of buildPathwaySpace", {
   V(toy_graph)$y <- c(0, 0,  4, -4,  0)
   # Assign a name to each vertex (here, from n1 to n5)
   V(toy_graph)$name <- paste0("n", 1:5)
-#-----------------------------------------------------
-  plot.igraph(toy_graph)
 
 #--- Build a pathwayspace
   pspace_toy <- buildPathwaySpace(toy_graph, mar = 0.2, verbose = FALSE)

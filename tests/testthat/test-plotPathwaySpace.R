@@ -16,8 +16,6 @@ test_that("Execution test of circularProjection", {
 #--- Build a pathwayspace
   pspace_toy <- buildPathwaySpace(toy_graph, mar = 0.2, verbose = FALSE)
   pspace_projection <- circularProjection(pspace_toy, knn = 1, pdist = 0.4, verbose = FALSE)
-  # pspace_plot <- plotImageSpace(pspace_projection, marks = TRUE, verbose = FALSE)
-  # print(class(pspace_plot))
-
-  expect_equal(class(pspace_projection@gxyz), c("matrix", "array"))
+  pspace_plot <- plotPathwaySpace(pspace_projection, marks = TRUE)
+  expect_equal(class(pspace_plot), c("gg", "ggplot"))
 })
