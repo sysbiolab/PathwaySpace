@@ -38,6 +38,10 @@ jobs:
       - name: Install devtools
         run: |
           Rscript -e 'install.packages("devtools")'
+          Rscript -e 'install.packages("knitr")'
+          Rscript -e 'install.packages("rmarkdown")'
+          Rscript -e 'install.packages("BiocManager")'
+          Rscript -e 'BiocManager::install("BiocStyle")'
 
       - name: Prepare Git
         run: |-
