@@ -1,4 +1,13 @@
 .Rhistory
 .RData
 .Ruserdata
+renv
+.Rprofile
+/doc/
+/Meta/
+.DS_Store
+doc
 .Rproj.user
+PathwaySpace.Rcheck
+..Rcheck
+*.tar.gz
