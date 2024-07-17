@@ -1,7 +1,7 @@
 Package: PathwaySpace
 Type: Package
 Title: Spatial projection of network signals along geodesic paths
-Version: 0.99.1
+Version: 0.99.2
 Authors@R: 
     c(person("Vinicius", "Chagas", role = "ctr"),
       person("Victor", "Apolonio", role = "ctr"),
@@ -10,14 +10,7 @@ Authors@R:
               comment = c(ORCID = "0000-0003-4942-8131")))
 Depends: R(>= 4.2), methods, RGraphSpace
 Imports: grDevices, stats, scales, igraph, RANN, ggplot2, ggrepel
-Suggests: 
-    knitr,
-    rmarkdown,
-    RUnit,
-    BiocGenerics,
-    BiocStyle,
-    RedeR,
-    testthat (>= 3.0.0)
+Suggests: knitr, rmarkdown, RUnit, BiocGenerics, BiocStyle, RedeR
 Description: For a given graph containing vertices, edges, and a signal associated with the vertices, the PathwaySpace package performs a convolution operation, which involves a weighted combination of neighboring vertices and their associated signals. The package then uses a decay function to project these signals, creating geodesic paths on a 2D-image space. *PathwaySpace* could have various applications, such as visualizing and analyzing network data in a graphical format that highlights the relationships and signal strengths between vertices. It can be particularly useful for understanding the influence of signals through complex networks. By combining graph theory, signal processing, and visualization, the *PathwaySpace* package provides a novel way of representing and analyzing graph data.
 License: Artistic-2.0
 biocViews: GraphAndNetwork, Network, NetworkEnrichment, Pathways, Spatial
@@ -34,5 +27,4 @@ Collate:
     pspaceMethods.R
     pspacePlots.R
 Encoding: UTF-8
-Config/testthat/edition: 3
 RoxygenNote: 7.3.1

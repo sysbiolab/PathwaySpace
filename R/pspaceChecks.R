@@ -1,7 +1,7 @@
 
 #-------------------------------------------------------------------------------
 # Validate igraph for PathwaySpace
-.validate.igraph <- function(g) {
+.validate.igraph <- function(g, full.check=TRUE) {
     if (!is(g, "igraph")) {
         stop("'g' should be an 'igraph' class object.", call. = FALSE)
     }
@@ -9,21 +9,23 @@
     if (igraph::vcount(g)<2) {
         stop("'g' should have at least two vertices.", call. = FALSE
         ) 
-    }    
-    X <- igraph::V(g)$x
-    Y <- igraph::V(g)$y
-    vertex <- igraph::V(g)$name
-    if (is.null(X) || is.null(Y)) {
-        stop("'x' and 'y' vertex attributes should be available in 'g'.",
-            call. = FALSE
-        ) 
     }
-    if (!.is_numericVector(X) || !.is_numericVector(Y)) {
+    if(full.check){
+      X <- igraph::V(g)$x
+      Y <- igraph::V(g)$y
+      if (is.null(X) || is.null(Y)) {
+        stop("'x' and 'y' vertex attributes should be available in 'g'.",
+          call. = FALSE
+        ) 
+      }
+      if (!.is_numericVector(X) || !.is_numericVector(Y)) {
         msg <- paste0("vertex attributes 'x' and 'y' should be ",
-            "numeric vectors.")
+          "numeric vectors.")
         stop(msg, call. = FALSE
         )
+      }
     }
+    vertex <- igraph::V(g)$name
     if (is.null(vertex)) {
         stop("'name' vertex attribute should be available in 'g'.",
             call. = FALSE
@@ -44,7 +46,6 @@
     if (igraph::ecount(g)==0) {
         warning("The input 'g' graph does not have any edges.", call. = FALSE)
     }
-    return(g)
 }
 .validate.vertex.signal <- function(g, verbose = TRUE){
     vsignal <- igraph::V(g)$signal
@@ -79,8 +80,19 @@
         msg <- paste0("'", name, "' should be a numeric vector.")
         if (!is.numeric(para) || !is.vector(para)) stop(msg, call. = FALSE)
     } else if (check == "numeric_mtx") {
-        msg <- paste0("'", name, "' should be a numeric matrix")
-        if (!is.numeric(para) || !is.matrix(para)) stop(msg, call. = FALSE)
+        msg <- paste0("'", name, "' should be a numeric matrix.")
+        if (!is.numeric(para) || !is.matrix(para)) 
+          stop(msg, call. = FALSE)
+    } else if (check == "square_numeric_mtx") {
+      msg <- paste0("'", name, "' should be a named numeric square matrix.")
+      if (!is.numeric(para) || !is.matrix(para)) 
+        stop(msg, call. = FALSE)
+      if(ncol(para) != nrow(para)) 
+        stop(msg, call. = FALSE)
+      if(is.null(colnames(para)) || is.null(rownames(para))) 
+        stop(msg, call. = FALSE)
+      if(any(colnames(para) != rownames(para)))
+        stop(msg, call. = FALSE)
     } else if (check == "allCharacter") {
         msg <- paste0("'", name, "' should be a vector with strings.")
         if (!.all_characterValues(para)) stop(msg, call. = FALSE)

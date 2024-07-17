@@ -779,34 +779,27 @@
 #-------------------------------------------------------------------------------
 .find.summits <- function(gxyz, gxy, maxset, minsize, threshold,
     segm_fun, ...) {
+    #-- get coords
     lpts <- as.matrix(gxy[, c("X", "Y")])
+    lpts[, "X"] <- round(lpts[, "X"])
+    lpts[, "Y"] <- round(lpts[, "Y"])
     #-- apply th
     smt <- gxyz
     smt[smt < threshold] <- 0
     #-- run watershed
     # smt <- summitWatershed(smt, tolerance=tolerance, ext=1)
-    # smt <- base::do.call(segm_fun, c(list(x = smt), segm_arg))
+    # smt <- base::do.call(segm_fun, c(list(x = smt), pars$segm_arg))
     smt <- segm_fun(smt, ... = ...)
     xx <- .openPxEdges(smt > 0)
     smt[xx == 0] <- 0
-    #--- relabel by size and apply maxset
-    smt <- .relabelBySize(smt)
-    smt[smt > maxset] <- 0
-    nset <- length(table(as.numeric(smt))) - 1
-    #--- relabel by signal
-    smt <- .relabelBySignal(gxyz, smt)
+    
     #--- retrive itens
-    lpts[, "X"] <- round(lpts[, "X"])
-    lpts[, "Y"] <- round(lpts[, "Y"])
-    lset <- lapply(seq_len(nset), function(i) {
-        xi <- smt == i
-        idx <- xi[lpts[, c("Y", "X")]]
-        rownames(lpts)[idx]
-    })
-    names(lset) <- seq_along(lset)
+    lset <- .retrive_items(smt, lpts)
+    
     #--- apply minsize
     len <- unlist(lapply(lset, length))
     len <- which(len < minsize)
+    nset <- length(lset)
     if (length(len) > 0) {
         lset <- lset[-len]
         smt[smt %in% len] <- 0
@@ -815,8 +808,32 @@
         if (length(lset) > 0)
             names(lset) <- seq_along(lset)
     }
+    
+    #--- relabel by size and apply maxset
+    # smt <- .relabelBySize(smt)
+    # smt[smt > maxset] <- 0
+    
+    #--- relabel by signal and apply maxset
+    smt <- .relabelBySignal(gxyz, smt)
+    smt[smt > maxset] <- 0
+    
+    #--- retrive itens
+    lset <- .retrive_items(smt, lpts)
+    nset <- length(lset)
+    
     #--- get summit outlines
     cset <- .findOutlines(smt)
     
     return(list(lset = lset, cset = cset, mset = smt, nset = nset))
 }
+.retrive_items <- function(smt, lpts){
+  nset <- length(table(as.numeric(smt))) - 1
+  lset <- lapply(seq_len(nset), function(i) {
+    xi <- smt == i
+    idx <- xi[lpts[, c("Y", "X")]]
+    rownames(lpts)[idx]
+  })
+  names(lset) <- seq_along(lset)
+  return(lset)
+}
+

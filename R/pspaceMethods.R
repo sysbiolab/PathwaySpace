@@ -5,7 +5,8 @@
 #'
 #' @param g An \code{igraph} object. It must include graph
 #' layout information, with vertex coordinates assigned to \code{x} 
-#' and \code{y} vertex attributes.
+#' and \code{y} vertex attributes. It must also include vertex labels 
+#' assigned to the \code{name} vertex attribute.
 #' @param nrc A single positive integer indicating the number of rows and 
 #' columns (in pixels) for a square image matrix. This argument will 
 #' affect the resulting image size and resolution.
@@ -49,7 +50,7 @@ buildPathwaySpace <- function(g, nrc = 500, mar = 0.075, verbose = TRUE) {
     }
     #--- validate the igraph object
     if(verbose) message("Validating 'g' object...")
-    g <- .validate.igraph(g)
+    .validate.igraph(g)
     #--- build PathwaySpace-class
     pts <- .buildPathwaySpace(g, nrc, mar, verbose)
     pts <- .updateStatus(pts, "Preprocess")

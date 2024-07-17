@@ -190,10 +190,10 @@ setMethod("plotPathwaySpace", "PathwaySpace",
         #--- get ggplot object
         ggp <- .get.ggplot(gxyz, xlab, ylab, zlab, cl, add.grid, grid.color)
         #--- add contour lines if available
-        if (add.contour && !is.null(summits) && length(summits) > 0 
-          && sum(cset) > 0) {
+        bl <- add.contour || label.summits
+        if (bl && !is.null(summits) && length(summits) > 0 && sum(cset) > 0) {
             ggp <- .add.contour(ggp, gxyz, summits, cset, 
-              contour.color, mark.size, label.summits)
+              contour.color, mark.size, add.contour, label.summits)
         }
         #--- add marks if available
         bl <- is.logical(marks) && marks
@@ -282,7 +282,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
 
 #-------------------------------------------------------------------------------
 .add.contour <- function(ggp, gxyz, summits, cset, contour.color, 
-    mark.size, label.summits) {
+    mark.size, add.contour, label.summits) {
     setnames <- names(summits)
     if (is.null(setnames)) {
         setnames <- seq_along(setnames)
@@ -296,16 +296,31 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     for (i in seq_along(concav)) {
         xy.cv <- gxyz[gxyz$C == i, c("X", "Y")]
         xy.tx <- rbind(xy.tx, colMeans(xy.cv))
-        ggp <- ggp + ggplot2::annotate(geom = "tile", x = xy.cv[, 1], 
+        if(add.contour){
+          ggp <- ggp + ggplot2::annotate(geom = "tile", x = xy.cv[, 1], 
             y = xy.cv[, 2], color = contour.color,
             fill = contour.color, linewidth = 0.2)
+        }
     }
     rownames(xy.tx) <- setnames
+    xy.tx <- as.data.frame(xy.tx)
     if(label.summits){
-      ggp <- ggp + ggplot2::annotate(geom = "text", x = xy.tx[, 1],
-        y = xy.tx[, 2], label = rownames(xy.tx), vjust = 0.5, hjust = 0.5,
-        color = contour.color, size = mark.size, 
-        fontface = "bold")
+      if(add.contour){
+        ggp <- ggp + ggplot2::annotate(geom = "text", x = xy.tx[, 1],
+          y = xy.tx[, 2], label = rownames(xy.tx), vjust = 0.5, hjust = 0.5,
+          color = contour.color, size = mark.size,
+          fontface = "bold")
+      } else {
+        nudgex <- sign(xy.tx$X - 0.5) * xy.tx$X
+        nudgey <- sign(xy.tx$Y - 0.5) * xy.tx$Y
+        ggp <- ggp + ggrepel::geom_text_repel(mapping = aes(label = rownames(xy.tx),
+          segment.size = 0.4), data = xy.tx, min.segment.length = 0.1,
+          fontface = "bold", force = 3, segment.linetype = 1,
+          max.overlaps = nrow(xy.tx) + 5, point.padding = 0, seed = 123,
+          max.iter = 20000, max.time = 30, nudge_x = nudgex * 0.075,
+          nudge_y = nudgey * 0.075, size = mark.size, colour = contour.color,
+          segment.colour = contour.color)
+      }
     }
     return(ggp)
 }
@@ -424,14 +439,15 @@ setMethod("plotPathwaySpace", "PathwaySpace",
 }
 .custom.th3 <- function(gg, font.size, bg.color) {
     et1 <- ggplot2::element_text(size = 14 * font.size)
-    et2 <- ggplot2::element_text(size = 12 * font.size)
-    gg <- gg + ggplot2::theme_gray() + ggplot2::theme(axis.title = et1,
-        axis.text = et2, legend.title = element_text(size = 12 * 
-                font.size, vjust = 1), legend.text = et2,
+    et2 <- ggplot2::element_text(size = 12 * font.size, hjust=0.5)
+    gg <- gg + ggplot2::theme_gray() + 
+      ggplot2::theme(axis.title = et1, axis.text = et2, 
+        legend.title = element_text(size = 12 * font.size, vjust = 1), 
+        legend.text = et2,
         legend.margin = margin(0, 0, 0, 0),
         legend.position = "bottom", plot.margin = margin(5, 5, 5, 5), 
         legend.box.margin = margin(0, 0, 0, 0), 
-        legend.text.align = 0.5,
+        # legend.text.align = 0.5,
         legend.background = element_blank(),
         legend.box.background = element_blank(),
         plot.background = element_blank(), 
