@@ -329,11 +329,11 @@ plotPathDistances <- function(pdist, z.transform=FALSE){
   if(z.transform){
     gg <- .plot.pdist(pdist$z_score, xlab = "z-score")
   } else {
-    gg <- .plot.pdist(pdist$p_dist, xlab = "n.paths")
+    gg <- .plot.pdist(pdist$p_dist, xlab = "steps")
   }
   return(gg)
 }
-.plot.pdist <- function(pdist, xlab = "n.paths"){
+.plot.pdist <- function(pdist, xlab = "steps"){
   #---
   obs <- pdist$obs
   null <- pdist$null
