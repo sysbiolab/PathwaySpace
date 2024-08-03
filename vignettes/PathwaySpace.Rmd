@@ -4,9 +4,10 @@ author: "The Cancer Genome Atlas Analysis Network."
 date: "`r Sys.Date()`"
 bibliography: bibliography.bib
 abstract: "<p>*PathwaySpace* is an R package that creates landscape images from graphs containing vertices (nodes), edges (lines), and a signal associated with the vertices. The package processes the signal using a convolution algorithm that considers the graph's topology projecting the signal on a 2D space. *PathwaySpace* has various applications, such as visualizing network data in a graphical format that highlights the relationships and signal strengths between vertices. It can be particularly useful for understanding the influence of signals through complex networks. By combining graph theory, signal processing, and visualization, the *PathwaySpace* package provides a novel way of representing network signals.</p>"
-package: "`r BiocStyle::pkg_ver('PathwaySpace')`"
+package: "PathwaySpace `r packageVersion('PathwaySpace')`"
 output: 
-  BiocStyle::html_document:
+  html_document:
+    theme: cerulean
     self_contained: yes
     toc: true
     toc_float: true
@@ -61,7 +62,7 @@ V(gtoy1)$y <- c(0, 0,  4, -4,  0)
 V(gtoy1)$name <- paste0("n", 1:5)
 ```
 
-Our `gtoy1` graph is now ready for the *PathwaySpace* package. We can check its layout using the `plot.igraph()` function. Alternatively, to lay out and visualize large graphs we suggest the `r BiocStyle::Biocpkg("RedeR")` package.
+Our `gtoy1` graph is now ready for the *PathwaySpace* package. We can check its layout using the `plot.igraph()` function. Alternatively, to lay out and visualize large graphs we suggest the *[RedeR](https://bioconductor.org/packages/RedeR/)* package.
 
 ```{r node size, eval=TRUE, message=FALSE, echo=FALSE}
 V(gtoy1)$size <- 20
