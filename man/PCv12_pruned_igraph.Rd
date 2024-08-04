@@ -3,6 +3,7 @@
 \docType{data}
 \name{PCv12_pruned_igraph}
 \alias{PCv12_pruned_igraph}
+\alias{gdist.toy}
 \title{A pruned and laid out igraph object from Pathway Commons V12.}
 \format{
 igraph
@@ -30,18 +31,13 @@ main connected component with the minimum number of edges.
 \examples{
 data(PCv12_pruned_igraph)
 ## Suggestion to vizualize this igraph in R:
-library(RedeR)
-library(igraph)
-rdp <- RedPort()
-## calld(rdp)
-## resetd(rdp)
-## addGraph(rdp, PCv12_pruned_igraph)
+library(RGraphSpace)
+plotGraphSpace(PCv12_pruned_igraph)
 }
 \references{
 Rodchenkov et al. Pathway Commons 2019 Update: integration, analysis and
 exploration of pathway data. Nucleic Acids Research 48(D1):D489–D497, 2020.
 \doi{10.1093/nar/gkz946}
-\href{https://www.pathwaycommons.org/archives/PC2/v12/}{Pathway Commons V12}
 }
 \author{
 Chris Wong, Mauro Castro, and TCGA Network.

@@ -29,6 +29,6 @@ data(Hallmarks_v2023_1_Hs_symbols)
 \references{
 Liberzon et al. The Molecular Signatures Database (MSigDB) hallmark 
 gene set collection. Cell Systems 1(5):417-425, 2015
-Doi: 10.1016/j.cels.2015.12.004.
+Doi: 10.1016/j.cels.2015.12.004
 }
 \keyword{Hallmarks_v2023_1_Hs_symbols}

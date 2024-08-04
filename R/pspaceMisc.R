@@ -126,22 +126,18 @@ NULL
 #' Rodchenkov et al. Pathway Commons 2019 Update: integration, analysis and
 #' exploration of pathway data. Nucleic Acids Research 48(D1):D489–D497, 2020.
 #' \doi{10.1093/nar/gkz946}
-#' \href{https://www.pathwaycommons.org/archives/PC2/v12/}{Pathway Commons V12}
 #'
 #' @docType data
 #' @keywords PCv12_pruned_igraph
 #' @name PCv12_pruned_igraph
 #' @aliases PCv12_pruned_igraph
+#' @aliases gdist.toy
 #' @return An igraph object.
 #' @examples
 #' data(PCv12_pruned_igraph)
 #' ## Suggestion to vizualize this igraph in R:
-#' library(RedeR)
-#' library(igraph)
-#' rdp <- RedPort()
-#' ## calld(rdp)
-#' ## resetd(rdp)
-#' ## addGraph(rdp, PCv12_pruned_igraph)
+#' library(RGraphSpace)
+#' plotGraphSpace(PCv12_pruned_igraph)
 NULL
 
 ################################################################################
@@ -196,7 +192,7 @@ NULL
 #' @references
 #' Liberzon et al. The Molecular Signatures Database (MSigDB) hallmark 
 #' gene set collection. Cell Systems 1(5):417-425, 2015
-#' Doi: 10.1016/j.cels.2015.12.004.
+#' Doi: 10.1016/j.cels.2015.12.004
 #'
 #' @docType data
 #' @keywords Hallmarks_v2023_1_Hs_symbols
@@ -244,15 +240,17 @@ pspace.cols <- function(n=5) {
 #' @seealso \code{\link{plotPathwaySpace}}
 #' @examples
 #' 
-#' data("PCv12_pruned_igraph", package = "PathwaySpace")
-#' gdist <- igraph::distances(graph = PCv12_pruned_igraph, algorithm="unweighted")
-#' from <- sample(colnames(gdist), 50)
-#' to <- sample(colnames(gdist), 50)
+#' # Load a vertex-wise distance matrix (distance between nodes in a graph)
+#' data("gdist.toy", package = "PathwaySpace")
+#'
+#' # Get two vertex lists
+#' from <- sample(colnames(gdist.toy), 50)
+#' to <- sample(colnames(gdist.toy), 50)
 #' 
-#' # res <- pathDistances(gdist, from, to)
-#' # names(res)
-#' ## "obs"  "null" "gg" 
-#' # res$gg
+#' # Calculate distances between lists, and between random lists
+#' res <- pathDistances(gdist.toy, from, to)
+#' names(res)
+#' # "p_dist"  "z_score"
 #' 
 #' @importFrom igraph distances
 #' @importFrom utils setTxtProgressBar txtProgressBar
@@ -311,13 +309,18 @@ pathDistances <- function(gdist, from, to, nperm = 1000, verbose=TRUE){
 #' @return A 'ggplot' object.
 #' @examples
 #' 
-#' data("PCv12_pruned_igraph", package = "PathwaySpace")
-#' gdist <- igraph::distances(graph = PCv12_pruned_igraph, algorithm="unweighted")
-#' from <- sample(colnames(gdist), 50)
-#' to <- sample(colnames(gdist), 50)
+#' # Load a vertex-wise distance matrix (distance between nodes in a graph)
+#' data("gdist.toy", package = "PathwaySpace")
 #' 
-#' # res <- pathDistances(gdist, from, to)
-#' # plotPathDistances(res)
+#' # Get two gene lists
+#' from <- sample(colnames(gdist.toy), 50)
+#' to <- sample(colnames(gdist.toy), 50)
+#' 
+#' # Calculate distances between lists, and between random lists
+#' res <- pathDistances(gdist.toy, from, to)
+#' 
+#' # Plot observed and null distances
+#' plotPathDistances(res)
 #' 
 #' @importFrom stats density median density
 #' @importFrom ggplot2 geom_area ylab geom_segment geom_line theme_minimal

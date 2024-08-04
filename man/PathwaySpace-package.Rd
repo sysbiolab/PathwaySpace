@@ -4,7 +4,7 @@
 \name{PathwaySpace-package}
 \alias{PathwaySpace}
 \alias{PathwaySpace-package}
-\title{PathwaySpace: Spatial projection of network signals along geodesic paths}
+\title{PathwaySpace: Spatial Projection of Network Signals along Geodesic Paths}
 \description{
 For a given graph containing vertices, edges, and a signal associated with
 the vertices, the PathwaySpace package performs a convolution operation,
@@ -54,6 +54,7 @@ of network signals along geodesic paths. R package version 0.99.
 Useful links:
 \itemize{
   \item \url{https://github.com/sysbiolab/PathwaySpace}
+  \item Report bugs at \url{https://github.com/sysbiolab/PathwaySpace/issues}
 }
 
 }

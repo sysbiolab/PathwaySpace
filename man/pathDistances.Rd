@@ -28,15 +28,17 @@ Calculate a pathway space distance between two vectors.
 }
 \examples{
 
-data("PCv12_pruned_igraph", package = "PathwaySpace")
-gdist <- igraph::distances(graph = PCv12_pruned_igraph, algorithm="unweighted")
-from <- sample(colnames(gdist), 50)
-to <- sample(colnames(gdist), 50)
+# Load a vertex-wise distance matrix (distance between nodes in a graph)
+data("gdist.toy", package = "PathwaySpace")
 
-# res <- pathDistances(gdist, from, to)
-# names(res)
-## "obs"  "null" "gg" 
-# res$gg
+# Get two vertex lists
+from <- sample(colnames(gdist.toy), 50)
+to <- sample(colnames(gdist.toy), 50)
+
+# Calculate distances between lists, and between random lists
+res <- pathDistances(gdist.toy, from, to)
+names(res)
+# "p_dist"  "z_score"
 
 }
 \seealso{

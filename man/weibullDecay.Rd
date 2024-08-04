@@ -19,7 +19,7 @@ correspond to the initial signal multiplied by \code{1 - decay}.}
 
 \item{shape}{A parameter (>=1) of a Weibull function. When \code{shape=1}
 the Weibull decay follows an exponential decay. When \code{shape>1}
-the function is first convex, then concave with an inflexion point.}
+the function is first convex, then concave with an inflection point.}
 }
 \value{
 A numeric vector.

@@ -1,8 +1,9 @@
 
-citEntry(entry = "Manual",
-author = "The Cancer Genome Atlas Analysis Network",
+bibentry(bibtype = "Manual",
+author = "'Sysbiolab Team'",
 title = "PathwaySpace: Spatial projection of network signals along geodesic paths.",
-year = "2023",
+year = "2024",
 note = "R package",
-textVersion = "The Cancer Genome Atlas Analysis Network. PathwaySpace: Spatial projection of network signals along geodesic paths. R package, 2023."
+url = "https://github.com/sysbiolab/PathwaySpace",
+textVersion = "Sysbiolab Team. PathwaySpace: Spatial projection of network signals along geodesic paths. R package, 2024."
 )

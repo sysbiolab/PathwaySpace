@@ -17,7 +17,7 @@
 #' @param tolerance The minimum signal intensity of a summit (in [0,1]),
 #' representing a fraction of the maximum signal intensity.
 #' @param ext Radius (in pixels) for detecting neighboring objects.
-#' @return A matrix with labelled summits.
+#' @return A matrix with labeled summits.
 #' @author Vinicius Chagas, Victor Apolonio, and
 #' Mauro Castro (\email{mauro.castro@@ufpr.br})
 #' @seealso \code{\link{summitMapping}}
@@ -25,6 +25,9 @@
 #' # Load a demo landscape image
 #' data('gimage', package = 'PathwaySpace')
 #'
+#' # Scale down the image for a quicker demonstration
+#' gimage <- gimage[200:300, 200:300]
+#' 
 #' # Check signal range
 #' range(gimage, na.rm = TRUE)
 #' # [1] 0 1

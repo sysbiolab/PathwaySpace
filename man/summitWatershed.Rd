@@ -16,7 +16,7 @@ representing a fraction of the maximum signal intensity.}
 \item{ext}{Radius (in pixels) for detecting neighboring objects.}
 }
 \value{
-A matrix with labelled summits.
+A matrix with labeled summits.
 }
 \description{
 The \code{summitWatershed} function implements a segmentation
@@ -34,6 +34,9 @@ PathwaySpace package.
 \examples{
 # Load a demo landscape image
 data('gimage', package = 'PathwaySpace')
+
+# Scale down the image for a quicker demonstration
+gimage <- gimage[200:300, 200:300]
 
 # Check signal range
 range(gimage, na.rm = TRUE)

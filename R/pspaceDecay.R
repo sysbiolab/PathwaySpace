@@ -12,7 +12,7 @@
 #' correspond to the initial signal multiplied by \code{1 - decay}.
 #' @param shape A parameter (>=1) of a Weibull function. When \code{shape=1}
 #' the Weibull decay follows an exponential decay. When \code{shape>1}
-#' the function is first convex, then concave with an inflexion point.
+#' the function is first convex, then concave with an inflection point.
 #' @return A numeric vector.
 #' @author Vinicius Chagas, Victor Apolonio, and
 #' Mauro Castro (\email{mauro.castro@@ufpr.br})
