@@ -39,7 +39,7 @@ pts <- buildPathwaySpace(gtoy1, nrc = 100)
 
 }
 \seealso{
-\code{\link{undirected_graph}}
+\code{\link[igraph]{undirected_graph}}
 }
 \author{
 Vinicius Chagas, Victor Apolonio, Mauro Castro,

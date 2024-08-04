@@ -17,7 +17,7 @@
 #' @return A preprocessed \linkS4class{PathwaySpace} class object.
 #' @author Vinicius Chagas, Victor Apolonio, Mauro Castro,
 #' and TCGA Network.
-#' @seealso \code{\link{undirected_graph}}
+#' @seealso \code{\link[igraph]{undirected_graph}}
 #' @examples
 #' # Load a demo igraph
 #' data('gtoy1', package = 'PathwaySpace')
