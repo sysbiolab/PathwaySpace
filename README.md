@@ -1,6 +1,7 @@
 ### PathwaySpace: Spatial projection of network signals along geodesic paths
   <!-- badges: start -->
   [![R-CMD-check](https://github.com/sysbiolab/PathwaySpace/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/sysbiolab/PathwaySpace/actions/workflows/R-CMD-check.yaml)
+  [![License: Artistic-2.0](https://img.shields.io/badge/license-Artistic--2.0-blue.svg)](https://cran.r-project.org/web/licenses/Artistic-2.0)
   <!-- badges: end -->
 *PathwaySpace* is an R package that creates landscape images from graphs containing vertices (nodes), edges (lines), and a signal associated with the vertices. The package processes the signal using a convolution algorithm that considers the graph's topology to project the signal on a 2D space. 
 
