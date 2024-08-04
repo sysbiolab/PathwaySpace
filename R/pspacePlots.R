@@ -34,20 +34,21 @@
 #' @param add.grid A logical value indicating whether to add gridlines to 
 #' the image space. However, gridlines will only appear when the image 
 #' is decorated with graph silhouettes (see \code{\link{silhouetteMapping}}).
-#' @param grid.color A color passed to \code{\link{geom_point}}.
+#' @param grid.color A color passed to \code{\link[ggplot2]{geom_point}}.
 #' @param add.contour A logical value indicating whether to add contour 
 #' lines to 'summits' (see \code{\link{summitMapping}}).
-#' @param contour.color A color passed to \code{\link{geom_tile}}.
+#' @param contour.color A color passed to \code{\link[ggplot2]{geom_tile}}.
 #' @param label.summits A logical value indicating whether to label summits,
 #' (when summits are available).
 #' @param marks A logical value indicating whether to add 'marks' to vertex 
 #' positions. Alternatively, this could be a vector listing vertex names.
-#' @param mark.size A font size argument passed to \code{\link{geom_text}}.
-#' @param mark.color A color passed to \code{\link{geom_text_repel}}.
+#' @param mark.size A font size argument passed to 
+#' \code{\link[ggplot2]{geom_text}}.
+#' @param mark.color A color passed to \code{\link[ggrepel]{geom_text_repel}}.
 #' @param mark.padding A box padding argument passed to 
-#' \code{\link{geom_text_repel}}.
+#' \code{\link[ggrepel]{geom_text_repel}}.
 #' @param mark.line.width A line width argument passed to 
-#' \code{\link{geom_text_repel}}.
+#' \code{\link[ggrepel]{geom_text_repel}}.
 #' @param use.dotmark A logical value indicating whether "marks" should be 
 #' represented as dots.
 #' @return A ggplot-class object.

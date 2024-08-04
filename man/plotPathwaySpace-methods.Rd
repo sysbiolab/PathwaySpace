@@ -79,12 +79,12 @@ the image signal into equally-spaced intervals.}
 the image space. However, gridlines will only appear when the image 
 is decorated with graph silhouettes (see \code{\link{silhouetteMapping}}).}
 
-\item{grid.color}{A color passed to \code{\link{geom_point}}.}
+\item{grid.color}{A color passed to \code{\link[ggplot2]{geom_point}}.}
 
 \item{add.contour}{A logical value indicating whether to add contour 
 lines to 'summits' (see \code{\link{summitMapping}}).}
 
-\item{contour.color}{A color passed to \code{\link{geom_tile}}.}
+\item{contour.color}{A color passed to \code{\link[ggplot2]{geom_tile}}.}
 
 \item{label.summits}{A logical value indicating whether to label summits,
 (when summits are available).}
@@ -92,15 +92,16 @@ lines to 'summits' (see \code{\link{summitMapping}}).}
 \item{marks}{A logical value indicating whether to add 'marks' to vertex 
 positions. Alternatively, this could be a vector listing vertex names.}
 
-\item{mark.size}{A font size argument passed to \code{\link{geom_text}}.}
+\item{mark.size}{A font size argument passed to 
+\code{\link[ggplot2]{geom_text}}.}
 
-\item{mark.color}{A color passed to \code{\link{geom_text_repel}}.}
+\item{mark.color}{A color passed to \code{\link[ggrepel]{geom_text_repel}}.}
 
 \item{mark.padding}{A box padding argument passed to 
-\code{\link{geom_text_repel}}.}
+\code{\link[ggrepel]{geom_text_repel}}.}
 
 \item{mark.line.width}{A line width argument passed to 
-\code{\link{geom_text_repel}}.}
+\code{\link[ggrepel]{geom_text_repel}}.}
 
 \item{use.dotmark}{A logical value indicating whether "marks" should be 
 represented as dots.}
