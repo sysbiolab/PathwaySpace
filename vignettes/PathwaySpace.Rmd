@@ -3,8 +3,7 @@ title: "*PathwaySpace*: Spatial projection of network signals along geodesic pat
 author: "The Cancer Genome Atlas Analysis Network."
 date: "`r Sys.Date()`"
 bibliography: bibliography.bib
-abstract: "<p>*PathwaySpace* is an R package that creates landscape images from graphs containing vertices (nodes), edges (lines), and a signal associated with the vertices. The package processes the signal using a convolution algorithm that considers the graph's topology projecting the signal on a 2D space. *PathwaySpace* has various applications, such as visualizing network data in a graphical format that highlights the relationships and signal strengths between vertices. It can be particularly useful for understanding the influence of signals through complex networks. By combining graph theory, signal processing, and visualization, the *PathwaySpace* package provides a novel way of representing network signals.</p>"
-package: "PathwaySpace `r packageVersion('PathwaySpace')`"
+abstract: "*PathwaySpace* is an R package that creates landscape images from graphs containing vertices (nodes), edges (lines), and a signal associated with the vertices. The package processes the signal using a convolution algorithm that considers the graph's topology projecting the signal on a 2D space. *PathwaySpace* has various applications, such as visualizing network data in a graphical format that highlights the relationships and signal strengths between vertices. It can be particularly useful for understanding the influence of signals through complex networks. By combining graph theory, signal processing, and visualization, the *PathwaySpace* package provides a novel way of representing network signals."
 output: 
   html_document:
     theme: cerulean
@@ -23,6 +22,9 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<br/>
+**Package**: PathwaySpace `r packageVersion('PathwaySpace')`
+
 # Highlights
 * Produces landscape images with geodesic paths.
 * Applies a convolutional algorithm to project signals onto a 2D space.
@@ -33,7 +35,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 For a given *igraph* object containing vertices, edges, and a signal associated with the vertices, *PathwaySpace* performs a convolution operation, which involves a weighted combination of neighboring node signals based on the graph structure. **Figure 1** illustrates the convolution operation problem. Each vertex's signal is placed at a specific position in the 2D space. The `x` and `y` coordinates of this space correspond either to vertex-signal positions (*e.g.* red, green, and blue lollipops in **Fig.1A**) or null-signal positions for which no signal information is available (question marks in **Fig.1A**). Our model considers the vertex-signal positions as source points (or transmitters) and the null-signal positions as end points (or receivers). The signal values from vertex-signal positions are then projected to the null-signal positions according to a decay function, which will control how the signal values attenuate as they propagate across the 2D space. Available decay functions include linear, exponential, and Weibull functions (**Fig.1B**). For a given null-signal position, a k-nearest neighbors (kNN) algorithm is used to define the contributing vertices for signal convolution. The convolution operation combines the signals from these contributing vertices, considering their distances and signal strengths, and applies the decay function to model the attenuation of the signal. Users can adjust both the decay function's parameters and the value of k in the kNN algorithm. These parameters control how the signal decays, allowing users to explore different scenarios and observe how varying parameters influence the landscape image. The resulting image forms geodesic paths in which the signal has been projected from vertex- to null-signal positions, using a density metric to measure the signal intensity along these paths.
 
-```{r fig1, echo=FALSE, fig.cap="Signal processing addressed by the *PathwaySpace* package. **A**) Representation of a graph superimposed on a 2D coordinate system. Each lollipop icon represents a graph vertex (referred to as vertex-signal positions), while question marks highlight points in the 2D space where no signal information is available (referred to as null-signal positions). **B**) Signal decay profiles of linear, exponential, and Weibull decay functions.", out.width = '90%', purl=FALSE}
+```{r fig1, echo=FALSE, fig.cap="**Figure 1.** Signal processing addressed by the *PathwaySpace* package. **A**) Representation of a graph superimposed on a 2D coordinate system. Each lollipop icon represents a graph vertex (referred to as vertex-signal positions), while question marks highlight points in the 2D space where no signal information is available (referred to as null-signal positions). **B**) Signal decay profiles of linear, exponential, and Weibull decay functions.", out.width = '90%', purl=FALSE}
 knitr::include_graphics("figures/fig1.png")
 ```
 
