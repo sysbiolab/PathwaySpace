@@ -33,7 +33,9 @@
 #' # [1] 0 1
 #'
 #' # Check image
-#' # image(gimage)
+#' \donttest{
+#' image(gimage)
+#' }
 #'
 #' # Threshold the signal intensity, for example:
 #' gimage[gimage < 0.5] <- 0
@@ -42,7 +44,9 @@
 #' gmask <- summitWatershed(x = gimage)
 #'
 #' # Check resulting image mask
-#' # image(gmask)
+#' \donttest{
+#' image(gimage)
+#' }
 #'
 #' @aliases summitWatershed
 #' @export

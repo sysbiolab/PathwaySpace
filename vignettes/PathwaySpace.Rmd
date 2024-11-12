@@ -13,7 +13,7 @@ output:
     toc_depth: 2
     css: custom.css
 vignette: >
-  %\VignetteIndexEntry{"PathwaySpace: signals along geodesic paths."}
+  %\VignetteIndexEntry{"PathwaySpace: signals along geodesic paths"}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
