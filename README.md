@@ -50,12 +50,6 @@ Download and uncompress *Tercan_et_al_20250112.zip*, then follow the instruction
 
 * [Tercan_et_al_20250112.zip](https://github.com/sysbiolab/PathwaySpace/blob/main/Tercan_et_al_20250112.zip)
 
-The script covers the following steps:
-
-* Data loading and preprocessing
-* Statistical analysis
-* Visualization of results to match Figure S1
-
 ### Licenses
 
 The *PathwaySpace* package is distributed under [Artistic-2.0](https://www.r-project.org/Licenses/Artistic-2.0)
