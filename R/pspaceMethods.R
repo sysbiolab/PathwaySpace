@@ -63,7 +63,7 @@ buildPathwaySpace <- function(g, nrc = 500, mar = 0.075, verbose = TRUE) {
 #' algorithm to project signal across a 2D-coordinate system.
 #'
 #' @param pts A \linkS4class{PathwaySpace} class object.
-#' @param knn A single positive integer determining the k-nearest signal 
+#' @param kns A single positive integer determining the k-nearest signal 
 #' sources used in the signal convolution operation.
 #' @param pdist A term (in \code{[0,1]}) determining a distance unit for the signal
 #' convolution related to the image space. This distance will affect the
@@ -100,7 +100,7 @@ buildPathwaySpace <- function(g, nrc = 500, mar = 0.075, verbose = TRUE) {
 #' @aliases circularProjection
 #' @export
 #'
-setMethod("circularProjection", "PathwaySpace", function(pts, knn = 8,
+setMethod("circularProjection", "PathwaySpace", function(pts, kns = 8,
     pdist = 0.15, rescale = TRUE, verbose = TRUE, 
     decay_fun = weibullDecay, ...) {
     #--- validate the pipeline status
@@ -109,26 +109,26 @@ setMethod("circularProjection", "PathwaySpace", function(pts, knn = 8,
     }
     if(verbose) message("Validating argument types and values...")
     #--- validate argument types
-    .validate.args("singleInteger", "knn", knn)
+    .validate.args("singleInteger", "kns", kns)
     .validate.args("singleNumber", "pdist", pdist)
     .validate.args("singleLogical", "rescale", rescale)
     .validate.args("singleLogical", "verbose", verbose)
     .validate.args("function", "decay_fun", decay_fun)
     #--- validate argument values
-    if (knn < 1) {
-        stop("'knn' should be >=1", call. = FALSE)
+    if (kns < 1) {
+        stop("'kns' should be >=1", call. = FALSE)
     }
     k <- length(getPathwaySpace(pts, "vertex"))
-    if (knn > k) {
+    if (kns > k) {
         if(verbose)
-            message("-- provided knn > k vertices; knn will be adjusted to k.")
-        knn <- k
+            message("-- provided kns > k vertices; kns will be adjusted to k.")
+        kns <- k
     }
     if (pdist < 0 || pdist > 1) {
         stop("'pdist' should be in [0,1]", call. = FALSE)
     }
     #--- pack args
-    pars <- list(knn = knn, pdist = pdist, rescale = rescale, 
+    pars <- list(kns = kns, pdist = pdist, rescale = rescale, 
         projection="Circular", decay_fun = decay_fun, 
         decay_args = list(...=...))
     for (nm in names(pars)) {
@@ -152,7 +152,7 @@ setMethod("circularProjection", "PathwaySpace", function(pts, knn = 8,
 #' to project a signal across a 2D-coordinate system.
 #'
 #' @param pts A \linkS4class{PathwaySpace} class object.
-#' @param knn A single positive integer determining the k-nearest signal 
+#' @param kns A single positive integer determining the k-nearest signal 
 #' sources used in the signal convolution operation.
 #' @param pdist A term (in \code{[0,1]}) determining a distance unit for the
 #' signal convolution related to length between any two connected vertices. 
@@ -193,7 +193,7 @@ setMethod("circularProjection", "PathwaySpace", function(pts, knn = 8,
 #' @aliases polarProjection
 #' @export
 #'
-setMethod("polarProjection", "PathwaySpace", function(pts, knn = 8, 
+setMethod("polarProjection", "PathwaySpace", function(pts, kns = 8, 
     pdist = 0.5, rescale = TRUE, theta = 180, directional = FALSE, 
     verbose = TRUE, decay_fun = weibullDecay, ...) {
     #--- validate the pipeline status
@@ -201,21 +201,21 @@ setMethod("polarProjection", "PathwaySpace", function(pts, knn = 8,
         stop("NOTE: the 'pts' object needs preprocessing!", call. = FALSE)
     }
     if(verbose) message("Validating argument types and values...")
-    .validate.args("singleInteger", "knn", knn)
+    .validate.args("singleInteger", "kns", kns)
     .validate.args("singleNumber", "pdist", pdist)
     .validate.args("singleNumber", "theta", theta)
     .validate.args("singleLogical", "rescale", rescale)
     .validate.args("singleLogical", "verbose", verbose)
     .validate.args("singleLogical", "directional", directional)
     .validate.args("function", "decay_fun", decay_fun)
-    if (knn < 1) {
-        stop("'knn' should be >=1", call. = FALSE)
+    if (kns < 1) {
+        stop("'kns' should be >=1", call. = FALSE)
     }
     k <- length(getPathwaySpace(pts, "vertex"))
-    if (knn > k) {
+    if (kns > k) {
         if(verbose)
-            message("-- provided knn > k vertices; knn will be adjusted to k.")
-        knn <- k
+            message("-- provided kns > k vertices; kns will be adjusted to k.")
+        kns <- k
     }
     if (pdist < 0 || pdist > 1) {
         stop("'pdist' should be in [0,1]", call. = FALSE)
@@ -225,7 +225,7 @@ setMethod("polarProjection", "PathwaySpace", function(pts, knn = 8,
             "with degrees in (0,360]")
         stop(msg, call. = FALSE)
     }
-    pars <- list(knn = knn, pdist = pdist, theta = theta,  
+    pars <- list(kns = kns, pdist = pdist, theta = theta,  
         rescale = rescale, projection="Polar", directional = directional,
         decay_fun = decay_fun, decay_args = list(...=...))
     for (nm in names(pars)) {

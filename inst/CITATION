@@ -7,3 +7,17 @@ note = "R package",
 url = "https://github.com/sysbiolab/PathwaySpace",
 textVersion = "Sysbiolab Team. PathwaySpace: Spatial projection of network signals along geodesic paths. R package, 2024."
 )
+
+bibentry(bibtype = "Article",
+author = "Kyle Ellrott, Christopher K Wong, Christina Yau, Mauro AA Castro, Jordan A Lee, Brian J Karlberg, Jasleen K Grewal, Vincenzo Lagani, Bahar Tercan et al.",
+title = "Classification of non-TCGA cancer samples to TCGA molecular subtypes using compact feature sets.",
+journal = "Cancer Cell",
+year = "2025",
+volume = "43",
+number = "1",
+pages = "1",
+doi = "10.1016/j.ccell.2024.12.002",
+textVersion = paste("Ellrott K, Wong CK, Yau C, Castro MAA, Lee JA, Karlberg BJ, Grewal JK, Lagani V, Tercan B et al.", 
+"Classification of non-TCGA cancer samples to TCGA molecular subtypes using compact feature sets.",
+"Cancer Cell, 2024. doi: 10.1016/j.ccell.2024.12.002", sep=" ")
+)

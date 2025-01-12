@@ -243,12 +243,12 @@ setMethod("plotPathwaySpace", "PathwaySpace",
         hjust <- 1
     }
     if(pars$projection=="Polar"){
-        annot <- pars[c("projection", "dfun", "knn", "theta")]
-        annot$knn <- paste0("knn = ", annot$knn, "; ")
+        annot <- pars[c("projection", "dfun", "kns", "theta")]
+        annot$kns <- paste0("kns = ", annot$kns, "; ")
         annot$theta <- paste0("theta = ", pars$theta)
     } else {
-        annot <- pars[c("projection", "dfun", "knn")]
-        annot$knn <- paste0("knn = ", annot$knn)
+        annot <- pars[c("projection", "dfun", "kns")]
+        annot$kns <- paste0("kns = ", annot$kns)
     }
     annot$projection <- paste0(annot$projection, " projection", sep)
     annot$dfun <- paste0(annot$dfun, sep)

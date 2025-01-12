@@ -1,7 +1,7 @@
 Package: PathwaySpace
 Type: Package
 Title: Spatial Projection of Network Signals along Geodesic Paths
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: 
     c(person("Victor", "Apolonio", role = "ctr"),
       person("Vinicius", "Chagas", role = "ctr"),

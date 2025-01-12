@@ -8,7 +8,7 @@
 \usage{
 \S4method{circularProjection}{PathwaySpace}(
   pts,
-  knn = 8,
+  kns = 8,
   pdist = 0.15,
   rescale = TRUE,
   verbose = TRUE,
@@ -19,7 +19,7 @@
 \arguments{
 \item{pts}{A \linkS4class{PathwaySpace} class object.}
 
-\item{knn}{A single positive integer determining the k-nearest signal 
+\item{kns}{A single positive integer determining the k-nearest signal 
 sources used in the signal convolution operation.}
 
 \item{pdist}{A term (in \code{[0,1]}) determining a distance unit for the signal

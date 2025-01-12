@@ -83,7 +83,7 @@
 
 #-------------------------------------------------------------------------------
 #--- get point-to-vertice dists for circular and polar projections
-.get.knn.dists <- function(lpts, gxy, knn, bg.rm = TRUE){
+.get.kns.dists <- function(lpts, gxy, kns, bg.rm = TRUE){
     # message("Computing distance between k-nearest neighbors...")
     if(bg.rm){
         bg <- is.na(gxy[,"vsignal"]) | gxy[,"vsignal"]==0
@@ -94,11 +94,11 @@
             gxy <- gxy[!bg, , drop=FALSE]
         }
     }
-    if (knn == 1) {
+    if (kns == 1) {
         min.ksearch <- ceiling(nrow(gxy) * 0.1)
         min.ksearch <- min(max(min.ksearch, 10), nrow(gxy))
     } else {
-        min.ksearch <- min(max(knn, 10), nrow(gxy))
+        min.ksearch <- min(max(kns, 10), nrow(gxy))
     }
     nnpg <- RANN::nn2(gxy[, c("X", "Y"), drop=FALSE], 
         lpts[, c("X", "Y"), drop=FALSE], k = min.ksearch)
@@ -111,8 +111,8 @@
 
 #-------------------------------------------------------------------------------
 #--- get point-to-vertice dists for silhouettes
-.get.silhouette.dists <- function(lpts, gxy, knn){
-    min.ksearch <- min(max(knn, 10), nrow(gxy))
+.get.silhouette.dists <- function(lpts, gxy, kns){
+    min.ksearch <- min(max(kns, 10), nrow(gxy))
     nnbg <- RANN::nn2(gxy[, c("X", "Y")], lpts[, c("X", "Y")],
         k = min.ksearch)
     names(nnbg) <- c("nn", "dist")
@@ -245,7 +245,7 @@
     pars <- getPathwaySpace(pts, "pars")
     gxy <- getPathwaySpace(pts, "gxy")
     lpts <- .pointsInMatrix(pars$nrc)
-    nnpg <- .get.knn.dists(lpts, gxy, pars$knn)
+    nnpg <- .get.kns.dists(lpts, gxy, pars$kns)
     if (pars$vwscale) {
         if(verbose) message("Scaling projection to vertex weight...")
     }
@@ -298,7 +298,7 @@
     }
     gxy <- getPathwaySpace(pts, "gxy")
     lpts <- .pointsInMatrix(pars$nrc)
-    nnpg <- .get.knn.dists(lpts, gxy, pars$knn)
+    nnpg <- .get.kns.dists(lpts, gxy, pars$kns)
     if (pars$vwscale) {
         if(verbose) message("Scaling projection to vertex weight...")
     }
@@ -477,7 +477,7 @@
         #--- get edge's theta and dist
         p_et <- etheta[p_idx]
         p_el <- edleng[p_idx]
-        #--- compute theta for p1 vs. knn
+        #--- compute theta for p1 vs. kns
         dx <- lpts[ii, "X"] - gxy[p_idx, "X"]
         dy <- lpts[ii, "Y"] - gxy[p_idx, "Y"]
         p_theta <- atan2(dy, dx)
@@ -581,9 +581,9 @@
     # sort projected signals
     dsig <- matrix(dsig[order(row(dsig), -abs(dsig))],
         nrow = nrow(dsig), byrow = TRUE)
-    if (pars$knn > 1) {
-        knn <- min(pars$knn, ncol(dsig))
-        dsig <- dsig[, seq_len(knn), drop = FALSE]
+    if (pars$kns > 1) {
+        kns <- min(pars$kns, ncol(dsig))
+        dsig <- dsig[, seq_len(kns), drop = FALSE]
         if (pars$zscale$signal.type == "continuous") {
             # stack all signals projected at a given point
             stfun <- function(sig) {
@@ -646,7 +646,7 @@
     gxy <- getPathwaySpace(pts, "gxy")
     lpts <- .pointsInMatrix(pars$nrc)
     #--- get point-to-vertice dists for silhouettes
-    nnbg <- .get.silhouette.dists(lpts, gxy, pars$knn)
+    nnbg <- .get.silhouette.dists(lpts, gxy, pars$kns)
     #--- get landscape floor
     xfloor <- array(0, c(pars$nrc, pars$nrc))
     if (pars$baseline > 0 && pars$pdist > 0) {
@@ -694,7 +694,7 @@
     sfloor <- t(sfloor)
     sfloor <- matrix(sfloor[order(row(sfloor), -sfloor)],
         nrow = nrow(sfloor), byrow = TRUE)
-    sfloor <- sfloor[, seq_len(pars$knn), drop = FALSE]
+    sfloor <- sfloor[, seq_len(pars$kns), drop = FALSE]
     Z <- apply(sfloor, 1, mean)
     return(Z)
 }
