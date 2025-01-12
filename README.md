@@ -44,15 +44,15 @@ If you use *PathwaySpace*, please cite:
 
 * Ellrott et al. Classification of non-TCGA cancer samples to TCGA molecular subtypes using compact feature sets. *Cancer Cell*, 2025. DOI: 10.1016/j.ccell.2024.12.002
 
-### Supporting Material for Tercan et al. (2025)
+#### Supporting Material for Tercan et al. (2025)
 
-Download and uncompress 'Tercan_et_al_20250112.zip', then follow the instructions in 'pspace_perturbation_script.R'
-
-This R script has been developed to reproduce the results presented in Figure S1 
-of Tercan et al. (2025). The script covers the following steps:
-1. Data loading and preprocessing
-2. Statistical analysis
-3. Visualization of results to match Figure S1
+Download and uncompress 'Tercan_et_al_20250112.zip', then follow the instructions 
+in the 'pspace_perturbation.R' script. This R script has been developed to reproduce 
+the results presented in Figure S1 of Tercan et al. (2025). 
+The script covers the following steps:
+* Data loading and preprocessing
+* Statistical analysis
+* Visualization of results to match Figure S1
 
 ### Licenses
 
