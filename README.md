@@ -2,7 +2,7 @@
   <!-- badges: start -->
   [![](https://www.r-pkg.org/badges/version/PathwaySpace)](https://cran.r-project.org/package=PathwaySpace)
   [![](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
-  [![](https://cranlogs.r-pkg.org/badges/PathwaySpace)](https://cran.r-project.org/package=PathwaySpace)
+  [![](https://cranlogs.r-pkg.org/badges/PathwaySpace)](https://cranlogs.r-pkg.org/badges/PathwaySpace)
   [![](https://img.shields.io/badge/license-Artistic--2.0-blue.svg)](https://cran.r-project.org/web/licenses/Artistic-2.0)
   [![](https://img.shields.io/badge/doi-10.32614/CRAN.package.PathwaySpace-blue.svg)](https://doi.org/10.32614/CRAN.package.PathwaySpace)
   <!-- badges: end -->
@@ -40,16 +40,13 @@ vignette("PathwaySpace")
 
 If you use *PathwaySpace*, please cite:
 
-* Tercan et al. A protocol to assess pathway space distances between classifier feature sets (under review, 2025).
+* Tercan *et al.* A protocol to assess pathway space distances between classifier feature sets (under review, 2025).
 
-* Ellrott et al. Classification of non-TCGA cancer samples to TCGA molecular subtypes using compact feature sets. *Cancer Cell*, 2025. DOI: 10.1016/j.ccell.2024.12.002
+* Ellrott *et al.* Classification of non-TCGA cancer samples to TCGA molecular subtypes using compact feature sets. *Cancer Cell*, 2025. DOI: 10.1016/j.ccell.2024.12.002
 
-#### Supporting Material for Tercan et al. (2025)
+#### Supporting Material for Tercan *et al.* (2025)
 
-Download and uncompress 'Tercan_et_al_20250112.zip', then follow the instructions 
-in the 'pspace_perturbation.R' script. This R script has been developed to reproduce 
-the results presented in Figure S1 of Tercan et al. (2025). 
-The script covers the following steps:
+Download and uncompress *Tercan_et_al_20250112.zip*, then follow the instructions in the *pspace_perturbation.R* script. This R script has been developed to reproduce the results presented in *Figure S1* of Tercan *et al.* (2025). The script covers the following steps:
 * Data loading and preprocessing
 * Statistical analysis
 * Visualization of results to match Figure S1
