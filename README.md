@@ -46,7 +46,12 @@ If you use *PathwaySpace*, please cite:
 
 #### Supporting Material for Tercan *et al.* (2025)
 
-Download and uncompress *Tercan_et_al_20250112.zip*, then follow the instructions in the *pspace_perturbation.R* script. This R script has been developed to reproduce the results presented in *Figure S1* of Tercan *et al.* (2025). The script covers the following steps:
+Download and uncompress *Tercan_et_al_20250112.zip*, then follow the instructions in the *pspace_perturbation.R* script. This R script has been developed to reproduce the results presented in *Figure S1* of Tercan *et al.* (2025).
+
+* [Tercan_et_al_20250112.zip](https://github.com/sysbiolab/PathwaySpace/blob/main/Tercan_et_al_20250112.zip)
+
+The script covers the following steps:
+
 * Data loading and preprocessing
 * Statistical analysis
 * Visualization of results to match Figure S1
