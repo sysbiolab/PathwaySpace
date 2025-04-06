@@ -13,6 +13,7 @@
   rescale = TRUE,
   verbose = TRUE,
   decay_fun = weibullDecay,
+  knn = deprecated(),
   ...
 )
 }
@@ -22,10 +23,13 @@
 \item{kns}{A single positive integer determining the k-nearest signal 
 sources used in the signal convolution operation.}
 
-\item{pdist}{A term (in \code{[0,1]}) determining a distance unit for the signal
-convolution related to the image space. This distance will affect the
+\item{pdist}{A term (in \code{[0,1]}) determining a distance unit for the
+signal convolution related to the image space. This distance will affect the
 extent over which the convolution operation projects the signal between
-source- and destination points.}
+source- and destination points. The signal projection tends to zero at
+`pdist`, and when `pdist = 1` the projection will extend to its maximum 
+distance, defined by the diameter of the inscribed circle within the 
+pathway space.}
 
 \item{rescale}{A single logical value indicating whether to rescale 
 the signal. If the signal \code{>=0}, then it will be rescaled to 
@@ -38,6 +42,8 @@ messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
 
 \item{decay_fun}{A signal decay function. Available: 'Weibull',
 'exponential', and 'linear' functions (see \code{\link{weibullDecay}}).}
+
+\item{knn}{Deprecated from PathwaySpace 1.0; use `kns` instead.}
 
 \item{...}{Additional arguments passed to the decay function.}
 }

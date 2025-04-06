@@ -15,6 +15,7 @@
   directional = FALSE,
   verbose = TRUE,
   decay_fun = weibullDecay,
+  knn = deprecated(),
   ...
 )
 }
@@ -28,7 +29,9 @@ sources used in the signal convolution operation.}
 signal convolution related to length between any two connected vertices. 
 This distance will affect the extent over which the convolution operation 
 projects the signal between source- and destination points along the 
-polar coordinates of the edges.}
+polar coordinates of the edges. The signal projection tends to zero at
+`pdist`, and when `pdist = 1` the projection will extend to its maximum 
+distance, defined by the length between the two connected vertices.}
 
 \item{rescale}{A single logical value indicating whether to rescale 
 the signal. If the signal \code{>=0}, then it will be rescaled to 
@@ -46,6 +49,8 @@ messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
 
 \item{decay_fun}{A signal decay function. Available: 'Weibull', 
 'exponential', and 'linear' functions (see \code{\link{weibullDecay}}).}
+
+\item{knn}{Deprecated from PathwaySpace 1.0; use `kns` instead.}
 
 \item{...}{Additional arguments passed to the decay function.}
 }

@@ -270,7 +270,7 @@ This updated *PathwaySpace* polar projection emphasizes the signal flow into a d
 
 ## Signal types
 
-The *PathwaySpace* accepts binary, integer, and numeric signal types, including `NAs`. When a vertex is assigned with `NA`, it will be excluded from the signal projection, not evaluated by the convolution algorithm. Logical values are also allowed, but it will be treated as binary. Next, we show the projection of a signal that includes negative values, using the `pspace1` object created previously.
+The *PathwaySpace* accepts binary, integer, and numeric signal types, including `NAs`. If a vertex signal is assigned with `NA`, it will be ignored by the convolution algorithm. Logical values are also allowed, but it will be treated as binary. Next, we show the projection of a signal that includes negative values, using the `pspace1` object created previously.
 
 ```{r Signal types, eval=FALSE, message=FALSE, out.width="70%"}
 # Set a negative signal to vertices "n3" and "n4"
@@ -478,9 +478,9 @@ class(summits)
 
 If you use *PathwaySpace*, please cite:
 
-* Tercan et al. A protocol to assess pathway space distances between classifier feature sets (under review, 2025).
+* Tercan et al. Protocol for assessing distances in pathway space for classifier feature sets from machine learning methods. *STAR Protocols* 6(2):103681, 2025. https://doi.org/10.1016/j.xpro.2025.103681
 
-* Ellrott et al. Classification of non-TCGA cancer samples to TCGA molecular subtypes using compact feature sets. *Cancer Cell*, 2025. DOI: 10.1016/j.ccell.2024.12.002
+* Ellrott et al. Classification of non-TCGA cancer samples to TCGA molecular subtypes using compact feature sets. *Cancer Cell* 43(2):195-212.e11, 2025. https://doi.org/10.1016/j.ccell.2024.12.002
 
 # Other useful links
 

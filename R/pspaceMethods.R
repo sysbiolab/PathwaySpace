@@ -65,10 +65,13 @@ buildPathwaySpace <- function(g, nrc = 500, mar = 0.075, verbose = TRUE) {
 #' @param pts A \linkS4class{PathwaySpace} class object.
 #' @param kns A single positive integer determining the k-nearest signal 
 #' sources used in the signal convolution operation.
-#' @param pdist A term (in \code{[0,1]}) determining a distance unit for the signal
-#' convolution related to the image space. This distance will affect the
+#' @param pdist A term (in \code{[0,1]}) determining a distance unit for the
+#' signal convolution related to the image space. This distance will affect the
 #' extent over which the convolution operation projects the signal between
-#' source- and destination points.
+#' source- and destination points. The signal projection tends to zero at
+#' `pdist`, and when `pdist = 1` the projection will extend to its maximum 
+#' distance, defined by the diameter of the inscribed circle within the 
+#' pathway space.
 #' @param rescale A single logical value indicating whether to rescale 
 #' the signal. If the signal \code{>=0}, then it will be rescaled to 
 #' \code{[0,1]}; if the signal \code{<=0}, then it will be rescaled to 
@@ -78,6 +81,7 @@ buildPathwaySpace <- function(g, nrc = 500, mar = 0.075, verbose = TRUE) {
 #' messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).
 #' @param decay_fun A signal decay function. Available: 'Weibull',
 #' 'exponential', and 'linear' functions (see \code{\link{weibullDecay}}).
+#' @param knn Deprecated from PathwaySpace 1.0; use `kns` instead.
 #' @param ... Additional arguments passed to the decay function.
 #' @return A preprocessed \linkS4class{PathwaySpace} class object.
 #' @author Vinicius Chagas, Victor Apolonio, Mauro Castro, 
@@ -95,6 +99,7 @@ buildPathwaySpace <- function(g, nrc = 500, mar = 0.075, verbose = TRUE) {
 #' pts <- circularProjection(pts)
 #'
 #' @import methods
+#' @importFrom lifecycle deprecated deprecate_soft is_present
 #' @docType methods
 #' @rdname circularProjection-methods
 #' @aliases circularProjection
@@ -102,11 +107,18 @@ buildPathwaySpace <- function(g, nrc = 500, mar = 0.075, verbose = TRUE) {
 #'
 setMethod("circularProjection", "PathwaySpace", function(pts, kns = 8,
     pdist = 0.15, rescale = TRUE, verbose = TRUE, 
-    decay_fun = weibullDecay, ...) {
+    decay_fun = weibullDecay, knn = deprecated(), ...) {
     #--- validate the pipeline status
     if (!.checkStatus(pts, "Preprocess")) {
         stop("NOTE: the 'pts' object needs preprocessing!", call. = FALSE)
     }
+    ### deprecate
+    if (lifecycle::is_present(knn)) {
+        deprecate_soft("1.0.0", "circularProjection(knn)", 
+            "circularProjection(kns)")
+        kns <- knn
+    }
+    ###
     if(verbose) message("Validating argument types and values...")
     #--- validate argument types
     .validate.args("singleInteger", "kns", kns)
@@ -158,7 +170,9 @@ setMethod("circularProjection", "PathwaySpace", function(pts, kns = 8,
 #' signal convolution related to length between any two connected vertices. 
 #' This distance will affect the extent over which the convolution operation 
 #' projects the signal between source- and destination points along the 
-#' polar coordinates of the edges.
+#' polar coordinates of the edges. The signal projection tends to zero at
+#' `pdist`, and when `pdist = 1` the projection will extend to its maximum 
+#' distance, defined by the length between the two connected vertices.
 #' @param rescale A single logical value indicating whether to rescale 
 #' the signal. If the signal \code{>=0}, then it will be rescaled to 
 #' \code{[0,1]}; if the signal \code{<=0}, then it will be rescaled to 
@@ -171,6 +185,7 @@ setMethod("circularProjection", "PathwaySpace", function(pts, kns = 8,
 #' messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).
 #' @param decay_fun A signal decay function. Available: 'Weibull', 
 #' 'exponential', and 'linear' functions (see \code{\link{weibullDecay}}).
+#' @param knn Deprecated from PathwaySpace 1.0; use `kns` instead.
 #' @param ... Additional arguments passed to the decay function.
 #' @return A preprocessed \linkS4class{PathwaySpace} class object.
 #' @author Vinicius Chagas, Victor Apolonio, Mauro Castro,
@@ -195,11 +210,18 @@ setMethod("circularProjection", "PathwaySpace", function(pts, kns = 8,
 #'
 setMethod("polarProjection", "PathwaySpace", function(pts, kns = 8, 
     pdist = 0.5, rescale = TRUE, theta = 180, directional = FALSE, 
-    verbose = TRUE, decay_fun = weibullDecay, ...) {
+    verbose = TRUE, decay_fun = weibullDecay, knn = deprecated(), ...) {
     #--- validate the pipeline status
     if (!.checkStatus(pts, "Preprocess")) {
         stop("NOTE: the 'pts' object needs preprocessing!", call. = FALSE)
     }
+    ### deprecate
+    if (lifecycle::is_present(knn)) {
+        deprecate_soft("1.0.0", "polarProjection(knn)", 
+            "polarProjection(kns)")
+        kns <- knn
+    }
+    ###
     if(verbose) message("Validating argument types and values...")
     .validate.args("singleInteger", "kns", kns)
     .validate.args("singleNumber", "pdist", pdist)

@@ -1,16 +1,21 @@
 
-bibentry(bibtype = "Manual",
-author = person("Sysbiolab Team"),
-title = "PathwaySpace: Spatial projection of network signals along geodesic paths",
-year = "2024",
-note = "R package",
-url = "https://github.com/sysbiolab/PathwaySpace",
-textVersion = "Sysbiolab Team. PathwaySpace: Spatial projection of network signals along geodesic paths. R package, 2024."
+bibentry(bibtype = "Article",
+author = "Bahar Tercan, Victor H Apolonio, Vinicius S Chagas, Christopher K Wong, Jordan A Lee, Christina Yau, Christopher C Benz et al.",
+title = "Protocol for assessing distances in pathway space for classifier feature sets from machine learning methods",
+journal = "STAR Protocols",
+year = "2025",
+volume = "6",
+number = "2",
+pages = "103681",
+doi = "10.1016/j.xpro.2025.103681",
+textVersion = paste("Tercan B, Apolonio VH, Chagas VS, Wong CK, Lee JA et al.", 
+"Protocol for assessing distances in pathway space for classifier feature sets from machine learning methods.",
+"STAR Protocols 6(2):103681, 2025. doi: 10.1016/j.xpro.2025.103681", sep=" ")
 )
 
 bibentry(bibtype = "Article",
 author = "Kyle Ellrott, Christopher K Wong, Christina Yau, Mauro AA Castro, Jordan A Lee, Brian J Karlberg, Jasleen K Grewal, Vincenzo Lagani, Bahar Tercan et al.",
-title = "Classification of non-TCGA cancer samples to TCGA molecular subtypes using compact feature sets.",
+title = "Classification of non-TCGA cancer samples to TCGA molecular subtypes using compact feature sets",
 journal = "Cancer Cell",
 year = "2025",
 volume = "43",
@@ -19,5 +24,5 @@ pages = "1",
 doi = "10.1016/j.ccell.2024.12.002",
 textVersion = paste("Ellrott K, Wong CK, Yau C, Castro MAA, Lee JA, Karlberg BJ, Grewal JK, Lagani V, Tercan B et al.", 
 "Classification of non-TCGA cancer samples to TCGA molecular subtypes using compact feature sets.",
-"Cancer Cell, 2024. doi: 10.1016/j.ccell.2024.12.002", sep=" ")
+"Cancer Cell 43(2):195-212.e11, 2024. doi: 10.1016/j.ccell.2024.12.002", sep=" ")
 )
