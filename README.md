@@ -40,7 +40,7 @@ vignette("PathwaySpace")
 
 If you use *PathwaySpace*, please cite:
 
-* Tercan *et al.* Protocol for assessing distances in pathway space for classifier feature sets from machine learning methods. *STAR Protocols*, 2025. https://doi.org/10.1016/j.xpro.2025.103681
+* Tercan & Apolonio *et al.* Protocol for assessing distances in pathway space for classifier feature sets from machine learning methods. *STAR Protocols*, 2025. https://doi.org/10.1016/j.xpro.2025.103681
 
 * Ellrott *et al.* Classification of non-TCGA cancer samples to TCGA molecular subtypes using compact feature sets. *Cancer Cell*, 2025. https://doi.org/10.1016/j.ccell.2024.12.002
 
