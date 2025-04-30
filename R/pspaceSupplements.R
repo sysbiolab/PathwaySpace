@@ -8,12 +8,19 @@
     X <- igraph::V(g)$x
     Y <- igraph::V(g)$y
     vertex <- igraph::V(g)$name
-    if(igraph::is_directed(g)){
+    if(igraph::ecount(g)>0){
+      if(igraph::is_directed(g)){
         if(verbose) message("Extracting directed edges...")
         edges <- .get.directed.edges(g, vertex)
-    } else {
+      } else {
         if(verbose) message("Extracting undirected edges...")
         edges <- .get.undirected.edges(g, vertex)
+      }
+    } else {
+      edges <- data.frame(
+        vertex1=numeric(), vertex2=numeric(), 
+        name1=character(), name2=character(), 
+        eweight=numeric(), emode=numeric())
     }
     g <- .validate.vertex.signal(g, verbose)
     vsignal <- igraph::V(g)$signal
@@ -32,8 +39,12 @@
     rownames(gxy) <- vertex
     gxy <- .centerNodes(gxy, nrc, mar)
     # get dists not related to vsignal
-    if(verbose) message("Computing distances between vertices...")
-    edges <- .get.edge.dist(gxy, edges)
+    if(nrow(edges)>0){
+      if(verbose) message("Computing distances between connected vertices...")
+      edges <- .get.edge.dist(gxy, edges)
+    } else {
+      edges$edist <- numeric()
+    }
     # add vsignal and vweight to gxy
     gxy <- cbind(gxy, vsignal = vsignal, vweight = vweight)
     #---create a PathwaySpace object

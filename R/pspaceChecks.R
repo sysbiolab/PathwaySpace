@@ -44,7 +44,7 @@
         )
     }
     if (igraph::ecount(g)==0) {
-        warning("The input 'g' graph does not have any edges.", call. = FALSE)
+        warning("The input 'g' graph has no edges.", call. = FALSE)
     }
 }
 .validate.vertex.signal <- function(g, verbose = TRUE){

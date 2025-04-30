@@ -7,7 +7,7 @@
 buildPathwaySpace(g, nrc = 500, mar = 0.075, verbose = TRUE)
 }
 \arguments{
-\item{g}{An \code{igraph} object. It must include graph 
+\item{g}{An \code{igraph} object. It must include graph
 layout information, with vertex coordinates assigned to \code{x} 
 and \code{y} vertex attributes. It must also include vertex labels 
 assigned to the \code{name} vertex attribute.}
