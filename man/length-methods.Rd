@@ -17,7 +17,7 @@ A non-negative integer of length 1.
 Get length of a PathwaySpace object.
 }
 \examples{
-data('gtoy1', package = 'PathwaySpace')
+data('gtoy1', package = 'RGraphSpace')
 pts <- buildPathwaySpace(gtoy1, nrc = 100)
 length(pts)
 

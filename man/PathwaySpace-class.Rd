@@ -13,6 +13,8 @@ PathwaySpace: An S4 class for signal propagation on image spaces.
 \section{Slots}{
 
 \describe{
+\item{\code{gspace}}{A \code{\link[RGraphSpace]{GraphSpace-class}} object.}
+
 \item{\code{vertex}}{A character vector with vertex names.}
 
 \item{\code{vsignal}}{A numerical vector with vertex signals.}

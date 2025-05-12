@@ -12,7 +12,7 @@
   pdist = 0.15,
   rescale = TRUE,
   verbose = TRUE,
-  decay_fun = weibullDecay,
+  .decay_fun = weibullDecay,
   knn = deprecated(),
   ...
 )
@@ -40,7 +40,7 @@ rescaled to \code{[-1,1]}.}
 \item{verbose}{A single logical value specifying to display detailed 
 messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
 
-\item{decay_fun}{A signal decay function. Available: 'Weibull',
+\item{.decay_fun}{A signal decay function. Available: 'Weibull',
 'exponential', and 'linear' functions (see \code{\link{weibullDecay}}).}
 
 \item{knn}{Deprecated from PathwaySpace 1.0; use `kns` instead.}
@@ -56,7 +56,7 @@ algorithm to project signal across a 2D-coordinate system.
 }
 \examples{
 # Load a demo igraph
-data('gtoy1', package = 'PathwaySpace')
+data('gtoy1', package = 'RGraphSpace')
 
 # Create a new PathwaySpace object
 pts <- buildPathwaySpace(gtoy1, nrc = 100)
@@ -70,6 +70,6 @@ pts <- circularProjection(pts)
 \code{\link{buildPathwaySpace}}
 }
 \author{
-Vinicius Chagas, Victor Apolonio, Mauro Castro, 
+Victor Apolonio, Vinicius Chagas, Mauro Castro, 
 and TCGA Network.
 }

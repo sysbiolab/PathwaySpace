@@ -57,7 +57,7 @@ This section will create an *igraph* object containing a binary signal associate
 gtoy1 <- make_star(5, mode="undirected")
 
 # Assign xy coordinates to each vertex
-V(gtoy1)$x <- c(0, 1.5, -4, -4, -9)
+V(gtoy1)$x <- c(0, 2, -4, -4, -9)
 V(gtoy1)$y <- c(0, 0,  4, -4,  0)
 
 # Assign a name to each vertex (here, from n1 to n5)
@@ -201,7 +201,7 @@ In this section we will project the network signal using a polar coordinate syst
 
 ```{r Polar projection - 1, eval=TRUE, message=FALSE, out.width="100%"}
 # Load a pre-processed directed igraph object
-data("gtoy2", package = "PathwaySpace")
+data("gtoy2", package = "RGraphSpace")
 ```
 
 ```{r Polar projection - 2, eval=FALSE, message=FALSE, out.width="100%"}
@@ -210,9 +210,9 @@ plot.igraph(gtoy2)
 ```
 
 ```{r fig6.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-# png(filename = "./figures/fig6.png", pointsize=50, width=1600, height=1600)
-# plot.igraph(gtoy2)
-# dev.off()
+png(filename = "./figures/fig6.png", pointsize=50, width=1600, height=1600)
+plot.igraph(gtoy2)
+dev.off()
 ```
 
 ```{r fig6, echo=FALSE, out.width = '70%', purl=FALSE}
@@ -379,7 +379,7 @@ We now follow the *PathwaySpace* pipeline as explained in the previous sections,
 
 ```{r PathwaySpace decoration - 4, eval=FALSE, message=FALSE}
 # Run the PathwaySpace constructor
-pspace_PCv12 <- buildPathwaySpace(g=PCv12_pruned_igraph, nrc=500)
+pspace_PCv12 <- buildPathwaySpace(gs=PCv12_pruned_igraph, nrc=500)
 # Note: 'nrc' sets the number of rows and columns of the
 # image space, which will affect the image resolution (in pixels)
 ```

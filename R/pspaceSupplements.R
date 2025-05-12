@@ -1,95 +1,58 @@
 ################################################################################
 ### Main constructor of PathwaySpace-class objects
 ################################################################################
-.buildPathwaySpace <- function(g, nrc = 500, mar = 0.075, verbose = TRUE) {
-    #--- get graph data
-    if(verbose) message("Extracting 'x', 'y', and 'name' vertex attributes...")
-    g <- igraph::simplify(g)
-    X <- igraph::V(g)$x
-    Y <- igraph::V(g)$y
-    vertex <- igraph::V(g)$name
-    if(igraph::ecount(g)>0){
-      if(igraph::is_directed(g)){
-        if(verbose) message("Extracting directed edges...")
-        edges <- .get.directed.edges(g, vertex)
-      } else {
-        if(verbose) message("Extracting undirected edges...")
-        edges <- .get.undirected.edges(g, vertex)
-      }
-    } else {
-      edges <- data.frame(
-        vertex1=numeric(), vertex2=numeric(), 
-        name1=character(), name2=character(), 
-        eweight=numeric(), emode=numeric())
-    }
-    g <- .validate.vertex.signal(g, verbose)
-    vsignal <- igraph::V(g)$signal
-    vweight <- igraph::V(g)$weight
+.buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE) {
+  
+    #--- get GraphSpace data
+    # get pars
+    pars <- getGraphSpace(gs, "pars")
+    # get nodes
+    nodes <- getGraphSpace(gs, "nodes")
+    nodes <- nodes[, c("X", "Y", "name")]
+    # get edges
+    edges <- getGraphSpace(gs, "edges")
+    edges <- edges[, c("vertex1", "vertex2", "name1", "name2", "emode")]
+    # initialize values
+    nodes$vsignal <- 0
+    nodes$vweight <- 1
+    
+    #--- make vectors used in downstream methods
+    vsignal <- nodes$vsignal
+    vweight <- nodes$vweight
+    vertex <- nodes$name
     names(vsignal) <- names(vweight) <- vertex
-    vsignal <- .revise.vertex.signal(vsignal)
-    vweight <- .revise.vertex.weight(vweight)
-    #--- get signal scale and put pars in a list
-    zscale <- .getSignalScale(vsignal)
-    vwscale <- .get.vwscale(vweight)
-    pars <- list(nrc = nrc, mar = mar, 
-        zscale = zscale, vwscale=vwscale,
-        is.directed = igraph::is_directed(g))
-    #--- combine xy and center nodes
-    gxy <- cbind(X = X, Y = Y)
-    rownames(gxy) <- vertex
-    gxy <- .centerNodes(gxy, nrc, mar)
-    # get dists not related to vsignal
-    if(nrow(edges)>0){
+    
+    #--- update pars
+    pars$nrc <- nrc
+    pars$zscale <- .getSignalScale(vsignal)
+    pars$vwscale <- .get.vwscale(vweight)
+    
+    #--- rescale coordinates to nrc dimension
+    if(verbose) message("Rescaling 'x' and 'y' coordinates...")
+    gxy <- .rescale.coord(nodes, nrc)
+    
+    #--- get distances -not- related to vsignal
+    if(nrow(edges) > 0){
       if(verbose) message("Computing distances between connected vertices...")
       edges <- .get.edge.dist(gxy, edges)
+      edges$eweight <- 1
     } else {
       edges$edist <- numeric()
+      edges$eweight <- numeric()
     }
-    # add vsignal and vweight to gxy
-    gxy <- cbind(gxy, vsignal = vsignal, vweight = vweight)
+    
     #---create a PathwaySpace object
-    plnames <- c("Preprocess", "CircularProjection", "PolarProjection",
+    if(verbose) message("Creating a 'PathwaySpace' object...")
+    pnames <- c("Preprocess", "CircularProjection", "PolarProjection",
         "Silhouette", "Summits")
-    status <- rep("[ ]", length(plnames))
-    names(status) <- plnames
-    pts <- new(Class = "PathwaySpace",  vertex = vertex,
+    status <- rep("[ ]", length(pnames))
+    names(status) <- pnames
+    pts <- new(Class = "PathwaySpace",  
+        gspace = gs, vertex = vertex,
         vsignal = vsignal, vweight = vweight, 
         edges = edges, gxy = gxy, pars = pars, 
-        misc=list(g=g), status = status)
+        status = status)
     return(pts)
-}
-
-#-------------------------------------------------------------------------------
-.get.directed.edges <- function(g, vertex){
-    idxmutual <- igraph::which_mutual(g)
-    E(g)$emode <- 1
-    E(g)$emode[idxmutual] <- 2
-    emode <- igraph::as_adjacency_matrix(g, sparse = FALSE, attr = "emode")
-    bl <- lower.tri(emode) & emode==2
-    emode[bl] <- 0
-    edges <- arrayInd(seq_len(prod(dim(emode))), dim(emode), useNames = TRUE)
-    edges <- as.data.frame(edges)
-    colnames(edges) <- c("vertex1", "vertex2")
-    edges$emode <- as.numeric(emode)
-    edges <- edges[edges$emode>0,]
-    edges$name1 <- vertex[edges$vertex1]
-    edges$name2 <- vertex[edges$vertex2]
-    edges <- edges[order(edges$vertex1,edges$vertex2), ]
-    rownames(edges) <- NULL
-    edges$eweight <- 1
-    return(edges)
-}
-.get.undirected.edges <- function(g, vertex){
-    edges <- as_edgelist(g, names = FALSE)
-    rownames(edges) <- colnames(edges) <- NULL
-    edges <- as.data.frame(edges)
-    colnames(edges) <- c("vertex1", "vertex2")
-    edges$name1 <- vertex[edges$vertex1]
-    edges$name2 <- vertex[edges$vertex2]
-    edges <- edges[order(edges$vertex1,edges$vertex2), ]
-    edges$eweight <- 1
-    edges$emode <- 0
-    return(edges)
 }
 
 #-------------------------------------------------------------------------------
@@ -106,10 +69,10 @@
         }
     }
     if (kns == 1) {
-        min.ksearch <- ceiling(nrow(gxy) * 0.1)
-        min.ksearch <- min(max(min.ksearch, 10), nrow(gxy))
+        min.ksearch <- ceiling(nrow(gxy) * 0.01)
+        min.ksearch <- min(max(min.ksearch, 30), nrow(gxy))
     } else {
-        min.ksearch <- min(max(kns, 10), nrow(gxy))
+        min.ksearch <- min(max(kns, 30), nrow(gxy))
     }
     nnpg <- RANN::nn2(gxy[, c("X", "Y"), drop=FALSE], 
         lpts[, c("X", "Y"), drop=FALSE], k = min.ksearch)
@@ -217,35 +180,14 @@
     edges$edist <- dts
     return(edges)
 }
-.centerNodes <- function(gxy, nrc, mar = 0.1) {
-    #-- get scaling factors and margins
-    nmar <- floor(nrc * mar)
-    nrc.mar <- nrc - (nmar * 2)
-    #-- rescale in [0,1], keep aspect ratio
-    gxy[, 1] <- gxy[, 1] - min(gxy[, 1])
-    gxy[, 2] <- gxy[, 2] - min(gxy[, 2])
-    maxij <- max(gxy[, c(1, 2)])
-    if(maxij==0){
-        gxy[,] <- nrc/2
-    } else {
-        gxy[, 1] <- gxy[, 1] / maxij
-        gxy[, 2] <- gxy[, 2] / maxij
-        #-- set center and aspect ratio
-        ci <- 1 - max(gxy[, 1]) - min(gxy[, 1])
-        cj <- 1 - max(gxy[, 2]) - min(gxy[, 2])
-        gxy[, 1] <- gxy[, 1] + ci / 2
-        gxy[, 2] <- gxy[, 2] + cj / 2
-        #-- rescale in nrc.mar
-        gxy[, 1] <- gxy[, 1] * (nrc.mar - 1)
-        gxy[, 2] <- gxy[, 2] * (nrc.mar - 1)
-        #-- set center and coordinates
-        gxy[, 1] <- gxy[, 1] + 1
-        gxy[, 2] <- gxy[, 2] + 1
-        gxy[, 1] <- gxy[, 1] + nmar
-        gxy[, 2] <- gxy[, 2] + nmar
-    }
-    gxy <- cbind(gxy, Xint = round(gxy[, 1]), Yint = round(gxy[, 2]))
-    return(gxy)
+.rescale.coord <- function(nodes, nrc, from = c(0, 1)){
+  nodes$X <- scales::rescale(nodes$X, to = c(1, nrc), from = from)
+  nodes$Y <- scales::rescale(nodes$Y, to = c(1, nrc), from = from)
+  nodes$Xint <- round(nodes$X)
+  nodes$Yint <- round(nodes$Y)
+  nodes <- nodes[,c("X", "Y", "Xint", "Yint", "vsignal", "vweight")]
+  nodes <- as.matrix(nodes)
+  return(nodes)
 }
 
 ################################################################################
@@ -261,11 +203,11 @@
         if(verbose) message("Scaling projection to vertex weight...")
     }
     #--- compute landscape signal
-    if(verbose) message("Running signal processing and convolution...")
+    if(verbose) message("Running signal convolution...")
     xsig <- array(0, c(pars$nrc, pars$nrc))
     if (nrow(gxy) > 0) {
         xsig[lpts[, c("Y", "X")]] <- .get.ldsig(gxy,
-            pars, nnpg, ... = ...)
+            pars, nnpg, ...=...)
     }
     pts@misc$xsig <- xsig
     # image(.transpose.and.flip(xsig))
@@ -300,12 +242,12 @@
     pars <- getPathwaySpace(pts, "pars")
     if(pars$directional){
         if(pars$is.directed){
-            message("Using directional polar projection...")
+            message("Using polar projection on directed graph...")
         } else {
-            stop("'directional' used with undirected graphs.")
+            stop("'directional' used with undirected graph.")
         }
     } else {
-        if(verbose) message("Using undirectional polar projection...")
+        if(verbose) message("Using polar projection on undirected graph...")
     }
     gxy <- getPathwaySpace(pts, "gxy")
     lpts <- .pointsInMatrix(pars$nrc)
@@ -318,7 +260,7 @@
     rg <- rg[1] + ( (rg - rg[1]) * pars$pdist )
     edges$edistNorm <- scales::rescale(edges$edist, to=rg)
     #--- compute landscape signal
-    if(verbose) message("Running signal processing and convolution...")
+    if(verbose) message("Running signal convolution...")
     xsig <- array(0, c(pars$nrc, pars$nrc))
     if (nrow(gxy) > 0) {
         xsig[lpts[, c("Y", "X")]] <- .get.ldsig.polar(lpts,
@@ -436,7 +378,7 @@
         #--- project observed signal
         x <- p_dst / (pars$nrc * pdist)
         s <- p_sig / pars$zscale$maxsig
-        dsig <- decay_fun(x, s, ... = ...)
+        dsig <- decay_fun(x, s, ...=...)
         return(dsig)
     }, numeric(nn))
     if(is.matrix(dsig)){
@@ -510,7 +452,7 @@
         #--- project observed signal
         x <- p_dst / (pars$nrc * pdist)
         s <- p_sig / pars$zscale$maxsig
-        dsig <- decay_fun(x, s, ... = ...)
+        dsig <- decay_fun(x, s, ...=...)
         return(dsig)
     }, numeric(nn))
     if(is.matrix(dsig)){
@@ -656,11 +598,11 @@
     pars <- getPathwaySpace(pts, "pars")
     gxy <- getPathwaySpace(pts, "gxy")
     lpts <- .pointsInMatrix(pars$nrc)
-    #--- get point-to-vertice dists for silhouettes
+    #--- get point-to-vertices distances for silhouettes
     nnbg <- .get.silhouette.dists(lpts, gxy, pars$kns)
     #--- get landscape floor
     xfloor <- array(0, c(pars$nrc, pars$nrc))
-    if (pars$baseline > 0 && pars$pdist > 0) {
+    if (pars$pdist > 0) {
         xfloor[lpts[, c("Y", "X")]] <- .get.ldfloor(gxy, pars, nnbg)
     }
     xfloor <- .cutfloor(xfloor, pars)
@@ -713,22 +655,17 @@
 #-------------------------------------------------------------------------------
 .cutfloor <- function(xfloor, pars) {
     rg <- range(xfloor, na.rm = TRUE)
-    if (rg[1] < rg[2]) {
-        bln <- pars$baseline
+    if (rg[1] != rg[2]) {
         xfloor <- xfloor - rg[1]
         xfloor <- xfloor / max(xfloor, na.rm = TRUE)
-        x <- xfloor
-        x[x < bln] <- 0
-        x[x > 0] <- 1
-        x <- .fillCavity(x > 0)
-        xfloor[x == 0] <- 0
-        xfloor[x >= bln] <- 1
+        mask <- xfloor
+        mask[mask < pars$baseline] <- 0
+        mask[mask > 0] <- 1
+        if(pars$fillCavity) mask <- .fillCavity(mask)
+        xfloor[mask == 0] <- 0
+        xfloor[mask > 0] <- 1
     } else {
-        if (pars$baseline == 0) {
-            xfloor[, ] <- 1
-        } else {
-            xfloor[, ] <- 0
-        }
+      xfloor[, ] <- 0
     }
     xfloor[1, ] <- 0
     xfloor[, 1] <- 0
@@ -744,9 +681,9 @@
 #-------------------------------------------------------------------------------
 .pointsInMatrix <- function(nrc) {
     d <- c(nrc,nrc)
-    pts <- arrayInd(seq_len(prod(d)), d, useNames = TRUE)
-    colnames(pts) <- c("Y", "X")
-    return(pts)
+    lpts <- arrayInd(seq_len(prod(d)), d, useNames = TRUE)
+    colnames(lpts) <- c("Y", "X")
+    return(lpts)
 }
 
 #-------------------------------------------------------------------------------
@@ -783,7 +720,7 @@
     pts@misc$summits <- .find.summits(gxyz = gxyz,
         gxy = gxy, maxset = pars$maxset, minsize = pars$minsize,
         threshold = pars$summit_threshold,
-        segm_fun = pars$segm_fun, ... = ...)
+        segm_fun = pars$segm_fun, ...=...)
     return(pts)
 }
 
@@ -800,7 +737,7 @@
     #-- run watershed
     # smt <- summitWatershed(smt, tolerance=tolerance, ext=1)
     # smt <- base::do.call(segm_fun, c(list(x = smt), pars$segm_arg))
-    smt <- segm_fun(smt, ... = ...)
+    smt <- segm_fun(smt, ...=...)
     xx <- .openPxEdges(smt > 0)
     smt[xx == 0] <- 0
     

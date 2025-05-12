@@ -46,7 +46,7 @@ strategy to identify summits on a 2D-landscape image
 }
 \examples{
 # Load a demo igraph
-data('gtoy1', package = 'PathwaySpace')
+data('gtoy1', package = 'RGraphSpace')
 
 # Create a new PathwaySpace object
 pts <- buildPathwaySpace(gtoy1, nrc = 100)
@@ -63,6 +63,6 @@ pts <- summitMapping(pts)
 \code{\link{circularProjection}}
 }
 \author{
-Vinicius Chagas, Victor Apolonio, Mauro Castro, 
+Victor Apolonio, Vinicius Chagas, Mauro Castro, 
 and TCGA Network.
 }

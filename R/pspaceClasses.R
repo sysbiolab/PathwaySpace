@@ -1,9 +1,10 @@
 #' @title PathwaySpace: An S4 class for signal propagation on image spaces.
 #'
+#' @slot gspace A \code{\link[RGraphSpace]{GraphSpace-class}} object.
 #' @slot vertex A character vector with vertex names.
 #' @slot vsignal A numerical vector with vertex signals.
 #' @slot vweight A numerical vector with vertex weights.
-#' @slot edges  A data frame with edges. 
+#' @slot edges  A data frame with edges.
 #' @slot gxy A data frame with xy-vertex coordinates (numerical).
 #' @slot gxyz A numerical matrix with x-cols and y-rows coordinates,
 #' and a z-signal.
@@ -20,6 +21,7 @@
 #' @method getPathwaySpace \code{\link{getPathwaySpace}}
 #' @method plotPathwaySpace \code{\link{plotPathwaySpace}}
 #' @aliases PathwaySpace-class
+#' @importClassesFrom RGraphSpace GraphSpace
 #' @return An S4 class object.
 #' @section Constructor:
 #' see \code{\link{buildPathwaySpace}} constructor.
@@ -28,6 +30,7 @@
 ## Class PathwaySpace
 setClass("PathwaySpace",
     slot = c(
+        gspace = "GraphSpace",
         vertex = "character",
         vsignal = "numeric",
         vweight = "numeric",
@@ -39,6 +42,7 @@ setClass("PathwaySpace",
         status = "character"
     ),
     prototype = list(
+        gspace = new(Class = "GraphSpace"),
         vertex = character(),
         vsignal = numeric(),
         vweight = numeric(),

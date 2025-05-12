@@ -53,30 +53,6 @@
 #> [1] '_PACKAGE'
 
 ################################################################################
-### Documentation for some 'toy' datasets
-################################################################################
-#' @title Toy 'igraph' objects.
-#'
-#' @description Small 'igraph' objects used for workflow demonstrations.
-#' All graphs include 'x', 'y', and 'name' vertex attributes.
-#'
-#' @format igraph
-#'
-#' @usage data(gtoy1)
-#'
-#' @source This package.
-#'
-#' @docType data
-#' @keywords gtoys
-#' @name gtoys
-#' @aliases gtoy1 gtoy2
-#' @return A pre-processed igraph object.
-#' @examples
-#' data(gtoy1)
-#' data(gtoy2)
-NULL
-
-################################################################################
 ### Documentation for the 'gimage' dataset
 ################################################################################
 #' @title An image matrix.
@@ -323,7 +299,8 @@ pathDistances <- function(gdist, from, to, nperm = 1000, verbose=TRUE){
 #' plotPathDistances(res)
 #' 
 #' @importFrom stats density median density
-#' @importFrom ggplot2 geom_area ylab geom_segment geom_line theme_minimal
+#' @importFrom ggplot2 geom_area ylab geom_segment geom_line
+#' @importFrom ggplot2 xlab theme_minimal
 #' @aliases plotPathDistances
 #' @export
 #'

@@ -26,7 +26,7 @@ Get or set 'signal' for a \linkS4class{PathwaySpace}
 class object.
 }
 \examples{
-data('gtoy1', package = 'PathwaySpace')
+data('gtoy1', package = 'RGraphSpace')
 pts <- buildPathwaySpace(gtoy1, nrc = 100)
 vertexSignal(pts)
 

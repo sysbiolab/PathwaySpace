@@ -6,7 +6,13 @@
 \alias{silhouetteMapping}
 \title{Decorating PathwaySpace images with graph silhouettes.}
 \usage{
-\S4method{silhouetteMapping}{PathwaySpace}(pts, baseline = 0.01, pdist = 0.05, verbose = TRUE)
+\S4method{silhouetteMapping}{PathwaySpace}(
+  pts,
+  baseline = 0.01,
+  pdist = 0.05,
+  fillCavity = TRUE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{pts}{A \linkS4class{PathwaySpace} class object.}
@@ -23,6 +29,10 @@ the signal convolution related to the image space. This distance
 will affect the extent over which the convolution operation
 projects the image baseline.}
 
+\item{fillCavity}{A single logical value specifying to fill cavities 
+in the silhouette mask (when \code{verbose=TRUE}) or not 
+(when \code{verbose=FALSE}).}
+
 \item{verbose}{A single logical value specifying to display detailed 
 messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
 }
@@ -35,7 +45,7 @@ to outline the graph layout in a PathwaySpace image.
 }
 \examples{
 # Load a demo igraph
-data('gtoy1', package = 'PathwaySpace')
+data('gtoy1', package = 'RGraphSpace')
 
 # Create a new PathwaySpace object
 pts <- buildPathwaySpace(gtoy1, nrc = 100)
@@ -52,6 +62,6 @@ pts <- silhouetteMapping(pts)
 \code{\link{circularProjection}}
 }
 \author{
-Vinicius Chagas, Victor Apolonio, Mauro Castro,
+Victor Apolonio, Vinicius Chagas, Mauro Castro,
 and TCGA Network.
 }

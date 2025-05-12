@@ -3,44 +3,57 @@
 #' @description \code{buildPathwaySpace} is a constructor of
 #' PathwaySpace-class objects.
 #'
-#' @param g An \code{igraph} object. It must include graph
-#' layout information, with vertex coordinates assigned to \code{x} 
-#' and \code{y} vertex attributes. It must also include vertex labels 
-#' assigned to the \code{name} vertex attribute.
+#' @param gs Either a \code{\link[RGraphSpace]{GraphSpace}} or \code{igraph} 
+#' object. If provided as an \code{igraph}, it must include graph layout 
+#' information, with vertex coordinates assigned to \code{x} and \code{y} 
+#' vertex attributes, and vertex labels assigned to \code{name} vertex 
+#' attribute.
 #' @param nrc A single positive integer indicating the number of rows and 
 #' columns (in pixels) for a square image matrix. This argument will 
 #' affect the resulting image size and resolution.
 #' @param mar A single numeric value (in \code{[0,1]}) indicating the size of
-#' the outer margins as a fraction of the image matrix.
+#' the outer margins as a fraction of the image matrix. 
+#' Note: \code{mar} is ignored when \code{g} is provided as an object of 
+#' class \linkS4class{PathwaySpace}.
 #' @param verbose A single logical value specifying to display detailed 
 #' messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).
-#' @return A preprocessed \linkS4class{PathwaySpace} class object.
-#' @author Vinicius Chagas, Victor Apolonio, Mauro Castro,
+#' @param g Deprecated from PathwaySpace 1.2; use `gs` instead.
+#' @return A pre-processed \linkS4class{PathwaySpace} class object.
+#' @author Victor Apolonio, Vinicius Chagas, Mauro Castro,
 #' and TCGA Network.
 #' @seealso \code{\link[igraph]{undirected_graph}}
 #' @examples
 #' # Load a demo igraph
-#' data('gtoy1', package = 'PathwaySpace')
+#' data('gtoy1', package = 'RGraphSpace')
 #'
 #' # Create a new PathwaySpace object
 #' pts <- buildPathwaySpace(gtoy1, nrc = 100)
 #' # note: adjust 'nrc' to increase image resolution
 #' 
-#' @importFrom igraph degree vcount ecount which_mutual
+#' @importFrom igraph degree vcount ecount which_mutual is_igraph
 #' @importFrom igraph as_edgelist as_adjacency_matrix
 #' @importFrom igraph simplify V E 'V<-' 'E<-' is_directed
 #' @importFrom stats quantile sd
 #' @importFrom scales rescale
+#' @importFrom RGraphSpace GraphSpace getGraphSpace
 #' @importFrom RANN nn2
 #' @aliases buildPathwaySpace
 #' @export
 #'
-buildPathwaySpace <- function(g, nrc = 500, mar = 0.075, verbose = TRUE) {
-    if(verbose) message("Validating argument types and values...")
+buildPathwaySpace <- function(gs, nrc = 500, mar = 0.075, verbose = TRUE, 
+    g = deprecated()) {
+    if(verbose) message("Validating arguments...")
     #--- validate argument types
     .validate.args("singleInteger", "nrc", nrc)
     .validate.args("singleNumber", "mar", mar)
     .validate.args("singleLogical", "verbose", verbose)
+    ### deprecate
+    if (lifecycle::is_present(g)) {
+        deprecate_soft("1.0.1", "buildPathwaySpace(g)", 
+            "buildPathwaySpace(gs)")
+        gs <- g
+    }
+    ###
     #--- validate argument values
     if (nrc < 2) {
         stop("'nrc' should be >=2", call. = FALSE)
@@ -49,10 +62,13 @@ buildPathwaySpace <- function(g, nrc = 500, mar = 0.075, verbose = TRUE) {
         stop("'mar' should be in [0,1]", call. = FALSE)
     }
     #--- validate the igraph object
-    if(verbose) message("Validating 'g' object...")
-    .validate.igraph(g)
+    .validate.gspace(gs)
+    if(is_igraph(gs)){
+        gs <- GraphSpace(gs, mar=mar, verbose=verbose)
+    }
+    
     #--- build PathwaySpace-class
-    pts <- .buildPathwaySpace(g, nrc, mar, verbose)
+    pts <- .buildPathwaySpace(gs, nrc, verbose)
     pts <- .updateStatus(pts, "Preprocess")
     return(pts)
 }
@@ -79,17 +95,17 @@ buildPathwaySpace <- function(g, nrc = 500, mar = 0.075, verbose = TRUE) {
 #' rescaled to \code{[-1,1]}.
 #' @param verbose A single logical value specifying to display detailed 
 #' messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).
-#' @param decay_fun A signal decay function. Available: 'Weibull',
+#' @param .decay_fun A signal decay function. Available: 'Weibull',
 #' 'exponential', and 'linear' functions (see \code{\link{weibullDecay}}).
 #' @param knn Deprecated from PathwaySpace 1.0; use `kns` instead.
 #' @param ... Additional arguments passed to the decay function.
 #' @return A preprocessed \linkS4class{PathwaySpace} class object.
-#' @author Vinicius Chagas, Victor Apolonio, Mauro Castro, 
+#' @author Victor Apolonio, Vinicius Chagas, Mauro Castro, 
 #' and TCGA Network.
 #' @seealso \code{\link{buildPathwaySpace}}
 #' @examples
 #' # Load a demo igraph
-#' data('gtoy1', package = 'PathwaySpace')
+#' data('gtoy1', package = 'RGraphSpace')
 #'
 #' # Create a new PathwaySpace object
 #' pts <- buildPathwaySpace(gtoy1, nrc = 100)
@@ -107,7 +123,7 @@ buildPathwaySpace <- function(g, nrc = 500, mar = 0.075, verbose = TRUE) {
 #'
 setMethod("circularProjection", "PathwaySpace", function(pts, kns = 8,
     pdist = 0.15, rescale = TRUE, verbose = TRUE, 
-    decay_fun = weibullDecay, knn = deprecated(), ...) {
+    .decay_fun = weibullDecay, knn = deprecated(), ...) {
     #--- validate the pipeline status
     if (!.checkStatus(pts, "Preprocess")) {
         stop("NOTE: the 'pts' object needs preprocessing!", call. = FALSE)
@@ -119,13 +135,13 @@ setMethod("circularProjection", "PathwaySpace", function(pts, kns = 8,
         kns <- knn
     }
     ###
-    if(verbose) message("Validating argument types and values...")
+    if(verbose) message("Validating arguments...")
     #--- validate argument types
     .validate.args("singleInteger", "kns", kns)
     .validate.args("singleNumber", "pdist", pdist)
     .validate.args("singleLogical", "rescale", rescale)
     .validate.args("singleLogical", "verbose", verbose)
-    .validate.args("function", "decay_fun", decay_fun)
+    .validate.args("function", ".decay_fun", .decay_fun)
     #--- validate argument values
     if (kns < 1) {
         stop("'kns' should be >=1", call. = FALSE)
@@ -141,7 +157,7 @@ setMethod("circularProjection", "PathwaySpace", function(pts, kns = 8,
     }
     #--- pack args
     pars <- list(kns = kns, pdist = pdist, rescale = rescale, 
-        projection="Circular", decay_fun = decay_fun, 
+        projection="Circular", decay_fun = .decay_fun, 
         decay_args = list(...=...))
     for (nm in names(pars)) {
         pts@pars[[nm]] <- pars[[nm]]
@@ -183,17 +199,17 @@ setMethod("circularProjection", "PathwaySpace", function(pts, kns = 8,
 #' be used to orientate the signal projection on directed graphs.
 #' @param verbose A single logical value specifying to display detailed 
 #' messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).
-#' @param decay_fun A signal decay function. Available: 'Weibull', 
+#' @param .decay_fun A signal decay function. Available: 'Weibull', 
 #' 'exponential', and 'linear' functions (see \code{\link{weibullDecay}}).
 #' @param knn Deprecated from PathwaySpace 1.0; use `kns` instead.
 #' @param ... Additional arguments passed to the decay function.
 #' @return A preprocessed \linkS4class{PathwaySpace} class object.
-#' @author Vinicius Chagas, Victor Apolonio, Mauro Castro,
+#' @author Victor Apolonio, Vinicius Chagas, Mauro Castro,
 #' and TCGA Network.
 #' @seealso \code{\link{buildPathwaySpace}}
 #' @examples
 #' # Load a demo igraph
-#' data('gtoy1', package = 'PathwaySpace')
+#' data('gtoy1', package = 'RGraphSpace')
 #'
 #' # Create a new PathwaySpace object
 #' pts <- buildPathwaySpace(gtoy1, nrc = 100)
@@ -210,7 +226,7 @@ setMethod("circularProjection", "PathwaySpace", function(pts, kns = 8,
 #'
 setMethod("polarProjection", "PathwaySpace", function(pts, kns = 8, 
     pdist = 0.5, rescale = TRUE, theta = 180, directional = FALSE, 
-    verbose = TRUE, decay_fun = weibullDecay, knn = deprecated(), ...) {
+    verbose = TRUE, .decay_fun = weibullDecay, knn = deprecated(), ...) {
     #--- validate the pipeline status
     if (!.checkStatus(pts, "Preprocess")) {
         stop("NOTE: the 'pts' object needs preprocessing!", call. = FALSE)
@@ -222,14 +238,14 @@ setMethod("polarProjection", "PathwaySpace", function(pts, kns = 8,
         kns <- knn
     }
     ###
-    if(verbose) message("Validating argument types and values...")
+    if(verbose) message("Validating arguments...")
     .validate.args("singleInteger", "kns", kns)
     .validate.args("singleNumber", "pdist", pdist)
     .validate.args("singleNumber", "theta", theta)
     .validate.args("singleLogical", "rescale", rescale)
     .validate.args("singleLogical", "verbose", verbose)
     .validate.args("singleLogical", "directional", directional)
-    .validate.args("function", "decay_fun", decay_fun)
+    .validate.args("function", ".decay_fun", .decay_fun)
     if (kns < 1) {
         stop("'kns' should be >=1", call. = FALSE)
     }
@@ -249,7 +265,7 @@ setMethod("polarProjection", "PathwaySpace", function(pts, kns = 8,
     }
     pars <- list(kns = kns, pdist = pdist, theta = theta,  
         rescale = rescale, projection="Polar", directional = directional,
-        decay_fun = decay_fun, decay_args = list(...=...))
+        decay_fun = .decay_fun, decay_args = list(...=...))
     for (nm in names(pars)) {
         pts@pars[[nm]] <- pars[[nm]]
     }
@@ -280,15 +296,18 @@ setMethod("polarProjection", "PathwaySpace", function(pts, kns = 8,
 #' the signal convolution related to the image space. This distance
 #' will affect the extent over which the convolution operation
 #' projects the image baseline.
+#' @param fillCavity A single logical value specifying to fill cavities 
+#' in the silhouette mask (when \code{verbose=TRUE}) or not 
+#' (when \code{verbose=FALSE}).
 #' @param verbose A single logical value specifying to display detailed 
 #' messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).
 #' @return A preprocessed \linkS4class{PathwaySpace} class object.
-#' @author Vinicius Chagas, Victor Apolonio, Mauro Castro,
+#' @author Victor Apolonio, Vinicius Chagas, Mauro Castro,
 #' and TCGA Network.
 #' @seealso \code{\link{circularProjection}}
 #' @examples
 #' # Load a demo igraph
-#' data('gtoy1', package = 'PathwaySpace')
+#' data('gtoy1', package = 'RGraphSpace')
 #'
 #' # Create a new PathwaySpace object
 #' pts <- buildPathwaySpace(gtoy1, nrc = 100)
@@ -307,7 +326,7 @@ setMethod("polarProjection", "PathwaySpace", function(pts, kns = 8,
 #' @export
 #'
 setMethod("silhouetteMapping", "PathwaySpace", function(pts, baseline = 0.01,
-    pdist = 0.05, verbose = TRUE) {
+    pdist = 0.05, fillCavity = TRUE, verbose = TRUE) {
     #--- validate the pipeline status
     if (!.checkStatus(pts, "Projection")) {
         msg <- paste0("NOTE: the 'pts' object needs to be evaluated\n",
@@ -319,10 +338,11 @@ setMethod("silhouetteMapping", "PathwaySpace", function(pts, baseline = 0.01,
             "for polar projection.")
         stop(msg, call. = FALSE)
     }
-    if(verbose) message("Validating argument types and values...")
+    if(verbose) message("Validating arguments...")
     #--- validate argument types
     .validate.args("singleNumber", "baseline", baseline)
     .validate.args("singleNumber", "pdist", pdist)
+    .validate.args("singleLogical", "fillCavity", fillCavity)
     .validate.args("singleLogical", "verbose", verbose)
     #--- validate argument values
     if (baseline < 0 || baseline > 1) {
@@ -332,7 +352,7 @@ setMethod("silhouetteMapping", "PathwaySpace", function(pts, baseline = 0.01,
         stop("'pdist' should be in [0,1]", call. = FALSE)
     }
     #--- pack args
-    pars <- list(baseline = baseline, pdist = pdist)
+    pars <- list(baseline = baseline, pdist = pdist, fillCavity = fillCavity)
     for (nm in names(pars)) {
         pts@pars[[nm]] <- pars[[nm]]
     }
@@ -363,12 +383,12 @@ setMethod("silhouetteMapping", "PathwaySpace", function(pts, baseline = 0.01,
 #' (see \code{\link{summitWatershed}}).
 #' @param ... Additional arguments passed to the segmentation function.
 #' @return A preprocessed \linkS4class{PathwaySpace} class object.
-#' @author Vinicius Chagas, Victor Apolonio, Mauro Castro, 
+#' @author Victor Apolonio, Vinicius Chagas, Mauro Castro, 
 #' and TCGA Network.
 #' @seealso \code{\link{circularProjection}}
 #' @examples
 #' # Load a demo igraph
-#' data('gtoy1', package = 'PathwaySpace')
+#' data('gtoy1', package = 'RGraphSpace')
 #'
 #' # Create a new PathwaySpace object
 #' pts <- buildPathwaySpace(gtoy1, nrc = 100)
@@ -437,7 +457,7 @@ setMethod("summitMapping", "PathwaySpace", function(pts, maxset = 30,
 #' @return Content from slots in the \linkS4class{PathwaySpace} object.
 #' @examples
 #' # Load a demo igraph
-#' data('gtoy1', package = 'PathwaySpace')
+#' data('gtoy1', package = 'RGraphSpace')
 #'
 #' # Create a new PathwaySpace object
 #' pts <- buildPathwaySpace(gtoy1, nrc = 100)
@@ -452,14 +472,16 @@ setMethod("summitMapping", "PathwaySpace", function(pts, maxset = 30,
 #' @aliases getPathwaySpace
 #' @export
 setMethod("getPathwaySpace", "PathwaySpace", function(pts, what = "status") {
-    opts <- c("vertex", "vsignal", "vweight", "edges", 
+    opts <- c("gspace","vertex", "vsignal", "vweight", "edges", 
         "gxy", "gxyz", "pars", "misc", "status", "silhouette",
         "summits", "summit_mask", "summit_contour")
     if (!what %in% opts) {
         opts <- paste0(opts, collapse = ", ")
         stop("'what' must be one of:\n", opts, call. = FALSE)
     }
-    if (what == "vertex") {
+    if (what == "gspace") {
+        obj <- pts@gspace
+    } else if (what == "vertex") {
         obj <- pts@vertex
     } else if (what == "vsignal") {
         obj <- pts@vsignal
@@ -508,7 +530,7 @@ setMethod("show", "PathwaySpace", function(object) {
 #' @param x A \linkS4class{PathwaySpace} class object.
 #' @return A non-negative integer of length 1.
 #' @examples
-#' data('gtoy1', package = 'PathwaySpace')
+#' data('gtoy1', package = 'RGraphSpace')
 #' pts <- buildPathwaySpace(gtoy1, nrc = 100)
 #' length(pts)
 #' 
@@ -526,7 +548,7 @@ setMethod("length", "PathwaySpace", function(x) length(x@vertex))
 #' @param x A \linkS4class{PathwaySpace} class object.
 #' @return A character vector.
 #' @examples
-#' data('gtoy1', package = 'PathwaySpace')
+#' data('gtoy1', package = 'RGraphSpace')
 #' pts <- buildPathwaySpace(gtoy1, nrc = 100)
 #' names(pts)
 #'
@@ -549,7 +571,7 @@ setMethod("names", "PathwaySpace", function(x) x@vertex)
 #' intensities. This vector should be aligned to the "vertex" slot.
 #' @return A numeric vector.
 #' @examples
-#' data('gtoy1', package = 'PathwaySpace')
+#' data('gtoy1', package = 'RGraphSpace')
 #' pts <- buildPathwaySpace(gtoy1, nrc = 100)
 #' vertexSignal(pts)
 #'
@@ -598,7 +620,7 @@ setMethod("vertexSignal<-", "PathwaySpace",
 #' This vector should be aligned to the "vertex" slot.
 #' @return A numeric vector.
 #' @examples
-#' data('gtoy1', package = 'PathwaySpace')
+#' data('gtoy1', package = 'RGraphSpace')
 #' pts <- buildPathwaySpace(gtoy1, nrc = 100)
 #' vertexWeight(pts)
 #'

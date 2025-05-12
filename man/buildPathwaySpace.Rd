@@ -4,26 +4,31 @@
 \alias{buildPathwaySpace}
 \title{Constructor of PathwaySpace-class objects.}
 \usage{
-buildPathwaySpace(g, nrc = 500, mar = 0.075, verbose = TRUE)
+buildPathwaySpace(gs, nrc = 500, mar = 0.075, verbose = TRUE, g = deprecated())
 }
 \arguments{
-\item{g}{An \code{igraph} object. It must include graph
-layout information, with vertex coordinates assigned to \code{x} 
-and \code{y} vertex attributes. It must also include vertex labels 
-assigned to the \code{name} vertex attribute.}
+\item{gs}{Either a \code{\link[RGraphSpace]{GraphSpace}} or \code{igraph} 
+object. If provided as an \code{igraph}, it must include graph layout 
+information, with vertex coordinates assigned to \code{x} and \code{y} 
+vertex attributes, and vertex labels assigned to \code{name} vertex 
+attribute.}
 
 \item{nrc}{A single positive integer indicating the number of rows and 
 columns (in pixels) for a square image matrix. This argument will 
 affect the resulting image size and resolution.}
 
 \item{mar}{A single numeric value (in \code{[0,1]}) indicating the size of
-the outer margins as a fraction of the image matrix.}
+the outer margins as a fraction of the image matrix. 
+Note: \code{mar} is ignored when \code{g} is provided as an object of 
+class \linkS4class{PathwaySpace}.}
 
 \item{verbose}{A single logical value specifying to display detailed 
 messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
+
+\item{g}{Deprecated from PathwaySpace 1.2; use `gs` instead.}
 }
 \value{
-A preprocessed \linkS4class{PathwaySpace} class object.
+A pre-processed \linkS4class{PathwaySpace} class object.
 }
 \description{
 \code{buildPathwaySpace} is a constructor of
@@ -31,7 +36,7 @@ PathwaySpace-class objects.
 }
 \examples{
 # Load a demo igraph
-data('gtoy1', package = 'PathwaySpace')
+data('gtoy1', package = 'RGraphSpace')
 
 # Create a new PathwaySpace object
 pts <- buildPathwaySpace(gtoy1, nrc = 100)
@@ -42,6 +47,6 @@ pts <- buildPathwaySpace(gtoy1, nrc = 100)
 \code{\link[igraph]{undirected_graph}}
 }
 \author{
-Vinicius Chagas, Victor Apolonio, Mauro Castro,
+Victor Apolonio, Vinicius Chagas, Mauro Castro,
 and TCGA Network.
 }

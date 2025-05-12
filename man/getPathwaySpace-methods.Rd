@@ -25,7 +25,7 @@ individual slots available in a PathwaySpace object.
 }
 \examples{
 # Load a demo igraph
-data('gtoy1', package = 'PathwaySpace')
+data('gtoy1', package = 'RGraphSpace')
 
 # Create a new PathwaySpace object
 pts <- buildPathwaySpace(gtoy1, nrc = 100)
