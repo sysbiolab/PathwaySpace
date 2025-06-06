@@ -3,8 +3,8 @@
 #' @slot gspace A \code{\link[RGraphSpace]{GraphSpace-class}} object.
 #' @slot vertex A character vector with vertex names.
 #' @slot vsignal A numerical vector with vertex signals.
-#' @slot vweight A numerical vector with vertex weights.
-#' @slot edges  A data frame with edges.
+#' @slot nodes A data frame listing graph nodes.
+#' @slot edges A data frame listing graph edges.
 #' @slot gxy A data frame with xy-vertex coordinates (numerical).
 #' @slot gxyz A numerical matrix with x-cols and y-rows coordinates,
 #' and a z-signal.
@@ -33,7 +33,7 @@ setClass("PathwaySpace",
         gspace = "GraphSpace",
         vertex = "character",
         vsignal = "numeric",
-        vweight = "numeric",
+        nodes = "data.frame",
         edges = "data.frame",
         gxy = "matrix",
         gxyz = "matrix",
@@ -45,7 +45,7 @@ setClass("PathwaySpace",
         gspace = new(Class = "GraphSpace"),
         vertex = character(),
         vsignal = numeric(),
-        vweight = numeric(),
+        nodes = data.frame(),
         edges = data.frame(),
         gxy = matrix(nrow = 0, ncol = 2),
         gxyz = matrix(nrow = 0, ncol = 0),
@@ -56,18 +56,19 @@ setClass("PathwaySpace",
 )
 setValidity("PathwaySpace", function(object) {
     vertex <- object@vertex
-    slot_lengths <- c(length(vertex), 
-        length(object@vsignal), 
-        length(object@vweight))
+    vsignal <- object@vsignal
+    slot_lengths <- c(length(vertex), length(vsignal))
     if (length(unique(slot_lengths)) != 1){
-        msg <- paste0("lengths of slots 'vertex', 'vsignal', ", 
-            "and 'vweight' differ.")
+        msg <- paste0("lengths of slots 'vertex' and 'vsignal' differ.")
         return(msg)
     }
-    if (anyDuplicated(vertex)>0){
+    if (anyDuplicated(vertex) > 0){
         return("slot 'vertex' should contain unique names.")
     }
     if (length(vertex) != nrow(object@gxy)){
+        return("names in slots 'vertex' and 'gxy' differ.")
+    }
+    if ( any(vertex != rownames(object@gxy)) ){
         return("names in slots 'vertex' and 'gxy' differ.")
     }
     TRUE

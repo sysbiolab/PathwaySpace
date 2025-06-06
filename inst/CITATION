@@ -14,7 +14,7 @@ textVersion = paste("Tercan B, Apolonio VH, Chagas VS, Wong CK, Lee JA, et al.",
 )
 
 bibentry(bibtype = "Article",
-author = "Kyle Ellrott, Christopher K Wong, Christina Yau, Mauro AA Castro, Jordan A Lee, Brian J Karlberg, Jasleen K Grewal, Vincenzo Lagani, Bahar Tercan, others",
+author = "Kyle Ellrott, Christopher K Wong, Christina Yau, Mauro AA Castro, Jordan A Lee, Brian J Karlberg, Jasleen K Grewal, Vincenzo Lagani, Bahar Tercan, et al.",
 title = "Classification of non-TCGA cancer samples to TCGA molecular subtypes using compact feature sets",
 journal = "Cancer Cell",
 year = "2025",
@@ -22,7 +22,7 @@ volume = "43",
 number = "1",
 pages = "1",
 doi = "10.1016/j.ccell.2024.12.002",
-textVersion = paste("Ellrott K, Wong CK, Yau C, Castro MAA, Lee JA, Karlberg BJ, Grewal JK, Lagani V, Tercan B, et al.", 
+textVersion = paste("Ellrott K, Wong CK, Yau C, Castro MAA, Lee JA, Karlberg BJ, Grewal JK, Lagani V, Tercan B et al.", 
 "Classification of non-TCGA cancer samples to TCGA molecular subtypes using compact feature sets.",
 "Cancer Cell 43(2):195-212.e11, 2024. doi: 10.1016/j.ccell.2024.12.002", sep=" ")
 )

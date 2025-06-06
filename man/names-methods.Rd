@@ -20,7 +20,7 @@ class object.
 }
 \examples{
 data('gtoy1', package = 'RGraphSpace')
-pts <- buildPathwaySpace(gtoy1, nrc = 100)
-names(pts)
+ps <- buildPathwaySpace(gtoy1, nrc = 100)
+names(ps)
 
 }

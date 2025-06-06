@@ -3,21 +3,18 @@
 #' @description \code{buildPathwaySpace} is a constructor of
 #' PathwaySpace-class objects.
 #'
-#' @param gs Either a \code{\link[RGraphSpace]{GraphSpace}} or \code{igraph} 
-#' object. If provided as an \code{igraph}, it must include graph layout 
-#' information, with vertex coordinates assigned to \code{x} and \code{y} 
-#' vertex attributes, and vertex labels assigned to \code{name} vertex 
-#' attribute.
+#' @param gs A \code{\link[RGraphSpace]{GraphSpace}} object. Alternatively, 
+#' an \code{\link[igraph]{igraph}} object with vertex coordinates assigned 
+#' to \code{x} and \code{y} vertex attributes, and vertex labels assigned 
+#' to \code{name} vertex attribute.
 #' @param nrc A single positive integer indicating the number of rows and 
 #' columns (in pixels) for a square image matrix. This argument will 
 #' affect the resulting image size and resolution.
-#' @param mar A single numeric value (in \code{[0,1]}) indicating the size of
-#' the outer margins as a fraction of the image matrix. 
-#' Note: \code{mar} is ignored when \code{g} is provided as an object of 
-#' class \linkS4class{PathwaySpace}.
 #' @param verbose A single logical value specifying to display detailed 
 #' messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).
-#' @param g Deprecated from PathwaySpace 1.2; use `gs` instead.
+#' @param g Deprecated from PathwaySpace 1.0.1; use 'gs' instead.
+#' @param mar Deprecated from PathwaySpace 1.0.1; use 'mar' in  
+#' \code{\link[RGraphSpace]{GraphSpace}} instead.
 #' @return A pre-processed \linkS4class{PathwaySpace} class object.
 #' @author Victor Apolonio, Vinicius Chagas, Mauro Castro,
 #' and TCGA Network.
@@ -25,9 +22,12 @@
 #' @examples
 #' # Load a demo igraph
 #' data('gtoy1', package = 'RGraphSpace')
-#'
+#' 
+#' # Check graph validity
+#' gs <- GraphSpace(gtoy1, mar = 0.1)
+#' 
 #' # Create a new PathwaySpace object
-#' pts <- buildPathwaySpace(gtoy1, nrc = 100)
+#' ps <- buildPathwaySpace(gs, nrc = 100)
 #' # note: adjust 'nrc' to increase image resolution
 #' 
 #' @importFrom igraph degree vcount ecount which_mutual is_igraph
@@ -40,12 +40,11 @@
 #' @aliases buildPathwaySpace
 #' @export
 #'
-buildPathwaySpace <- function(gs, nrc = 500, mar = 0.075, verbose = TRUE, 
-    g = deprecated()) {
+buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE, 
+    g = deprecated(), mar = deprecated()) {
     if(verbose) message("Validating arguments...")
     #--- validate argument types
     .validate.args("singleInteger", "nrc", nrc)
-    .validate.args("singleNumber", "mar", mar)
     .validate.args("singleLogical", "verbose", verbose)
     ### deprecate
     if (lifecycle::is_present(g)) {
@@ -53,52 +52,55 @@ buildPathwaySpace <- function(gs, nrc = 500, mar = 0.075, verbose = TRUE,
             "buildPathwaySpace(gs)")
         gs <- g
     }
+    if (lifecycle::is_present(mar)) {
+        deprecate_soft("1.0.1", "buildPathwaySpace(mar)", 
+            "GraphSpace(mar)")
+    }
     ###
     #--- validate argument values
     if (nrc < 2) {
         stop("'nrc' should be >=2", call. = FALSE)
     }
-    if (mar < 0 || mar > 1) {
-        stop("'mar' should be in [0,1]", call. = FALSE)
-    }
-    #--- validate the igraph object
-    .validate.gspace(gs)
+    #--- validate the graph object
     if(is_igraph(gs)){
-        gs <- GraphSpace(gs, mar=mar, verbose=verbose)
+        if(verbose) message("Validating the 'igraph' object...")
+        gs <- GraphSpace(gs, verbose=FALSE)
     }
+    .validate.gspace(gs)
     
     #--- build PathwaySpace-class
-    pts <- .buildPathwaySpace(gs, nrc, verbose)
-    pts <- .updateStatus(pts, "Preprocess")
-    return(pts)
+    ps <- .buildPathwaySpace(gs, nrc, verbose)
+    ps <- .updateStatus(ps, "Preprocess")
+    return(ps)
 }
 
 #' @title Creating 2D-landscape images from graph objects.
 #'
 #' @description \code{circularProjection} implements a convolution
-#' algorithm to project signal across a 2D-coordinate system.
+#' algorithm to project signals across a 2D-coordinate system.
 #'
-#' @param pts A \linkS4class{PathwaySpace} class object.
-#' @param kns A single positive integer determining the k-nearest signal 
-#' sources used in the signal convolution operation.
-#' @param pdist A term (in \code{[0,1]}) determining a distance unit for the
-#' signal convolution related to the image space. This distance will affect the
+#' @param ps A \linkS4class{PathwaySpace} class object.
+#' @param k A single positive integer determining the k-top signals in the 
+#' signal convolution operation.
+#' @param pdist A term (in \code{[0, 1]}) determining a distance unit for the
+#' signal decay function. When `pdist = 1` it will represent the diameter of 
+#' the inscribed circle within the pathway space. This distance will affect the
 #' extent over which the convolution operation projects the signal between
-#' source- and destination points. The signal projection tends to zero at
-#' `pdist`, and when `pdist = 1` the projection will extend to its maximum 
-#' distance, defined by the diameter of the inscribed circle within the 
-#' pathway space.
+#' source- and destination points.
 #' @param rescale A single logical value indicating whether to rescale 
 #' the signal. If the signal \code{>=0}, then it will be rescaled to 
-#' \code{[0,1]}; if the signal \code{<=0}, then it will be rescaled to 
-#' \code{[-1,0]}; and if the signal in \code{(-Inf,+Inf)}, then it will be 
-#' rescaled to \code{[-1,1]}.
+#' \code{[0, 1]}; if the signal \code{<=0}, then it will be rescaled to 
+#' \code{[-1, 0]}; and if the signal in \code{(-Inf, +Inf)}, then it will be 
+#' rescaled to \code{[-1, 1]}.
 #' @param verbose A single logical value specifying to display detailed 
 #' messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).
-#' @param .decay_fun A signal decay function. Available: 'Weibull',
-#' 'exponential', and 'linear' functions (see \code{\link{weibullDecay}}).
-#' @param knn Deprecated from PathwaySpace 1.0; use `kns` instead.
-#' @param ... Additional arguments passed to the decay function.
+#' @param decay.fun A signal decay function. Available: 'Weibull',
+#' 'exponential', and 'linear' functions (see \code{\link{signalDecay}}).
+#' @param aggregate.fun A signal aggregation function. Available: 
+#' weighted 'linear', 'log', and 'exponential' functions 
+#' (see \code{\link{signalAggregation}}).
+#' @param kns Deprecated from PathwaySpace 1.0.1; use 'k' instead.
+#' @param knn Deprecated from PathwaySpace 1.0.1; use 'k' instead.
 #' @return A preprocessed \linkS4class{PathwaySpace} class object.
 #' @author Victor Apolonio, Vinicius Chagas, Mauro Castro, 
 #' and TCGA Network.
@@ -108,11 +110,14 @@ buildPathwaySpace <- function(gs, nrc = 500, mar = 0.075, verbose = TRUE,
 #' data('gtoy1', package = 'RGraphSpace')
 #'
 #' # Create a new PathwaySpace object
-#' pts <- buildPathwaySpace(gtoy1, nrc = 100)
+#' ps <- buildPathwaySpace(gtoy1, nrc = 100)
 #' # note: adjust 'nrc' to increase image resolution
-#'
+#' 
+#' # Set '1s' as vertex signal
+#' vertexSignal(ps) <- 1
+#' 
 #' # Create a 2D-landscape image
-#' pts <- circularProjection(pts)
+#' ps <- circularProjection(ps)
 #'
 #' @import methods
 #' @importFrom lifecycle deprecated deprecate_soft is_present
@@ -121,102 +126,107 @@ buildPathwaySpace <- function(gs, nrc = 500, mar = 0.075, verbose = TRUE,
 #' @aliases circularProjection
 #' @export
 #'
-setMethod("circularProjection", "PathwaySpace", function(pts, kns = 8,
-    pdist = 0.15, rescale = TRUE, verbose = TRUE, 
-    .decay_fun = weibullDecay, knn = deprecated(), ...) {
+setMethod("circularProjection", "PathwaySpace", function(ps, k = 8,
+  pdist = 0.15, rescale = TRUE, verbose = TRUE, 
+  decay.fun = signalDecay(), aggregate.fun = signalAggregation(), 
+  kns = deprecated(), knn = deprecated()) {
     #--- validate the pipeline status
-    if (!.checkStatus(pts, "Preprocess")) {
-        stop("NOTE: the 'pts' object needs preprocessing!", call. = FALSE)
+    if (!.checkStatus(ps, "Preprocess")) {
+        stop("NOTE: the 'ps' object needs preprocessing!", call. = FALSE)
     }
     ### deprecate
+    if (lifecycle::is_present(kns)) {
+        deprecate_soft("1.0.1", "circularProjection(kns)", 
+            "circularProjection(k)")
+        k <- kns
+    }
     if (lifecycle::is_present(knn)) {
-        deprecate_soft("1.0.0", "circularProjection(knn)", 
-            "circularProjection(kns)")
-        kns <- knn
+      deprecate_soft("1.0.1", "circularProjection(knn)", 
+        "circularProjection(k)")
+      k <- knn
     }
     ###
     if(verbose) message("Validating arguments...")
     #--- validate argument types
-    .validate.args("singleInteger", "kns", kns)
+    .validate.args("singleInteger", "k", k)
     .validate.args("singleNumber", "pdist", pdist)
     .validate.args("singleLogical", "rescale", rescale)
     .validate.args("singleLogical", "verbose", verbose)
-    .validate.args("function", ".decay_fun", .decay_fun)
+    .validate.args("function", "decay.fun", decay.fun)
+    .validate.args("function", "aggregate.fun", aggregate.fun)
     #--- validate argument values
-    if (kns < 1) {
-        stop("'kns' should be >=1", call. = FALSE)
+    if (k < 1) {
+        stop("'k' should be >=1", call. = FALSE)
     }
-    k <- length(getPathwaySpace(pts, "vertex"))
-    if (kns > k) {
-        if(verbose)
-            message("-- provided kns > k vertices; kns will be adjusted to k.")
-        kns <- k
-    }
+    n <- length(getPathwaySpace(ps, "vertex"))
+    if (k > n) k <- n
     if (pdist < 0 || pdist > 1) {
         stop("'pdist' should be in [0,1]", call. = FALSE)
     }
     #--- pack args
-    pars <- list(kns = kns, pdist = pdist, rescale = rescale, 
-        projection="Circular", decay_fun = .decay_fun, 
-        decay_args = list(...=...))
+    pars <- list(k = k, pdist = pdist, rescale = rescale, 
+      projection="Circular", decay_fun = decay.fun, 
+      aggregate_fun = aggregate.fun)
     for (nm in names(pars)) {
-        pts@pars[[nm]] <- pars[[nm]]
+        ps@pars$proj[[nm]] <- pars[[nm]]
     }
-    #--- run pts pipeline
-    pts <- .circularProjection(pts, verbose, ...=...)
-    pts <- .updateStatus(pts, "CircularProjection")
-    if (.checkStatus(pts, "PolarProjection")) {
+    #--- run ps pipeline
+    ps <- .circularProjection(ps, verbose)
+    ps <- .updateStatus(ps, "CircularProjection")
+    if (.checkStatus(ps, "PolarProjection")) {
         if(verbose) message("-- polar projection replaced by circular.")
-        pts <- .updateStatus(pts, "PolarProjection", FALSE)
+        ps <- .updateStatus(ps, "PolarProjection", FALSE)
     }
-    # pts <- .removeSummits(pts, verbose)
-    # pts <- .removeSilhouette(pts, verbose)
-    return(pts)
+    # ps <- .removeSilhouette(ps, verbose)
+    return(ps)
 })
 
 #' @title Creating 2D-landscape images from graph objects.
 #'
 #' @description \code{polarProjection} implements a convolution algorithm
-#' to project a signal across a 2D-coordinate system.
+#' to project signals across a 2D-coordinate system.
 #'
-#' @param pts A \linkS4class{PathwaySpace} class object.
-#' @param kns A single positive integer determining the k-nearest signal 
-#' sources used in the signal convolution operation.
-#' @param pdist A term (in \code{[0,1]}) determining a distance unit for the
-#' signal convolution related to length between any two connected vertices. 
-#' This distance will affect the extent over which the convolution operation 
-#' projects the signal between source- and destination points along the 
-#' polar coordinates of the edges. The signal projection tends to zero at
-#' `pdist`, and when `pdist = 1` the projection will extend to its maximum 
-#' distance, defined by the length between the two connected vertices.
-#' @param rescale A single logical value indicating whether to rescale 
-#' the signal. If the signal \code{>=0}, then it will be rescaled to 
-#' \code{[0,1]}; if the signal \code{<=0}, then it will be rescaled to 
-#' \code{[-1,0]}; and if the signal in \code{(-Inf,+Inf)}, then it will be 
-#' rescaled to \code{[-1,1]}.
+#' @param ps A \linkS4class{PathwaySpace} class object.
+#' @param k A single positive integer determining the k-top signals in the 
+#' signal convolution operation.
+#' @param pdist A term (in \code{[0, 1]}) determining a distance unit for the
+#' signal decay function. When `pdist = 1` it will represent the diameter of 
+#' the inscribed circle within the pathway space. This distance will affect the
+#' extent over which the convolution operation projects the signal between
+#' source- and destination points.
 #' @param theta Angle of projection (degrees in \code{(0,360]}).
 #' @param directional If directional edges are available, this argument can 
 #' be used to orientate the signal projection on directed graphs.
+#' @param rescale A single logical value indicating whether to rescale 
+#' the signal. If the signal \code{>=0}, then it will be rescaled to 
+#' \code{[0, 1]}; if the signal \code{<=0}, then it will be rescaled to 
+#' \code{[-1, 0]}; and if the signal in \code{(-Inf, +Inf)}, then it will be 
+#' rescaled to \code{[-1, 1]}.
 #' @param verbose A single logical value specifying to display detailed 
 #' messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).
-#' @param .decay_fun A signal decay function. Available: 'Weibull', 
-#' 'exponential', and 'linear' functions (see \code{\link{weibullDecay}}).
-#' @param knn Deprecated from PathwaySpace 1.0; use `kns` instead.
-#' @param ... Additional arguments passed to the decay function.
+#' @param decay.fun A signal decay function. Available: 'Weibull', 
+#' 'exponential', and 'linear' functions (see \code{\link{signalDecay}}).
+#' @param aggregate.fun A signal aggregation function. Available: 
+#' weighted 'linear', 'log', and 'exponential' functions 
+#' (see \code{\link{signalAggregation}}).
+#' @param kns Deprecated from PathwaySpace 1.0.1; use 'k' instead.
+#' @param knn Deprecated from PathwaySpace 1.0.1; use 'k' instead.
 #' @return A preprocessed \linkS4class{PathwaySpace} class object.
-#' @author Victor Apolonio, Vinicius Chagas, Mauro Castro,
-#' and TCGA Network.
+#' @author Mauro Castro
 #' @seealso \code{\link{buildPathwaySpace}}
 #' @examples
 #' # Load a demo igraph
-#' data('gtoy1', package = 'RGraphSpace')
+#' data('gtoy2', package = 'RGraphSpace')
 #'
 #' # Create a new PathwaySpace object
-#' pts <- buildPathwaySpace(gtoy1, nrc = 100)
+#' ps <- buildPathwaySpace(gtoy2, nrc = 100)
 #' # note: adjust 'nrc' to increase image resolution
-#'
+#' 
+#' # Set '1s' as vertex signal
+#' vertexSignal(ps) <- 1
+#' 
 #' # Create a 2D-landscape image
-#' pts <- polarProjection(pts)
+#' ps <- polarProjection(ps)
 #'
 #' @import methods
 #' @docType methods
@@ -224,37 +234,41 @@ setMethod("circularProjection", "PathwaySpace", function(pts, kns = 8,
 #' @aliases polarProjection
 #' @export
 #'
-setMethod("polarProjection", "PathwaySpace", function(pts, kns = 8, 
-    pdist = 0.5, rescale = TRUE, theta = 180, directional = FALSE, 
-    verbose = TRUE, .decay_fun = weibullDecay, knn = deprecated(), ...) {
+setMethod("polarProjection", "PathwaySpace", function(ps, k = 8, 
+  pdist = 0.5, theta = 180, directional = FALSE, 
+  rescale = TRUE, verbose = TRUE, decay.fun = signalDecay(), 
+  aggregate.fun = signalAggregation(), 
+  kns = deprecated(), knn = deprecated()) {
     #--- validate the pipeline status
-    if (!.checkStatus(pts, "Preprocess")) {
-        stop("NOTE: the 'pts' object needs preprocessing!", call. = FALSE)
+    if (!.checkStatus(ps, "Preprocess")) {
+        stop("NOTE: the 'ps' object needs preprocessing!", call. = FALSE)
     }
     ### deprecate
+    if (lifecycle::is_present(kns)) {
+        deprecate_soft("1.0.1", "polarProjection(kns)", 
+            "polarProjection(k)")
+        k <- kns
+    }
     if (lifecycle::is_present(knn)) {
-        deprecate_soft("1.0.0", "polarProjection(knn)", 
-            "polarProjection(kns)")
-        kns <- knn
+      deprecate_soft("1.0.1", "polarProjection(knn)", 
+        "polarProjection(k)")
+      k <- knn
     }
     ###
     if(verbose) message("Validating arguments...")
-    .validate.args("singleInteger", "kns", kns)
+    .validate.args("singleInteger", "k", k)
     .validate.args("singleNumber", "pdist", pdist)
     .validate.args("singleNumber", "theta", theta)
     .validate.args("singleLogical", "rescale", rescale)
     .validate.args("singleLogical", "verbose", verbose)
     .validate.args("singleLogical", "directional", directional)
-    .validate.args("function", ".decay_fun", .decay_fun)
-    if (kns < 1) {
-        stop("'kns' should be >=1", call. = FALSE)
+    .validate.args("function", "decay.fun", decay.fun)
+    .validate.args("function", "aggregate.fun", aggregate.fun)
+    if (k < 1) {
+        stop("'k' should be >=1", call. = FALSE)
     }
-    k <- length(getPathwaySpace(pts, "vertex"))
-    if (kns > k) {
-        if(verbose)
-            message("-- provided kns > k vertices; kns will be adjusted to k.")
-        kns <- k
-    }
+    n <- length(getPathwaySpace(ps, "vertex"))
+    if (k > n) k <- n
     if (pdist < 0 || pdist > 1) {
         stop("'pdist' should be in [0,1]", call. = FALSE)
     }
@@ -263,21 +277,20 @@ setMethod("polarProjection", "PathwaySpace", function(pts, kns = 8,
             "with degrees in (0,360]")
         stop(msg, call. = FALSE)
     }
-    pars <- list(kns = kns, pdist = pdist, theta = theta,  
-        rescale = rescale, projection="Polar", directional = directional,
-        decay_fun = .decay_fun, decay_args = list(...=...))
+    pars <- list(k = k, pdist = pdist, theta = theta,  
+      rescale = rescale, projection="Polar", directional = directional,
+      decay_fun = decay.fun, aggregate_fun = aggregate.fun)
     for (nm in names(pars)) {
-        pts@pars[[nm]] <- pars[[nm]]
+        ps@pars$proj[[nm]] <- pars[[nm]]
     }
-    pts <- .polarProjection(pts, verbose, ...=...)
-    pts <- .updateStatus(pts, "PolarProjection")
-    if (.checkStatus(pts, "CircularProjection")) {
+    ps <- .polarProjection(ps, verbose)
+    ps <- .updateStatus(ps, "PolarProjection")
+    if (.checkStatus(ps, "CircularProjection")) {
         if(verbose) message("-- circular projection replaced by polar.")
-        pts <- .updateStatus(pts, "CircularProjection", FALSE)
+        ps <- .updateStatus(ps, "CircularProjection", FALSE)
     }
-    # pts <- .removeSummits(pts, verbose)
-    # pts <- .removeSilhouette(pts, verbose)s
-    return(pts)
+    # ps <- .removeSilhouette(ps, verbose)
+    return(ps)
 })
 
 #' @title Decorating PathwaySpace images with graph silhouettes.
@@ -285,39 +298,37 @@ setMethod("polarProjection", "PathwaySpace", function(pts, kns = 8,
 #' @description \code{silhouetteMapping} constructs an image baseline used
 #' to outline the graph layout in a PathwaySpace image.
 #'
-#' @param pts A \linkS4class{PathwaySpace} class object.
+#' @param ps A \linkS4class{PathwaySpace} class object.
 #' @param baseline A fraction (in \code{[0,1]}) of the signal scale of a 
 #' PathwaySpace image. This term only affects the image baseline projection, 
 #' which represents a silhouette of the graph's layout outlined in the 
 #' resulting image. When \code{baseline = 0} (i.e. lower level of the signal 
 #' scale), the baseline will extend over the entire image space, so no 
 #' silhouette will be visible.
-#' @param pdist A term (in \code{0,1}) determining a distance unit for
-#' the signal convolution related to the image space. This distance
-#' will affect the extent over which the convolution operation
-#' projects the image baseline.
-#' @param fillCavity A single logical value specifying to fill cavities 
+#' @param pdist A term (in \code{[0,1]}) determining a distance unit for the
+#' signal decay function. This distance will affect the extent over which 
+#' the convolution operation projects the image baseline.
+#' @param fill.cavity A single logical value specifying to fill cavities 
 #' in the silhouette mask (when \code{verbose=TRUE}) or not 
 #' (when \code{verbose=FALSE}).
 #' @param verbose A single logical value specifying to display detailed 
 #' messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).
 #' @return A preprocessed \linkS4class{PathwaySpace} class object.
-#' @author Victor Apolonio, Vinicius Chagas, Mauro Castro,
-#' and TCGA Network.
+#' @author Mauro Castro and TCGA Network.
 #' @seealso \code{\link{circularProjection}}
 #' @examples
 #' # Load a demo igraph
 #' data('gtoy1', package = 'RGraphSpace')
 #'
 #' # Create a new PathwaySpace object
-#' pts <- buildPathwaySpace(gtoy1, nrc = 100)
+#' ps <- buildPathwaySpace(gtoy1, nrc = 100)
 #' # note: adjust 'nrc' to increase image resolution
-#'
-#' # Create a 2D-landscape image
-#' pts <- circularProjection(pts)
+#' 
+#' # Set '1s' as vertex signal
+#' vertexSignal(ps) <- 1
 #'
 #' # Map graph silhouette
-#' pts <- silhouetteMapping(pts)
+#' ps <- silhouetteMapping(ps, pdist = 0.1)
 #'
 #' @import methods
 #' @docType methods
@@ -325,24 +336,17 @@ setMethod("polarProjection", "PathwaySpace", function(pts, kns = 8,
 #' @aliases silhouetteMapping
 #' @export
 #'
-setMethod("silhouetteMapping", "PathwaySpace", function(pts, baseline = 0.01,
-    pdist = 0.05, fillCavity = TRUE, verbose = TRUE) {
+setMethod("silhouetteMapping", "PathwaySpace", function(ps, baseline = 0.01,
+    pdist = 0.05, fill.cavity = TRUE, verbose = TRUE) {
     #--- validate the pipeline status
-    if (!.checkStatus(pts, "Projection")) {
-        msg <- paste0("NOTE: the 'pts' object needs to be evaluated\n",
-            "by a 'projection' method!")
-        stop(msg, call. = FALSE)
-    }
-    if (.checkStatus(pts, "PolarProjection")) {
-        msg <- paste0("NOTE: silhouette decoration not available\n",
-            "for polar projection.")
-        stop(msg, call. = FALSE)
+    if (!.checkStatus(ps, "Preprocess")) {
+      stop("NOTE: the 'ps' object needs preprocessing!", call. = FALSE)
     }
     if(verbose) message("Validating arguments...")
     #--- validate argument types
     .validate.args("singleNumber", "baseline", baseline)
     .validate.args("singleNumber", "pdist", pdist)
-    .validate.args("singleLogical", "fillCavity", fillCavity)
+    .validate.args("singleLogical", "fill.cavity", fill.cavity)
     .validate.args("singleLogical", "verbose", verbose)
     #--- validate argument values
     if (baseline < 0 || baseline > 1) {
@@ -351,17 +355,19 @@ setMethod("silhouetteMapping", "PathwaySpace", function(pts, baseline = 0.01,
     if (pdist < 0 || pdist > 1) {
         stop("'pdist' should be in [0,1]", call. = FALSE)
     }
-    #--- pack args
-    pars <- list(baseline = baseline, pdist = pdist, fillCavity = fillCavity)
+    #--- pack args (for default projection)
+    n <- length(getPathwaySpace(ps, "vertex"))
+    k <- min(8, n)
+    pars <- list(baseline = baseline, pdist = pdist, k = k, 
+      fill.cavity = fill.cavity, decay_fun = signalDecay())
     for (nm in names(pars)) {
-        pts@pars[[nm]] <- pars[[nm]]
+        ps@pars$silh[[nm]] <- pars[[nm]]
     }
-    #--- run pts pipeline
+    #--- run ps pipeline
     if(verbose) message("Mapping graph silhouette...")
-    pts <- .silhouetteCircular(pts, verbose)
-    pts <- .updateStatus(pts, "Silhouette")
-    # pts <- .removeSummits(pts, verbose)
-    return(pts)
+    ps <- .silhouetteCircular(ps, verbose)
+    ps <- .updateStatus(ps, "Silhouette")
+    return(ps)
 })
 
 #' @title Mapping summits on PathwaySpace images.
@@ -370,7 +376,7 @@ setMethod("silhouetteMapping", "PathwaySpace", function(pts, baseline = 0.01,
 #' strategy to identify summits on a 2D-landscape image 
 #' (see \code{\link{summitWatershed}}).
 #'
-#' @param pts A \linkS4class{PathwaySpace} class object.
+#' @param ps A \linkS4class{PathwaySpace} class object.
 #' @param maxset A single positive integer indicating the maximum number 
 #' of summits to be returned by the segmentation function.
 #' @param minsize A single positive integer indicating the minimum size 
@@ -383,22 +389,14 @@ setMethod("silhouetteMapping", "PathwaySpace", function(pts, baseline = 0.01,
 #' (see \code{\link{summitWatershed}}).
 #' @param ... Additional arguments passed to the segmentation function.
 #' @return A preprocessed \linkS4class{PathwaySpace} class object.
-#' @author Victor Apolonio, Vinicius Chagas, Mauro Castro, 
-#' and TCGA Network.
+#' @author Mauro Castro and TCGA Network.
 #' @seealso \code{\link{circularProjection}}
 #' @examples
-#' # Load a demo igraph
-#' data('gtoy1', package = 'RGraphSpace')
-#'
-#' # Create a new PathwaySpace object
-#' pts <- buildPathwaySpace(gtoy1, nrc = 100)
-#' # note: adjust 'nrc' to increase image resolution
-#'
-#' # Create a 2D-landscape image
-#' pts <- circularProjection(pts)
-#'
-#' # Map summits in a 2D-landscape image
-#' pts <- summitMapping(pts)
+#' # Load a large igraph
+#' data("PCv12_pruned_igraph", package = "PathwaySpace")
+#' 
+#' # Continue this example from the PathwaySpace vignette,
+#' # in the 'PathwaySpace decoration' section
 #'
 #' @import methods
 #' @docType methods
@@ -406,12 +404,12 @@ setMethod("silhouetteMapping", "PathwaySpace", function(pts, baseline = 0.01,
 #' @aliases summitMapping
 #' @export
 #'
-setMethod("summitMapping", "PathwaySpace", function(pts, maxset = 30, 
+setMethod("summitMapping", "PathwaySpace", function(ps, maxset = 30, 
     minsize = 30, threshold = 0.5, verbose = TRUE, 
     segm_fun = summitWatershed, ...) {
     #--- validate the pipeline status
-    if (!.checkStatus(pts, "Projection")) {
-        msg <- paste0("NOTE: the 'pts' object needs to be\n",
+    if (!.checkStatus(ps, "Projection")) {
+        msg <- paste0("NOTE: the 'ps' object needs to be\n",
             "evaluated by a 'projection' method!")
         stop(msg, call. = FALSE)
     }
@@ -436,12 +434,12 @@ setMethod("summitMapping", "PathwaySpace", function(pts, maxset = 30,
         summit_threshold = threshold, segm_fun = segm_fun,
         segm_arg = list(...=...))
     for (nm in names(pars)) {
-        pts@pars[[nm]] <- pars[[nm]]
+        ps@pars$summit[[nm]] <- pars[[nm]]
     }
-    #--- run pts pipeline
-    pts <- .summitMapping(pts, verbose, ...=...)
-    pts <- .updateStatus(pts, "Summits")
-    return(pts)
+    #--- run ps pipeline
+    ps <- .summitMapping(ps, verbose, ...=...)
+    ps <- .updateStatus(ps, "Summits")
+    return(ps)
 })
 
 #' @title Accessors for fetching slots from a PathwaySpace object.
@@ -449,7 +447,7 @@ setMethod("summitMapping", "PathwaySpace", function(pts, maxset = 30,
 #' @description \code{getPathwaySpace} retrives information from
 #' individual slots available in a PathwaySpace object.
 #'
-#' @param pts A preprocessed \linkS4class{PathwaySpace} class object
+#' @param ps A preprocessed \linkS4class{PathwaySpace} class object
 #' @param what A single character value specifying which information should 
 #' be retrieved from the slots.
 #' Options: 'graph','gxy','gxyz','pars','misc','status','summits',
@@ -460,19 +458,19 @@ setMethod("summitMapping", "PathwaySpace", function(pts, maxset = 30,
 #' data('gtoy1', package = 'RGraphSpace')
 #'
 #' # Create a new PathwaySpace object
-#' pts <- buildPathwaySpace(gtoy1, nrc = 100)
+#' ps <- buildPathwaySpace(gtoy1, nrc = 100)
 #' # note: adjust 'nrc' to increase image resolution
 #'
-#' # Get the 'status' slot in pts
-#' status <- getPathwaySpace(pts, what = 'status')
+#' # Get the 'status' slot in ps
+#' status <- getPathwaySpace(ps, what = 'status')
 #'
 #' @import methods
 #' @docType methods
 #' @rdname getPathwaySpace-methods
 #' @aliases getPathwaySpace
 #' @export
-setMethod("getPathwaySpace", "PathwaySpace", function(pts, what = "status") {
-    opts <- c("gspace","vertex", "vsignal", "vweight", "edges", 
+setMethod("getPathwaySpace", "PathwaySpace", function(ps, what = "status") {
+    opts <- c("gspace","vertex", "vsignal", "nodes", "edges", 
         "gxy", "gxyz", "pars", "misc", "status", "silhouette",
         "summits", "summit_mask", "summit_contour")
     if (!what %in% opts) {
@@ -480,33 +478,33 @@ setMethod("getPathwaySpace", "PathwaySpace", function(pts, what = "status") {
         stop("'what' must be one of:\n", opts, call. = FALSE)
     }
     if (what == "gspace") {
-        obj <- pts@gspace
+        obj <- ps@gspace
     } else if (what == "vertex") {
-        obj <- pts@vertex
+        obj <- ps@vertex
     } else if (what == "vsignal") {
-        obj <- pts@vsignal
-    } else if (what == "vweight") {
-        obj <- pts@vweight
+        obj <- ps@vsignal
+    } else if (what == "nodes") {
+        obj <- ps@nodes
     } else if (what == "edges") {
-        obj <- pts@edges
+        obj <- ps@edges
     } else if (what == "gxy") {
-        obj <- pts@gxy
+        obj <- ps@gxy
     } else if (what == "gxyz") {
-        obj <- pts@gxyz
+        obj <- ps@gxyz
     } else if (what == "pars") {
-        obj <- pts@pars
+        obj <- ps@pars
     } else if (what == "misc") {
-        obj <- pts@misc
+        obj <- ps@misc
     } else if (what == "status") {
-        obj <- pts@status
+        obj <- ps@status
     } else if (what == "silhouette") {
-        obj <- pts@misc$silhouette
+        obj <- ps@misc$xfloor
     } else if (what == "summits") {
-        obj <- pts@misc$summits$lset
+        obj <- ps@misc$summits$lset
     } else if (what == "summit_mask") {
-        obj <- pts@misc$summits$mset
+        obj <- ps@misc$summits$mset
     } else if (what == "summit_contour") {
-        obj <- pts@misc$summits$cset
+        obj <- ps@misc$summits$cset
     }
     return(obj)
 })
@@ -531,8 +529,8 @@ setMethod("show", "PathwaySpace", function(object) {
 #' @return A non-negative integer of length 1.
 #' @examples
 #' data('gtoy1', package = 'RGraphSpace')
-#' pts <- buildPathwaySpace(gtoy1, nrc = 100)
-#' length(pts)
+#' ps <- buildPathwaySpace(gtoy1, nrc = 100)
+#' length(ps)
 #' 
 #' @rdname length-methods
 #' @aliases length
@@ -549,8 +547,8 @@ setMethod("length", "PathwaySpace", function(x) length(x@vertex))
 #' @return A character vector.
 #' @examples
 #' data('gtoy1', package = 'RGraphSpace')
-#' pts <- buildPathwaySpace(gtoy1, nrc = 100)
-#' names(pts)
+#' ps <- buildPathwaySpace(gtoy1, nrc = 100)
+#' names(ps)
 #'
 #' @import methods
 #' @docType methods
@@ -566,40 +564,54 @@ setMethod("names", "PathwaySpace", function(x) x@vertex)
 #' @description Get or set 'signal' for a \linkS4class{PathwaySpace}
 #' class object.
 #'
-#' @param pts A \linkS4class{PathwaySpace} class object.
+#' @param ps A \linkS4class{PathwaySpace} class object.
 #' @param value A numeric vector with values representing signal
 #' intensities. This vector should be aligned to the "vertex" slot.
 #' @return A numeric vector.
 #' @examples
 #' data('gtoy1', package = 'RGraphSpace')
-#' pts <- buildPathwaySpace(gtoy1, nrc = 100)
-#' vertexSignal(pts)
-#'
+#' ps <- buildPathwaySpace(gtoy1, nrc = 100)
+#' 
+#' # Check vertex names
+#' names(ps)
+#' 
+#' # Check vertex signal
+#' vertexSignal(ps)
+#' 
+#' # Set signal to a given vertex
+#' vertexSignal(ps)[1] <- 1
+#' 
+#' # Set signal to a given vertex
+#' vertexSignal(ps)["n3"] <- 1
+#' 
+#' # Set '1s' to all vertices
+#' vertexSignal(ps) <- 1
+#' 
 #' @import methods
 #' @docType methods
 #' @rdname vertexSignal-methods
 #' @aliases vertexSignal
 #' @aliases vertexSignal<-
 #' @export
-setMethod("vertexSignal", "PathwaySpace", function(pts) pts@vsignal)
+setMethod("vertexSignal", "PathwaySpace", function(ps) ps@vsignal)
 
 #' @rdname vertexSignal-methods
 #' @export
 setMethod("vertexSignal<-", "PathwaySpace",
-    function(pts, value) {
-        pts@vsignal[] <- value
-        validObject(pts)
-        pts <- .update.vsignal(pts)
-        return(pts)
+    function(ps, value) {
+        ps@vsignal[] <- value
+        validObject(ps)
+        ps <- .update.vsignal(ps)
+        return(ps)
     }
 )
-.update.vsignal <- function(pts) {
-    vsignal <- vertexSignal(pts)
+.update.vsignal <- function(ps) {
+    vsignal <- vertexSignal(ps)
     vsignal <- .revise.vertex.signal(vsignal)
-    pts@gxy[,"vsignal"] <- vsignal
-    zscale <- .getSignalScale(vsignal)
-    pts@pars$zscale <- zscale
-    return(pts)
+    ps@gxy[,"vsignal"] <- vsignal
+    zscale <- .get.signal.scale(vsignal)
+    ps@pars$zscale <- zscale
+    return(ps)
 }
 .revise.vertex.signal <- function(vsignal){
     vsignal[is.nan(vsignal)] <- NA
@@ -608,58 +620,3 @@ setMethod("vertexSignal<-", "PathwaySpace",
     if (all(is.na(vsignal))) vsignal[] <- 0
     return(vsignal)
 }
-
-#-------------------------------------------------------------------------------
-#' @title Accessor functions for fetching slots from a PathwaySpace object.
-#'
-#' @description Get or set 'weights' for a \linkS4class{PathwaySpace}
-#' class object.
-#'
-#' @param pts A \linkS4class{PathwaySpace} class object.
-#' @param value A numeric vector with values representing vertex weights.
-#' This vector should be aligned to the "vertex" slot.
-#' @return A numeric vector.
-#' @examples
-#' data('gtoy1', package = 'RGraphSpace')
-#' pts <- buildPathwaySpace(gtoy1, nrc = 100)
-#' vertexWeight(pts)
-#'
-#' @import methods
-#' @docType methods
-#' @rdname vertexWeight-methods
-#' @aliases vertexWeight
-#' @aliases vertexWeight<-
-#' @export
-setMethod("vertexWeight", "PathwaySpace", function(pts) pts@vweight)
-
-#' @rdname vertexWeight-methods
-#' @export
-setMethod("vertexWeight<-", "PathwaySpace",
-    function(pts, value) {
-        pts@vweight[] <- value
-        validObject(pts)
-        pts <- .update.vweight(pts)
-        return(pts)
-    }
-)
-.update.vweight <- function(pts) {
-    vweight <- vertexWeight(pts)
-    vweight <- .revise.vertex.weight(vweight)
-    pts@pars$vwscale <- .get.vwscale(vweight)
-    pts@gxy[,"vweight"] <- vweight
-    return(pts)
-}
-.revise.vertex.weight <- function(vweight){
-    if (all(is.na(vweight))) vweight[] <- 1
-    vweight[is.na(vweight)] <- min(vweight, na.rm = TRUE)
-    if (sd(vweight) > 0) {
-        vweight <- scales::rescale(vweight, to = c(1, 2))
-    } else {
-        vweight[] <- 1
-    }
-    return(vweight)
-}
-
-
-
-

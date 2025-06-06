@@ -1,11 +1,7 @@
 
 #-------------------------------------------------------------------------------
 .validate.gspace <- function(g){
-  if(is_igraph(g)){
-    n <- igraph::vcount(g)
-  } else {
-    n <- nrow(getGraphSpace(g, "nodes"))
-  }
+  n <- nrow(getGraphSpace(g, "nodes"))
   if (n<2) {
     stop("'gs' should have at least two vertices.", call. = FALSE) 
   }
@@ -59,12 +55,12 @@
 
 #-------------------------------------------------------------------------------
 .validate.colors <- function(check, name, para) {
-    if (name == "singleColor") {
+    if (check == "singleColor") {
         if (!.is_singleColor(para)) {
             msg <- paste0("'", name, "' should be a single color.")
             stop(msg, call. = FALSE)
         }
-    } else if (name == "allColors") {
+    } else if (check == "allColors") {
         if (!.is_color(para)) {
             msg <- paste0("'", name, "' should be a vector with colors.")
             stop(msg, call. = FALSE)
@@ -103,15 +99,8 @@
                 stop(msg, call. = FALSE)
             }
         }
-    } else if (name == "bg.color") {
-        if (!is.null(para)) {
-            if (!.is_singleColor(para)) {
-                msg <- paste0("'", name, "' should be a single color.")
-                stop(msg, call. = FALSE)
-            }
-        }
     } else if (name == "marks") {
-        if (!.is_singleLogical(para)) {
+        if (!is.null(para)) {
             if (!.all_characterValues(para)) {
                 msg <- paste0("'", name, "' should be a vector with strings.")
                 stop(msg, call. = FALSE)

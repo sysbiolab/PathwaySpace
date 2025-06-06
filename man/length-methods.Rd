@@ -18,7 +18,7 @@ Get length of a PathwaySpace object.
 }
 \examples{
 data('gtoy1', package = 'RGraphSpace')
-pts <- buildPathwaySpace(gtoy1, nrc = 100)
-length(pts)
+ps <- buildPathwaySpace(gtoy1, nrc = 100)
+length(ps)
 
 }

@@ -7,67 +7,74 @@
 \title{Plotting 2D-landscape images for the PathwaySpace package.}
 \usage{
 \S4method{plotPathwaySpace}{PathwaySpace}(
-  pts,
+  ps,
   colors = pspace.cols(),
   trim.colors = c(3, 2, 1, 2, 3),
-  bg.color = "grey85",
-  theme.name = c("th0", "th1", "th2", "th3"),
+  bg.color = "grey95",
+  si.color = "grey85",
+  si.alpha = 1,
+  theme = c("th0", "th1", "th2", "th3"),
   title = "PathwaySpace",
-  font.size = 1,
-  font.color = "white",
   xlab = "Pathway coordinates 1",
   ylab = "Pathway coordinates 2",
   zlab = "Density",
+  font.size = 1,
+  font.color = "white",
   zlim = NULL,
   slices = 25,
   add.grid = TRUE,
   grid.color = "white",
-  add.contour = TRUE,
-  contour.color = "white",
+  add.summits = TRUE,
   label.summits = TRUE,
-  marks = FALSE,
+  summit.color = "white",
+  add.marks = FALSE,
+  marks = NULL,
   mark.size = 3,
   mark.color = "white",
   mark.padding = 0.5,
   mark.line.width = 0.5,
-  use.dotmark = FALSE
+  use.dotmark = FALSE,
+  add.image = FALSE
 )
 }
 \arguments{
-\item{pts}{A \linkS4class{PathwaySpace} class object.}
+\item{ps}{A \linkS4class{PathwaySpace} class object.}
 
-\item{colors}{A vector of colors. Each color is a specific tone used to 
-create a customized color palette that matches the signal type projected 
-in the image space, such as binary or numeric values in (-Inf, +Inf). The 
-palette will be created with 5-color tones, interpolated according to the
-provided sequence in the vector of colors. The proportion of each color 
-tone can be adjusted by the 'trim.colors' argument. The primary objective 
-of this color palette construction is to enhance the visibility of summits 
-and valleys in the image space. If you wish to bypass the automatic palette 
-generation and use the 'colors' input as-is, simply set 'trim.colors' 
-to NULL.}
+\item{colors}{A vector of colors. Each color is a specific hue used to 
+create a customized color palette, interpolated according to the provided 
+sequence in the vector of colors. The proportion of each color hue can be 
+adjusted by the 'trim.colors' argument. This palette is designed to 
+fine-tune the visibility of summits and valleys within the image space.
+To bypass this automatic palette generation and use the 'colors' 
+input as-is, simply set 'trim.colors' to NULL.}
 
 \item{trim.colors}{An vector with 5 positive integer numbers. This argument
-can be used to adjust the proportion of each color tone in the palette.}
+can be used to adjust the proportion of each color hue in the palette.}
 
 \item{bg.color}{A single color for background.}
 
-\item{theme.name}{Name of a custom PathwaySpace theme. These themes 
+\item{si.color}{A single color for silhouette.
+(see \code{\link{silhouetteMapping}}).}
+
+\item{si.alpha}{A transparency level in [0, 1], used to adjust the 
+opacity of the silhouette. This parameter is useful for improving the 
+perception of a background image, when one is available.}
+
+\item{theme}{Name of a custom PathwaySpace theme. These themes 
 (from 'th0' to 'th3') consist mainly of preconfigured ggplot settings, 
-which the user can subsequently fine-tune within the resulting 
-ggplot object.}
+which the user can subsequently refine using \code{\link[ggplot2]{ggplot2}}.}
 
 \item{title}{A string for the title.}
-
-\item{font.size}{A single numeric value passed to ggplot themes.}
-
-\item{font.color}{A single color passed to ggplot themes.}
 
 \item{xlab}{The title for the 'x' axis of a 2D-image space.}
 
 \item{ylab}{The title for the 'y' axis of a 2D-image space.}
 
 \item{zlab}{The title for the 'z' axis of the image signal.}
+
+\item{font.size}{A single numeric value passed to ggplot themes.}
+
+\item{font.color}{A single color passed to ggplot themes.}
 
 \item{zlim}{The 'z' limits of the plot (a numeric vector with two numbers).
 If NULL, limits are determined from the range of the input values.}
@@ -81,21 +88,22 @@ is decorated with graph silhouettes (see \code{\link{silhouetteMapping}}).}
 
 \item{grid.color}{A color passed to \code{\link[ggplot2]{geom_point}}.}
 
-\item{add.contour}{A logical value indicating whether to add contour 
-lines to 'summits' (see \code{\link{summitMapping}}).}
+\item{add.summits}{A logical value indicating whether to add contour 
+lines to 'summits' (when summits are available; 
+see \code{\link{summitMapping}}).}
 
-\item{contour.color}{A color passed to \code{\link[ggplot2]{geom_tile}}.}
+\item{label.summits}{A logical value indicating whether to label summits.}
 
-\item{label.summits}{A logical value indicating whether to label summits,
-(when summits are available).}
+\item{summit.color}{A color passed to 'summits'.}
 
-\item{marks}{A logical value indicating whether to add 'marks' to vertex 
-positions. Alternatively, this could be a vector listing vertex names.}
+\item{add.marks}{A logical value indicating whether to plot vertex labels.}
 
-\item{mark.size}{A font size argument passed to 
-\code{\link[ggplot2]{geom_text}}.}
+\item{marks}{A vector of vertex names to be highlighted in the 
+image space. This argument overrides 'add.labels'.}
 
-\item{mark.color}{A color passed to \code{\link[ggrepel]{geom_text_repel}}.}
+\item{mark.size}{A size argument passed to \code{\link[ggplot2]{geom_text}}.}
+
+\item{mark.color}{A color passed to \code{\link[ggplot2]{geom_text}}.}
 
 \item{mark.padding}{A box padding argument passed to 
 \code{\link[ggrepel]{geom_text_repel}}.}
@@ -105,6 +113,9 @@ positions. Alternatively, this could be a vector listing vertex names.}
 
 \item{use.dotmark}{A logical value indicating whether "marks" should be 
 represented as dots.}
+
+\item{add.image}{A logical value indicating whether to add a background 
+image, when one is available (see \code{\link[RGraphSpace]{GraphSpace}}).}
 }
 \value{
 A ggplot-class object.
@@ -117,24 +128,26 @@ create dedicated ggplot graphics for PathwaySpace-class objects.
 # Load a demo igraph
 data('gtoy1', package = 'RGraphSpace')
 
-# Create a new PathwaySpace object
-pts <- buildPathwaySpace(gtoy1, nrc = 100)
+# # Check graph validity
+gs <- GraphSpace(gtoy1)
+
+# Create a PathwaySpace object
+ps <- buildPathwaySpace(gs, nrc = 300)
 # note: adjust 'nrc' to increase image resolution
 
-# Create a 2D-landscape image
-pts <- circularProjection(pts)
+# Set '1s' as vertex signal
+vertexSignal(ps) <- 1
 
-# Map graph silhouette
-pts <- silhouetteMapping(pts)
+# Create a 2D-landscape image
+ps <- circularProjection(ps, k = 2, pdist = 0.4)
 
 # Plot a 2D-landscape image
-plotPathwaySpace(pts)
+plotPathwaySpace(ps)
 
 }
 \seealso{
 \code{\link{circularProjection}}
 }
 \author{
-Vinicius Chagas, Victor Apolonio, Mauro Castro, 
-and TCGA Network.
+Mauro Castro and TCGA Network.
 }

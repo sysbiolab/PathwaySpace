@@ -4,33 +4,33 @@
 \alias{weibullDecay}
 \title{Weibull decay function.}
 \usage{
-weibullDecay(x, signal, decay = 0.999, shape = 1.05)
+weibullDecay(x, signal = 1, decay = 0.001, shape = 1.05)
 }
 \arguments{
 \item{x}{A numeric vector of distances (in [0,1]).}
 
 \item{signal}{A single numeric value representing a signal.}
 
-\item{decay}{The rate (in [0,1]) at which the signal decays.
-This term indicates how much the \code{signal} decreases at a certain
-distance in \code{x}. At the distance defined by the \code{pdist} term
-(see \code{\link{circularProjection}}), the signal's value will
-correspond to the initial signal multiplied by \code{1 - decay}.}
+\item{decay}{A decay factor (in [0,1]). This term indicates how much the
+\code{signal} decreases as a function of distance in pathway space. 
+For example, at a specific distance defined by the \code{pdist} parameter 
+(see \code{\link{circularProjection}}), the signal intensity will
+be the initial signal multiplied by \code{decay}.}
 
 \item{shape}{A parameter (>=1) of a Weibull function. When \code{shape=1}
 the Weibull decay follows an exponential decay. When \code{shape>1}
 the function is first convex, then concave with an inflection point.}
 }
 \value{
-A numeric vector.
+A numeric vector; if missing 'x', it will return decay function.
 }
 \description{
 The \code{weibullDecay} function is used by
 PathwaySpace's methods for signal convolution and projection.
 }
 \examples{
-x <- c(1:100) / 100
-y <- weibullDecay(x, 1)
+x <- seq(0, 2, 0.01)
+y <- weibullDecay(x, signal = 1, decay = 0.5, shape = 4)
 plot(x, y)
 
 }
@@ -38,6 +38,5 @@ plot(x, y)
 \code{\link{expDecay}}, \code{\link{linearDecay}}
 }
 \author{
-Vinicius Chagas, Victor Apolonio, and
-Mauro Castro (\email{mauro.castro@ufpr.br})
+Mauro Castro.
 }

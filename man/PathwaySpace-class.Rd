@@ -19,9 +19,9 @@ PathwaySpace: An S4 class for signal propagation on image spaces.
 
 \item{\code{vsignal}}{A numerical vector with vertex signals.}
 
-\item{\code{vweight}}{A numerical vector with vertex weights.}
+\item{\code{nodes}}{A data frame listing graph nodes.}
 
-\item{\code{edges}}{A data frame with edges.}
+\item{\code{edges}}{A data frame listing graph edges.}
 
 \item{\code{gxy}}{A data frame with xy-vertex coordinates (numerical).}
 

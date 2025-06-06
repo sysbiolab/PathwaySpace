@@ -8,37 +8,43 @@
     pars <- getGraphSpace(gs, "pars")
     # get nodes
     nodes <- getGraphSpace(gs, "nodes")
-    nodes <- nodes[, c("X", "Y", "name")]
+    nodes <- nodes[, c("X", "Y", "name", "weight")]
     # get edges
     edges <- getGraphSpace(gs, "edges")
-    edges <- edges[, c("vertex1", "vertex2", "name1", "name2", "emode")]
-    # initialize values
-    nodes$vsignal <- 0
-    nodes$vweight <- 1
+    edges <- edges[, c("vertex1", "vertex2", "name1",
+      "name2", "emode", "weight")]
     
-    #--- make vectors used in downstream methods
+    #--- initialize v-signal
+    nodes$vsignal <- 0
     vsignal <- nodes$vsignal
-    vweight <- nodes$vweight
     vertex <- nodes$name
-    names(vsignal) <- names(vweight) <- vertex
+    names(vsignal) <- vertex
     
     #--- update pars
     pars$nrc <- nrc
-    pars$zscale <- .getSignalScale(vsignal)
-    pars$vwscale <- .get.vwscale(vweight)
+    pars$zscale <- .get.signal.scale(vsignal)
+    pars <- .update.zlim(pars)
+    
+    #--- check weights
+    nodes$weight <- .revise.weights(nodes$weight)
+    pars$vweight <- .get.wscale(nodes$weight)
+    if(nrow(edges)>0){
+      edges$weight <- .revise.weights(edges$weight)
+      pars$eweight <- .get.wscale(edges$weight)
+    } else {
+      pars$eweight <- FALSE
+    }
     
     #--- rescale coordinates to nrc dimension
     if(verbose) message("Rescaling 'x' and 'y' coordinates...")
     gxy <- .rescale.coord(nodes, nrc)
     
-    #--- get distances -not- related to vsignal
+    #--- get distances -not- related to v-signal
     if(nrow(edges) > 0){
       if(verbose) message("Computing distances between connected vertices...")
       edges <- .get.edge.dist(gxy, edges)
-      edges$eweight <- 1
     } else {
       edges$edist <- numeric()
-      edges$eweight <- numeric()
     }
     
     #---create a PathwaySpace object
@@ -47,46 +53,36 @@
         "Silhouette", "Summits")
     status <- rep("[ ]", length(pnames))
     names(status) <- pnames
-    pts <- new(Class = "PathwaySpace",  
-        gspace = gs, vertex = vertex,
-        vsignal = vsignal, vweight = vweight, 
-        edges = edges, gxy = gxy, pars = pars, 
-        status = status)
-    return(pts)
+    ps <- new(Class = "PathwaySpace",  
+      gspace = gs, vertex = vertex, vsignal = vsignal, 
+      nodes = nodes, edges = edges, gxy = gxy, 
+      pars = pars, status = status)
+    return(ps)
 }
 
 #-------------------------------------------------------------------------------
-#--- get point-to-vertice dists for circular and polar projections
-.get.kns.dists <- function(lpts, gxy, kns, bg.rm = TRUE){
-    # message("Computing distance between k-nearest neighbors...")
-    if(bg.rm){
-        bg <- is.na(gxy[,"vsignal"]) | gxy[,"vsignal"]==0
-        if(all(bg)){
-            bg.rm <- FALSE
-        } else {
-            gxy <- cbind(gxy, key=seq_len(nrow(gxy)))
-            gxy <- gxy[!bg, , drop=FALSE]
-        }
-    }
-    if (kns == 1) {
-        min.ksearch <- ceiling(nrow(gxy) * 0.01)
-        min.ksearch <- min(max(min.ksearch, 30), nrow(gxy))
-    } else {
-        min.ksearch <- min(max(kns, 30), nrow(gxy))
-    }
-    nnpg <- RANN::nn2(gxy[, c("X", "Y"), drop=FALSE], 
-        lpts[, c("X", "Y"), drop=FALSE], k = min.ksearch)
-    names(nnpg) <- c("nn", "dist")
-    if(bg.rm){
-        nnpg$nn[,] <- as.numeric(gxy[as.numeric(nnpg$nn),"key"])
-    }
-    return(nnpg)
+#--- get point-to-vertices distances for circular and polar projections
+.get.ksignal <- function(lpts, gxy, k, min.ksearch = 30){
+  gxy <- cbind(gxy, key=seq_len(nrow(gxy)))
+  bg <- is.na(gxy[,"vsignal"]) | gxy[,"vsignal"]==0
+  if(!all(bg)) gxy <- gxy[!bg, , drop=FALSE]
+  if (k == 1) {
+    ksearch <- ceiling(nrow(gxy) * 0.01)
+    ksearch <- min(max(ksearch, min.ksearch), nrow(gxy))
+  } else {
+    ksearch <- min(max(k, min.ksearch), nrow(gxy))
+  }
+  nnpg <- RANN::nn2(gxy[, c("X", "Y"), drop=FALSE], 
+    lpts[, c("X", "Y"), drop=FALSE], k = ksearch)
+  names(nnpg) <- c("nn", "dist")
+  nnpg$nn[,] <- as.numeric(gxy[as.numeric(nnpg$nn),"key"])
+  return(nnpg)
 }
 
 #-------------------------------------------------------------------------------
-#--- get point-to-vertice dists for silhouettes
-.get.silhouette.dists <- function(lpts, gxy, kns){
-    min.ksearch <- min(max(kns, 10), nrow(gxy))
+#--- get point-to-vertices dists for silhouettes
+.get.silhouette.dists <- function(lpts, gxy, k){
+    min.ksearch <- min(max(k, 10), nrow(gxy))
     nnbg <- RANN::nn2(gxy[, c("X", "Y")], lpts[, c("X", "Y")],
         k = min.ksearch)
     names(nnbg) <- c("nn", "dist")
@@ -96,41 +92,42 @@
 ################################################################################
 ### Accessors of the constructor
 ################################################################################
-.updateStatus <- function(pts, name, check = TRUE) {
-    pts@status[name] <- ifelse(check, "[x]", "[ ]")
-    return(pts)
+.updateStatus <- function(ps, name, check = TRUE) {
+    ps@status[name] <- ifelse(check, "[x]", "[ ]")
+    return(ps)
 }
-.checkStatus <- function(pts, name) {
+.checkStatus <- function(ps, name) {
     if(name=="Projection"){
         projections <- c("PolarProjection","CircularProjection")
-        sts <- any(pts@status[projections] == "[x]")
+        sts <- any(ps@status[projections] == "[x]")
     } else {
-        sts <- pts@status[name] == "[x]"
+        sts <- ps@status[name] == "[x]"
     }
     sts
 }
-.removeSummits <- function(pts, verbose=TRUE){
-    if (.checkStatus(pts, "Summits")) {
+.removeSummits <- function(ps, verbose=TRUE){
+    if (.checkStatus(ps, "Summits")) {
         if(verbose) message("-- available summits removed.")
-        i <- which(names(pts@misc) == "summits")
-        pts@misc <- pts@misc[-i]
-        pts <- .updateStatus(pts, "Summits", FALSE)
+        i <- which(names(ps@misc) == "summits")
+        ps@misc <- ps@misc[-i]
+        ps <- .updateStatus(ps, "Summits", FALSE)
     } 
-    return(pts)
+    return(ps)
 }
-.removeSilhouette <- function(pts, verbose=TRUE){
-    if (.checkStatus(pts, "Silhouette")) {
+.removeSilhouette <- function(ps, verbose=TRUE){
+    if (.checkStatus(ps, "Silhouette")) {
         if(verbose) message("-- available silhouette removed.")
-        i <- which(names(pts@misc) == "xfloor")
-        pts@misc <- pts@misc[-i]
-        pts <- .updateStatus(pts, "Silhouette", FALSE)
+        i <- which(names(ps@misc) == "xfloor")
+        ps@misc <- ps@misc[-i]
+        ps <- .updateStatus(ps, "Silhouette", FALSE)
+        ps@gxyz <- .rescale.landscape(xsig = ps@misc$xsig, pars = ps@pars)
     } 
-    return(pts)
+    return(ps)
 }
-.getSignalScale <- function(zsignal) {
-    zscale <- list(range = range(zsignal, na.rm = TRUE))
+.get.signal.scale <- function(vsignal) {
+    zscale <- list(range = range(vsignal, na.rm = TRUE))
     zscale$maxsig <- max(abs(zscale$range))
-    if (.all_binaryValues(zsignal)) {
+    if (.all_binaryValues(vsignal)) {
         # message("binary")
         zscale$signal.type <- "binary"
         zscale$scale.type <- "pos"
@@ -139,7 +136,7 @@
     } else if (zscale$range[1] == zscale$range[2]) {
         # message("found a single value; it will be treated as binary")
         zscale$signal.type <- "binary"
-        if (zscale$range[1] > 0) {
+        if (zscale$range[1] >= 0) {
             zscale$range[1] <- 0
             zscale$scaling <- c(0, 1)
             zscale$scale.type <- "pos"
@@ -166,13 +163,22 @@
     }
     return(zscale)
 }
-.get.vwscale <- function(vweight){
-    if (sd(vweight, na.rm = TRUE) > 0) {
-        vwscale <- TRUE
+.update.zlim <- function(pars, rescale = TRUE){
+  if(rescale){
+    zlim <- pars$zscale$scaling
+  } else {
+    mx <- pars$zscale$maxsig
+    if(mx==0) mx <- 1
+    if(pars$zscale$scale.type=="negpos"){
+      zlim <- c(-mx, mx)
+    } else if(pars$zscale$scale.type=="neg"){
+      zlim <- c(-mx, 0)
     } else {
-        vwscale <- FALSE
+      zlim <- c(0, mx)
     }
-    return(vwscale)
+  }
+  pars$zlim <- zlim
+  return(pars)
 }
 .get.edge.dist <- function(gxy, edges) {
     dts <- sqrt((gxy[edges$name1, "X"] - gxy[edges$name2, "X"])^2 +
@@ -185,62 +191,75 @@
   nodes$Y <- scales::rescale(nodes$Y, to = c(1, nrc), from = from)
   nodes$Xint <- round(nodes$X)
   nodes$Yint <- round(nodes$Y)
-  nodes <- nodes[,c("X", "Y", "Xint", "Yint", "vsignal", "vweight")]
+  nodes <- nodes[,c("X", "Y", "Xint", "Yint", "vsignal", "weight")]
   nodes <- as.matrix(nodes)
   return(nodes)
+}
+.revise.weights <- function(weight){
+  if (all(is.na(weight))) weight[] <- 1
+  weight[is.na(weight)] <- min(weight, na.rm = TRUE)
+  if (sd(weight) > 0) {
+    weight <- scales::rescale(weight, to = c(0, 1))
+  } else {
+    weight[] <- 1
+  }
+  return(weight)
+}
+.get.wscale <- function(weight){
+  if (sd(weight, na.rm = TRUE) > 0) {
+    wscale <- TRUE
+  } else {
+    wscale <- FALSE
+  }
+  return(wscale)
 }
 
 ################################################################################
 ### Main PathwaySpace calls
 ################################################################################
-.circularProjection <- function(pts, verbose = TRUE, ...) {
+.circularProjection <- function(ps, verbose = TRUE) {
     if(verbose) message("Using circular projection...")
-    pars <- getPathwaySpace(pts, "pars")
-    gxy <- getPathwaySpace(pts, "gxy")
+    pars <- getPathwaySpace(ps, "pars")
+    gxy <- getPathwaySpace(ps, "gxy")
     lpts <- .pointsInMatrix(pars$nrc)
-    nnpg <- .get.kns.dists(lpts, gxy, pars$kns)
-    if (pars$vwscale) {
-        if(verbose) message("Scaling projection to vertex weight...")
-    }
+    nnpg <- .get.ksignal(lpts, gxy, pars$proj$k)
+    
+    # if (pars$wscale) {
+    #     if(verbose) message("Scaling projection to vertex weight...")
+    # }
+    
     #--- compute landscape signal
     if(verbose) message("Running signal convolution...")
     xsig <- array(0, c(pars$nrc, pars$nrc))
     if (nrow(gxy) > 0) {
-        xsig[lpts[, c("Y", "X")]] <- .get.ldsig(gxy,
-            pars, nnpg, ...=...)
+        xsig[lpts[, c("Y", "X")]] <- .get.ldsig(gxy, pars, nnpg)
     }
-    pts@misc$xsig <- xsig
+    ps@misc$xsig <- xsig
     # image(.transpose.and.flip(xsig))
     #--- rescale xsig to the original signal
     # use silhouette if available
-    if (.checkStatus(pts, "Silhouette")){
-      xfloor <- pts@misc$xfloor
+    if (.checkStatus(ps, "Silhouette")){
+      xfloor <- ps@misc$xfloor
       gxyz <- .rescale.landscape(xsig = xsig, pars = pars, xfloor = xfloor)
     } else {
       gxyz <- .rescale.landscape(xsig = xsig, pars = pars)
     }
-    pts@gxyz <- gxyz
-    # image(.transpose.and.flip(gxyz))
-    #---return the gxyz landscape
-    x <- gxyz
-    x[x == 0] <- NA
-    sz <- round(sum(abs(x), na.rm = TRUE) / sum(!is.na(x)), 4)
-    sz <- ifelse(is.nan(sz), 0, sz)
-    if(verbose) message("Density: ", sz, " per pixel!")
-    return(pts)
+    ps@gxyz <- gxyz
+    ps@pars <- .update.zlim(pars, pars$proj$rescale)
+    return(ps)
 }
 
 #-------------------------------------------------------------------------------
-.polarProjection <- function(pts, verbose = TRUE, ...) {
-    edges <- getPathwaySpace(pts, "edges")
+.polarProjection <- function(ps, verbose = TRUE) {
+    edges <- getPathwaySpace(ps, "edges")
     if(nrow(edges)==0){
         msg <- paste0("Note, this 'PathwaySpace' object does not ",
             "contain edges.\nThe 'polarProjection' method requires ",
             "at least one edge for projection.")
         stop(msg)
     }
-    pars <- getPathwaySpace(pts, "pars")
-    if(pars$directional){
+    pars <- getPathwaySpace(ps, "pars")
+    if(pars$proj$directional){
         if(pars$is.directed){
             message("Using polar projection on directed graph...")
         } else {
@@ -249,46 +268,41 @@
     } else {
         if(verbose) message("Using polar projection on undirected graph...")
     }
-    gxy <- getPathwaySpace(pts, "gxy")
+    gxy <- getPathwaySpace(ps, "gxy")
     lpts <- .pointsInMatrix(pars$nrc)
-    nnpg <- .get.kns.dists(lpts, gxy, pars$kns)
-    if (pars$vwscale) {
+    nnpg <- .get.ksignal(lpts, gxy, pars$proj$k)
+    if (pars$vweight) {
         if(verbose) message("Scaling projection to vertex weight...")
     }
     #--- for polar, 'pdist' is applied at edge dist
     rg <- range(edges$edist)
-    rg <- rg[1] + ( (rg - rg[1]) * pars$pdist )
+    rg <- rg[1] + ( (rg - rg[1]) * pars$proj$pdist )
     edges$edistNorm <- scales::rescale(edges$edist, to=rg)
     #--- compute landscape signal
     if(verbose) message("Running signal convolution...")
     xsig <- array(0, c(pars$nrc, pars$nrc))
     if (nrow(gxy) > 0) {
         xsig[lpts[, c("Y", "X")]] <- .get.ldsig.polar(lpts,
-            gxy, edges, pars, nnpg, ...)
+            gxy, edges, pars, nnpg)
     }
+    ps@misc$xsig <- xsig
     # image(.transpose.and.flip(xsig))
     #--- rescale xsig to the original signal
     gxyz <- .rescale.landscape(xsig = xsig, pars = pars)
-    pts@misc$xsig <- xsig
-    pts@gxyz <- gxyz
-    #---return the gxyz landscape
-    x <- gxyz
-    x[x == 0] <- NA
-    sz <- round(sum(abs(x), na.rm = TRUE) / sum(!is.na(x)), 4)
-    sz <- ifelse(is.nan(sz), 0, sz)
-    if(verbose) message("Density: ", sz, " per pixel!")
-    return(pts)
+    ps@gxyz <- gxyz
+    ps@pars <- .update.zlim(pars, pars$proj$rescale)
+    return(ps)
 }
-
+  
 #-------------------------------------------------------------------------------
-# If 'pars$rescale = F', it will rescale 'xsig' to the original range
+# If 'rescale = F', it will rescale 'xsig' to the original range
 .rescale.landscape <- function(xsig, pars, xfloor = NULL) {
     if (!is.null(xfloor)) xsig[xfloor == 0] <- NA
     bl <- all(range(xsig, na.rm = TRUE) == 0)
     if(bl){
         x <- xsig
     } else {
-        if (!pars$rescale) {
+        if (!pars$proj$rescale) {
             x <- scales::rescale(xsig, to = pars$zscale$range)
         } else if (pars$zscale$signal.type == "binary") {
             x <- scales::rescale(xsig, to = pars$zscale$scaling)
@@ -304,7 +318,7 @@
                 to <- pars$zscale$scaling
                 x <- .rescale.neg(xsig, pars, to, endpoints = endpoints)
             }
-            #- maybe export 'endpoints' in future versions;
+            #- export 'endpoints' in future versions;
             #- it will cut noise and outliers at the endpoints;
             #- outliers outside that range are moved to the nearby endpoint;
             #- noise are set to background (i.e. zero).
@@ -318,7 +332,7 @@
     xp <- xsig
     xp[xp <= 0] <- NA
     qt <- quantile(as.numeric(xp), na.rm = TRUE, probs = pr)
-    xp[xp < qt[1]] <- NA
+    xp[xp < qt[1]] <- qt[1]
     xp[xp > qt[2]] <- qt[2]
     xp <- scales::rescale(xp, to = c(0, to[2]))
     # neg
@@ -327,7 +341,7 @@
     xn[xn >= 0] <- NA
     qt <- quantile(as.numeric(xn), na.rm = TRUE, probs = pr)
     xn[xn < qt[1]] <- qt[1]
-    xn[xn > qt[2]] <- NA
+    xn[xn > qt[2]] <- qt[2]
     xn <- scales::rescale(xn, to = c(to[1], 0))
     # update xsig
     xsig[!is.na(xn)] <- xn[!is.na(xn)]
@@ -339,7 +353,7 @@
     xp <- xsig
     xp[xp <= 0] <- NA
     qt <- quantile(as.numeric(xp), na.rm = TRUE, probs = pr)
-    xp[xp < qt[1]] <- NA
+    xp[xp < qt[1]] <- qt[1]
     xp[xp > qt[2]] <- qt[2]
     xp <- scales::rescale(xp, to = to)
     xsig[!is.na(xp)] <- xp[!is.na(xp)]
@@ -351,7 +365,7 @@
     xn[xn >= 0] <- NA
     qt <- quantile(as.numeric(xn), na.rm = TRUE, probs = pr)
     xn[xn < qt[1]] <- qt[1]
-    xn[xn > qt[2]] <- NA
+    xn[xn > qt[2]] <- qt[2]
     xn <- scales::rescale(xn, to = to)
     xsig[!is.na(xn)] <- xn[!is.na(xn)]
     return(xsig)
@@ -359,26 +373,26 @@
 
 #-------------------------------------------------------------------------------
 #--- main circular projection calls
-.get.ldsig <- function(gxy, pars, nnpg, ...) {
+.get.ldsig <- function(gxy, pars, nnpg) {
     if (pars$zscale$maxsig == 0) {
         return(0)
     }
-    decay_fun <- pars$decay_fun
+    decay_fun <- pars$proj$decay_fun
     nn <- ncol(nnpg$nn)
     dsig <- vapply(seq_len(nrow(nnpg$nn)), function(ii) {
         p_idx <- nnpg$nn[ii, ]
         p_dst <- nnpg$dist[ii, ]
         p_sig <- gxy[p_idx, "vsignal"]
         #--- scaling projection on pdist
-        pdist <- pars$pdist
-        if (pars$vwscale) {
-            p_wgt <- gxy[p_idx, "vweight"]
+        pdist <- pars$proj$pdist
+        if (pars$vweight) {
+            p_wgt <- gxy[p_idx, "weight"]
             pdist <- pdist * p_wgt
         }
         #--- project observed signal
         x <- p_dst / (pars$nrc * pdist)
         s <- p_sig / pars$zscale$maxsig
-        dsig <- decay_fun(x, s, ...=...)
+        dsig <- decay_fun(x, s)
         return(dsig)
     }, numeric(nn))
     if(is.matrix(dsig)){
@@ -392,16 +406,16 @@
 
 #-------------------------------------------------------------------------------
 #--- main polar projection calls
-.get.ldsig.polar <- function(lpts, gxy, edges, pars, nnpg, ...) {
+.get.ldsig.polar <- function(lpts, gxy, edges, pars, nnpg) {
     if (pars$zscale$maxsig == 0) {
         return(0)
     }
-    decay_fun <- pars$decay_fun
+    decay_fun <- pars$proj$decay_fun
     #--- get polar coords for edges
     edlist <- .edge.list(edges, gxy)
     etheta <- .edge.list.theta(edlist, gxy)
     edleng <- .edge.attr(edges, gxy, "edistNorm")
-    if(pars$directional){
+    if(pars$proj$directional){
         emode <- .edge.mode(edges, gxy)
         for(i in seq_along(emode)){
             idx <- emode[[i]] == 1
@@ -410,10 +424,10 @@
             edleng[[i]] <- edleng[[i]][idx]
         }
     }
-    idx <- which(names(etheta) %in% rownames(gxy))
-    etheta <- etheta[idx]
-    edlist <- edlist[idx]
-    edleng <- edleng[idx]
+    # idx <- which(names(etheta) %in% rownames(gxy))
+    # etheta <- etheta[idx]
+    # edlist <- edlist[idx]
+    # edleng <- edleng[idx]
     minlen <- min(unlist(edleng))
     #--- start polar signal projection
     nn <- ncol(nnpg$nn)
@@ -423,14 +437,14 @@
         p_sig <- gxy[p_idx, "vsignal"]
         #--- scaling projection on pdist
         pdist <- 1 #controlled at edge dist
-        if (pars$vwscale) {
-            p_wgt <- gxy[p_idx, "vweight"]
+        if (pars$vweight) {
+            p_wgt <- gxy[p_idx, "weight"]
             pdist <- pdist * p_wgt
         }
         #--- get edge's theta and dist
         p_et <- etheta[p_idx]
         p_el <- edleng[p_idx]
-        #--- compute theta for p1 vs. kns
+        #--- compute theta for p1 vs. k
         dx <- lpts[ii, "X"] - gxy[p_idx, "X"]
         dy <- lpts[ii, "Y"] - gxy[p_idx, "Y"]
         p_theta <- atan2(dy, dx)
@@ -442,17 +456,19 @@
         wln <- wln / pars$nrc
         pdist <- pdist * wln
         #--- approx. project. to the area of a sector for isolated nodes
-        if(!pars$directional){
-            rs <- 0.5 * .deg2rad(pars$theta)
+        if(!pars$proj$directional){
+            rs <- 0.5 * .deg2rad(pars$proj$theta)
             rs <- sqrt(rs / pi)
             dth[is.na(dth)] <- rs
+        } else {
+          dth[is.na(dth)] <- 0
         }
         #--- update pdist with dtheta
         pdist <- pdist * dth
         #--- project observed signal
         x <- p_dst / (pars$nrc * pdist)
         s <- p_sig / pars$zscale$maxsig
-        dsig <- decay_fun(x, s, ...=...)
+        dsig <- decay_fun(x, s)
         return(dsig)
     }, numeric(nn))
     if(is.matrix(dsig)){
@@ -464,7 +480,7 @@
     return(Z)
 }
 .get.delta.theta <- function(p_et, p_el, p_theta, pars, minlen) {
-    nth <- log(0.25, base = (360 - pars$theta) / 360)
+    nth <- log(0.25, base = (360 - pars$proj$theta) / 360)
     mdr <- vapply(seq_along(p_et), function(i) {
         eth <- p_et[[i]]
         eln <- p_el[[i]]
@@ -531,27 +547,21 @@
 #-------------------------------------------------------------------------------
 #--- summarize projected signals
 .summ.dsig <- function(dsig, pars) {
-    # sort projected signals
-    dsig <- matrix(dsig[order(row(dsig), -abs(dsig))],
-        nrow = nrow(dsig), byrow = TRUE)
-    if (pars$kns > 1) {
-        kns <- min(pars$kns, ncol(dsig))
-        dsig <- dsig[, seq_len(kns), drop = FALSE]
-        if (pars$zscale$signal.type == "continuous") {
-            # stack all signals projected at a given point
-            stfun <- function(sig) {
-                sw <- abs(sig)
-                sum(sig * (sw / sum(sw, na.rm = TRUE)), na.rm = TRUE)
-            }
-            Z <- apply(dsig, 1, stfun)
-        } else {
-            # get mean signal
-            Z <- apply(dsig, 1, mean)
-        }
-    } else {
-        Z <- dsig[, 1]
-    }
-    return(Z)
+  # sort projected signals
+  dsig <- matrix(dsig[order(row(dsig), -abs(dsig))],
+    nrow = nrow(dsig), byrow = TRUE)
+  # aggregate signals
+  if (pars$proj$k > 1) {
+    k <- min(pars$proj$k, ncol(dsig))
+    dsig <- dsig[, seq_len(k), drop = FALSE]
+    Z <- apply(dsig, 1, pars$proj$aggregate_fun)
+  } else {
+    Z <- dsig[, 1]
+  }
+  #Note: NaNs may result from some aggregate functions when signal 
+  # values are only 0s
+  Z[is.na(Z)] <- 0
+  return(Z)
 }
 
 ################################################################################
@@ -594,15 +604,15 @@
 ################################################################################
 ### Map graph's silhouette
 ################################################################################
-.silhouetteCircular <- function(pts, verbose = TRUE) {
-    pars <- getPathwaySpace(pts, "pars")
-    gxy <- getPathwaySpace(pts, "gxy")
+.silhouetteCircular <- function(ps, verbose = TRUE) {
+    pars <- getPathwaySpace(ps, "pars")
+    gxy <- getPathwaySpace(ps, "gxy")
     lpts <- .pointsInMatrix(pars$nrc)
     #--- get point-to-vertices distances for silhouettes
-    nnbg <- .get.silhouette.dists(lpts, gxy, pars$kns)
+    nnbg <- .get.silhouette.dists(lpts, gxy, pars$silh$k)
     #--- get landscape floor
     xfloor <- array(0, c(pars$nrc, pars$nrc))
-    if (pars$pdist > 0) {
+    if (pars$silh$pdist > 0) {
         xfloor[lpts[, c("Y", "X")]] <- .get.ldfloor(gxy, pars, nnbg)
     }
     xfloor <- .cutfloor(xfloor, pars)
@@ -611,43 +621,36 @@
     nbg <- sum(xfloor == 1)
     sz <- round(nbg / prod(dim(xfloor)) * 100, 2)
     if(verbose) message("Silhouette: ", sz, "% of the landscape area!")
-    #--- update 'pts' with a silhouette matrix
-    pts@misc$xfloor <- xfloor
-    #--- add xfloor and rescale xsig to the original signal
-    xsig <- pts@misc$xsig
-    gxyz <- .rescale.landscape(xsig = xsig, pars = pars, xfloor = xfloor)
-    pts@gxyz <- gxyz
-    return(pts)
+    #--- update 'ps' with xfloor
+    ps@misc$xfloor <- xfloor
+    #--- rescale gxyz
+    if (.checkStatus(ps, "Projection")){
+      xsig <- ps@misc$xsig
+    } else {
+      xsig <- array(0, c(pars$nrc, pars$nrc))
+    }
+    ps@gxyz <- .rescale.landscape(xsig = xsig, pars = pars, xfloor = xfloor)
+    return(ps)
 }
 
 #-------------------------------------------------------------------------------
 .get.ldfloor <- function(gxy, pars, nnbg) {
-    if (pars$zscale$maxsig == 0) {
-        return(0)
-    }
-    decay_fun <- pars$decay_fun
-    decay_args <- pars$decay_args
+    decay_fun <- pars$silh$decay_fun
     nn <- ncol(nnbg$nn)
     sfloor <- vapply(seq_len(nrow(nnbg$nn)), function(ii) {
         p_dst <- nnbg$dist[ii, ]
         #--- scaling projection on pdist
-        pdist <- pars$pdist
-        if (pars$vwscale) {
-            p_idx <- nnbg$nn[ii, ]
-            p_wgt <- gxy[p_idx, "vweight"]
-            pdist <- pdist * p_wgt
-        }
+        pdist <- pars$silh$pdist
         #--- get floor of an ideal (max) signal
         x <- p_dst / (pars$nrc * pdist)
-        s <- 1 / pars$zscale$maxsig
-        sfloor <- base::do.call(
-            decay_fun, c(list(x = x, signal = s), decay_args))
+        s <- 1
+        sfloor <- decay_fun(x, s)
         return(sfloor)
     }, numeric(nn))
     sfloor <- t(sfloor)
     sfloor <- matrix(sfloor[order(row(sfloor), -sfloor)],
         nrow = nrow(sfloor), byrow = TRUE)
-    sfloor <- sfloor[, seq_len(pars$kns), drop = FALSE]
+    sfloor <- sfloor[, seq_len(pars$silh$k), drop = FALSE]
     Z <- apply(sfloor, 1, mean)
     return(Z)
 }
@@ -659,9 +662,9 @@
         xfloor <- xfloor - rg[1]
         xfloor <- xfloor / max(xfloor, na.rm = TRUE)
         mask <- xfloor
-        mask[mask < pars$baseline] <- 0
+        mask[mask < pars$silh$baseline] <- 0
         mask[mask > 0] <- 1
-        if(pars$fillCavity) mask <- .fillCavity(mask)
+        if(pars$silh$fill.cavity) mask <- .fillCavity(mask)
         xfloor[mask == 0] <- 0
         xfloor[mask > 0] <- 1
     } else {
@@ -713,15 +716,16 @@
 ################################################################################
 ### Map summits for enrichment analysis
 ################################################################################
-.summitMapping <- function(pts, verbose = TRUE, ...) {
-    pars <- getPathwaySpace(pts, "pars")
-    gxyz <- getPathwaySpace(pts, "gxyz")
-    gxy <- getPathwaySpace(pts, "gxy")
-    pts@misc$summits <- .find.summits(gxyz = gxyz,
-        gxy = gxy, maxset = pars$maxset, minsize = pars$minsize,
-        threshold = pars$summit_threshold,
-        segm_fun = pars$segm_fun, ...=...)
-    return(pts)
+.summitMapping <- function(ps, verbose = TRUE, ...) {
+    pars <- getPathwaySpace(ps, "pars")
+    gxyz <- getPathwaySpace(ps, "gxyz")
+    gxy <- getPathwaySpace(ps, "gxy")
+    ps@misc$summits <- .find.summits(gxyz = gxyz,
+        gxy = gxy, maxset = pars$summit$maxset, 
+        minsize = pars$summit$minsize,
+        threshold = pars$summit$summit_threshold,
+        segm_fun = pars$summit$segm_fun, ...=...)
+    return(ps)
 }
 
 #-------------------------------------------------------------------------------
@@ -736,7 +740,7 @@
     smt[smt < threshold] <- 0
     #-- run watershed
     # smt <- summitWatershed(smt, tolerance=tolerance, ext=1)
-    # smt <- base::do.call(segm_fun, c(list(x = smt), pars$segm_arg))
+    # smt <- base::do.call(segm_fun, c(list(x = smt), pars$summit$segm_arg))
     smt <- segm_fun(smt, ...=...)
     xx <- .openPxEdges(smt > 0)
     smt[xx == 0] <- 0

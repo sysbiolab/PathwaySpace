@@ -8,12 +8,12 @@
 \alias{vertexSignal<-,PathwaySpace-method}
 \title{Accessor functions for fetching slots from a PathwaySpace object.}
 \usage{
-\S4method{vertexSignal}{PathwaySpace}(pts)
+\S4method{vertexSignal}{PathwaySpace}(ps)
 
-\S4method{vertexSignal}{PathwaySpace}(pts) <- value
+\S4method{vertexSignal}{PathwaySpace}(ps) <- value
 }
 \arguments{
-\item{pts}{A \linkS4class{PathwaySpace} class object.}
+\item{ps}{A \linkS4class{PathwaySpace} class object.}
 
 \item{value}{A numeric vector with values representing signal
 intensities. This vector should be aligned to the "vertex" slot.}
@@ -27,7 +27,21 @@ class object.
 }
 \examples{
 data('gtoy1', package = 'RGraphSpace')
-pts <- buildPathwaySpace(gtoy1, nrc = 100)
-vertexSignal(pts)
+ps <- buildPathwaySpace(gtoy1, nrc = 100)
+
+# Check vertex names
+names(ps)
+
+# Check vertex signal
+vertexSignal(ps)
+
+# Set signal to a given vertex
+vertexSignal(ps)[1] <- 1
+
+# Set signal to a given vertex
+vertexSignal(ps)["n3"] <- 1
+
+# Set '1s' to all vertices
+vertexSignal(ps) <- 1
 
 }

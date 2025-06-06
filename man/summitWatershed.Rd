@@ -63,6 +63,5 @@ image(gimage)
 \code{\link{summitMapping}}
 }
 \author{
-Vinicius Chagas, Victor Apolonio, and
-Mauro Castro (\email{mauro.castro@ufpr.br})
+Mauro Castro.
 }

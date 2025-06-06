@@ -4,26 +4,24 @@
 \alias{linearDecay}
 \title{A simple linear decay function.}
 \usage{
-linearDecay(x, signal, ...)
+linearDecay(x, signal = 1)
 }
 \arguments{
 \item{x}{A numeric vector of distances (in [0,1]).}
 
-\item{signal}{A single numeric value representing a signal.}
-
-\item{...}{Not used; argument implemented for call compatibility with
+\item{signal}{A single numeric value representing a signal.
 \code{\link{weibullDecay}} and \code{\link{expDecay}} functions.}
 }
 \value{
-A numeric vector.
+A numeric vector; if missing 'x', it will return decay function.
 }
 \description{
 The \code{linearDecay} function is used by PathwaySpace's
 methods for signal convolution and projection.
 }
 \examples{
-x <- c(1:100) / 100
-y <- linearDecay(x, 1)
+x <- seq(0, 2, 0.01)
+y <- linearDecay(x, signal = 1)
 plot(x, y)
 
 }
@@ -31,6 +29,5 @@ plot(x, y)
 \code{\link{weibullDecay}}, \code{\link{expDecay}}
 }
 \author{
-Vinicius Chagas, Victor Apolonio, and
-Mauro Castro (\email{mauro.castro@ufpr.br})
+Mauro Castro.
 }

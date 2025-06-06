@@ -7,7 +7,7 @@
 \title{Mapping summits on PathwaySpace images.}
 \usage{
 \S4method{summitMapping}{PathwaySpace}(
-  pts,
+  ps,
   maxset = 30,
   minsize = 30,
   threshold = 0.5,
@@ -17,7 +17,7 @@
 )
 }
 \arguments{
-\item{pts}{A \linkS4class{PathwaySpace} class object.}
+\item{ps}{A \linkS4class{PathwaySpace} class object.}
 
 \item{maxset}{A single positive integer indicating the maximum number 
 of summits to be returned by the segmentation function.}
@@ -45,24 +45,16 @@ strategy to identify summits on a 2D-landscape image
 (see \code{\link{summitWatershed}}).
 }
 \examples{
-# Load a demo igraph
-data('gtoy1', package = 'RGraphSpace')
+# Load a large igraph
+data("PCv12_pruned_igraph", package = "PathwaySpace")
 
-# Create a new PathwaySpace object
-pts <- buildPathwaySpace(gtoy1, nrc = 100)
-# note: adjust 'nrc' to increase image resolution
-
-# Create a 2D-landscape image
-pts <- circularProjection(pts)
-
-# Map summits in a 2D-landscape image
-pts <- summitMapping(pts)
+# Continue this example from the PathwaySpace vignette,
+# in the 'PathwaySpace decoration' section
 
 }
 \seealso{
 \code{\link{circularProjection}}
 }
 \author{
-Victor Apolonio, Vinicius Chagas, Mauro Castro, 
-and TCGA Network.
+Mauro Castro and TCGA Network.
 }

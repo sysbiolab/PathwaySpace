@@ -18,8 +18,7 @@
 #' representing a fraction of the maximum signal intensity.
 #' @param ext Radius (in pixels) for detecting neighboring objects.
 #' @return A matrix with labeled summits.
-#' @author Vinicius Chagas, Victor Apolonio, and
-#' Mauro Castro (\email{mauro.castro@@ufpr.br})
+#' @author Mauro Castro.
 #' @seealso \code{\link{summitMapping}}
 #' @examples
 #' # Load a demo landscape image

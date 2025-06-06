@@ -4,32 +4,30 @@
 \alias{expDecay}
 \title{Exponential decay function.}
 \usage{
-expDecay(x, signal, decay = 0.999, ...)
+expDecay(x, signal = 1, decay = 0.001)
 }
 \arguments{
 \item{x}{A numeric vector of distances (in [0,1]).}
 
 \item{signal}{A single numeric value representing a signal.}
 
-\item{decay}{The rate (in [0,1]) at which the signal decays.
-This term indicates how much the \code{signal} decreases at a certain
-distance in \code{x}. At the distance defined by the \code{pdist} term
-(see \code{\link{circularProjection}}), the signal's value will
-correspond to the initial signal multiplied by \code{1 - decay}.}
-
-\item{...}{Not used; argument implemented for call compatibility with
+\item{decay}{A decay factor (in [0,1]). This term indicates how much the
+\code{signal} decreases as a function of distance in pathway space. 
+For example, at a specific distance defined by the \code{pdist} parameter 
+(see \code{\link{circularProjection}}), the signal intensity will
+be the initial signal multiplied by \code{decay}.
 the \code{\link{weibullDecay}} function.}
 }
 \value{
-A numeric vector.
+A numeric vector; if missing 'x', it will return decay function.
 }
 \description{
 The \code{expDecay} function is used by PathwaySpace's methods
 for signal convolution and projection.
 }
 \examples{
-x <- c(1:100) / 100
-y <- expDecay(x, 1)
+x <- seq(0, 2, 0.01)
+y <- expDecay(x, signal = 1, decay = 0.5)
 plot(x, y)
 
 }
@@ -37,6 +35,5 @@ plot(x, y)
 \code{\link{weibullDecay}}, \code{\link{linearDecay}}
 }
 \author{
-Vinicius Chagas, Victor Apolonio, and
-Mauro Castro (\email{mauro.castro@ufpr.br})
+Mauro Castro.
 }

@@ -6,10 +6,10 @@
 \alias{getPathwaySpace}
 \title{Accessors for fetching slots from a PathwaySpace object.}
 \usage{
-\S4method{getPathwaySpace}{PathwaySpace}(pts, what = "status")
+\S4method{getPathwaySpace}{PathwaySpace}(ps, what = "status")
 }
 \arguments{
-\item{pts}{A preprocessed \linkS4class{PathwaySpace} class object}
+\item{ps}{A preprocessed \linkS4class{PathwaySpace} class object}
 
 \item{what}{A single character value specifying which information should 
 be retrieved from the slots.
@@ -28,10 +28,10 @@ individual slots available in a PathwaySpace object.
 data('gtoy1', package = 'RGraphSpace')
 
 # Create a new PathwaySpace object
-pts <- buildPathwaySpace(gtoy1, nrc = 100)
+ps <- buildPathwaySpace(gtoy1, nrc = 100)
 # note: adjust 'nrc' to increase image resolution
 
-# Get the 'status' slot in pts
-status <- getPathwaySpace(pts, what = 'status')
+# Get the 'status' slot in ps
+status <- getPathwaySpace(ps, what = 'status')
 
 }

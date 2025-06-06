@@ -7,15 +7,15 @@
 \title{Decorating PathwaySpace images with graph silhouettes.}
 \usage{
 \S4method{silhouetteMapping}{PathwaySpace}(
-  pts,
+  ps,
   baseline = 0.01,
   pdist = 0.05,
-  fillCavity = TRUE,
+  fill.cavity = TRUE,
   verbose = TRUE
 )
 }
 \arguments{
-\item{pts}{A \linkS4class{PathwaySpace} class object.}
+\item{ps}{A \linkS4class{PathwaySpace} class object.}
 
 \item{baseline}{A fraction (in \code{[0,1]}) of the signal scale of a 
 PathwaySpace image. This term only affects the image baseline projection, 
@@ -24,12 +24,11 @@ resulting image. When \code{baseline = 0} (i.e. lower level of the signal
 scale), the baseline will extend over the entire image space, so no 
 silhouette will be visible.}
 
-\item{pdist}{A term (in \code{0,1}) determining a distance unit for
-the signal convolution related to the image space. This distance
-will affect the extent over which the convolution operation
-projects the image baseline.}
+\item{pdist}{A term (in \code{[0,1]}) determining a distance unit for the
+signal decay function. This distance will affect the extent over which 
+the convolution operation projects the image baseline.}
 
-\item{fillCavity}{A single logical value specifying to fill cavities 
+\item{fill.cavity}{A single logical value specifying to fill cavities 
 in the silhouette mask (when \code{verbose=TRUE}) or not 
 (when \code{verbose=FALSE}).}
 
@@ -48,20 +47,19 @@ to outline the graph layout in a PathwaySpace image.
 data('gtoy1', package = 'RGraphSpace')
 
 # Create a new PathwaySpace object
-pts <- buildPathwaySpace(gtoy1, nrc = 100)
+ps <- buildPathwaySpace(gtoy1, nrc = 100)
 # note: adjust 'nrc' to increase image resolution
 
-# Create a 2D-landscape image
-pts <- circularProjection(pts)
+# Set '1s' as vertex signal
+vertexSignal(ps) <- 1
 
 # Map graph silhouette
-pts <- silhouetteMapping(pts)
+ps <- silhouetteMapping(ps, pdist = 0.1)
 
 }
 \seealso{
 \code{\link{circularProjection}}
 }
 \author{
-Victor Apolonio, Vinicius Chagas, Mauro Castro,
-and TCGA Network.
+Mauro Castro and TCGA Network.
 }
