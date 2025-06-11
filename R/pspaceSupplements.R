@@ -60,35 +60,6 @@
     return(ps)
 }
 
-#-------------------------------------------------------------------------------
-#--- get point-to-vertices distances for circular and polar projections
-.get.ksignal <- function(lpts, gxy, k, min.ksearch = 30){
-  gxy <- cbind(gxy, key=seq_len(nrow(gxy)))
-  bg <- is.na(gxy[,"vsignal"]) | gxy[,"vsignal"]==0
-  if(!all(bg)) gxy <- gxy[!bg, , drop=FALSE]
-  if (k == 1) {
-    ksearch <- ceiling(nrow(gxy) * 0.01)
-    ksearch <- min(max(ksearch, min.ksearch), nrow(gxy))
-  } else {
-    ksearch <- min(max(k, min.ksearch), nrow(gxy))
-  }
-  nnpg <- RANN::nn2(gxy[, c("X", "Y"), drop=FALSE], 
-    lpts[, c("X", "Y"), drop=FALSE], k = ksearch)
-  names(nnpg) <- c("nn", "dist")
-  nnpg$nn[,] <- as.numeric(gxy[as.numeric(nnpg$nn),"key"])
-  return(nnpg)
-}
-
-#-------------------------------------------------------------------------------
-#--- get point-to-vertices dists for silhouettes
-.get.silhouette.dists <- function(lpts, gxy, k){
-    min.ksearch <- min(max(k, 10), nrow(gxy))
-    nnbg <- RANN::nn2(gxy[, c("X", "Y")], lpts[, c("X", "Y")],
-        k = min.ksearch)
-    names(nnbg) <- c("nn", "dist")
-    return(nnbg)
-}
-
 ################################################################################
 ### Accessors of the constructor
 ################################################################################
@@ -221,8 +192,8 @@
     if(verbose) message("Using circular projection...")
     pars <- getPathwaySpace(ps, "pars")
     gxy <- getPathwaySpace(ps, "gxy")
-    lpts <- .pointsInMatrix(pars$nrc)
-    nnpg <- .get.ksignal(lpts, gxy, pars$proj$k)
+    lpts <- .get.points.in.matrix(pars$nrc)
+    nnpg <- .get.point.distances(lpts, gxy, pars$proj$k)
     
     # if (pars$wscale) {
     #     if(verbose) message("Scaling projection to vertex weight...")
@@ -269,8 +240,8 @@
         if(verbose) message("Using polar projection on undirected graph...")
     }
     gxy <- getPathwaySpace(ps, "gxy")
-    lpts <- .pointsInMatrix(pars$nrc)
-    nnpg <- .get.ksignal(lpts, gxy, pars$proj$k)
+    lpts <- .get.points.in.matrix(pars$nrc)
+    nnpg <- .get.point.distances(lpts, gxy, pars$proj$k)
     if (pars$vweight) {
         if(verbose) message("Scaling projection to vertex weight...")
     }
@@ -293,7 +264,26 @@
     ps@pars <- .update.zlim(pars, pars$proj$rescale)
     return(ps)
 }
-  
+
+#-------------------------------------------------------------------------------
+#--- get point-to-vertices distances for circular and polar projections
+.get.point.distances <- function(lpts, gxy, k, min.ksearch = 30){
+  gxy <- cbind(gxy, key=seq_len(nrow(gxy)))
+  bg <- is.na(gxy[,"vsignal"]) | gxy[,"vsignal"]==0
+  if(!all(bg)) gxy <- gxy[!bg, , drop=FALSE]
+  if (k == 1) {
+    ksearch <- ceiling(nrow(gxy) * 0.01)
+    ksearch <- min(max(ksearch, min.ksearch), nrow(gxy))
+  } else {
+    ksearch <- min(max(k, min.ksearch), nrow(gxy))
+  }
+  nnpg <- RANN::nn2(gxy[, c("X", "Y")], 
+    lpts[, c("X", "Y")], k = ksearch)
+  names(nnpg) <- c("nn", "dist")
+  nnpg$nn[,] <- as.numeric(gxy[as.numeric(nnpg$nn),"key"])
+  return(nnpg)
+}
+
 #-------------------------------------------------------------------------------
 # If 'rescale = F', it will rescale 'xsig' to the original range
 .rescale.landscape <- function(xsig, pars, xfloor = NULL) {
@@ -424,12 +414,8 @@
             edleng[[i]] <- edleng[[i]][idx]
         }
     }
-    # idx <- which(names(etheta) %in% rownames(gxy))
-    # etheta <- etheta[idx]
-    # edlist <- edlist[idx]
-    # edleng <- edleng[idx]
-    minlen <- min(unlist(edleng))
     #--- start polar signal projection
+    minlen <- min(unlist(edleng))
     nn <- ncol(nnpg$nn)
     dsig <- vapply(seq_len(nrow(nnpg$nn)), function(ii) {
         p_idx <- nnpg$nn[ii, ]
@@ -607,7 +593,7 @@
 .silhouetteCircular <- function(ps, verbose = TRUE) {
     pars <- getPathwaySpace(ps, "pars")
     gxy <- getPathwaySpace(ps, "gxy")
-    lpts <- .pointsInMatrix(pars$nrc)
+    lpts <- .get.points.in.matrix(pars$nrc)
     #--- get point-to-vertices distances for silhouettes
     nnbg <- .get.silhouette.dists(lpts, gxy, pars$silh$k)
     #--- get landscape floor
@@ -631,6 +617,16 @@
     }
     ps@gxyz <- .rescale.landscape(xsig = xsig, pars = pars, xfloor = xfloor)
     return(ps)
+}
+
+#-------------------------------------------------------------------------------
+#--- get point-to-vertices dists for silhouettes
+.get.silhouette.dists <- function(lpts, gxy, k){
+  min.ksearch <- min(max(k, 10), nrow(gxy))
+  nnbg <- RANN::nn2(gxy[, c("X", "Y")], lpts[, c("X", "Y")],
+    k = min.ksearch)
+  names(nnbg) <- c("nn", "dist")
+  return(nnbg)
 }
 
 #-------------------------------------------------------------------------------
@@ -682,7 +678,7 @@
 ################################################################################
 
 #-------------------------------------------------------------------------------
-.pointsInMatrix <- function(nrc) {
+.get.points.in.matrix <- function(nrc) {
     d <- c(nrc,nrc)
     lpts <- arrayInd(seq_len(prod(d)), d, useNames = TRUE)
     colnames(lpts) <- c("Y", "X")

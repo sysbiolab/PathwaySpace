@@ -32,9 +32,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Overview
 
-For a given *igraph* object containing vertices, edges, and a signal associated with the vertices, *PathwaySpace* performs a convolution operation, which involves a weighted combination of neighboring node signals on a 2D graph space. **Figure 1** illustrates the convolution operation problem. Each vertex's signal is placed at a specific position in the 2D space. The `x` and `y` coordinates of this space correspond either to vertex-signal positions (*e.g.* red, green, and blue lollipops in **Fig.1A**) or null-signal positions for which no signal information is available (question marks in **Fig.1A**). Our model considers the vertex-signal positions as source points (or transmitters) and the null-signal positions as end points (or receivers). The signal values from vertex-signal positions are then projected to the null-signal positions according to a decay function, which will control how the signal values attenuate as they propagate across the 2D space. Available decay functions include linear, exponential, and Weibull functions (**Fig.1B**). For a given null-signal position, the k-top signals are used to define the contributing vertices for signal convolution. The convolution operation combines the signals from these contributing vertices, considering their intensities reaching the end points. Users can adjust both the decay function's parameters and the number of nearest signal sources to evaluate. These parameters control how the signal decays, allowing users to explore different scenarios and observe how varying parameters influence the landscape image. The resulting image forms geodesic paths in which the signal has been projected from vertex- to null-signal positions, using a density metric to measure the signal intensity along these paths.
+For a given *igraph* object containing vertices, edges, and a signal associated with the vertices, *PathwaySpace* performs a convolution operation, which involves a weighted combination of neighboring signals on a 2D graph space. **Figure 1** illustrates the convolution operation problem. Each vertex's signal is positioned on a grid at specific `x` and `y` coordinates, represented by cones (for available signals) or question marks (for null or missing values). Our model considers the vertex-signal positions as source points (or transmitters) and the null-signal positions as end points (or receivers). The signal values from vertex-signal positions are then projected to the null-signal positions according to a decay function, which will control how the signal values attenuate as they propagate across the 2D space. For a given null-signal position, the k-top signals are used to define the contributing vertices for signal convolution. The convolution operation aggregates the signals from these contributing vertices, considering their intensities reaching the end points. Users can adjust both the decay and aggregation functions, which are passed as parameters to the projection methods. The aggregation function can be any arithmetic rule that combines a numeric vector into a single scalar value, while available decay functions include linear, exponential, and Weibull functions (**Fig.1B**). The resulting image forms geodesic paths in which the signal has been projected from vertex- to null-signal positions, using a density metric to measure the signal intensity along these paths.
 
-```{r fig1, echo=FALSE, fig.cap="**Figure 1.** Signal processing addressed by the *PathwaySpace* package. **A**) Representation of a graph superimposed on a 2D coordinate system. Each lollipop icon represents a graph vertex (referred to as vertex-signal positions), while question marks highlight points in the 2D space where no signal information is available (referred to as null-signal positions). **B**) Signal decay profiles of linear, exponential, and Weibull decay functions.", out.width = '90%', purl=FALSE}
+```{r fig1, echo=FALSE, fig.cap="**Figure 1.** Signal processing addressed by the *PathwaySpace* package. **A**) Graph overlaid on a 2D coordinate system. Each projection cone represents the signal associated with a graph vertex (referred to as *vertex-signal positions*), while question marks indicate positions with no signal information (referred to as *null-signal positions*). **Inset**: Graph layout of the toy example used in the *quick start* section of this vignette. **B**) Illustration of signal projection from two neighboring vertices, simplified to one dimension. **Right**: Signal profiles from aggregation and decay functions.", out.width = '90%', purl=FALSE}
 knitr::include_graphics("figures/fig1.png")
 ```
 
@@ -53,14 +53,15 @@ library(PathwaySpace)
 This section will create an *igraph* object containing a binary signal associated to each vertex. The graph layout is configured manually to ensure that users can easily view all the relevant arguments needed to prepare the input data for the *PathwaySpace* package. The *igraph*'s `make_star()` function creates a star-like graph and the `V()` function is used to set attributes for the vertices. The *PathwaySpace* package will require that all vertices have `x`, `y`, and `name` attributes.
 
 ```{r Making a toy igraph - 1, eval=TRUE, message=FALSE}
-# Make a 'toy' undirected igraph
+# Make a 'toy' igraph object, either a directed or undirected graph
 gtoy1 <- make_star(5, mode="undirected")
 
-# Assign xy coordinates to each vertex
-V(gtoy1)$x <- c(0, 2, -4, -4, -9)
-V(gtoy1)$y <- c(0, 0,  4, -4,  0)
+# Assign 'x' and 'y' coordinates to each vertex
+# ..this can be an arbitrary unit in (-Inf, +Inf)
+V(gtoy1)$x <- c(0, 2, -2, -4, -8)
+V(gtoy1)$y <- c(0, 0,  2, -4,  0)
 
-# Assign a name to each vertex (here, from n1 to n5)
+# Assign a 'name' to each vertex (here, from n1 to n5)
 V(gtoy1)$name <- paste0("n", 1:5)
 ```
 
@@ -81,12 +82,12 @@ using the `plotGraphSpace()` function.
 
 ```{r GraphSpace constructor - 2, eval=FALSE, message=FALSE, out.width="100%"}
 # Check the graph layout
-plotGraphSpace(g_space1)
+plotGraphSpace(g_space1, add.labels = TRUE)
 ```
 
 ```{r fig2.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-# gg <- plotGraphSpace(g_space1)
-# ggsave(filename = "./figures/fig2.png", height=3.5, width=4.7,
+# gg <- plotGraphSpace(g_space1, add.labels = TRUE)
+# ggsave(filename = "./figures/fig2.png", height=4, width=5,
 #   units="in", device="png", dpi=250, plot=gg)
 ```
 
@@ -125,18 +126,18 @@ vertexSignal(p_space1)
 
 ```{r PathwaySpace constructor - 3, eval=TRUE, message=FALSE, results='hide'}
 # Set new signal to all vertices
-vertexSignal(p_space1) <- c(1, 3, 2, 3, 2)
+vertexSignal(p_space1) <- c(1, 4, 2, 4, 3)
 
 # Set a new signal to the 1st vertex
 vertexSignal(p_space1)[1] <- 2
 
 # Set a new signal to vertex "n1"
-vertexSignal(p_space1)["n1"] <- 4
+vertexSignal(p_space1)["n1"] <- 6
 
 # Check updated signal values
 vertexSignal(p_space1)
 ## n1 n2 n3 n4 n5 
-##  4  3  2  3  2
+##  6  4  2  4  3
 ```
 
 # Signal projection
@@ -155,8 +156,8 @@ plotPathwaySpace(p_space1, add.marks = TRUE)
 
 ```{r fig3.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
 # gg <- plotPathwaySpace(p_space1, add.marks = TRUE)
-# ggsave(filename = "./figures/fig3.png", height=3.5, width=4.7, 
-#   units="in", device="png", dpi=250, plot=gg)
+# ggsave(filename = "./figures/fig3.png", height=3.5, width=5,
+#   units="in", device="png", dpi=350, plot=gg)
 ```
 
 ```{r fig3, echo=FALSE, out.width = '70%', purl=FALSE}
@@ -175,8 +176,8 @@ plotPathwaySpace(p_space1, marks = c("n3","n4"), theme = "th2")
 
 ```{r fig4.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
 # gg <- plotPathwaySpace(p_space1, marks = c("n3","n4"), theme = "th2")
-# ggsave(filename = "./figures/fig4.png", height=3.5, width=4.7,
-#   units="in", device="png", dpi=250, plot=gg)
+# ggsave(filename = "./figures/fig4.png", height=3.5, width=5,
+#   units="in", device="png", dpi=350, plot=gg)
 ```
 
 ```{r fig4, echo=FALSE, out.width = '70%', purl=FALSE}
@@ -187,7 +188,8 @@ By default, a Weibull decay function is used for signal projection, passed to th
 
 ```{r Circular projection - 3, eval=FALSE, message=FALSE, out.width="70%"}
 # Re-run the network signal projection, passing 'shape' to the decay function
-p_space1 <- circularProjection(p_space1, k = 2, pdist = 0.2, decay.fun = signalDecay(shape = 2))
+p_space1 <- circularProjection(p_space1, k = 2, pdist = 0.2, 
+  decay.fun = signalDecay(shape = 2))
 
 # Plot the PathwaySpace image
 plotPathwaySpace(p_space1, marks = "n1", theme = "th2")
@@ -195,8 +197,8 @@ plotPathwaySpace(p_space1, marks = "n1", theme = "th2")
 
 ```{r fig5.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
 # gg <- plotPathwaySpace(p_space1, marks = "n1", theme = "th2")
-# ggsave(filename = "./figures/fig5.png", height=3.5, width=4.7,
-#   units="in", device="png", dpi=250, plot=gg)
+# ggsave(filename = "./figures/fig5.png", height=3.5, width=5,
+#   units="in", device="png", dpi=350, plot=gg)
 ```
 
 ```{r fig5, echo=FALSE, out.width = '75%', purl=FALSE}
@@ -218,12 +220,12 @@ g_space2 <- GraphSpace(gtoy2, mar = 0.2)
 
 ```{r Polar projection - 2, eval=FALSE, message=FALSE, out.width="100%"}
 # Check the graph layout
-plotGraphSpace(g_space2)
+plotGraphSpace(g_space2, add.labels = TRUE)
 ```
 
 ```{r fig6.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-# gg <- plotGraphSpace(g_space2)
-# ggsave(filename = "./figures/fig6.png", height=3.5, width=4.7,
+# gg <- plotGraphSpace(g_space2, add.labels = TRUE)
+# ggsave(filename = "./figures/fig6.png", height=4, width=5,
 #   units="in", device="png", dpi=250, plot=gg)
 ```
 
@@ -241,7 +243,8 @@ vertexSignal(p_space2) <- 1
 
 ```{r Polar projection - 4, eval=FALSE, message=FALSE, out.width="70%"}
 # Run the network signal projection using polar coordinates
-p_space2 <- polarProjection(p_space2, k = 2, theta = 45, decay.fun = signalDecay(shape = 2))
+p_space2 <- polarProjection(p_space2, k = 2, theta = 45, 
+  decay.fun = signalDecay(shape = 2))
 
 # Plot the PathwaySpace image
 plotPathwaySpace(p_space2, theme = "th2", add.marks = TRUE)
@@ -249,8 +252,8 @@ plotPathwaySpace(p_space2, theme = "th2", add.marks = TRUE)
 
 ```{r fig7.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
 # gg <- plotPathwaySpace(p_space2, theme = "th2", add.marks = TRUE)
-# ggsave(filename = "./figures/fig7.png", height=3.5, width=4.7,
-#   units="in", device="png", dpi=250, plot=gg)
+# ggsave(filename = "./figures/fig7.png", height=3.5, width=5,
+#   units="in", device="png", dpi=350, plot=gg)
 ```
 
 ```{r fig7, echo=FALSE, out.width = '75%', purl=FALSE}
@@ -261,7 +264,8 @@ Note that this projection emphasizes signals along the edges of the network. In 
 
 ```{r Polar projection - 5, eval=FALSE, message=FALSE, out.width="70%"}
 # Re-run the network signal projection using 'directional = TRUE'
-p_space2 <- polarProjection(p_space2, k = 2, theta = 45, decay.fun = signalDecay(shape = 2), directional = TRUE)
+p_space2 <- polarProjection(p_space2, k = 2, theta = 45, 
+  decay.fun = signalDecay(shape = 2), directional = TRUE)
 
 # Plot the PathwaySpace image
 plotPathwaySpace(p_space2, theme = "th2", marks = c("n1","n3","n4","n5"))
@@ -269,8 +273,8 @@ plotPathwaySpace(p_space2, theme = "th2", marks = c("n1","n3","n4","n5"))
 
 ```{r fig8.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
 # gg <- plotPathwaySpace(p_space2, theme = "th2", marks = c("n1","n3","n4","n5"))
-# ggsave(filename = "./figures/fig8.png", height=3.5, width=4.7,
-#   units="in", device="png", dpi=250, plot=gg)
+# ggsave(filename = "./figures/fig8.png", height=3.5, width=5,
+#   units="in", device="png", dpi=350, plot=gg)
 ```
 
 ```{r fig8, echo=FALSE, out.width = '75%', purl=FALSE}
@@ -290,7 +294,7 @@ vertexSignal(p_space1)[c("n3","n4")] <- c(-2, -4)
 # Check updated signal vector
 vertexSignal(p_space1)
 # n1 n2 n3 n4 n5 
-#  4  3 -2 -4  2 
+#  6  4 -2 -4  3 
 
 # Re-run the network signal projection
 p_space1 <- circularProjection(p_space1, k = 2, decay.fun = signalDecay(shape = 2))
@@ -302,8 +306,8 @@ plotPathwaySpace(p_space1, bg.color = "white", font.color = "grey20", add.marks 
 ```{r fig9.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
 # gg <- plotPathwaySpace(p_space1, bg.color = "white", font.color = "grey20",
 #   add.marks = TRUE, mark.color = "magenta", theme = "th2")
-# ggsave(filename = "./figures/fig9.png", height=3.5, width=4.7,
-#   units="in", device="png", dpi=250, plot=gg)
+# ggsave(filename = "./figures/fig9.png", height=3.5, width=5,
+#   units="in", device="png", dpi=350, plot=gg)
 ```
 
 ```{r fig9, echo=FALSE, out.width = '75%', purl=FALSE}
@@ -359,10 +363,10 @@ plotGraphSpace(g_space_PCv12, node.labels = top10hubs, label.color = "blue", the
 ```
 
 ```{r fig10.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-# gg <- plotGraphSpace(g_space_PCv12, node.labels = top10hubs,
-# label.color = "blue",  theme = "th3", label.size = 2)
-# ggsave(filename = "./figures/fig10.png", height=4, width=5,
-#   units="in", device="png", dpi=200, plot=gg)
+gg <- plotGraphSpace(g_space_PCv12, node.labels = top10hubs,
+label.color = "blue",  theme = "th3", label.size = 2)
+ggsave(filename = "./figures/fig10.png", height=3.5, width=4.5,
+  units="in", device="png", dpi=200, plot=gg)
 ```
 
 ```{r fig10, echo=FALSE, out.width = '70%', purl=FALSE}
