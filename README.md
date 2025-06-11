@@ -6,9 +6,19 @@
   [![](https://img.shields.io/badge/license-Artistic--2.0-blue.svg)](https://cran.r-project.org/web/licenses/Artistic-2.0)
   [![](https://img.shields.io/badge/doi-10.32614/CRAN.package.PathwaySpace-blue.svg)](https://doi.org/10.32614/CRAN.package.PathwaySpace)
   <!-- badges: end -->
-*PathwaySpace* is an R package that creates landscape images from graphs containing vertices (nodes), edges (lines), and a signal associated with the vertices. The package processes the signal using a convolution algorithm that considers the graph's topology to project the signal on a 2D space. 
+*PathwaySpace* is an R package that creates landscape images from graphs 
+containing vertices (nodes), edges (lines), and a signal associated with 
+the vertices. The package processes the signal using a convolution algorithm 
+that considers the graph's topology to project the signal on a 2D space. 
 
-*PathwaySpace* could have various applications, such as visualizing network data in a graphical format that highlights the relationships and signal strengths between vertices. 
+*PathwaySpace* could have various applications, such as visualizing network 
+data in a graphical format that highlights the relationships and signal 
+strengths between vertices. **Figure 1** illustrates the convolution 
+operation problem addressed by the *PathwaySpace* package. For detailed 
+documentation and usage examples, refer to the package's vignettes and 
+example workflows.
+
+![**Figure 1.** Signal processing addressed by the *PathwaySpace* package. **A**) Graph overlaid on a 2D coordinate system. **B**) Illustration of signal projection from two neighboring vertices. *Right*: Signal profiles from aggregation and decay functions.](https://github.com/sysbiolab/PathwaySpace/blob/main/vignettes/figures/fig1.png?raw=true)
 
 ### Installation in R (>=4.4)
 
