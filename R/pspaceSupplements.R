@@ -26,10 +26,16 @@
     pars <- .update.zlim(pars)
     
     #--- check weights
-    nodes$weight <- .revise.weights(nodes$weight)
+    if(any(nodes$weight < 0)){
+      stop("vertex 'weight' attribute must be >=0")
+    }
+    nodes$weight <- .rescale.weights(nodes$weight)
     pars$vweight <- .get.wscale(nodes$weight)
     if(nrow(edges)>0){
-      edges$weight <- .revise.weights(edges$weight)
+      if(any(edges$weight < 0)){
+        stop("edge 'weight' attribute must be >=0")
+      }
+      edges$weight <- .rescale.weights(edges$weight)
       pars$eweight <- .get.wscale(edges$weight)
     } else {
       pars$eweight <- FALSE
@@ -166,15 +172,15 @@
   nodes <- as.matrix(nodes)
   return(nodes)
 }
-.revise.weights <- function(weight){
-  if (all(is.na(weight))) weight[] <- 1
-  weight[is.na(weight)] <- min(weight, na.rm = TRUE)
-  if (sd(weight) > 0) {
-    weight <- scales::rescale(weight, to = c(0, 1))
+.rescale.weights <- function(wt){
+  if (all(is.na(wt))) wt[] <- 1
+  wt[is.na(wt)] <- min(wt, na.rm = TRUE)
+  if (sd(wt) > 0) {
+    wt <- scales::rescale(c(0, wt), to = c(0, 1))[-1]
   } else {
-    weight[] <- 1
+    wt[] <- 1
   }
-  return(weight)
+  return(wt)
 }
 .get.wscale <- function(weight){
   if (sd(weight, na.rm = TRUE) > 0) {
@@ -193,11 +199,11 @@
     pars <- getPathwaySpace(ps, "pars")
     gxy <- getPathwaySpace(ps, "gxy")
     lpts <- .get.points.in.matrix(pars$nrc)
-    nnpg <- .get.point.distances(lpts, gxy, pars$proj$k)
+    nnpg <- .get.near.neighbours(lpts, gxy, pars$proj$k)
     
-    # if (pars$wscale) {
-    #     if(verbose) message("Scaling projection to vertex weight...")
-    # }
+    if (pars$vweight) {
+        if(verbose) message("Scaling projection to vertex weight...")
+    }
     
     #--- compute landscape signal
     if(verbose) message("Running signal convolution...")
@@ -241,11 +247,14 @@
     }
     gxy <- getPathwaySpace(ps, "gxy")
     lpts <- .get.points.in.matrix(pars$nrc)
-    nnpg <- .get.point.distances(lpts, gxy, pars$proj$k)
+    nnpg <- .get.near.neighbours(lpts, gxy, pars$proj$k)
     if (pars$vweight) {
         if(verbose) message("Scaling projection to vertex weight...")
     }
-    #--- for polar, 'pdist' is applied at edge dist
+    if (pars$eweight) {
+      if(verbose) message("Scaling projection to edge weight...")
+    }
+    #--- for polar, 'pdist' is scaled to edge dist
     rg <- range(edges$edist)
     rg <- rg[1] + ( (rg - rg[1]) * pars$proj$pdist )
     edges$edistNorm <- scales::rescale(edges$edist, to=rg)
@@ -267,7 +276,7 @@
 
 #-------------------------------------------------------------------------------
 #--- get point-to-vertices distances for circular and polar projections
-.get.point.distances <- function(lpts, gxy, k, min.ksearch = 30){
+.get.near.neighbours <- function(lpts, gxy, k, min.ksearch = 30){
   gxy <- cbind(gxy, key=seq_len(nrow(gxy)))
   bg <- is.na(gxy[,"vsignal"]) | gxy[,"vsignal"]==0
   if(!all(bg)) gxy <- gxy[!bg, , drop=FALSE]
@@ -405,6 +414,7 @@
     edlist <- .edge.list(edges, gxy)
     etheta <- .edge.list.theta(edlist, gxy)
     edleng <- .edge.attr(edges, gxy, "edistNorm")
+    edwght <- .edge.attr(edges, gxy, "weight")
     if(pars$proj$directional){
         emode <- .edge.mode(edges, gxy)
         for(i in seq_along(emode)){
@@ -412,6 +422,7 @@
             edlist[[i]] <- edlist[[i]][idx]
             etheta[[i]] <- etheta[[i]][idx]
             edleng[[i]] <- edleng[[i]][idx]
+            edwght[[i]] <- edwght[[i]][idx]
         }
     }
     #--- start polar signal projection
@@ -422,7 +433,7 @@
         p_dst <- nnpg$dist[ii, ]
         p_sig <- gxy[p_idx, "vsignal"]
         #--- scaling projection on pdist
-        pdist <- 1 #controlled at edge dist
+        pdist <- 1 #was set to edge dist
         if (pars$vweight) {
             p_wgt <- gxy[p_idx, "weight"]
             pdist <- pdist * p_wgt
@@ -430,12 +441,13 @@
         #--- get edge's theta and dist
         p_et <- etheta[p_idx]
         p_el <- edleng[p_idx]
+        p_wt <- edwght[p_idx]
         #--- compute theta for p1 vs. k
         dx <- lpts[ii, "X"] - gxy[p_idx, "X"]
         dy <- lpts[ii, "Y"] - gxy[p_idx, "Y"]
         p_theta <- atan2(dy, dx)
         #--- get delta theta (multi directional)
-        mdr <- .get.delta.theta(p_et, p_el, p_theta, pars, minlen)
+        mdr <- .get.delta.theta(p_et, p_el, p_wt, p_theta, pars, minlen)
         dth <- mdr[1, ]
         wln <- mdr[2, ]
         #--- update pdist with wln (the signal tends to zero at wln)
@@ -465,11 +477,12 @@
     }
     return(Z)
 }
-.get.delta.theta <- function(p_et, p_el, p_theta, pars, minlen) {
+.get.delta.theta <- function(p_et, p_el, p_wt, p_theta, pars, minlen) {
     nth <- log(0.25, base = (360 - pars$proj$theta) / 360)
     mdr <- vapply(seq_along(p_et), function(i) {
         eth <- p_et[[i]]
         eln <- p_el[[i]]
+        ewt <- p_wt[[i]]
         if (length(eth) > 0) {
             dth <- abs(p_theta[i] - eth)
             dth <- pi - abs(dth - pi)
@@ -479,7 +492,7 @@
             } else {
                 wln <- eln
             }
-            dth <- max(dth)
+            dth <- max(dth*ewt)
             res <- c(dth, wln)
         } else {
             res <- c(NA, minlen)

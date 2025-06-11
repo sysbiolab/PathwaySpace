@@ -609,6 +609,7 @@ setMethod("vertexSignal<-", "PathwaySpace",
     vsignal <- vertexSignal(ps)
     vsignal <- .revise.vertex.signal(vsignal)
     ps@gxy[,"vsignal"] <- vsignal
+    ps@nodes[,"vsignal"] <- vsignal
     zscale <- .get.signal.scale(vsignal)
     ps@pars$zscale <- zscale
     return(ps)
