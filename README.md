@@ -9,14 +9,14 @@
 *PathwaySpace* is an R package that creates landscape images from graphs 
 containing vertices (nodes), edges (lines), and a signal associated with 
 the vertices. The package processes the signal using a convolution algorithm 
-that considers the graph's topology to project the signal on a 2D space. 
+that considers the graph's topology to project the signal on a 2D space.
+**Figure 1** illustrates the convolution operation problem addressed by 
+the *PathwaySpace* package. For detailed documentation and usage examples, 
+see the package's vignettes and example workflows.
 
 *PathwaySpace* could have various applications, such as visualizing network 
 data in a graphical format that highlights the relationships and signal 
-strengths between vertices. **Figure 1** illustrates the convolution 
-operation problem addressed by the *PathwaySpace* package. For detailed 
-documentation and usage examples, see the package's vignettes and 
-example workflows.
+strengths between vertices.
 
 ![Alt text](vignettes/figures/fig1.png?raw=true)
 
