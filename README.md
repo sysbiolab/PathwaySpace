@@ -24,10 +24,10 @@ strengths between vertices.
 **A**) Graph overlaid on a 2D coordinate system. Each projection cone represents 
 the signal associated with a graph vertex (referred to as *vertex-signal positions*), 
 while question marks indicate positions with no signal information (referred to 
-as *null-signal positions*). *Inset*: Graph layout of the toy example used in 
-the *quick start* section of the package's vignette. **B**) Illustration of signal 
-projection from two neighboring vertices, simplified to one dimension. 
-*Right*: Signal profiles from aggregation and decay functions.
+as *null-signal positions*). *Inset*: Graph layout of a toy example used in 
+the package's vignette. **B**) Illustration of signal projection from two 
+neighboring vertices, simplified to one dimension. *Right*: Signal profiles 
+from aggregation and decay functions.
 
 ### Installation in R (>=4.4)
 
