@@ -18,7 +18,9 @@ operation problem addressed by the *PathwaySpace* package. For detailed
 documentation and usage examples, refer to the package's vignettes and 
 example workflows.
 
-![**Figure 1.** Signal processing addressed by the *PathwaySpace* package. **A**) Graph overlaid on a 2D coordinate system. **B**) Illustration of signal projection from two neighboring vertices. *Right*: Signal profiles from aggregation and decay functions.](https://github.com/sysbiolab/PathwaySpace/blob/main/vignettes/figures/fig1.png?raw=true)
+![Alt text](vignettes/figures/fig1.png?raw=true)
+
+**Figure 1.** Signal processing addressed by the *PathwaySpace* package. **A**) Graph overlaid on a 2D coordinate system. **B**) Illustration of signal projection from two neighboring vertices. *Right*: Signal profiles from aggregation and decay functions.
 
 ### Installation in R (>=4.4)
 
