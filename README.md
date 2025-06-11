@@ -15,7 +15,7 @@ that considers the graph's topology to project the signal on a 2D space.
 data in a graphical format that highlights the relationships and signal 
 strengths between vertices. **Figure 1** illustrates the convolution 
 operation problem addressed by the *PathwaySpace* package. For detailed 
-documentation and usage examples, refer to the package's vignettes and 
+documentation and usage examples, see the package's vignettes and 
 example workflows.
 
 ![Alt text](vignettes/figures/fig1.png?raw=true)
