@@ -12,7 +12,7 @@ the vertices. The package processes the signal using a convolution algorithm
 that considers the graph's topology to project the signal on a 2D space.
 **Figure 1** illustrates the convolution operation problem addressed by 
 the *PathwaySpace* package. For detailed documentation and usage examples, 
-see the package's vignettes and example workflows.
+see the package's vignettes and workflows.
 
 *PathwaySpace* could have various applications, such as visualizing network 
 data in a graphical format that highlights the relationships and signal 
@@ -20,7 +20,14 @@ strengths between vertices.
 
 ![Alt text](vignettes/figures/fig1.png?raw=true)
 
-**Figure 1.** Signal processing addressed by the *PathwaySpace* package. **A**) Graph overlaid on a 2D coordinate system. **B**) Illustration of signal projection from two neighboring vertices. *Right*: Signal profiles from aggregation and decay functions.
+**Figure 1.** Signal processing addressed by the *PathwaySpace* package. 
+**A**) Graph overlaid on a 2D coordinate system. Each projection cone represents 
+the signal associated with a graph vertex (referred to as *vertex-signal positions*), 
+while question marks indicate positions with no signal information (referred to 
+as *null-signal positions*). **Inset**: Graph layout of the toy example used in 
+the *quick start* section of this vignette. **B**) Illustration of signal 
+projection from two neighboring vertices, simplified to one dimension. 
+**Right**: Signal profiles from aggregation and decay functions.
 
 ### Installation in R (>=4.4)
 
