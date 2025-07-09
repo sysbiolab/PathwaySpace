@@ -38,10 +38,10 @@ setGeneric("getPathwaySpace",
   }, package = "PathwaySpace"
 )
 
-setGeneric("vertexSignal", function(ps, value) standardGeneric("vertexSignal"))
-setGeneric("vertexSignal<-", function(ps, value) standardGeneric("vertexSignal<-"))
+setGeneric("vertexSignal", function(x, value) standardGeneric("vertexSignal"))
+setGeneric("vertexSignal<-", function(x, value) standardGeneric("vertexSignal<-"))
 
-setGeneric("vertexWeight", function(ps, value) standardGeneric("vertexWeight"))
-setGeneric("vertexWeight<-", function(ps, value) standardGeneric("vertexWeight<-"))
+setGeneric("vertexDecay", function(x, value) standardGeneric("vertexDecay"))
+setGeneric("vertexDecay<-", function(x, value) standardGeneric("vertexDecay<-"))
 
 

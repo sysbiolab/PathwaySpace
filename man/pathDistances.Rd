@@ -2,7 +2,7 @@
 % Please edit documentation in R/pspaceMisc.R
 \name{pathDistances}
 \alias{pathDistances}
-\title{Calculate a pathway space distance between two vectors.}
+\title{Calculate a pathway space distance between two vectors}
 \usage{
 pathDistances(gdist, from, to, nperm = 1000, verbose = TRUE)
 }
@@ -24,7 +24,7 @@ messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
 A list with pathway space distances and a 'ggplot' object.
 }
 \description{
-Calculate a pathway space distance between two vectors.
+Calculate a pathway space distance between two vectors
 }
 \examples{
 

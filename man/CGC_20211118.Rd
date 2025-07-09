@@ -3,7 +3,7 @@
 \docType{data}
 \name{CGC_20211118}
 \alias{CGC_20211118}
-\title{COSMIC-CGC genes mapped to PathwaySpace images.}
+\title{COSMIC-CGC genes mapped to PathwaySpace images}
 \format{
 data.frame
 }

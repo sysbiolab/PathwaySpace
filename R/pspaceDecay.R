@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-#' @title Weibull decay function.
+#' @title Weibull decay function
 #'
 #' @description The \code{weibullDecay} function is used by
 #' PathwaySpace's methods for signal convolution and projection.
@@ -32,7 +32,7 @@ weibullDecay <- function(x, signal = 1, decay = 0.001, shape = 1.05) {
 attributes(weibullDecay)$name <- "weibullDecay"
 
 #-------------------------------------------------------------------------------
-#' @title Exponential decay function.
+#' @title Exponential decay function
 #'
 #' @description The \code{expDecay} function is used by PathwaySpace's methods
 #' for signal convolution and projection.
@@ -63,7 +63,7 @@ expDecay <- function(x, signal = 1, decay = 0.001) {
 attributes(expDecay)$name <- "expDecay"
 
 #-------------------------------------------------------------------------------
-#' @title A simple linear decay function.
+#' @title A simple linear decay function
 #'
 #' @description The \code{linearDecay} function is used by PathwaySpace's
 #' methods for signal convolution and projection.

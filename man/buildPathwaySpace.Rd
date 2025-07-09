@@ -2,7 +2,7 @@
 % Please edit documentation in R/pspaceMethods.R
 \name{buildPathwaySpace}
 \alias{buildPathwaySpace}
-\title{Constructor of PathwaySpace-class objects.}
+\title{Constructor of PathwaySpace-class Objects}
 \usage{
 buildPathwaySpace(
   gs,
@@ -14,8 +14,8 @@ buildPathwaySpace(
 }
 \arguments{
 \item{gs}{A \code{\link[RGraphSpace]{GraphSpace}} object. Alternatively, 
-an \code{\link[igraph]{igraph}} object with vertex coordinates assigned 
-to \code{x} and \code{y} vertex attributes, and vertex labels assigned 
+an \code{\link[igraph]{igraph}} object with node coordinates assigned 
+to \code{x} and \code{y} vertex attributes, and node labels assigned 
 to \code{name} vertex attribute.}
 
 \item{nrc}{A single positive integer indicating the number of rows and 

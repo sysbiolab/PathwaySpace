@@ -59,6 +59,6 @@ Useful links:
 
 }
 \author{
-The Cancer Genome Atlas Analysis Network.
+The Cancer Genome Atlas Analysis Network
 }
 \keyword{internal}

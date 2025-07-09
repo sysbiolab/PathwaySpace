@@ -3,7 +3,7 @@
 \docType{data}
 \name{gimage}
 \alias{gimage}
-\title{An image matrix.}
+\title{An image matrix}
 \format{
 matrix
 }

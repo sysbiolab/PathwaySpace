@@ -2,7 +2,7 @@
 % Please edit documentation in R/pspaceDecay.R
 \name{linearDecay}
 \alias{linearDecay}
-\title{A simple linear decay function.}
+\title{A simple linear decay function}
 \usage{
 linearDecay(x, signal = 1)
 }

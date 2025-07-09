@@ -4,7 +4,7 @@
 \name{PCv12_pruned_igraph}
 \alias{PCv12_pruned_igraph}
 \alias{gdist.toy}
-\title{A pruned and laid out igraph object from Pathway Commons V12.}
+\title{A pruned and laid out igraph object from Pathway Commons V12}
 \format{
 igraph
 }

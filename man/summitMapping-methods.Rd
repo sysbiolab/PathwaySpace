@@ -4,7 +4,7 @@
 \name{summitMapping,PathwaySpace-method}
 \alias{summitMapping,PathwaySpace-method}
 \alias{summitMapping}
-\title{Mapping summits on PathwaySpace images.}
+\title{Mapping Summits on PathwaySpace Images}
 \usage{
 \S4method{summitMapping}{PathwaySpace}(
   ps,

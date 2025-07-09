@@ -4,7 +4,7 @@
 \name{Hallmarks_v2023_1_Hs_symbols}
 \alias{Hallmarks_v2023_1_Hs_symbols}
 \alias{hallmarks}
-\title{A list with Hallmark gene sets (v2023.1).}
+\title{A list with Hallmark gene sets (v2023.1)}
 \format{
 list
 }

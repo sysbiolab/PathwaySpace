@@ -2,7 +2,7 @@
 % Please edit documentation in R/pspaceMisc.R
 \name{pspace.cols}
 \alias{pspace.cols}
-\title{A simple vector of colors for PathwaySpace images.}
+\title{A simple vector of colors for PathwaySpace images}
 \usage{
 pspace.cols(n = 5)
 }
@@ -13,7 +13,7 @@ pspace.cols(n = 5)
 A vector with hexadecimal color codes.
 }
 \description{
-A simple vector of colors for PathwaySpace images.
+A simple vector of colors for PathwaySpace images
 }
 \examples{
 pspace.cols()

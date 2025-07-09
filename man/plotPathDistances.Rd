@@ -2,7 +2,7 @@
 % Please edit documentation in R/pspaceMisc.R
 \name{plotPathDistances}
 \alias{plotPathDistances}
-\title{Accessory function to plot pathway space distances.}
+\title{Accessory function to plot pathway space distances}
 \usage{
 plotPathDistances(pdist, z.transform = FALSE)
 }
@@ -16,7 +16,7 @@ distances into z-score values.}
 A 'ggplot' object.
 }
 \description{
-Accessory function to plot pathway space distances.
+Accessory function to plot pathway space distances
 }
 \examples{
 

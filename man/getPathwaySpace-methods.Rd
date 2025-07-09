@@ -4,7 +4,7 @@
 \name{getPathwaySpace,PathwaySpace-method}
 \alias{getPathwaySpace,PathwaySpace-method}
 \alias{getPathwaySpace}
-\title{Accessors for fetching slots from a PathwaySpace object.}
+\title{Accessors for Fetching Slots from a PathwaySpace Object}
 \usage{
 \S4method{getPathwaySpace}{PathwaySpace}(ps, what = "status")
 }
@@ -13,8 +13,9 @@
 
 \item{what}{A single character value specifying which information should 
 be retrieved from the slots.
-Options: 'graph','gxy','gxyz','pars','misc','status','summits',
-'summit_mask', and 'summit_contour'.}
+Options: "nodes", "edges", "graph", "image", "pars", "misc", 
+"signal","projections", "status", "silhouette", "summits", 
+"summit_mask", "summit_contour"}
 }
 \value{
 Content from slots in the \linkS4class{PathwaySpace} object.

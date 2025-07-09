@@ -4,7 +4,7 @@
 \name{silhouetteMapping,PathwaySpace-method}
 \alias{silhouetteMapping,PathwaySpace-method}
 \alias{silhouetteMapping}
-\title{Decorating PathwaySpace images with graph silhouettes.}
+\title{Decorating PathwaySpace Images with Graph Silhouettes}
 \usage{
 \S4method{silhouetteMapping}{PathwaySpace}(
   ps,

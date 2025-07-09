@@ -2,7 +2,7 @@
 % Please edit documentation in R/pspaceDecay.R
 \name{expDecay}
 \alias{expDecay}
-\title{Exponential decay function.}
+\title{Exponential decay function}
 \usage{
 expDecay(x, signal = 1, decay = 0.001)
 }

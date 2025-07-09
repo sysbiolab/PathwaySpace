@@ -4,7 +4,7 @@
 \name{circularProjection,PathwaySpace-method}
 \alias{circularProjection,PathwaySpace-method}
 \alias{circularProjection}
-\title{Creating 2D-landscape images from graph objects.}
+\title{Spatial Projection of Graph-Associated Signals}
 \usage{
 \S4method{circularProjection}{PathwaySpace}(
   ps,
@@ -12,10 +12,9 @@
   pdist = 0.15,
   rescale = TRUE,
   verbose = TRUE,
-  decay.fun = signalDecay(),
   aggregate.fun = signalAggregation(),
-  kns = deprecated(),
-  knn = deprecated()
+  decay.fun = deprecated(),
+  kns = deprecated()
 )
 }
 \arguments{
@@ -39,23 +38,22 @@ rescaled to \code{[-1, 1]}.}
 \item{verbose}{A single logical value specifying to display detailed 
 messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
 
-\item{decay.fun}{A signal decay function. Available: 'Weibull',
-'exponential', and 'linear' functions (see \code{\link{signalDecay}}).}
+\item{aggregate.fun}{A function used to aggregate the projected signals. 
+Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean'
+(see \code{\link{signalAggregation}}). A custom aggregation logic can also 
+be provided as a unary function, e.g., \code{function(x) { ... }}, which 
+should aggregate a vector of signals to a single scalar value.}
 
-\item{aggregate.fun}{A signal aggregation function. Available: 
-weighted 'linear', 'log', and 'exponential' functions 
-(see \code{\link{signalAggregation}}).}
+\item{decay.fun}{Deprecated from PathwaySpace 1.0.1; use...}
 
 \item{kns}{Deprecated from PathwaySpace 1.0.1; use 'k' instead.}
-
-\item{knn}{Deprecated from PathwaySpace 1.0.1; use 'k' instead.}
 }
 \value{
 A preprocessed \linkS4class{PathwaySpace} class object.
 }
 \description{
 \code{circularProjection} implements a convolution
-algorithm to project signals across a 2D-coordinate system.
+algorithm to project signals onto a 2D-coordinate system.
 }
 \examples{
 # Load a demo igraph

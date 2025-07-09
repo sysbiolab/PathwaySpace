@@ -1,9 +1,9 @@
 
 #-------------------------------------------------------------------------------
-.validate.gspace <- function(g){
-  n <- nrow(getGraphSpace(g, "nodes"))
-  if (n<2) {
-    stop("'gs' should have at least two vertices.", call. = FALSE) 
+.validate.gspace <- function(gs){
+  n <- nrow(getGraphSpace(gs, "nodes"))
+  if (n<1) {
+    stop("'gs' should have at least one vertex.", call. = FALSE) 
   }
 }
 

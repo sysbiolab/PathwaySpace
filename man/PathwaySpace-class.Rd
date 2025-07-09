@@ -3,34 +3,29 @@
 \docType{class}
 \name{PathwaySpace-class}
 \alias{PathwaySpace-class}
-\title{PathwaySpace: An S4 class for signal propagation on image spaces.}
+\title{PathwaySpace: An S4 class for signal propagation on image spaces}
 \value{
 An S4 class object.
 }
 \description{
-PathwaySpace: An S4 class for signal propagation on image spaces.
+PathwaySpace: An S4 class for signal propagation on image spaces
 }
 \section{Slots}{
 
 \describe{
-\item{\code{gspace}}{A \code{\link[RGraphSpace]{GraphSpace-class}} object.}
+\item{\code{nodes}}{A data frame with xy-vertex coordinates.}
 
-\item{\code{vertex}}{A character vector with vertex names.}
+\item{\code{edges}}{A data frame with edges.}
 
-\item{\code{vsignal}}{A numerical vector with vertex signals.}
+\item{\code{graph}}{An igraph object.}
 
-\item{\code{nodes}}{A data frame listing graph nodes.}
-
-\item{\code{edges}}{A data frame listing graph edges.}
-
-\item{\code{gxy}}{A data frame with xy-vertex coordinates (numerical).}
-
-\item{\code{gxyz}}{A numerical matrix with x-cols and y-rows coordinates,
-and a z-signal.}
+\item{\code{image}}{A raster background image matrix.}
 
 \item{\code{pars}}{A list with parameters.}
 
 \item{\code{misc}}{A list with intermediate objects for downstream methods.}
+
+\item{\code{projections}}{A list with processed objects for downstream methods.}
 
 \item{\code{status}}{A vector containing the processing status of the
 PathwaySpace object.}

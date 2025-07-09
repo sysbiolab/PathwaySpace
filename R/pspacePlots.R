@@ -1,4 +1,4 @@
-#' @title Plotting 2D-landscape images for the PathwaySpace package.
+#' @title Plotting 2D-landscape images for the PathwaySpace package
 #'
 #' @description \code{plotPathwaySpace} is a wrapper function to 
 #' create dedicated ggplot graphics for PathwaySpace-class objects.
@@ -111,8 +111,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     add.image = FALSE) {
     
     #--- validate the ps object and args
-    if (!.checkStatus(ps, "Projection") && 
-        !.checkStatus(ps, "Silhouette")) {
+    if (!.checkStatus(ps, "Projection") && !.checkStatus(ps, "Silhouette")) {
       stop("NOTE: 'ps' needs to be evaluated by a 'projection' method!",
         call. = FALSE)
     }
@@ -151,25 +150,24 @@ setMethod("plotPathwaySpace", "PathwaySpace",
       stop("'si.alpha' should be in [0,1]", call. = FALSE)
     }
     #--- get slots from ps
-    gxy <- getPathwaySpace(ps, "gxy")
-    gxyz <- getPathwaySpace(ps, "gxyz")
-    pars <- getPathwaySpace(ps, "pars")
     summits <- getPathwaySpace(ps, "summits")
     cset <- getPathwaySpace(ps, "summit_contour")
     silstatus <- .checkStatus(ps, "Silhouette")
-    ldim <- dim(gxyz)
+    gxy <- getPathwaySpace(ps, "projections")$gxy
+    gxyz <- getPathwaySpace(ps, "projections")$gxyz
+    pars <- getPathwaySpace(ps, "projections")$pars
     
     #--- set colors
     if(!is.null(trim.colors)){
       colors <- .pspacePalette(colors, trim.colors)
     }
-    if(pars$zscale$scale.type=="negpos"){
+    if(pars$ps$configs$scale.type=="negpos"){
       slices <- ceiling(slices/2) * 2
     }
     
     # set scales
     if(is.null(zlim)){
-      zlim <- pars$zlim
+      zlim <- pars$ps$configs$zlim
     } else {
       gxyz[gxyz < zlim[1]] <- zlim[1]
       gxyz[gxyz > zlim[2]] <- zlim[2]
@@ -178,8 +176,8 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     
     #--- trim colors and set theme args
     cl <- .trimcols(colors, bg.color, zlim, pars)
-    cl <- .set.theme.bks(theme, cl)
-    cl <- .set.theme.zlim(cl, zlim)
+    cl <- .set_theme_bks(theme, cl)
+    cl <- .set_theme_zlim(cl, zlim)
     # slice gxyz image
     bks <- seq(zlim[1], zlim[2], length.out = slices)
     gxyz[, ] <- bks[cut(as.numeric(gxyz), breaks = sort(unique(bks)),
@@ -189,12 +187,12 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     gridln <- .getGrid(gxyz, cl$axis.ticks)
     gridln <- as.numeric(gridln)
     gridln <- data.frame(
-      arrayInd(seq_along(gridln), .dim = ldim), gridln)
+      arrayInd(seq_along(gridln), .dim = dim(gxyz)), gridln)
     colnames(gridln) <- c("Y", "X", "L")
     
     #--- set main input for ggplot
-    gxyz <- as.numeric(gxyz)
-    gxyz <- data.frame(arrayInd(seq_along(gxyz), .dim = ldim), gxyz)
+    gxyz <- data.frame(arrayInd(seq_along(gxyz), .dim = dim(gxyz)),
+      as.numeric(gxyz))
     colnames(gxyz) <- c("Y", "X", "Z")
     
     #--- scale coordinates to plot space
@@ -205,23 +203,23 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     #--- set a bg color effect, scaling alpha to z
     if(si.alpha < 1){
       si.color <- adjustcolor(si.color, si.alpha)
-      gz.alpha <- .scale.alpha(si.alpha, gxyz, zlim, pars)
+      gz.alpha <- .scale_alpha(si.alpha, gxyz, zlim, pars)
     } else {
       gz.alpha <- 1
     }
     
     #--- initialize a ggplot
-    ggp <- .set.pspace(gxyz, xlab, ylab, zlab, cl, si.color)
+    ggp <- .set_pspace(gxyz, xlab, ylab, zlab, cl, si.color)
     
     #--- add image
     if(pars$image.layer){
-      img <- getGraphSpace(getPathwaySpace(ps, "gspace"), "image")
+      img <- getPathwaySpace(ps, "image")
       if(add.image){
-        ggp <- .add.image(ggp, img)
+        ggp <- .add_image(ggp, img)
       } else {
-        ggi <- .add.image(ggp, img)
-        if(add.grid) ggi <- .add.grid(ggi, gxyz, grid.color)
-        ggi <- .custom.themes(ggi, theme, font.size, bg.color)
+        ggi <- .add_image(ggp, img)
+        if(add.grid) ggi <- .add_grid(ggi, gxyz, grid.color)
+        ggi <- .custom_themes(ggi, theme, font.size, bg.color)
       }
     }
     
@@ -230,32 +228,32 @@ setMethod("plotPathwaySpace", "PathwaySpace",
       na.rm=TRUE, alpha = gz.alpha)
     
     #--- add a grid
-    if(add.grid) ggp <- .add.grid(ggp, gxyz, grid.color)
+    if(add.grid) ggp <- .add_grid(ggp, gxyz, grid.color)
     
     #--- add contour lines if available
     bl <- add.summits || label.summits
     if (bl && !is.null(summits) && length(summits) > 0 && sum(cset) > 0) {
-      ggp <- .add.contour(ggp, gxyz, summits, cset, 
+      ggp <- .add_contour(ggp, gxyz, summits, cset, 
         summit.color, mark.size, add.summits, label.summits)
     }
     
     #--- add marks if available
     if (!is.null(marks)) {
-      ggp <- .add.marks(ggp, gxy, pars, marks, mark.size,
+      ggp <- .add_marks(ggp, gxy, pars, marks, mark.size,
         mark.color, mark.padding, mark.line.width, use.dotmark)
     } else if(add.marks){
-      ggp <- .add.marks(ggp, gxy, pars, marks=rownames(gxy), 
+      ggp <- .add_marks(ggp, gxy, pars, marks=rownames(gxy), 
         mark.size, mark.color, mark.padding, mark.line.width, use.dotmark)
     }
     
     #--- add annotations
     if(.checkStatus(ps, "Projection")){
-      ggp <- .custom.annotations(ggp, title, pars, font.size, 
+      ggp <- .custom_annotations(ggp, title, pars, font.size, 
         font.color, silstatus, si.color)
     }
     
     #--- apply custom theme
-    ggp <- .custom.themes(ggp, theme, font.size, bg.color)
+    ggp <- .custom_themes(ggp, theme, font.size, bg.color)
     
     if(pars$image.layer && !add.image){
       ggl <- list(graph = ggp, image = ggi)
@@ -268,28 +266,28 @@ setMethod("plotPathwaySpace", "PathwaySpace",
 )
 
 #-------------------------------------------------------------------------------
-.scale.alpha <- function(si.alpha, gxyz, zlim, pars){
+.scale_alpha <- function(si.alpha, gxyz, zlim, pars){
   az <- gxyz$Z
   mxz <- max(abs(zlim))
-  if(pars$zscale$scale.type == "negpos") {
+  if(pars$ps$configs$scale.type == "negpos") {
     slim <- 0.5 * (1 - si.alpha)
     slim <- slim * mxz
     az[az < 0 & az < -slim] <- mxz
     az[az > 0 & az > slim] <- mxz
     az <- abs(az)
-  } else if(pars$zscale$scale.type == "neg") {
+  } else if(pars$ps$configs$scale.type == "neg") {
     az[az < zlim[2]] <- zlim[1]
   } else {
     az[az > zlim[1]] <- zlim[2]
   }
-  pars$zlim
+  pars$ps$configs$zlim
   az <- az/mxz
   alpha <- az^10 + si.alpha
   return(alpha)
 }
 
 #-------------------------------------------------------------------------------
-.custom.annotations <- function(ggp, title, pars, font.size, 
+.custom_annotations <- function(ggp, title, pars, font.size, 
   font.color, silstatus, si.color){
   if(silstatus){
     if(si.color=="grey85"){
@@ -309,7 +307,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
   ggp <- ggp + ggplot2::annotate("text", label = title,
     colour = fcol, size = font.size*3.5, x = 0, y = 0.99, 
     hjust = 0, vjust = 1)
-  dfun <- attributes(pars$proj$decay_fun)$name
+  dfun <- attributes(pars$ps$decay$fun)$name
   if(!is.null(dfun)){
     if(dfun == "weibullDecay"){
       dfun <- "Weibull decay"
@@ -320,14 +318,16 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     } else {
       dfun <- "Custom decay"
     }
-    pars$proj$dfun <- dfun
-  }
-  if(pars$proj$projection=="Polar"){
-    annot <- pars$proj[c("projection", "dfun", "k", "theta")]
-    annot$k <- paste0("k = ", annot$k, "; ")
-    annot$theta <- paste0("theta = ", pars$proj$theta)
+    pars$ps$dfun <- dfun
   } else {
-    annot <- pars$proj[c("projection", "dfun", "k")]
+    pars$ps$dfun <- "Custom decay"
+  }
+  if(pars$ps$projection=="Polar"){
+    annot <- pars$ps[c("projection", "dfun", "k", "theta")]
+    annot$k <- paste0("k = ", annot$k, "; ")
+    annot$theta <- paste0("theta = ", pars$ps$theta)
+  } else {
+    annot <- pars$ps[c("projection", "dfun", "k")]
     annot$k <- paste0("k = ", annot$k)
   }
   annot$projection <- paste0(annot$projection, " projection", sep)
@@ -340,7 +340,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
 }
 
 #-------------------------------------------------------------------------------
-.set.pspace <- function(gxyz, xlab, ylab, zlab, cl, si.color){
+.set_pspace <- function(gxyz, xlab, ylab, zlab, cl, si.color){
   X <- Y <- Z <- NULL
   ggp <- ggplot2::ggplot(gxyz, ggplot2::aes(X, Y, fill = Z)) +
     ggplot2::scale_x_continuous(name = xlab, breaks = cl$axis.ticks,
@@ -357,7 +357,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
 }
 
 #-------------------------------------------------------------------------------
-.add.grid <- function(ggp, gxyz, grid.color){
+.add_grid <- function(ggp, gxyz, grid.color){
   dt <- gxyz[gxyz$L == 1, c("X", "Y")]
   ggp <- ggp + ggplot2::annotate(geom = "point", x = dt$X, 
     y = dt$Y, color = grid.color, size = 0.2, pch = 15)
@@ -365,13 +365,13 @@ setMethod("plotPathwaySpace", "PathwaySpace",
 }
 
 #-------------------------------------------------------------------------------
-.add.image <- function(ggp, image){
+.add_image <- function(ggp, image){
   ggp <- ggp + annotation_raster(image, xmin = 0, xmax = 1, ymin = 0, ymax = 1)
   return(ggp)
 }
 
 #-------------------------------------------------------------------------------
-.add.contour <- function(ggp, gxyz, summits, cset, summit.color, 
+.add_contour <- function(ggp, gxyz, summits, cset, summit.color, 
   mark.size, add.summits, label.summits) {
   setnames <- names(summits)
   if (is.null(setnames)) {
@@ -416,21 +416,21 @@ setMethod("plotPathwaySpace", "PathwaySpace",
 }
 
 #-------------------------------------------------------------------------------
-.add.marks <- function(ggp, gxy, pars, marks, mark.size,
+.add_marks <- function(ggp, gxy, pars, marks, mark.size,
   mark.color, mark.padding, mark.line.width, use.dotmark) {
   
   # scale coordinates to plot space
   gxy_df <- as.data.frame(gxy)
   gxy_df <- gxy_df[, c("X", "Y")]
-  gxy_df$X <- scales::rescale(gxy_df$X, from = c(1, pars$nrc))
-  gxy_df$Y <- scales::rescale(gxy_df$Y, from = c(1, pars$nrc))
+  gxy_df$X <- scales::rescale(gxy_df$X, from = c(1, pars$ps$nrc))
+  gxy_df$Y <- scales::rescale(gxy_df$Y, from = c(1, pars$ps$nrc))
   
   # match  marks
   marks <- marks[!duplicated(marks)]
   if (is.null(names(marks))) names(marks) <- marks
   names(marks) <- ifelse(is.na(names(marks)), marks, names(marks))
   names(marks) <- ifelse(names(marks) == "", marks, names(marks))
-  idx_df <- .get.mark.idx(marks, gxy_df)
+  idx_df <- .get_mark_idx(marks, gxy_df)
   if(any(is.na(idx_df$idx))){
     stop("All 'marks' should be annotated in the 'PathwaySpace' object.",
       call. = FALSE)
@@ -459,7 +459,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
   
   return(ggp)
 }
-.get.mark.idx <- function(marks, gxy_df){
+.get_mark_idx <- function(marks, gxy_df){
   idx_df <- data.frame(name=marks, label=names(marks))
   idx_df$idx1 <- match(marks, rownames(gxy_df))
   idx_df$idx2 <- match(names(marks), rownames(gxy_df))
@@ -472,21 +472,21 @@ setMethod("plotPathwaySpace", "PathwaySpace",
 }
 
 #-------------------------------------------------------------------------------
-.custom.themes <- function(gg, theme, font.size, bg.color) {
+.custom_themes <- function(gg, theme, font.size, bg.color) {
   et1 <- ggplot2::element_text(size = 14 * font.size)
   et2 <- ggplot2::element_text(size = 12 * font.size)
   if (theme == "th0") {
-    gg <- .custom.th0(gg, font.size, bg.color)
+    gg <- .custom_th0(gg, font.size, bg.color)
   } else if (theme == "th1") {
-    gg <- .custom.th1(gg, font.size, bg.color)
+    gg <- .custom_th1(gg, font.size, bg.color)
   } else if (theme == "th2") {
-    gg <- .custom.th2(gg, font.size, bg.color)
+    gg <- .custom_th2(gg, font.size, bg.color)
   } else {
-    gg <- .custom.th3(gg, font.size, bg.color)
+    gg <- .custom_th3(gg, font.size, bg.color)
   }
   return(gg)
 }
-.custom.th0 <- function(gg, font.size, bg.color) {
+.custom_th0 <- function(gg, font.size, bg.color) {
   et1 <- ggplot2::element_text(size = 14 * font.size)
   et2 <- ggplot2::element_text(size = 12 * font.size)
   gg <- gg + ggplot2::theme(axis.title = et1, axis.text = et2,
@@ -494,7 +494,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     panel.background = element_rect(fill = bg.color))
   return(gg)
 }
-.custom.th1 <- function(gg, font.size,
+.custom_th1 <- function(gg, font.size,
   bg.color) {
   et1 <- ggplot2::element_text(size = 14 * font.size)
   et2 <- ggplot2::element_text(size = 12 * font.size)
@@ -514,7 +514,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
       panel.border = element_rect(linewidth = 1.2))
   return(gg)
 }
-.custom.th2 <- function(gg, font.size, bg.color) {
+.custom_th2 <- function(gg, font.size, bg.color) {
   et1 <- ggplot2::element_text(size = 14 * font.size)
   et2 <- ggplot2::element_text(size = 12 * font.size)
   gg <- gg + ggplot2::theme_gray() + ggplot2::theme(axis.title = et1,
@@ -530,7 +530,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     panel.background = element_rect(fill = bg.color))
   return(gg)
 }
-.custom.th3 <- function(gg, font.size, bg.color) {
+.custom_th3 <- function(gg, font.size, bg.color) {
   et1 <- ggplot2::element_text(size = 14 * font.size)
   et2 <- ggplot2::element_text(size = 12 * font.size, hjust=0.5)
   gg <- gg + ggplot2::theme_gray() + 
@@ -550,7 +550,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
       panel.background = element_rect(fill = bg.color))
   return(gg)
 }
-.set.theme.bks <- function(theme, cl=list()){
+.set_theme_bks <- function(theme, cl=list()){
   if (theme %in% c("th3")) {
     cl$axis.ticks <- c(0.25, 0.5, 0.75)
     cl$xylim <- c(-0.01, 1.01)
@@ -569,7 +569,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
   }
   return(cl)
 }
-.set.theme.zlim <- function(cl, zlim){
+.set_theme_zlim <- function(cl, zlim){
   # adjust labels for z-axis midle and tips
   bks_names <- cl$breaks
   bks_names <- format(bks_names,  trim = TRUE)
@@ -631,7 +631,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
 
 #-------------------------------------------------------------------------------
 .trimcols <- function(colors, bg.color, zlim, pars) {
-  if(pars$zscale$scale.type == "negpos") {
+  if(pars$ps$configs$scale.type == "negpos") {
     
     if (is.null(bg.color)) {
       if (length(colors) %% 2 == 1){
@@ -651,7 +651,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     cols <- colorRampPalette(colors)(17)
     bg <- cols[9]
     
-  } else if(pars$zscale$scale.type=="neg") {
+  } else if(pars$ps$configs$scale.type=="neg") {
     
     if (is.null(bg.color)) {
       bg.color <- colors[length(colors)]

@@ -4,7 +4,7 @@
 \name{plotPathwaySpace,PathwaySpace-method}
 \alias{plotPathwaySpace,PathwaySpace-method}
 \alias{plotPathwaySpace}
-\title{Plotting 2D-landscape images for the PathwaySpace package.}
+\title{Plotting 2D-landscape images for the PathwaySpace package}
 \usage{
 \S4method{plotPathwaySpace}{PathwaySpace}(
   ps,

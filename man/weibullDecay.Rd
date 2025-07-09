@@ -2,7 +2,7 @@
 % Please edit documentation in R/pspaceDecay.R
 \name{weibullDecay}
 \alias{weibullDecay}
-\title{Weibull decay function.}
+\title{Weibull decay function}
 \usage{
 weibullDecay(x, signal = 1, decay = 0.001, shape = 1.05)
 }
