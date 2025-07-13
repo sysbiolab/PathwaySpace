@@ -810,17 +810,11 @@
 
 #-------------------------------------------------------------------------------
 .validate_aggregate_fun <- function(aggregate.fun){
-  fargs <- formalArgs(aggregate.fun)
-  fargs <- fargs[!fargs=="..."]
+  fargs <- formalArgs(args(aggregate.fun))
+  fargs <- fargs[ !fargs %in% c("...", "na.rm")]
   if(length(fargs)>1){
-    stop("'aggregate.fun' must be a unary function, e.g, function(x) {...}", 
+    stop("'aggregate.fun' must be a unary function, e.g, function(x) {...}",
       call. = FALSE)
-  }
-  missing_args <- setdiff(c("x"), fargs)
-  if (length(missing_args) > 0) {
-    msg <- paste0(sQuote(missing_args, q=FALSE), collapse = ", ")
-    msg <- paste0("'aggregate.fun' is missing a required argument: ", msg)
-    stop(msg, call. = FALSE)
   }
   TRUE
 }

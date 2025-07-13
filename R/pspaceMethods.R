@@ -95,12 +95,17 @@ buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE,
 #' rescaled to \code{[-1, 1]}.
 #' @param verbose A single logical value specifying to display detailed 
 #' messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).
+#' @param decay.fun A signal decay function. Available options include 
+#' 'Weibull', 'exponential', and 'linear' (see \code{\link{signalDecay}}).
+#' Users may also define a custom decay model with at least two arguments, 
+#' e.g., \code{function(x, signal) \{ ... \}}, which should returns a vector of  
+#' projected signals of the same length as \code{x}. Additional arguments may  
+#' include any variable available as graph vertex attribute.
 #' @param aggregate.fun A function used to aggregate the projected signals. 
-#' Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean'
-#' (see \code{\link{signalAggregation}}). A custom aggregation logic can also 
-#' be provided as a unary function, e.g., \code{function(x) { ... }}, which 
-#' should aggregate a vector of signals to a single scalar value.
-#' @param decay.fun Deprecated from PathwaySpace 1.0.1; use...
+#' It must be provided as a unary function, e.g., \code{function(x) { ... }}, 
+#' which should aggregate a vector of signals to a single scalar value. 
+#' Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean' 
+#' (See \code{\link{signalAggregation}}).
 #' @param kns Deprecated from PathwaySpace 1.0.1; use 'k' instead.
 #' @return A preprocessed \linkS4class{PathwaySpace} class object.
 #' @author Victor Apolonio, Vinicius Chagas, Mauro Castro, 
@@ -129,17 +134,13 @@ buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE,
 #'
 setMethod("circularProjection", "PathwaySpace", function(ps, k = 8,
   pdist = 0.15, rescale = TRUE, verbose = TRUE, 
-  aggregate.fun = signalAggregation(), 
-  decay.fun = deprecated(), kns = deprecated()) {
+  decay.fun = signalDecay(), aggregate.fun = signalAggregation(),
+  kns = deprecated()) {
   #--- validate the pipeline status
   if (!.checkStatus(ps, "Preprocess")) {
     stop("NOTE: the 'ps' object needs preprocessing!", call. = FALSE)
   }
   ### deprecate
-  if (lifecycle::is_present(decay.fun)) {
-    deprecate_soft("1.0.1", "circularProjection(decay.fun)",
-      "vertexDecay()")
-  }
   if (lifecycle::is_present(kns)) {
     deprecate_soft("1.0.1", "circularProjection(kns)", 
       "circularProjection(k)")
@@ -153,6 +154,7 @@ setMethod("circularProjection", "PathwaySpace", function(ps, k = 8,
   .validate.args("singleLogical", "rescale", rescale)
   .validate.args("singleLogical", "verbose", verbose)
   .validate.args("function", "aggregate.fun", aggregate.fun)
+  .validate.args("function", "decay.fun", decay.fun)
   #--- validate argument values
   if (k < 1) {
     stop("'k' should be >=1", call. = FALSE)
@@ -162,7 +164,10 @@ setMethod("circularProjection", "PathwaySpace", function(ps, k = 8,
   if (pdist < 0 || pdist > 1) {
     stop("'pdist' should be in [0,1]", call. = FALSE)
   }
-  #--- validate function
+  #--- validate functions
+  if(!missing(decay.fun)){
+    gs_vertex_attr(ps, "decayFunction") <- decay.fun
+  }
   .validate_aggregate_fun(aggregate.fun)
   
   #--- pack args
@@ -204,12 +209,17 @@ setMethod("circularProjection", "PathwaySpace", function(ps, k = 8,
 #' rescaled to \code{[-1, 1]}.
 #' @param verbose A single logical value specifying to display detailed 
 #' messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).
+#' @param decay.fun A signal decay function. Available options include 
+#' 'Weibull', 'exponential', and 'linear' (see \code{\link{signalDecay}}).
+#' Users may also define a custom decay model with at least two arguments, 
+#' e.g., \code{function(x, signal) \{ ... \}}, which should returns a vector of  
+#' projected signals of the same length as \code{x}. Additional arguments may  
+#' include any variable available as graph vertex attribute.
 #' @param aggregate.fun A function used to aggregate the projected signals. 
-#' Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean'
-#' (see \code{\link{signalAggregation}}). A custom aggregation logic can also 
-#' be provided as a unary function, e.g., \code{function(x) { ... }}, which 
-#' should aggregate a vector of signals to a single scalar value.
-#' @param decay.fun Deprecated from PathwaySpace 1.0.1; use...
+#' It must be provided as a unary function, e.g., \code{function(x) { ... }}, 
+#' which should aggregate a vector of signals to a single scalar value. 
+#' Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean' 
+#' (See \code{\link{signalAggregation}}).
 #' @param kns Deprecated from PathwaySpace 1.0.1; use 'k' instead.
 #' @return A preprocessed \linkS4class{PathwaySpace} class object.
 #' @author Mauro Castro
@@ -236,17 +246,14 @@ setMethod("circularProjection", "PathwaySpace", function(ps, k = 8,
 #'
 setMethod("polarProjection", "PathwaySpace", function(ps, k = 8, 
   pdist = 0.5, theta = 180, directional = FALSE, rescale = TRUE, 
-  verbose = TRUE, aggregate.fun = signalAggregation(), 
-  decay.fun = deprecated(), kns = deprecated()) {
+  verbose = TRUE, decay.fun = signalDecay(), 
+  aggregate.fun = signalAggregation(),
+  kns = deprecated()) {
   #--- validate the pipeline status
   if (!.checkStatus(ps, "Preprocess")) {
     stop("NOTE: the 'ps' object needs preprocessing!", call. = FALSE)
   }
   ### deprecate
-  if (lifecycle::is_present(decay.fun)) {
-    deprecate_soft("1.0.1", "polarProjection(decay.fun)",
-      "vertexDecay()")
-  }
   if (lifecycle::is_present(kns)) {
     deprecate_soft("1.0.1", "polarProjection(kns)", 
       "polarProjection(k)")
@@ -257,9 +264,10 @@ setMethod("polarProjection", "PathwaySpace", function(ps, k = 8,
   .validate.args("singleInteger", "k", k)
   .validate.args("singleNumber", "pdist", pdist)
   .validate.args("singleNumber", "theta", theta)
+  .validate.args("singleLogical", "directional", directional)
   .validate.args("singleLogical", "rescale", rescale)
   .validate.args("singleLogical", "verbose", verbose)
-  .validate.args("singleLogical", "directional", directional)
+  .validate.args("function", "decay.fun", decay.fun)
   .validate.args("function", "aggregate.fun", aggregate.fun)
   if (k < 1) {
     stop("'k' should be >=1", call. = FALSE)
@@ -276,6 +284,9 @@ setMethod("polarProjection", "PathwaySpace", function(ps, k = 8,
   }
   
   #--- validate functions
+  if(!missing(decay.fun)){
+    gs_vertex_attr(ps, "decayFunction") <- decay.fun
+  }
   .validate_aggregate_fun(aggregate.fun)
   
   #--- pack args
@@ -730,13 +741,13 @@ setReplaceMethod(
 .validate_decayFunction <- function(ps){
   att <- names(gs_vertex_attr(ps))
   if(! "decayFunction" %in% att){
-    stop("Missing vertex 'decayFunction' attribute.", call. = FALSE)
+    stop("Missing a vertex 'decayFunction' attribute.", call. = FALSE)
   }
   decayFunction <- gs_vertex_attr(ps, "decayFunction")
   # check function, args, and vertex attributes
   lg <- unlist(lapply(decayFunction, is.function))
   if(!all(lg)){
-    msg1 <- "Each vertex 'decayFunction' must be a function, e.g.,\n"
+    msg1 <- "Each vertex 'decay function' must be a function, e.g.,\n"
     msg2 <- "function(x, signal) { ... }"
     stop(msg1, msg2, call. = FALSE)
   }
@@ -752,10 +763,10 @@ setReplaceMethod(
   return(ps)
 }
 .check_decay_args <- function(decay_fun, nodes, args = c("x","signal")){
-  fargs <- formalArgs(decay_fun)
+  fargs <- formalArgs(args(decay_fun))
   missing_args <- setdiff(args, fargs)
   if (length(missing_args) > 0) {
-    msg <- paste0("Invalid function(s) in vertex 'decayFunction' attribute:")
+    msg <- paste0("Invalid 'decay function':")
     msg <- paste0(msg, " expected arguments 'x' and 'signal' not found.")
     stop(msg, call. = FALSE)
   }
@@ -763,7 +774,7 @@ setReplaceMethod(
   
   if(!all(decay_args %in% colnames(nodes))){
     extra_args <- decay_args[!decay_args %in% colnames(nodes)]
-    msg1 <- "Each 'decayFunction' argument must correspond to a vertex attribute.\n"
+    msg1 <- "Each 'decay function' argument must correspond to a vertex attribute.\n"
     msg2 <- paste0(sQuote(extra_args, q=FALSE), collapse = ", ")
     msg2 <- paste0("The following argument(s) do not match any vertex attribute: ",
       msg2)

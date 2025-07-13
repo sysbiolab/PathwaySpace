@@ -12,8 +12,8 @@
   pdist = 0.15,
   rescale = TRUE,
   verbose = TRUE,
+  decay.fun = signalDecay(),
   aggregate.fun = signalAggregation(),
-  decay.fun = deprecated(),
   kns = deprecated()
 )
 }
@@ -38,13 +38,18 @@ rescaled to \code{[-1, 1]}.}
 \item{verbose}{A single logical value specifying to display detailed 
 messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
 
-\item{aggregate.fun}{A function used to aggregate the projected signals. 
-Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean'
-(see \code{\link{signalAggregation}}). A custom aggregation logic can also 
-be provided as a unary function, e.g., \code{function(x) { ... }}, which 
-should aggregate a vector of signals to a single scalar value.}
+\item{decay.fun}{A signal decay function. Available options include 
+'Weibull', 'exponential', and 'linear' (see \code{\link{signalDecay}}).
+Users may also define a custom decay model with at least two arguments, 
+e.g., \code{function(x, signal) \{ ... \}}, which should returns a vector of  
+projected signals of the same length as \code{x}. Additional arguments may  
+include any variable available as graph vertex attribute.}
 
-\item{decay.fun}{Deprecated from PathwaySpace 1.0.1; use...}
+\item{aggregate.fun}{A function used to aggregate the projected signals. 
+It must be provided as a unary function, e.g., \code{function(x) { ... }}, 
+which should aggregate a vector of signals to a single scalar value. 
+Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean' 
+(See \code{\link{signalAggregation}}).}
 
 \item{kns}{Deprecated from PathwaySpace 1.0.1; use 'k' instead.}
 }

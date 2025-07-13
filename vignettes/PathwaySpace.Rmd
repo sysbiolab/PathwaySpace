@@ -184,14 +184,12 @@ plotPathwaySpace(p_space1, marks = c("n3","n4"), theme = "th2")
 knitr::include_graphics("figures/fig4.png")
 ```
 
-By default, the signal projection uses a Weibull decay function, which is passed to the `circularProjection()` function via the vertex attribute `decayFunction`. This attribute can be modified by the user using the `gs_vertex_attr()` accessor. For example:
+By default, the signal projection uses a Weibull decay function, which is passed to the `circularProjection()` function via `decay.fun` argument. The user can modify the decay function, for example, adjusting the Weibull's `shape`:
 
 ```{r Circular projection - 3, eval=FALSE, message=FALSE, out.width="70%"}
-# Modify the vertex `decayFunction` attribute, adjusting Weibull's 'shape'
-gs_vertex_attr(p_space1, "decayFunction") <- signalDecay(shape = 2)
-
-# Re-run signal projection
-p_space1 <- circularProjection(p_space1, k = 2, pdist = 0.2)
+# Re-run signal projection, adjusting Weibull's shape
+p_space1 <- circularProjection(p_space1, k = 2, pdist = 0.2, 
+  decay.fun = signalDecay(shape = 2))
 
 # Plot the PathwaySpace image
 plotPathwaySpace(p_space1, marks = "n1", theme = "th2")
@@ -211,7 +209,7 @@ In this case, we set `shape = 2`; this parameter allows a projection to take a v
 
 ## Polar projection
 
-In this section we will project the network signal using a polar coordinate system. This representation may be useful for certain types of data, for example, to highlight patterns of signal propagation on directed graphs, especially to explore the orientation aspect of signal flow. To demonstrate this feature we will used the `gtoy2` directed graph, already available in the *PathwaySpace* package.
+In this section we will project the network signal using a polar coordinate system. This representation may be useful for certain types of data, for example, to highlight patterns of signal propagation on directed graphs, especially to explore the orientation aspect of signal flow. To demonstrate this feature we will used the `gtoy2` directed graph, already available in the *RGraphSpace* package.
 
 ```{r Polar projection - 1, eval=TRUE, message=FALSE, out.width="100%"}
 # Load a pre-processed directed igraph object
@@ -241,12 +239,19 @@ p_space2 <- buildPathwaySpace(g_space2)
 
 # Set '1s' as vertex signal
 vertexSignal(p_space2) <- 1
-
-# Modify the vertex `decayFunction` attribute
-gs_vertex_attr(p_space2, "decayFunction") <- signalDecay(shape = 2)
 ```
 
-```{r Polar projection - 4, eval=FALSE, message=FALSE, out.width="70%"}
+For fine-grained modeling of signal decay, the `vertexDecay()` accessor allows assigning decay functions at the level of individual vertices. For example:
+
+```{r Polar projection - 4, eval=TRUE, message=FALSE}
+# Modify the vertex `decayFunction` attribute
+vertexDecay(p_space2) <- signalDecay(shape = 1.5)
+vertexDecay(p_space2)[["n1"]] <- signalDecay(shape = 2)
+```
+
+Next, we run signal projection using polar coordinates:
+
+```{r Polar projection - 5, eval=FALSE, message=FALSE, out.width="70%"}
 # Run signal projection using polar coordinates
 p_space2 <- polarProjection(p_space2, k = 2, theta = 45)
 
@@ -266,7 +271,7 @@ knitr::include_graphics("figures/fig7.png")
 
 Note that this projection emphasizes signals along the edges of the network. In order to also consider the direction of edges, next we set `directional = TRUE`.
 
-```{r Polar projection - 5, eval=FALSE, message=FALSE, out.width="70%"}
+```{r Polar projection - 6, eval=FALSE, message=FALSE, out.width="70%"}
 # Re-run signal projection using 'directional = TRUE'
 p_space2 <- polarProjection(p_space2, k = 2, theta = 45, directional = TRUE)
 
@@ -300,7 +305,8 @@ vertexSignal(p_space1)
 #  6  4 -2 -4  3 
 
 # Re-run signal projection
-p_space1 <- circularProjection(p_space1, k = 2)
+p_space1 <- circularProjection(p_space1, k = 2,
+  decay.fun = signalDecay(shape = 2))
 
 # Plot the PathwaySpace image
 plotPathwaySpace(p_space1, bg.color = "white", font.color = "grey20", add.marks = TRUE, mark.color = "magenta", theme = "th2")
