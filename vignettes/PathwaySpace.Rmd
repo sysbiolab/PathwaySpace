@@ -245,8 +245,8 @@ For fine-grained modeling of signal decay, the `vertexDecay()` accessor allows a
 
 ```{r Polar projection - 4, eval=TRUE, message=FALSE}
 # Modify the vertex `decayFunction` attribute
-vertexDecay(p_space2) <- signalDecay(shape = 1.5)
-vertexDecay(p_space2)[["n1"]] <- signalDecay(shape = 2)
+vertexDecay(p_space2) <- signalDecay(shape = 2)
+vertexDecay(p_space2)[["n1"]] <- signalDecay(shape = 3)
 ```
 
 Next, we run signal projection using polar coordinates:
