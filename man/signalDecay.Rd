@@ -16,7 +16,7 @@ signal decay (any of \code{weibull}, \code{exp}, or \code{linear}),
 returning \code{\link{weibullDecay}}, \code{\link{expDecay}}, 
 or \code{\link{linearDecay}} functions, respectively.}
 
-\item{decay}{A decay factor (in [0,1]) passed to the 
+\item{decay}{A decay factor (in (0,1]) passed to the 
 \code{\link{weibullDecay}} and \code{\link{expDecay}} functions.}
 
 \item{shape}{A parameter (>=1) passed to the \code{\link{weibullDecay}} 
