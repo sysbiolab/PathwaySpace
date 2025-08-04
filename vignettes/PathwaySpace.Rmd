@@ -244,7 +244,7 @@ vertexSignal(p_space2) <- 1
 For fine-grained modeling of signal decay, the `vertexDecay()` accessor allows assigning decay functions at the level of individual vertices. For example:
 
 ```{r Polar projection - 4, eval=TRUE, message=FALSE}
-# Modify the vertex `decayFunction` attribute
+# Modify the vertex 'decayFunction' attribute
 vertexDecay(p_space2) <- signalDecay(shape = 2)
 vertexDecay(p_space2)[["n1"]] <- signalDecay(shape = 3)
 ```
@@ -253,7 +253,7 @@ Next, we run signal projection using polar coordinates:
 
 ```{r Polar projection - 5, eval=FALSE, message=FALSE, out.width="70%"}
 # Run signal projection using polar coordinates
-p_space2 <- polarProjection(p_space2, k = 2, theta = 45)
+p_space2 <- polarProjection(p_space2, k = 2, theta = 45, pdist = 0.2)
 
 # Plot the PathwaySpace image
 plotPathwaySpace(p_space2, theme = "th2", add.marks = TRUE)
@@ -273,7 +273,8 @@ Note that this projection emphasizes signals along the edges of the network. In 
 
 ```{r Polar projection - 6, eval=FALSE, message=FALSE, out.width="70%"}
 # Re-run signal projection using 'directional = TRUE'
-p_space2 <- polarProjection(p_space2, k = 2, theta = 45, directional = TRUE)
+p_space2 <- polarProjection(p_space2, k = 2, theta = 45, 
+  pdist = 0.2, directional = TRUE)
 
 # Plot the PathwaySpace image
 plotPathwaySpace(p_space2, theme = "th2", marks = c("n1","n3","n4","n5"))
@@ -378,7 +379,7 @@ plotGraphSpace(g_space_PCv12, node.labels = top10hubs, label.color = "blue", the
 #   units="in", device="png", dpi=200, plot=gg)
 ```
 
-```{r fig10, echo=FALSE, out.width = '70%', purl=FALSE}
+```{r fig10, echo=FALSE, out.width = '80%', purl=FALSE}
 knitr::include_graphics("figures/fig10.png")
 ```
 
@@ -441,7 +442,7 @@ plotPathwaySpace(p_space_PCv12, title="HALLMARK_P53_PATHWAY", marks = top10hubs,
 #   width=5, units="in", device="png", dpi=250)
 ```
 
-```{r fig11, echo=FALSE, out.width = '80%', purl=FALSE}
+```{r fig11, echo=FALSE, out.width = '90%', purl=FALSE}
 knitr::include_graphics("figures/fig11.png")
 ```
 
@@ -465,7 +466,7 @@ plotPathwaySpace(p_space_PCv12, title="HALLMARK_P53_PATHWAY", marks = top10hubs,
 #   width=5, units="in", device="png", dpi=250)
 ```
 
-```{r fig12, echo=FALSE, out.width = '80%', purl=FALSE}
+```{r fig12, echo=FALSE, out.width = '90%', purl=FALSE}
 knitr::include_graphics("figures/fig12.png")
 ```
 
@@ -486,7 +487,7 @@ plotPathwaySpace(p_space_PCv12, title="HALLMARK_P53_PATHWAY", theme = "th3")
 #   width=5, units="in", device="png", dpi=250)
 ```
 
-```{r fig13, echo=FALSE, out.width = '80%', purl=FALSE}
+```{r fig13, echo=FALSE, out.width = '90%', purl=FALSE}
 knitr::include_graphics("figures/fig13.png")
 ```
 

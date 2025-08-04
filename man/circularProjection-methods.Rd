@@ -13,8 +13,7 @@
   rescale = TRUE,
   verbose = TRUE,
   decay.fun = signalDecay(),
-  aggregate.fun = signalAggregation(),
-  kns = deprecated()
+  aggregate.fun = signalAggregation()
 )
 }
 \arguments{
@@ -23,11 +22,12 @@
 \item{k}{A single positive integer determining the k-top signals in the 
 signal convolution operation.}
 
-\item{pdist}{A term (in \code{[0, 1]}) determining a distance unit for the
-signal decay function. When `pdist = 1` it will represent the diameter of 
-the inscribed circle within the pathway space. This distance will affect the
-extent over which the convolution operation projects the signal between
-source- and destination points.}
+\item{pdist}{A term (in \code{[0, 1]}) determining a distance unit for 
+the signal decay function. This distance unit will affect the extent over 
+which the convolution operation projects the signal from source to 
+destination points, scaled to the coordinate space. When \code{pdist = 1},
+it will represent the diameter of the inscribed circle within the 
+coordinate space.}
 
 \item{rescale}{A single logical value indicating whether to rescale 
 the signal. If the signal \code{>=0}, then it will be rescaled to 
@@ -50,8 +50,6 @@ It must be provided as a unary function, e.g., \code{function(x) { ... }},
 which should aggregate a vector of signals to a single scalar value. 
 Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean' 
 (See \code{\link{signalAggregation}}).}
-
-\item{kns}{Deprecated from PathwaySpace 1.0.1; use 'k' instead.}
 }
 \value{
 A preprocessed \linkS4class{PathwaySpace} class object.

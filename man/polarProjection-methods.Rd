@@ -9,14 +9,14 @@
 \S4method{polarProjection}{PathwaySpace}(
   ps,
   k = 8,
-  pdist = 0.5,
+  pdist = 0.15,
   theta = 180,
   directional = FALSE,
   rescale = TRUE,
+  pdist.anchor = c("frame", "edge"),
   verbose = TRUE,
   decay.fun = signalDecay(),
-  aggregate.fun = signalAggregation(),
-  kns = deprecated()
+  aggregate.fun = signalAggregation()
 )
 }
 \arguments{
@@ -25,11 +25,15 @@
 \item{k}{A single positive integer determining the k-top signals in the 
 signal convolution operation.}
 
-\item{pdist}{A term (in \code{[0, 1]}) determining a distance unit for the
-signal decay function. When `pdist = 1` it will represent the diameter of 
-the inscribed circle within the pathway space. This distance will affect the
-extent over which the convolution operation projects the signal between
-source- and destination points.}
+\item{pdist}{A term (in \code{[0, 1]}) determining a distance unit for 
+the signal decay function. This distance unit will affect the extent over 
+which the convolution operation projects the signal from source to 
+destination points, normalized by the \code{pdist.anchor} setting.
+When \code{pdist.anchor = "frame"}, \code{pdist} is scaled to the coordinate 
+space and adjusted to \code{theta}, aiming to preserve the projected area 
+around the source points. When \code{pdist.anchor = "edge"}, \code{pdist} 
+is scaled to match edge lengths, aiming to constrain signal projections 
+within edge bounds.}
 
 \item{theta}{Angle of projection (degrees in \code{(0,360]}).}
 
@@ -41,6 +45,12 @@ the signal. If the signal \code{>=0}, then it will be rescaled to
 \code{[0, 1]}; if the signal \code{<=0}, then it will be rescaled to 
 \code{[-1, 0]}; and if the signal in \code{(-Inf, +Inf)}, then it will be 
 rescaled to \code{[-1, 1]}.}
+
+\item{pdist.anchor}{A reference frame for distance normalization. Use 
+\code{"frame"} to scale distances using a coordinate-space normalization, 
+or \code{"edge"} to scale distances based edge-length normalization. 
+This affects how projected signals are scaled and accumulated. 
+Default is \code{"frame"}.}
 
 \item{verbose}{A single logical value specifying to display detailed 
 messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
@@ -57,8 +67,6 @@ It must be provided as a unary function, e.g., \code{function(x) { ... }},
 which should aggregate a vector of signals to a single scalar value. 
 Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean' 
 (See \code{\link{signalAggregation}}).}
-
-\item{kns}{Deprecated from PathwaySpace 1.0.1; use 'k' instead.}
 }
 \value{
 A preprocessed \linkS4class{PathwaySpace} class object.

@@ -6,7 +6,7 @@ setGeneric("circularProjection",
 )
 
 setGeneric("polarProjection", 
-  function(ps, k = 8, pdist = 0.5, theta = 180, 
+  function(ps, k = 8, pdist = 0.15, theta = 180, 
     directional = FALSE, ...) {
     standardGeneric("polarProjection")
   }, package = "PathwaySpace"

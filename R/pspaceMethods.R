@@ -14,8 +14,6 @@
 #' @param verbose A single logical value specifying to display detailed 
 #' messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).
 #' @param g Deprecated from PathwaySpace 1.0.1; use 'gs' instead.
-#' @param mar Deprecated from PathwaySpace 1.0.1; use 'mar' in  
-#' \code{\link[RGraphSpace]{GraphSpace}} instead.
 #' @return A pre-processed \linkS4class{PathwaySpace} class object.
 #' @author Victor Apolonio, Vinicius Chagas, Mauro Castro,
 #' and TCGA Network.
@@ -42,20 +40,14 @@
 #' @export
 #' 
 buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE, 
-  g = deprecated(), mar = deprecated()) {
+  g = deprecated()) {
   if(verbose) message("Validating arguments...")
   #--- validate argument types
   .validate.args("singleInteger", "nrc", nrc)
   .validate.args("singleLogical", "verbose", verbose)
   ### deprecate
   if (lifecycle::is_present(g)) {
-    deprecate_soft("1.0.1", "buildPathwaySpace(g)", 
-      "buildPathwaySpace(gs)")
     gs <- g
-  }
-  if (lifecycle::is_present(mar)) {
-    deprecate_soft("1.0.1", "buildPathwaySpace(mar)", 
-      "GraphSpace(mar)")
   }
   ###
   #--- validate argument values
@@ -83,11 +75,12 @@ buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE,
 #' @param ps A \linkS4class{PathwaySpace} class object.
 #' @param k A single positive integer determining the k-top signals in the 
 #' signal convolution operation.
-#' @param pdist A term (in \code{[0, 1]}) determining a distance unit for the
-#' signal decay function. When `pdist = 1` it will represent the diameter of 
-#' the inscribed circle within the pathway space. This distance will affect the
-#' extent over which the convolution operation projects the signal between
-#' source- and destination points.
+#' @param pdist A term (in \code{[0, 1]}) determining a distance unit for 
+#' the signal decay function. This distance unit will affect the extent over 
+#' which the convolution operation projects the signal from source to 
+#' destination points, scaled to the coordinate space. When \code{pdist = 1},
+#' it will represent the diameter of the inscribed circle within the 
+#' coordinate space.
 #' @param rescale A single logical value indicating whether to rescale 
 #' the signal. If the signal \code{>=0}, then it will be rescaled to 
 #' \code{[0, 1]}; if the signal \code{<=0}, then it will be rescaled to 
@@ -106,7 +99,6 @@ buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE,
 #' which should aggregate a vector of signals to a single scalar value. 
 #' Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean' 
 #' (See \code{\link{signalAggregation}}).
-#' @param kns Deprecated from PathwaySpace 1.0.1; use 'k' instead.
 #' @return A preprocessed \linkS4class{PathwaySpace} class object.
 #' @author Victor Apolonio, Vinicius Chagas, Mauro Castro, 
 #' and TCGA Network.
@@ -134,19 +126,11 @@ buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE,
 #'
 setMethod("circularProjection", "PathwaySpace", function(ps, k = 8,
   pdist = 0.15, rescale = TRUE, verbose = TRUE, 
-  decay.fun = signalDecay(), aggregate.fun = signalAggregation(),
-  kns = deprecated()) {
+  decay.fun = signalDecay(), aggregate.fun = signalAggregation()) {
   #--- validate the pipeline status
   if (!.checkStatus(ps, "Preprocess")) {
     stop("NOTE: the 'ps' object needs preprocessing!", call. = FALSE)
   }
-  ### deprecate
-  if (lifecycle::is_present(kns)) {
-    deprecate_soft("1.0.1", "circularProjection(kns)", 
-      "circularProjection(k)")
-    k <- kns
-  }
-  ###
   if(verbose) message("Validating arguments...")
   #--- validate argument types
   .validate.args("singleInteger", "k", k)
@@ -194,11 +178,15 @@ setMethod("circularProjection", "PathwaySpace", function(ps, k = 8,
 #' @param ps A \linkS4class{PathwaySpace} class object.
 #' @param k A single positive integer determining the k-top signals in the 
 #' signal convolution operation.
-#' @param pdist A term (in \code{[0, 1]}) determining a distance unit for the
-#' signal decay function. When `pdist = 1` it will represent the diameter of 
-#' the inscribed circle within the pathway space. This distance will affect the
-#' extent over which the convolution operation projects the signal between
-#' source- and destination points.
+#' @param pdist A term (in \code{[0, 1]}) determining a distance unit for 
+#' the signal decay function. This distance unit will affect the extent over 
+#' which the convolution operation projects the signal from source to 
+#' destination points, normalized by the \code{pdist.anchor} setting.
+#' When \code{pdist.anchor = "frame"}, \code{pdist} is scaled to the coordinate 
+#' space and adjusted to \code{theta}, aiming to preserve the projected area 
+#' around the source points. When \code{pdist.anchor = "edge"}, \code{pdist} 
+#' is scaled to match edge lengths, aiming to constrain signal projections 
+#' within edge bounds.
 #' @param theta Angle of projection (degrees in \code{(0,360]}).
 #' @param directional If directional edges are available, this argument can 
 #' be used to orientate the signal projection on directed graphs.
@@ -207,6 +195,11 @@ setMethod("circularProjection", "PathwaySpace", function(ps, k = 8,
 #' \code{[0, 1]}; if the signal \code{<=0}, then it will be rescaled to 
 #' \code{[-1, 0]}; and if the signal in \code{(-Inf, +Inf)}, then it will be 
 #' rescaled to \code{[-1, 1]}.
+#' @param pdist.anchor A reference frame for distance normalization. Use 
+#' \code{"frame"} to scale distances using a coordinate-space normalization, 
+#' or \code{"edge"} to scale distances based edge-length normalization. 
+#' This affects how projected signals are scaled and accumulated. 
+#' Default is \code{"frame"}.
 #' @param verbose A single logical value specifying to display detailed 
 #' messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).
 #' @param decay.fun A signal decay function. Available options include 
@@ -220,7 +213,6 @@ setMethod("circularProjection", "PathwaySpace", function(ps, k = 8,
 #' which should aggregate a vector of signals to a single scalar value. 
 #' Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean' 
 #' (See \code{\link{signalAggregation}}).
-#' @param kns Deprecated from PathwaySpace 1.0.1; use 'k' instead.
 #' @return A preprocessed \linkS4class{PathwaySpace} class object.
 #' @author Mauro Castro
 #' @seealso \code{\link{buildPathwaySpace}}
@@ -245,30 +237,24 @@ setMethod("circularProjection", "PathwaySpace", function(ps, k = 8,
 #' @export
 #'
 setMethod("polarProjection", "PathwaySpace", function(ps, k = 8, 
-  pdist = 0.5, theta = 180, directional = FALSE, rescale = TRUE, 
-  verbose = TRUE, decay.fun = signalDecay(), 
-  aggregate.fun = signalAggregation(),
-  kns = deprecated()) {
+  pdist = 0.15, theta = 180, directional = FALSE, rescale = TRUE, 
+  pdist.anchor = c("frame", "edge"), verbose = TRUE, 
+  decay.fun = signalDecay(), aggregate.fun = signalAggregation()) {
   #--- validate the pipeline status
   if (!.checkStatus(ps, "Preprocess")) {
     stop("NOTE: the 'ps' object needs preprocessing!", call. = FALSE)
   }
-  ### deprecate
-  if (lifecycle::is_present(kns)) {
-    deprecate_soft("1.0.1", "polarProjection(kns)", 
-      "polarProjection(k)")
-    k <- kns
-  }
-  ###
   if(verbose) message("Validating arguments...")
   .validate.args("singleInteger", "k", k)
   .validate.args("singleNumber", "pdist", pdist)
   .validate.args("singleNumber", "theta", theta)
   .validate.args("singleLogical", "directional", directional)
   .validate.args("singleLogical", "rescale", rescale)
+  .validate.args("allCharacter", "pdist.anchor", pdist.anchor)
   .validate.args("singleLogical", "verbose", verbose)
   .validate.args("function", "decay.fun", decay.fun)
   .validate.args("function", "aggregate.fun", aggregate.fun)
+  pdist.anchor <- match.arg(pdist.anchor)
   if (k < 1) {
     stop("'k' should be >=1", call. = FALSE)
   }
@@ -292,7 +278,7 @@ setMethod("polarProjection", "PathwaySpace", function(ps, k = 8,
   #--- pack args
   pars <- list(k = k, pdist = pdist, theta = theta, rescale = rescale, 
     projection="Polar", aggregate.fun = aggregate.fun,
-    directional = directional)
+    directional = directional, pdist.anchor = pdist.anchor)
   for (nm in names(pars)) {
     ps@pars$ps[[nm]] <- pars[[nm]]
   }

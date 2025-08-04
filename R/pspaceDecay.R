@@ -91,16 +91,17 @@ attributes(linearDecay)$name <- "linearDecay"
 
 
 #-------------------------------------------------------------------------------
-#' @title Signal decay functions
+#' @title Helper function to construct decay models
 #'
-#' @description Signal decay functions for \code{\link{PathwaySpace}}
-#' internal calls.
+#' @description 
+#' Utility functions to construct signal decay models used by
+#' \code{\link{PathwaySpace}} internal calls.
 #' 
 #' @param method A character string specifying a method for
 #' signal decay (any of \code{weibull}, \code{exp}, or \code{linear}), 
 #' returning \code{\link{weibullDecay}}, \code{\link{expDecay}}, 
 #' or \code{\link{linearDecay}} functions, respectively.
-#' @param decay A decay factor (in (0,1]) passed to the 
+#' @param decay A decay factor in the interval (0,1), passed to the 
 #' \code{\link{weibullDecay}} and \code{\link{expDecay}} functions.
 #' @param shape A parameter (>=1) passed to the \code{\link{weibullDecay}} 
 #' function.
@@ -119,18 +120,19 @@ signalDecay <- function(method = c("weibull", "exp", "linear"),
     .validate.args("singleNumber", "decay", decay)
     .validate.args("singleNumber", "shape", shape)
     if(decay < 0 || decay > 1){
-        stop("'decay' must be in [0,1]")
+        stop("'decay' must be in (0,1)")
     }
     if(shape < 1){
         stop("'shape' must be >=1")
     }
     if(method=="weibull"){
         if(decay==0) decay <- .Machine$double.xmin
+        if(decay==1) decay <- 1 - (1/.Machine$longdouble.max.exp)
         f <- function(x, signal){
             y <- signal * decay^(x^shape)
             return(y)
         }
-        body(f) <- do.call("substitute", list(body(f), 
+        body(f) <- do.call("substitute", list(body(f),
             list(decay = decay, shape = shape)))
         attributes(f)$name <- "weibullDecay"
         return(f)
@@ -139,6 +141,7 @@ signalDecay <- function(method = c("weibull", "exp", "linear"),
             warning("'shape' ignored unless method is 'weibull'.")
         }
         if(decay==0) decay <- .Machine$double.xmin
+        if(decay==1) decay <- 1 - (1/.Machine$longdouble.max.exp)
         f <- function(x, signal){
             y <- signal * decay^x
             return(y)

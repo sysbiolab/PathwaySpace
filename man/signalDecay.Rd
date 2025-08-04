@@ -2,7 +2,7 @@
 % Please edit documentation in R/pspaceDecay.R
 \name{signalDecay}
 \alias{signalDecay}
-\title{Signal decay functions}
+\title{Helper function to construct decay models}
 \usage{
 signalDecay(
   method = c("weibull", "exp", "linear"),
@@ -16,7 +16,7 @@ signal decay (any of \code{weibull}, \code{exp}, or \code{linear}),
 returning \code{\link{weibullDecay}}, \code{\link{expDecay}}, 
 or \code{\link{linearDecay}} functions, respectively.}
 
-\item{decay}{A decay factor (in (0,1]) passed to the 
+\item{decay}{A decay factor in the interval (0,1), passed to the 
 \code{\link{weibullDecay}} and \code{\link{expDecay}} functions.}
 
 \item{shape}{A parameter (>=1) passed to the \code{\link{weibullDecay}} 
@@ -26,8 +26,8 @@ function.}
 An the function.
 }
 \description{
-Signal decay functions for \code{\link{PathwaySpace}}
-internal calls.
+Utility functions to construct signal decay models used by
+\code{\link{PathwaySpace}} internal calls.
 }
 \examples{
 signalDecay()
