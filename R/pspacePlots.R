@@ -55,7 +55,7 @@
 #' @param add.image A logical value indicating whether to add a background 
 #' image, when one is available (see \code{\link[RGraphSpace]{GraphSpace}}).
 #' @return A ggplot-class object.
-#' @author Mauro Castro and TCGA Network.
+#' @author Sysbiolab Team, Mauro Castro.
 #' @seealso \code{\link{circularProjection}}
 #' @examples
 #' # Load a demo igraph
@@ -323,9 +323,9 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     pars$ps$dfun <- "Custom decay"
   }
   if(pars$ps$projection=="Polar"){
-    annot <- pars$ps[c("projection", "dfun", "k", "theta")]
+    annot <- pars$ps[c("projection", "dfun", "k", "beta")]
     annot$k <- paste0("k = ", annot$k, "; ")
-    annot$theta <- paste0("theta = ", pars$ps$theta)
+    annot$beta <- paste0("beta = ", pars$ps$beta)
   } else {
     annot <- pars$ps[c("projection", "dfun", "k")]
     annot$k <- paste0("k = ", annot$k)

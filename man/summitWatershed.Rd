@@ -63,5 +63,5 @@ image(gimage)
 \code{\link{summitMapping}}
 }
 \author{
-Mauro Castro.
+Sysbiolab Team, Mauro Castro.
 }

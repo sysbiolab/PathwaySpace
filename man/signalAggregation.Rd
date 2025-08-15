@@ -12,15 +12,16 @@ signal aggregation, returning either a customized \code{\link{mean}} or
 \code{\link{weighted.mean}} function.}
 }
 \value{
-An aggregation function.
+Returns a function of the form: \code{function(x) { ... }}
 }
 \description{
-Signal aggregation functions for \code{\link{PathwaySpace}}
-internal calls. The aggregation should be symmetric with respect to signal 
-polarity, ensuring that opposite signals produce corresponding outputs.
+Signal aggregation functions for \code{\link{circularProjection}}
+and \code{\link{polarProjection}} internal calls. The aggregation should be 
+symmetric with respect to signal polarity, ensuring that opposite signals 
+produce corresponding outputs.
 }
 \examples{
-signalAggregation()
+aggregate.fun <- signalAggregation()
 
 }
 \seealso{
@@ -28,5 +29,5 @@ signalAggregation()
 \code{\link{weighted.mean}}
 }
 \author{
-Mauro Castro.
+Sysbiolab Team, Mauro Castro.
 }

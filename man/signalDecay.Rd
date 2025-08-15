@@ -23,19 +23,20 @@ or \code{\link{linearDecay}} functions, respectively.}
 function.}
 }
 \value{
-An the function.
+Returns a function of the form: \code{function(x, signal) { ... }}
 }
 \description{
 Utility functions to construct signal decay models used by
-\code{\link{PathwaySpace}} internal calls.
+\code{\link{circularProjection}} and \code{\link{polarProjection}} 
+internal calls.
 }
 \examples{
-signalDecay()
+decay.fun <- signalDecay()
 
 }
 \seealso{
 \code{\link{circularProjection}} and \code{\link{polarProjection}}
 }
 \author{
-Mauro Castro.
+Sysbiolab Team, Mauro Castro.
 }

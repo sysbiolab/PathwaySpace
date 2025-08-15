@@ -15,7 +15,7 @@
 #' the Weibull decay follows an exponential decay. When \code{shape>1}
 #' the function is first convex, then concave with an inflection point.
 #' @return A numeric vector; if missing 'x', it will return decay function.
-#' @author Mauro Castro.
+#' @author Sysbiolab Team, Mauro Castro.
 #' @seealso \code{\link{expDecay}}, \code{\link{linearDecay}}
 #' @examples
 #' x <- seq(0, 2, 0.01)
@@ -46,7 +46,7 @@ attributes(weibullDecay)$name <- "weibullDecay"
 #' be the initial signal multiplied by \code{decay}.
 #' the \code{\link{weibullDecay}} function.
 #' @return A numeric vector; if missing 'x', it will return decay function.
-#' @author Mauro Castro.
+#' @author Sysbiolab Team, Mauro Castro.
 #' @seealso \code{\link{weibullDecay}}, \code{\link{linearDecay}}
 #' @examples
 #' x <- seq(0, 2, 0.01)
@@ -72,7 +72,7 @@ attributes(expDecay)$name <- "expDecay"
 #' @param signal A single numeric value representing a signal.
 #' \code{\link{weibullDecay}} and \code{\link{expDecay}} functions.
 #' @return A numeric vector; if missing 'x', it will return decay function.
-#' @author Mauro Castro.
+#' @author Sysbiolab Team, Mauro Castro.
 #' @seealso \code{\link{weibullDecay}}, \code{\link{expDecay}}
 #' @examples
 #' x <- seq(0, 2, 0.01)
@@ -95,7 +95,8 @@ attributes(linearDecay)$name <- "linearDecay"
 #'
 #' @description 
 #' Utility functions to construct signal decay models used by
-#' \code{\link{PathwaySpace}} internal calls.
+#' \code{\link{circularProjection}} and \code{\link{polarProjection}} 
+#' internal calls.
 #' 
 #' @param method A character string specifying a method for
 #' signal decay (any of \code{weibull}, \code{exp}, or \code{linear}), 
@@ -105,11 +106,11 @@ attributes(linearDecay)$name <- "linearDecay"
 #' \code{\link{weibullDecay}} and \code{\link{expDecay}} functions.
 #' @param shape A parameter (>=1) passed to the \code{\link{weibullDecay}} 
 #' function.
-#' @return An the function.
-#' @author Mauro Castro.
+#' @return Returns a function of the form: \code{function(x, signal) { ... }}
+#' @author Sysbiolab Team, Mauro Castro.
 #' @seealso \code{\link{circularProjection}} and \code{\link{polarProjection}}
 #' @examples
-#' signalDecay()
+#' decay.fun <- signalDecay()
 #' 
 #' @rdname signalDecay
 #' @export
@@ -120,10 +121,10 @@ signalDecay <- function(method = c("weibull", "exp", "linear"),
     .validate.args("singleNumber", "decay", decay)
     .validate.args("singleNumber", "shape", shape)
     if(decay < 0 || decay > 1){
-        stop("'decay' must be in (0,1)")
+        stop("'decay' must be in (0,1)", call. = FALSE)
     }
     if(shape < 1){
-        stop("'shape' must be >=1")
+        stop("'shape' must be >=1", call. = FALSE)
     }
     if(method=="weibull"){
         if(decay==0) decay <- .Machine$double.xmin
@@ -169,19 +170,20 @@ signalDecay <- function(method = c("weibull", "exp", "linear"),
 #-------------------------------------------------------------------------------
 #' @title Signal aggregation functions
 #'
-#' @description Signal aggregation functions for \code{\link{PathwaySpace}}
-#' internal calls. The aggregation should be symmetric with respect to signal 
-#' polarity, ensuring that opposite signals produce corresponding outputs.
+#' @description Signal aggregation functions for \code{\link{circularProjection}}
+#' and \code{\link{polarProjection}} internal calls. The aggregation should be 
+#' symmetric with respect to signal polarity, ensuring that opposite signals 
+#' produce corresponding outputs.
 #' 
 #' @param method A character string specifying the method for
 #' signal aggregation, returning either a customized \code{\link{mean}} or 
 #' \code{\link{weighted.mean}} function.
-#' @return An aggregation function.
-#' @author Mauro Castro.
+#' @return Returns a function of the form: \code{function(x) { ... }}
+#' @author Sysbiolab Team, Mauro Castro.
 #' @seealso \code{\link{circularProjection}}, \code{\link{polarProjection}}, 
 #' \code{\link{weighted.mean}}
 #' @examples
-#' signalAggregation()
+#' aggregate.fun <- signalAggregation()
 #' 
 #' @importFrom stats weighted.mean
 #' @rdname signalAggregation
@@ -225,3 +227,118 @@ signalAggregation <- function(method = c("mean", "wmean", "log.wmean",
 }
 attributes(signalAggregation)$name <- "signalAggregation"
 
+
+#-------------------------------------------------------------------------------
+#' @title Polar transformation functions
+#'
+#' @description Creates polar transformation functions for 
+#' \code{\link{polarProjection}} internal calls. These functions are used to 
+#' adjusts signal decay according to point-to-edge angular distances, 
+#' with options to attenuate angular shapes.
+#' 
+#' @param method String indicating the transformation to apply. 
+#' Must be one of: "power", "gaussian", or "logistic".
+#' @param s Single numeric value in \code{[0, 1]}. Controls the spread around 
+#' the \code{x} mean of the Gaussian function.
+#' @param k Single numeric value \code{>=1}. Controls the steepness of 
+#' the logistic function.
+#' @param m Single numeric value in \code{[0, 1]}. Specifies the midpoint of 
+#' the logistic function.
+#' @return Returns a function of the form: \code{function(x, beta) { ... }}, 
+#' that applies the specified shape-based transformation.
+#' @author Sysbiolab Team, Mauro Castro.
+#' @seealso \code{\link{polarProjection}}
+#' @details 
+#' The polar transformation controls how much the projected signal decays as 
+#' a function of the angular distance between a point in pathway space and 
+#' a reference edge axis. The function returned by \code{polarDecay()} expects 
+#' two arguments, with the following signature: 
+#' \code{function(x, beta) { ... }}.
+#' 
+#' 
+#' **Power:**
+#' \deqn{x^{\beta}}
+#' where \eqn{x} is a vector of normalized angular distances (in \code{[0, 1]})
+#' and \eqn{beta} is a non-negative exponent that controls the rate of signal 
+#' decay. Increasing \eqn{beta} results in a steeper decay rate, modulating 
+#' the angular span of the projection.
+#' 
+#' **Gaussian:**
+#' \deqn{\exp\left(-\frac{(1-x)^2}{2\sigma^2}\right)^{\beta}}
+#' where \eqn{sigma} controls the spread around the mean, creating 
+#' fuzzier effect on projections.
+#' 
+#' **Logistic:**
+#' \deqn{(1 / (1 + \exp(k (x - m))))^{\beta}}
+#' where \eqn{k} is the steepness and \eqn{m} is the function's midpoint, 
+#' making more gradual transitions.
+#'   
+#' These transformations are intended to be plugged into the higher-level 
+#' \code{\link{polarProjection}} function, allowing user control over the 
+#' polar projection profiles. 
+#' 
+#' @examples
+#' polar.fun <- polarDecay("power")
+#' 
+#' @md
+#' @rdname polarDecay
+#' @export
+#' 
+polarDecay <- function(method = c("power", "gaussian", "logistic"), 
+    s = 0.5, k = 10, m = 0.5) {
+    
+    .validate.args("singleNumber", "s", s)
+    .validate.args("singleNumber", "k", k)
+    .validate.args("singleNumber", "m", m)
+    method <- match.arg(method)
+    
+    if(s < 0 || s>1)stop("'s' must be in [0,1]", call. = FALSE)
+    if(k < 1)stop("'k' must be >=1", call. = FALSE)
+    if(m < 0 || m>1)stop("'m' must be in [0,1]", call. = FALSE)
+    
+    if (method == "power") {
+        if(!missing(s)){
+            warning("'s' ignored unless method is 'gaussian'.")
+        }
+        if(!missing(k)){
+            warning("'k' ignored unless method is 'logistic'.")
+        }
+        if(!missing(m)){
+            warning("'m' ignored unless method is 'logistic'.")
+        }
+        f <- function(x, beta){
+            y <- x ^ beta
+            return(y)
+        }
+        attributes(f)$name <- "power"
+        return(f)
+        
+    } else if (method == "gaussian") {
+        if(!missing(k)){
+            warning("'k' ignored unless method is 'logistic'.")
+        }
+        if(!missing(m)){
+            warning("'m' ignored unless method is 'logistic'.")
+        }
+        f <- function(x, beta){
+            y <- exp( - ((1 - x)^2) / (2*s^2) ) ^ beta
+            return(y)
+        }
+        body(f) <- do.call("substitute", list(body(f), list(s = s)))
+        attributes(f)$name <- "gaussian"
+        return(f)
+        
+    } else if (method == "logistic") {
+        if(!missing(s)){
+            warning("'s' ignored unless method is 'gaussian'.")
+        }
+        f <- function(x, beta){
+            y <- ( 1 / (1 + exp(-k * (x - m))) ) ^ beta
+            return(y)
+        }
+        body(f) <- do.call("substitute", list(body(f), list(k = k, m = m)))
+        attributes(f)$name <- "logistic"
+        return(f)
+        
+    }
+}

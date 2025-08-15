@@ -149,5 +149,5 @@ plotPathwaySpace(ps)
 \code{\link{circularProjection}}
 }
 \author{
-Mauro Castro and TCGA Network.
+Sysbiolab Team, Mauro Castro.
 }

@@ -18,7 +18,7 @@
 #' representing a fraction of the maximum signal intensity.
 #' @param ext Radius (in pixels) for detecting neighboring objects.
 #' @return A matrix with labeled summits.
-#' @author Mauro Castro.
+#' @author Sysbiolab Team, Mauro Castro.
 #' @seealso \code{\link{summitMapping}}
 #' @examples
 #' # Load a demo landscape image

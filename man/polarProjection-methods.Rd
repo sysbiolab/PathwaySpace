@@ -8,15 +8,17 @@
 \usage{
 \S4method{polarProjection}{PathwaySpace}(
   ps,
-  k = 8,
-  pdist = 0.15,
-  theta = 180,
+  k = 2,
+  pdist = 0.5,
+  beta = 10,
   directional = FALSE,
   rescale = TRUE,
-  pdist.anchor = c("frame", "edge"),
+  pdist.anchor = c("edge", "frame"),
   verbose = TRUE,
   decay.fun = signalDecay(),
-  aggregate.fun = signalAggregation()
+  aggregate.fun = signalAggregation(),
+  polar.fun = polarDecay(),
+  theta = deprecated()
 )
 }
 \arguments{
@@ -29,13 +31,17 @@ signal convolution operation.}
 the signal decay function. This distance unit will affect the extent over 
 which the convolution operation projects the signal from source to 
 destination points, normalized by the \code{pdist.anchor} setting.
-When \code{pdist.anchor = "frame"}, \code{pdist} is scaled to the coordinate 
-space and adjusted to \code{theta}, aiming to preserve the projected area 
-around the source points. When \code{pdist.anchor = "edge"}, \code{pdist} 
-is scaled to match edge lengths, aiming to constrain signal projections 
-within edge bounds.}
+When \code{pdist.anchor = "edge"}, \code{pdist} is scaled to match edge 
+lengths, aiming to constrain signal projections within edge bounds.
+When \code{pdist.anchor = "frame"}, \code{pdist} is scaled to the 
+coordinate space.}
 
-\item{theta}{Angle of projection (degrees in \code{(0,360]}).}
+\item{beta}{An exponent (in \code{[0, +Inf]}) used in the polar 
+projection functions (see \code{\link{polarDecay}}). It controls the  
+shape of the polar projection by modulating the angular span.
+For example, \eqn{beta = 0} yields a circular projection, \eqn{beta = 1} 
+produces a cardioid-like shape, and \code{beta > 1} progressively narrows 
+the projection along a reference edge axis.}
 
 \item{directional}{If directional edges are available, this argument can 
 be used to orientate the signal projection on directed graphs.}
@@ -47,10 +53,9 @@ the signal. If the signal \code{>=0}, then it will be rescaled to
 rescaled to \code{[-1, 1]}.}
 
 \item{pdist.anchor}{A reference frame for distance normalization. Use 
-\code{"frame"} to scale distances using a coordinate-space normalization, 
-or \code{"edge"} to scale distances based edge-length normalization. 
-This affects how projected signals are scaled and accumulated. 
-Default is \code{"frame"}.}
+\code{"edge"} to scale distances based on edge lengths or \code{"frame"} 
+to scale distances using the full coordinate space. This affects how 
+projected signals are scaled and accumulated. Default is \code{"edge"}.}
 
 \item{verbose}{A single logical value specifying to display detailed 
 messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
@@ -67,6 +72,10 @@ It must be provided as a unary function, e.g., \code{function(x) { ... }},
 which should aggregate a vector of signals to a single scalar value. 
 Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean' 
 (See \code{\link{signalAggregation}}).}
+
+\item{polar.fun}{A polar decay function (see \code{\link{polarDecay}}).}
+
+\item{theta}{Deprecated from PathwaySpace 1.0.2; use 'beta' instead.}
 }
 \value{
 A preprocessed \linkS4class{PathwaySpace} class object.
@@ -94,5 +103,5 @@ ps <- polarProjection(ps)
 \code{\link{buildPathwaySpace}}
 }
 \author{
-Mauro Castro
+Sysbiolab Team, Mauro Castro.
 }

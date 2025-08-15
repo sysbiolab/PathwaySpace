@@ -1,7 +1,7 @@
 #' @title PathwaySpace: An S4 class for signal propagation on image spaces
 #'
 #' @slot nodes A data frame with xy-vertex coordinates.
-#' @slot edges  A data frame with edges.
+#' @slot edges A data frame with edges.
 #' @slot graph An igraph object.
 #' @slot image A raster background image matrix.
 #' @slot pars A list with parameters.
@@ -9,7 +9,7 @@
 #' @slot projections A list with processed objects for downstream methods.
 #' @slot status A vector containing the processing status of the
 #' PathwaySpace object.
-#' @author Mauro Castro, \email{mauro.castro@@ufpr.br}
+#' @author Sysbiolab Team, Mauro Castro (\email{mauro.castro@@ufpr.br})
 #'
 #' @method circularProjection \code{\link{circularProjection}}
 #' @method polarProjection \code{\link{polarProjection}}

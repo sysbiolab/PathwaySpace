@@ -182,12 +182,16 @@ setMethod("circularProjection", "PathwaySpace", function(ps, k = 8,
 #' the signal decay function. This distance unit will affect the extent over 
 #' which the convolution operation projects the signal from source to 
 #' destination points, normalized by the \code{pdist.anchor} setting.
-#' When \code{pdist.anchor = "frame"}, \code{pdist} is scaled to the coordinate 
-#' space and adjusted to \code{theta}, aiming to preserve the projected area 
-#' around the source points. When \code{pdist.anchor = "edge"}, \code{pdist} 
-#' is scaled to match edge lengths, aiming to constrain signal projections 
-#' within edge bounds.
-#' @param theta Angle of projection (degrees in \code{(0,360]}).
+#' When \code{pdist.anchor = "edge"}, \code{pdist} is scaled to match edge 
+#' lengths, aiming to constrain signal projections within edge bounds.
+#' When \code{pdist.anchor = "frame"}, \code{pdist} is scaled to the 
+#' coordinate space. 
+#' @param beta An exponent (in \code{[0, +Inf]}) used in the polar 
+#' projection functions (see \code{\link{polarDecay}}). It controls the  
+#' shape of the polar projection by modulating the angular span.
+#' For example, \eqn{beta = 0} yields a circular projection, \eqn{beta = 1} 
+#' produces a cardioid-like shape, and \code{beta > 1} progressively narrows 
+#' the projection along a reference edge axis.
 #' @param directional If directional edges are available, this argument can 
 #' be used to orientate the signal projection on directed graphs.
 #' @param rescale A single logical value indicating whether to rescale 
@@ -196,10 +200,9 @@ setMethod("circularProjection", "PathwaySpace", function(ps, k = 8,
 #' \code{[-1, 0]}; and if the signal in \code{(-Inf, +Inf)}, then it will be 
 #' rescaled to \code{[-1, 1]}.
 #' @param pdist.anchor A reference frame for distance normalization. Use 
-#' \code{"frame"} to scale distances using a coordinate-space normalization, 
-#' or \code{"edge"} to scale distances based edge-length normalization. 
-#' This affects how projected signals are scaled and accumulated. 
-#' Default is \code{"frame"}.
+#' \code{"edge"} to scale distances based on edge lengths or \code{"frame"} 
+#' to scale distances using the full coordinate space. This affects how 
+#' projected signals are scaled and accumulated. Default is \code{"edge"}.
 #' @param verbose A single logical value specifying to display detailed 
 #' messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).
 #' @param decay.fun A signal decay function. Available options include 
@@ -213,8 +216,10 @@ setMethod("circularProjection", "PathwaySpace", function(ps, k = 8,
 #' which should aggregate a vector of signals to a single scalar value. 
 #' Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean' 
 #' (See \code{\link{signalAggregation}}).
+#' @param polar.fun A polar decay function (see \code{\link{polarDecay}}).
+#' @param theta Deprecated from PathwaySpace 1.0.2; use 'beta' instead.
 #' @return A preprocessed \linkS4class{PathwaySpace} class object.
-#' @author Mauro Castro
+#' @author Sysbiolab Team, Mauro Castro.
 #' @seealso \code{\link{buildPathwaySpace}}
 #' @examples
 #' # Load a demo igraph
@@ -236,23 +241,33 @@ setMethod("circularProjection", "PathwaySpace", function(ps, k = 8,
 #' @aliases polarProjection
 #' @export
 #'
-setMethod("polarProjection", "PathwaySpace", function(ps, k = 8, 
-  pdist = 0.15, theta = 180, directional = FALSE, rescale = TRUE, 
-  pdist.anchor = c("frame", "edge"), verbose = TRUE, 
-  decay.fun = signalDecay(), aggregate.fun = signalAggregation()) {
+setMethod("polarProjection", "PathwaySpace", function(ps, k = 2, 
+  pdist = 0.5, beta = 10, directional = FALSE, rescale = TRUE, 
+  pdist.anchor = c("edge", "frame"), verbose = TRUE, 
+  decay.fun = signalDecay(),
+  aggregate.fun = signalAggregation(), 
+  polar.fun = polarDecay(), 
+  theta = deprecated()) {
   #--- validate the pipeline status
   if (!.checkStatus(ps, "Preprocess")) {
     stop("NOTE: the 'ps' object needs preprocessing!", call. = FALSE)
   }
+  ### deprecate
+  if (lifecycle::is_present(theta)) {
+    deprecate_soft("1.0.2", "polarProjection(theta)", 
+      "polarProjection(beta)")
+  }
+  ###
   if(verbose) message("Validating arguments...")
   .validate.args("singleInteger", "k", k)
   .validate.args("singleNumber", "pdist", pdist)
-  .validate.args("singleNumber", "theta", theta)
+  .validate.args("singleNumber", "beta", beta)
   .validate.args("singleLogical", "directional", directional)
   .validate.args("singleLogical", "rescale", rescale)
   .validate.args("allCharacter", "pdist.anchor", pdist.anchor)
   .validate.args("singleLogical", "verbose", verbose)
   .validate.args("function", "decay.fun", decay.fun)
+  .validate.args("function", "polar.fun", polar.fun)
   .validate.args("function", "aggregate.fun", aggregate.fun)
   pdist.anchor <- match.arg(pdist.anchor)
   if (k < 1) {
@@ -263,9 +278,8 @@ setMethod("polarProjection", "PathwaySpace", function(ps, k = 8,
   if (pdist < 0 || pdist > 1) {
     stop("'pdist' should be in [0,1]", call. = FALSE)
   }
-  if (theta <= 0 || theta > 360) {
-    msg <- paste0("'polar.theta' should be an angle of projection\n",
-      "with degrees in (0,360]")
+  if (beta < 0) {
+    msg <- paste0("'beta' should be an exponent in [0,+Inf]")
     stop(msg, call. = FALSE)
   }
   
@@ -274,10 +288,11 @@ setMethod("polarProjection", "PathwaySpace", function(ps, k = 8,
     gs_vertex_attr(ps, "decayFunction") <- decay.fun
   }
   .validate_aggregate_fun(aggregate.fun)
+  .validate_polar_fun(polar.fun)
   
   #--- pack args
-  pars <- list(k = k, pdist = pdist, theta = theta, rescale = rescale, 
-    projection="Polar", aggregate.fun = aggregate.fun,
+  pars <- list(k = k, pdist = pdist, beta = beta, rescale = rescale, 
+    projection="Polar", aggregate.fun = aggregate.fun, polar.fun = polar.fun,
     directional = directional, pdist.anchor = pdist.anchor)
   for (nm in names(pars)) {
     ps@pars$ps[[nm]] <- pars[[nm]]
@@ -627,12 +642,7 @@ setMethod("vertexDecay<-", "PathwaySpace",
 #' 
 #' # Modify a single value within a vertex attribute
 #' gs_vertex_attr(ps, "signal")["n1"] <- 1
-#' 
-#' # Access a specific edge attribute
-#' gs_edge_attr(ps, "weight")
-#' 
-#' # Replace an entire edge attribute
-#' gs_edge_attr(ps, "weight") <- 1
+#'
 #' 
 #' @rdname PathwaySpace-accessors
 #' @importFrom RGraphSpace gs_vertex_attr<- gs_edge_attr<-
@@ -670,7 +680,6 @@ setReplaceMethod(
 #-------------------------------------------------------------------------------
 .validate_ps_containers <- function(ps) {
   ps <- .validate_signal(ps)
-  ps <- .validate_weights(ps)
   ps <- .validate_decayFunction(ps)
   return(ps)
 }
@@ -695,32 +704,6 @@ setReplaceMethod(
   x[x == -Inf] <- NA
   if (all(is.na(x))) x[] <- 0
   return(x)
-}
-
-#-------------------------------------------------------------------------------
-.validate_weights <- function(ps) {
-  if(gs_ecount(ps)>0){
-    weight <- gs_edge_attr(ps, "weight")
-    if(is.null(weight)){
-      stop("'weight' edge attribute must be available.", call. = FALSE)
-    }
-    if (!is.numeric(weight)){
-      stop("edge 'weight' variable must be numeric.", call. = FALSE)
-    }
-    ps@edges$weight <- .revise_weights(weight)
-  }
-  return(ps)
-}
-.revise_weights <- function(wt){
-  if (all(is.na(wt))) wt[] <- 1
-  wt[is.na(wt)] <- min(wt, na.rm = TRUE)
-  if (sd(wt) > 0) {
-    wt <- wt-min(wt)
-    wt <- wt/max(wt)
-  } else {
-    wt[] <- 1
-  }
-  return(wt)
 }
 
 #-------------------------------------------------------------------------------

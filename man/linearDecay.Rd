@@ -29,5 +29,5 @@ plot(x, y)
 \code{\link{weibullDecay}}, \code{\link{expDecay}}
 }
 \author{
-Mauro Castro.
+Sysbiolab Team, Mauro Castro.
 }

@@ -18,12 +18,6 @@
       gs_vertex_attr(gs, "decayFunction") <- signalDecay()
     }
     
-    #--- initialize edge weight
-    att <- names(gs_edge_attr(gs))
-    if( ! "weight" %in% att ){
-      gs_edge_attr(gs, "weight") <- 1
-    }
-    
     #--- create a PathwaySpace object
     if(verbose) message("Creating a 'PathwaySpace' object...")
     ps <- as(gs, "PathwaySpace")
@@ -52,8 +46,7 @@
   if(verbose) message("Mapping 'x' and 'y' coordinates...")
   gxy <- .rescale_coord(nodes, pars$ps$nrc)
   lpts <- .get_points_in_matrix(pars$ps$nrc)
-  nnpg <- .get_near_points(lpts, gxy, nodes, pars$ps$nrc, 
-    pars$ps$pdist)
+  nnpg <- .get_near_points(lpts, gxy, nodes, pars$ps$nrc, pars$ps$pdist)
   
   # project signal
   if(verbose) message("Running signal convolution...")
@@ -98,76 +91,36 @@
   nsig <- unlist(nsig)
   nn <- unlist(nnpg$nn)
   nnu <- unique(nn)
-  nnl <- .find_nn_positions(nn, nnu)
+  nnl <- .find_nnu_positions(nnu, nn)
   n <- max(sapply(nnl, length))
-  dsig <- matrix(0, nrow = nrow(lpts), ncol = n)
+  dsig_mt <- matrix(0, nrow = nrow(lpts), ncol = n)
   for(i in seq_along(nnl)){
     s <- nsig[nnl[[i]]]
-    dsig[nnu[i], seq_along(s) ] <- s
+    dsig_mt[nnu[i], seq_along(s) ] <- s
   }
-  Z <- .summ_dsig(dsig, pars)
+  Z <- .summ_dsig_mt(dsig_mt, pars)
   return(Z)
 }
 
 #-------------------------------------------------------------------------------
-#--- get vertex-to-point distances for circular projections
-.get_near_points <- function(lpts, gxy, nodes, nrc, pdist){
-  eradius <- .estimate_radius(nodes, pdist)
-  eradius <- nrc * eradius
-  nnpg <- list(nn = list(), dist = list())
-  lpts <- as.data.frame(lpts)
-  for(i in seq_len(nrow(gxy))){
-    r <- eradius[i]
-    p <- gxy[i, ]
-    d2 <- (lpts$X - p["X"])^2 + (lpts$Y - p["Y"])^2
-    within_radius <- which(d2 <= r^2)
-    if(length(within_radius)>0){
-      nn_dists <- sqrt(d2[within_radius])
-      nearby_idx <- lpts[within_radius, ]
-      nn_idx <- with(nearby_idx, (X - 1) * nrc + Y)
-    } else {
-      nn_idx <- numeric()
-      nn_dists <- numeric()
-    }
-    nnpg$nn[[i]] <- nn_idx
-    nnpg$dist[[i]] <- nn_dists
-  }
-  return(nnpg)
-}
-.estimate_radius <- function(nodes, pdist, decay_end = 0.01){
-  maxlen <- 1/pdist
-  x <- seq(0, maxlen, length.out=100)
-  fun <- nodes$decayFunction
-  signal <- abs(nodes$signal)
-  signal[is.na(signal)] <- 0
-  signal <- signal/max(signal)
-  eradius <- sapply(seq_along(fun), function(i){
-    f <- fun[[i]]
-    s <- signal[i]
-    tp <- sapply(x, function(l){ f(l, s) })
-    idx <- which(tp <= decay_end)
-    ifelse(length(idx)>0, x[idx[1]], x[length(x)])
-  })
-  eradius <- eradius/maxlen
-  return(eradius)
-}
-
-#-------------------------------------------------------------------------------
 # Find positions of unique 'nnu' in 'nn'
-.find_nn_positions <- function(nn, nnu) {
-  .find_positions <- function(i, x, ord, x_sorted){
-    int <- findInterval(c(i - 0.5, i + 0.5), x_sorted, 
-      left.open = TRUE, rightmost.closed=TRUE, checkSorted=FALSE)
-    ord[seq(int[1]+1,int[2])]
+.find_nnu_positions <- function(nnu, nn) {
+  .find_positions <- function(i, nn_idx, starts, ends){
+    nn_idx[seq(starts[i], ends[i])]
   }
-  nno <- order(nn)
-  nns <- nn[nno]
-  lapply(nnu, function(i) .find_positions(i, nn, nno, nns) )
+  nn_idx <- order(nn)
+  nn_ord <- nn[nn_idx]
+  nn_rev <- rev(nn_ord)
+  starts <- match(nnu, nn_ord)
+  ends <- length(nn_rev) - match(nnu, nn_rev) + 1
+  lapply(seq_along(nnu), function(i) {
+    .find_positions(i, nn_idx, starts, ends)
+  } )
 }
 
 #-------------------------------------------------------------------------------
 #--- summarize projected signals
-.summ_dsig <- function(dsig, pars) {
+.summ_dsig_mt <- function(dsig, pars) {
   # sort projected signals
   dsig <- matrix(dsig[order(row(dsig), -abs(dsig))],
     nrow = nrow(dsig), byrow = TRUE)
@@ -185,6 +138,79 @@
   return(Z)
 }
 
+#-------------------------------------------------------------------------------
+#--- get vertex-to-point distances for circular projections
+# .get_near_neighbours <- function(lpts, gxy, nodes, nrc, pdist){
+#   eradius <- .estimate_radius(nodes, pdist)
+#   eradius <- nrc * eradius
+#   ksearch <- ceiling(pi * max(eradius)^2)
+#   nnpg <- RANN::nn2(lpts[, c("X", "Y")], gxy[, c("X", "Y")], k = ksearch)
+#   names(nnpg) <- c("nn", "dist")
+#   nnpg$nn <- lapply(seq_len(nrow(nnpg$nn)), function(i){nnpg$nn[i,]} )
+#   nnpg$dist <- lapply(seq_len(nrow(nnpg$dist)), function(i){nnpg$dist[i,]} )
+#   return(nnpg)
+# }
+
+#-------------------------------------------------------------------------------
+#--- get vertex-to-point distances for circular and polar projections
+.get_near_points <- function(lpts, gxy, nodes, nrc, pdist){
+  eradius <- .estimate_radius(nodes, pdist)
+  eradius <- nrc * eradius
+  nnpg <- list(nn = list(), dist = list())
+  lpts <- as.data.frame(lpts)
+  blocks <- unique(lpts$X)
+  first <- match(blocks, lpts$X)
+  last  <- length(lpts$X) - match(blocks, rev(lpts$X)) + 1
+  blocks <- data.frame(value = blocks, first, last)
+  for(i in seq_len(nrow(gxy))){
+    r <- eradius[i]
+    if(r>0){
+      p <- gxy[i, ]
+      x_low <- max(ceiling(p["X"] - r), 1)
+      x_high <- min(floor(p["X"] + r), nrow(blocks))
+      lpts_filt <- lpts[seq(blocks[x_low, "first"], blocks[x_high, "last"]), ]
+      d2 <- (lpts_filt$X - p["X"])^2 + (lpts_filt$Y - p["Y"])^2
+      within_radius <- which(d2 <= r^2)
+      if(length(within_radius)>0){
+        nn_dists <- sqrt(d2[within_radius])
+        nearby_idx <- lpts_filt[within_radius, ]
+        nn_idx <- with(nearby_idx, (X - 1) * nrc + Y)
+      } else {
+        nn_idx <- numeric()
+        nn_dists <- numeric()
+      }
+    } else {
+      nn_idx <- numeric()
+      nn_dists <- numeric()
+    }
+    nnpg$nn[[i]] <- nn_idx
+    nnpg$dist[[i]] <- nn_dists
+  }
+  return(nnpg)
+}
+.estimate_radius <- function(nodes, pdist, decay_end = 0.01){
+  maxlen <- 1/pdist
+  x <- seq(maxlen, 0, length.out=100)
+  fun <- nodes$decayFunction
+  signal <- abs(nodes$signal)
+  signal[is.na(signal)] <- 0
+  signal <- signal/max(signal)
+  eradius <- vapply(seq_along(fun), function(i){
+    f <- fun[[i]]
+    s <- signal[i]
+    if(s==0){
+      r <- 0
+    } else {
+      xs <- vapply(x, function(l){ f(l, s) }, numeric(1))
+      idx <- findInterval(decay_end, xs)
+      r <- ifelse(length(idx)>0, x[idx[1]], x[1])
+    }
+    return(r)
+  }, numeric(1))
+  eradius <- eradius/maxlen
+  return(eradius)
+}
+
 ################################################################################
 ### Main polarProjection calls
 ################################################################################
@@ -192,6 +218,8 @@
   
     nodes <- getPathwaySpace(ps, "nodes")
     edges <- getPathwaySpace(ps, "edges")
+    # node_degree <- degree(ps@graph)
+    # node_degree <- node_degree[rownames(nodes)]
     if(nrow(edges)==0){
         msg <- paste0("Note, this 'PathwaySpace' object does not ",
             "contain edges.\nThe 'polarProjection' method requires ",
@@ -211,30 +239,25 @@
     
     if(verbose){
       message("Computing distances between connected vertices...")
-      if (.is_variable(edges$weight)) {
-        # 'weight' is mapped to theta when variable
-        if(verbose) message("Scaling projection to edge weight...")
-      }
     }
     # for polar, 'pdist' is scaled to edge dist and polar coordinates
     gxy <- .rescale_coord(nodes, pars$ps$nrc)
     edges$edist <- .get_edge_dist(edges, gxy)
     
-    # Adjust pdist
+    # adjust pdist to search a larger projection area
     if(pars$ps$pdist.anchor=="frame"){
-      # adjust pdist to theta, to preserve the projection area 
-      rs <- 0.5 * .deg2rad(pars$ps$theta)
-      rs <- sqrt(rs / pi)
-      pars$ps$pdist <- pdist_adj <- pars$ps$pdist * (1 + (1 - rs))
+      pars$ps$psearch <- min(1, pars$ps$pdist * 1.1)
     } else {
-      # adjust pdist to edges, to keep projection within edge bounds
-      pdist_adj <- max(edges$edist)/pars$ps$nrc
+      # get psearch within edge bounds
+      pars$ps$psearch <- max(edges$edist)/pars$ps$nrc
     }
     
-    if(verbose) message("Mapping 'x' and 'y' coordinates...")
+    if(verbose) message("Computing point-to-vertex linear distances...")
     lpts <- .get_points_in_matrix(pars$ps$nrc)
-    nnpg <- .get_near_points(lpts, gxy, nodes, pars$ps$nrc, pdist_adj)
-    nnpg <- .scale_pdist_polar(nnpg, lpts, gxy, edges, pars)
+    nnpg <- .get_near_points(lpts, gxy, nodes, pars$ps$nrc, pars$ps$pdist)
+    if(verbose) message("Computing point-to-edge angular distances...")
+    nnpg <- .get_angular_dist(nnpg, lpts, gxy, edges, pars)
+    nnpg <- .scale_pdist_polar(nnpg, pars)
     
     # project signal
     if(verbose) message("Running signal convolution...")
@@ -261,7 +284,7 @@
     for(i in seq_len(nrow(nodes))){
       decay_fun <- nodes$decayFunction[[i]]
       signal <- nodes$signal[i]
-      x <- nnpg$dist[[i]] / (nnpg$pdist[[i]] * pars$ps$nrc)
+      x <- nnpg$dist[[i]] / (nnpg$pdist_dth[[i]] * pars$ps$nrc)
       signal <- signal / pars$ps$zscale$maxsig
       nsig[[i]] <- decay_fun(x=x, signal=signal)
     }
@@ -271,7 +294,7 @@
       decay_fun <- nodes$decayFunction[[i]]
       decay_args <- formalArgs(decay_fun)
       args_list <- as.list(nodes[i, decay_args, drop=FALSE])
-      args_list$x <- nnpg$dist[[i]] / (nnpg$pdist[[i]] * pars$ps$nrc)
+      args_list$x <- nnpg$dist[[i]] / (nnpg$pdist_dth[[i]] * pars$ps$nrc)
       args_list$signal <- args_list$signal / pars$ps$zscale$maxsig
       nsig[[i]] <- do.call(decay_fun, args_list)
     }
@@ -279,26 +302,27 @@
   nsig <- unlist(nsig)
   nn <- unlist(nnpg$nn)
   nnu <- unique(nn)
-  nnl <- .find_nn_positions(nn, nnu)
+  nnl <- .find_nnu_positions(nnu, nn)
   n <- max(sapply(nnl, length))
-  dsig <- matrix(0, nrow = nrow(lpts), ncol = n)
+  dsig_mt <- matrix(0, nrow = nrow(lpts), ncol = n)
   for(i in seq_along(nnl)){
     s <- nsig[nnl[[i]]]
-    dsig[nnu[i], seq_along(s) ] <- s
+    dsig_mt[nnu[i], seq_along(s) ] <- s
   }
-  Z <- .summ_dsig(dsig, pars)
+  Z <- .summ_dsig_mt(dsig_mt, pars)
   return(Z)
 }
-.scale_pdist_polar <- function(nnpg, lpts, gxy, edges, pars){
-  # scale edist
+
+#-------------------------------------------------------------------------------
+.get_angular_dist <- function(nnpg, lpts, gxy, edges, pars){
+  # scale edist ..only used when pdist.anchor = edge
   rg <- range(edges$edist)
   rg <- rg[1] + ( (rg - rg[1]) * pars$ps$pdist )
   edges$scaled_eleng <- scales::rescale(edges$edist, to=rg)
-  # get polar coords for edges
+  # get polar coords
   edlist <- .edge_list(edges, gxy)
   etheta <- .edge_list_theta(edlist, gxy)
   edleng <- .edge_attr(edges, gxy, "scaled_eleng")
-  edwght <- .edge_attr(edges, gxy, "weight")
   if(pars$ps$directional){
     emode <- .edge_mode(edges, gxy)
     for(i in seq_along(emode)){
@@ -306,10 +330,9 @@
       edlist[[i]] <- edlist[[i]][idx]
       etheta[[i]] <- etheta[[i]][idx]
       edleng[[i]] <- edleng[[i]][idx]
-      edwght[[i]] <- edwght[[i]][idx]
     }
   }
-  # scale pdist to polar coordinates
+  # get normalized point-to-edge angular distances
   minlen <- min(unlist(edleng))
   for(i in seq_len(length(nnpg$nn))){
     p_idx <- nnpg$nn[[i]]
@@ -317,58 +340,66 @@
     # get edge's theta and dist
     p_et <- etheta[[i]]
     p_el <- edleng[[i]]
-    p_wt <- edwght[[i]]
     # compute theta for p vs. i
     dx <- lpts[p_idx, "X"] - gxy[i, "X"]
     dy <- lpts[p_idx, "Y"] - gxy[i, "Y"]
     p_theta <- atan2(dy, dx)
     # get delta theta (multi directional)
     if(length(p_et)>0){
-      mdr <- .get_delta_theta(p_theta, p_et, p_el, p_wt, pars)
+      mdr <- .get_delta_theta(p_theta, p_et, p_el, pars)
       dth <- mdr[, 1]
       wln <- mdr[, 2]
     } else {
-      dth <- NA
-      wln <- minlen
+      if(pars$ps$directional){
+        dth <- 0
+      } else {
+        # for an isolated node 'a', dth will aim the area of a sector
+        # pdist correction by dth: pdist_dth = pdist * dth^beta
+        # beta = log(0.25) / log((360 - theta) / 360)
+        # pdist * sqrt( theta/360 ) ==> pdist_dth
+        theta <- 360 - 360 * exp( log(0.25)/pars$ps$beta )
+        dth <- (theta/360) ^ (1/(2*pars$ps$beta))
+      }
+      dth <- rep(dth, length(p_dst))
+      wln <- rep(minlen, length(p_dst))
     }
-    # update pdist with wln (the signal tends to zero at wln)
-    if(pars$ps$pdist.anchor=="edge"){
-      #set pdist to scaled edge length
-      pdist <- wln / pars$ps$nrc
-    } else {
-      pdist <- pars$ps$pdist
-    }
-    # approx. to the area of a sector for isolated nodes
-    if(!pars$ps$directional){
-      rs <- 0.5 * .deg2rad(pars$ps$theta)
-      rs <- sqrt(rs / pi)
-      dth[is.na(dth)] <- rs
-    } else {
-      dth[is.na(dth)] <- 0
-    }
-    # update pdist with dtheta
-    pdist <- pdist * dth
-    if(length(pdist)==1) pdist <- rep(pdist, length(p_dst))
-    nnpg$pdist[[i]] <- pdist
+    nnpg$dtheta[[i]] <- dth
+    nnpg$edleng[[i]] <- wln
   }
   return(nnpg)
 }
-.get_delta_theta <- function(p_theta, p_et, p_el, p_wt, pars) {
-  nth <- log(0.25, base = (360 - pars$ps$theta) / 360)
+.get_delta_theta <- function(p_theta, p_et, p_el, pars) {
+  # dth: normalized point-to-edge angular distances
+  # wln: aggregate p_el by dth
   mdr <- t(vapply(seq_along(p_theta), function(i) {
     dth <- abs(p_theta[i] - p_et)
-    dth <- pi - abs(dth - pi)
-    dth <- (dth / pi)^nth
+    dth <- abs(dth - pi)/pi
     if (length(p_el) > 1) {
       wln <- sum(p_el * (dth / sum(dth)))
     } else {
       wln <- p_el
     }
-    dth <- max(dth*p_wt)
-    res <- c(dth, wln)
+    dth <- max(dth)
+    c(dth, wln)
   }, numeric(2)))
   return(mdr)
 }
+
+#-------------------------------------------------------------------------------
+.scale_pdist_polar <- function(nnpg, pars) {
+  pfun <- pars$ps$polar.fun
+  for(i in seq_len(length(nnpg$nn))){
+    if(pars$ps$pdist.anchor=="frame"){
+      pdist <- pars$ps$pdist
+    } else {
+      pdist <- nnpg$edleng[[i]] / pars$ps$nrc
+    }
+    nnpg$pdist_dth[[i]] <- pdist * pfun(nnpg$dtheta[[i]], pars$ps$beta)
+  }
+  return(nnpg)
+}
+
+#-------------------------------------------------------------------------------
 .edge_list <- function(edges, gxy) {
     nms <- rownames(gxy)
     el <- lapply(nms, function(nm) {
@@ -430,8 +461,8 @@
 .edges_theta <- function(e1, e2, gxy) {
   p1 <- gxy[e1, c("X", "Y")]
   p2 <- gxy[e2, c("X", "Y"), drop = FALSE]
-  dx <- p1["X"] - p2[,"X"]
-  dy <- p1["Y"] - p2[,"Y"]
+  dx <- p2[,"X"] - p1["X"]
+  dy <- p2[,"Y"] - p1["Y"]
   dist <- sqrt(dx^2 + dy^2)
   theta <- ifelse(dist < 1e-07, NA, atan2(dy, dx))
   names(theta) <- rownames(p2)
@@ -820,14 +851,6 @@
   gxy <- as.matrix(gxy)
   return(gxy)
 }
-.is_variable <- function(weight){
-  if (length(weight) > 1 && sd(weight, na.rm = TRUE) > 0) {
-    wscale <- TRUE
-  } else {
-    wscale <- FALSE
-  }
-  return(wscale)
-}
 .get_edge_dist <- function(edges, gxy) {
   dts <- sqrt((gxy[edges$name1, "X"] - gxy[edges$name2, "X"])^2 +
       (gxy[edges$name1, "Y"] - gxy[edges$name2, "Y"])^2)
@@ -844,7 +867,16 @@
   }
   TRUE
 }
-
+#-------------------------------------------------------------------------------
+.validate_polar_fun <- function(polar.fun){
+  fargs <- formalArgs(args(polar.fun))
+  fargs <- fargs[ !fargs %in% c("x", "beta")]
+  if(length(fargs)>1){
+    stop("the 'polar.fun' must have the signature: function(x, beta) {...}",
+      call. = FALSE)
+  }
+  TRUE
+}
 #-------------------------------------------------------------------------------
 .get_points_in_matrix <- function(nrc) {
   d <- c(nrc,nrc)

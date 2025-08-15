@@ -37,5 +37,5 @@ see \code{\link{buildPathwaySpace}} constructor.
 }
 
 \author{
-Mauro Castro, \email{mauro.castro@ufpr.br}
+Sysbiolab Team, Mauro Castro (\email{mauro.castro@ufpr.br})
 }

@@ -35,5 +35,5 @@ plot(x, y)
 \code{\link{weibullDecay}}, \code{\link{linearDecay}}
 }
 \author{
-Mauro Castro.
+Sysbiolab Team, Mauro Castro.
 }
