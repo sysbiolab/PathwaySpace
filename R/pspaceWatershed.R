@@ -51,9 +51,9 @@
 #' @export
 #'
 summitWatershed <- function(x, tolerance = 0.1, ext = 1) {
-    .validate.args("numeric_mtx", "x", x)
-    .validate.args("singleNumber", "tolerance", tolerance)
-    .validate.args("singleInteger", "ext", ext)
+    .validate.ps.args("numeric_mtx", "x", x)
+    .validate.ps.args("singleNumber", "tolerance", tolerance)
+    .validate.ps.args("singleInteger", "ext", ext)
     xmask <- .summitWatershed(x = x, ext = ext)
     xmask <- .mergeSummits(x = x, xmask, tolerance)
     return(xmask)

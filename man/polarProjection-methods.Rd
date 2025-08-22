@@ -4,7 +4,7 @@
 \name{polarProjection,PathwaySpace-method}
 \alias{polarProjection,PathwaySpace-method}
 \alias{polarProjection}
-\title{Spatial Projection of Graph-Associated Signals}
+\title{Polar Projection of Graph-Associated Signals}
 \usage{
 \S4method{polarProjection}{PathwaySpace}(
   ps,
@@ -14,10 +14,10 @@
   directional = FALSE,
   rescale = TRUE,
   pdist.anchor = c("edge", "frame"),
-  verbose = TRUE,
   decay.fun = signalDecay(),
   aggregate.fun = signalAggregation(),
   polar.fun = polarDecay(),
+  verbose = TRUE,
   theta = deprecated()
 )
 }
@@ -57,9 +57,6 @@ rescaled to \code{[-1, 1]}.}
 to scale distances using the full coordinate space. This affects how 
 projected signals are scaled and accumulated. Default is \code{"edge"}.}
 
-\item{verbose}{A single logical value specifying to display detailed 
-messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
-
 \item{decay.fun}{A signal decay function. Available options include 
 'Weibull', 'exponential', and 'linear' (see \code{\link{signalDecay}}).
 Users may also define a custom decay model with at least two arguments, 
@@ -74,6 +71,9 @@ Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean'
 (See \code{\link{signalAggregation}}).}
 
 \item{polar.fun}{A polar decay function (see \code{\link{polarDecay}}).}
+
+\item{verbose}{A single logical value specifying to display detailed 
+messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
 
 \item{theta}{Deprecated from PathwaySpace 1.0.2; use 'beta' instead.}
 }
@@ -95,8 +95,10 @@ ps <- buildPathwaySpace(gtoy2, nrc = 100)
 # Set '1s' as vertex signal
 vertexSignal(ps) <- 1
 
+gs_edge_attr(ps, "weight") <- c(-1, 1, 1, 1, 1, 1)
+
 # Create a 2D-landscape image
-ps <- polarProjection(ps)
+ps <- polarProjection(ps, pdist=1)
 
 }
 \seealso{

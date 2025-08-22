@@ -234,11 +234,11 @@ pspace.cols <- function(n=5) {
 #' @export
 #'
 pathDistances <- function(gdist, from, to, nperm = 1000, verbose=TRUE){
-  .validate.args("square_numeric_mtx", "gdist", gdist)
-  .validate.args("allCharacter", "from", from)
-  .validate.args("allCharacter", "to", to)
-  .validate.args("singleInteger", "nperm", nperm)
-  .validate.args("singleLogical", "verbose", verbose)
+  .validate.ps.args("square_numeric_mtx", "gdist", gdist)
+  .validate.ps.args("allCharacter", "from", from)
+  .validate.ps.args("allCharacter", "to", to)
+  .validate.ps.args("singleInteger", "nperm", nperm)
+  .validate.ps.args("singleLogical", "verbose", verbose)
   if(!all(from %in% rownames(gdist))){
     stop("All names in 'from' should be listed in 'gdist' rownames.")
   }
@@ -305,7 +305,7 @@ pathDistances <- function(gdist, from, to, nperm = 1000, verbose=TRUE){
 #' @export
 #'
 plotPathDistances <- function(pdist, z.transform=FALSE){
-  .validate.args("singleLogical", "z.transform", z.transform)
+  .validate.ps.args("singleLogical", "z.transform", z.transform)
   if(z.transform){
     gg <- .plot_pdist(pdist$z_score, xlab = "z-score")
   } else {

@@ -46,5 +46,10 @@ gs_vertex_attr(ps, "signal") <- 1
 # Modify a single value within a vertex attribute
 gs_vertex_attr(ps, "signal")["n1"] <- 1
 
+# Access a specific edge attribute
+gs_edge_attr(ps, "weight")
+
+# Replace an entire edge attribute
+gs_edge_attr(ps, "weight") <- 1
 
 }

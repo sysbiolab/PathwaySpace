@@ -18,6 +18,12 @@
       gs_vertex_attr(gs, "decayFunction") <- signalDecay()
     }
     
+    #--- initialize edge weight
+    att <- names(gs_edge_attr(gs))
+    if( ! "weight" %in% att ){
+      gs_edge_attr(gs, "weight") <- 1
+    }
+    
     #--- create a PathwaySpace object
     if(verbose) message("Creating a 'PathwaySpace' object...")
     ps <- as(gs, "PathwaySpace")
@@ -42,6 +48,7 @@
   if(verbose) message("Using circular projection...")
   pars <- getPathwaySpace(ps, "pars")
   nodes <- getPathwaySpace(ps, "nodes")
+  pars$ps$zscale <- .get_signal_scale(nodes$signal)
   
   if(verbose) message("Mapping 'x' and 'y' coordinates...")
   gxy <- .rescale_coord(nodes, pars$ps$nrc)
@@ -56,10 +63,10 @@
   }
   # image(.transpose_and_flip(xsig))
   
-  # add/update projections
+  # add projections
   ps@projections$gxy <- gxy
   ps@projections$xsig <- xsig
-  ps <- .update_projections(ps)
+  ps <- .update_projections(ps, pars)
   return(ps)
 }
 
@@ -218,8 +225,6 @@
   
     nodes <- getPathwaySpace(ps, "nodes")
     edges <- getPathwaySpace(ps, "edges")
-    # node_degree <- degree(ps@graph)
-    # node_degree <- node_degree[rownames(nodes)]
     if(nrow(edges)==0){
         msg <- paste0("Note, this 'PathwaySpace' object does not ",
             "contain edges.\nThe 'polarProjection' method requires ",
@@ -227,6 +232,9 @@
         stop(msg)
     }
     pars <- getPathwaySpace(ps, "pars")
+    signal <- .get_edge_signal(nodes, edges)
+    pars$ps$zscale <- .get_signal_scale(signal)
+    
     if(pars$ps$directional){
         if(pars$is.directed){
             message("Using polar projection on directed graph...")
@@ -237,13 +245,20 @@
         if(verbose) message("Using polar projection on undirected graph...")
     }
     
-    if(verbose){
-      message("Computing distances between connected vertices...")
-    }
-    # for polar, 'pdist' is scaled to edge dist and polar coordinates
+    if(verbose) message("Mapping 'x' and 'y' coordinates...")
     gxy <- .rescale_coord(nodes, pars$ps$nrc)
-    edges$edist <- .get_edge_dist(edges, gxy)
     
+    # 'weight' will adjust signals when variable or different from default
+    if (.is_variable(edges$weight) || any(edges$weight != 1)) {
+      if(verbose) message("Scaling projection to edge weight...")
+      pars$eweight <- TRUE
+    } else {
+      pars$eweight <- FALSE
+    }
+    
+    if(verbose) message("Computing linear and angular distances...")
+    # for polar, 'pdist' is scaled to edge dist and polar coordinates
+    edges$edist <- .get_edge_dist(edges, gxy)
     # adjust pdist to search a larger projection area
     if(pars$ps$pdist.anchor=="frame"){
       pars$ps$psearch <- min(1, pars$ps$pdist * 1.1)
@@ -251,11 +266,8 @@
       # get psearch within edge bounds
       pars$ps$psearch <- max(edges$edist)/pars$ps$nrc
     }
-    
-    if(verbose) message("Computing point-to-vertex linear distances...")
     lpts <- .get_points_in_matrix(pars$ps$nrc)
     nnpg <- .get_near_points(lpts, gxy, nodes, pars$ps$nrc, pars$ps$pdist)
-    if(verbose) message("Computing point-to-edge angular distances...")
     nnpg <- .get_angular_dist(nnpg, lpts, gxy, edges, pars)
     nnpg <- .scale_pdist_polar(nnpg, pars)
     
@@ -267,11 +279,15 @@
     }
     # image(.transpose_and_flip(xsig))
     
-    # add/update projections
+    # add projections
     ps@projections$gxy <- gxy
     ps@projections$xsig <- xsig
-    ps <- .update_projections(ps)
+    ps <- .update_projections(ps, pars)
     return(ps)
+}
+.get_edge_signal <- function(nodes, edges){
+  c( nodes[edges$vertex1,"signal"] * edges$weight,
+  nodes[edges$vertex2,"signal"] * edges$weight)
 }
 
 #-------------------------------------------------------------------------------
@@ -286,6 +302,7 @@
       signal <- nodes$signal[i]
       x <- nnpg$dist[[i]] / (nnpg$pdist_dth[[i]] * pars$ps$nrc)
       signal <- signal / pars$ps$zscale$maxsig
+      if(pars$eweight) signal <- signal * nnpg$edwght[[i]]
       nsig[[i]] <- decay_fun(x=x, signal=signal)
     }
   } else {
@@ -296,6 +313,7 @@
       args_list <- as.list(nodes[i, decay_args, drop=FALSE])
       args_list$x <- nnpg$dist[[i]] / (nnpg$pdist_dth[[i]] * pars$ps$nrc)
       args_list$signal <- args_list$signal / pars$ps$zscale$maxsig
+      if(pars$eweight) args_list$signal <- args_list$signal * nnpg$edwght[[i]]
       nsig[[i]] <- do.call(decay_fun, args_list)
     }
   }
@@ -323,6 +341,7 @@
   edlist <- .edge_list(edges, gxy)
   etheta <- .edge_list_theta(edlist, gxy)
   edleng <- .edge_attr(edges, gxy, "scaled_eleng")
+  edwght <- .edge_attr(edges, gxy, "weight")
   if(pars$ps$directional){
     emode <- .edge_mode(edges, gxy)
     for(i in seq_along(emode)){
@@ -330,6 +349,7 @@
       edlist[[i]] <- edlist[[i]][idx]
       etheta[[i]] <- etheta[[i]][idx]
       edleng[[i]] <- edleng[[i]][idx]
+      edwght[[i]] <- edwght[[i]][idx]
     }
   }
   # get normalized point-to-edge angular distances
@@ -340,49 +360,95 @@
     # get edge's theta and dist
     p_et <- etheta[[i]]
     p_el <- edleng[[i]]
+    p_wt <- edwght[[i]]
     # compute theta for p vs. i
     dx <- lpts[p_idx, "X"] - gxy[i, "X"]
     dy <- lpts[p_idx, "Y"] - gxy[i, "Y"]
     p_theta <- atan2(dy, dx)
     # get delta theta (multi directional)
     if(length(p_et)>0){
-      mdr <- .get_delta_theta(p_theta, p_et, p_el, pars)
+      # p_theta <- ifelse(p_theta < 0, p_theta + 2*pi, p_theta)
+      # p_et <- ifelse(p_et < 0, p_et + 2*pi, p_et)
+      mdr <- .get_delta_theta(p_theta, p_et, p_el, p_wt, pars)
       dth <- mdr[, 1]
-      wln <- mdr[, 2]
+      eln <- mdr[, 2]
+      ewt <- mdr[, 3]
     } else {
+      ## Estimate dth for isolated nodes
       if(pars$ps$directional){
-        dth <- 0
+        dth_iso <- 0
       } else {
-        # for an isolated node 'a', dth will aim the area of a sector
-        # pdist correction by dth: pdist_dth = pdist * dth^beta
-        # beta = log(0.25) / log((360 - theta) / 360)
-        # pdist * sqrt( theta/360 ) ==> pdist_dth
-        theta <- 360 - 360 * exp( log(0.25)/pars$ps$beta )
-        dth <- (theta/360) ^ (1/(2*pars$ps$beta))
+        ## For isolated nodes, 'dth_iso' will aim the area of a cardioid,
+        ## as result from the adjusted 'pdist', computed in the expression: 
+        ## pdist_dth = pdist * dth_iso^beta
+        ## 1) cf: geometric factor to adjust circle's radius for a cardioid area
+        cf <- sqrt(3/8)
+        ## 2) dth_iso: rescaled 'dth'; here the effect of 'beta' is removed
+        ## from 'cf', proportional to 'cf', so when later raised to beta
+        ## (i.e. dth_iso^beta) the moderation is applied only once.
+        dth_iso <- cf^(1 / (pars$ps$beta^cf) )
       }
-      dth <- rep(dth, length(p_dst))
-      wln <- rep(minlen, length(p_dst))
+      dth <- rep(dth_iso, length(p_dst))
+      eln <- rep(minlen, length(p_dst))
+      ewt <- rep(1, length(p_dst))
     }
     nnpg$dtheta[[i]] <- dth
-    nnpg$edleng[[i]] <- wln
+    nnpg$edleng[[i]] <- eln
+    nnpg$edwght[[i]] <- ewt
   }
   return(nnpg)
 }
-.get_delta_theta <- function(p_theta, p_et, p_el, pars) {
-  # dth: normalized point-to-edge angular distances
-  # wln: aggregate p_el by dth
+.get_delta_theta <- function(p_theta, p_et, p_el, p_wt, pars) {
+  if (length(p_et) > 1){
+    C <- ( 1 + ( 1 - .angular_evenness(p_et) ) ) ^ 2
+  } else {
+    C <- 1
+  }
   mdr <- t(vapply(seq_along(p_theta), function(i) {
     dth <- abs(p_theta[i] - p_et)
     dth <- abs(dth - pi)/pi
-    if (length(p_el) > 1) {
-      wln <- sum(p_el * (dth / sum(dth)))
+    if (length(dth) > 1) {
+      #-- Note1: 'p' skews mean toward larger or smaller weights
+      #-- Note2: 'C' adjusts 'p' to account for angular variability
+      # Aggregate edge length weighted by angular distances
+      eln <- .weighted_mean(p_el, dth, p = pars$ps$beta * C)
+      # Aggregate edge weight weighted by angular distances
+      ewt <- .weighted_mean(p_wt, dth, p = pars$ps$beta * C)
+      # Aggregate angular distances weighted by itself
+      dth <- .lehmer_mean(dth, p = pars$ps$beta * C)
+      ## Old1 aggregations
+      # eln <- sum(p_el * (dth / sum(dth)))
+      # dth2 <- dth ^ (pars$ps$beta * C)
+      # ewt <- sum(p_wt * (dth2 / sum(dth2)))
+      # dth <- sum(dth * (dth2 / sum(dth2)))
+      ## Old2 aggregations
+      #eln <- sum(p_el * (dth / sum(dth)))
+      #idx <- which.max(dth * abs(p_wt))
+      #dth <- dth[idx]
+      #ewt <- p_wt[idx]
     } else {
-      wln <- p_el
+      eln <- p_el
+      ewt <- p_wt
     }
-    dth <- max(dth)
-    c(dth, wln)
-  }, numeric(2)))
+    c(dth, eln, ewt)
+  }, numeric(3)))
   return(mdr)
+}
+.lehmer_mean <- function(x, p=2){
+  sum(x^(p+1)) / sum(x^p)
+}
+.weighted_mean <- function(x, w, p=1){
+  w <- w^p
+  sum(w * x) / sum(w)
+}
+.angular_evenness <- function(x) {
+  n <- length(x)
+  x <- sort(x %% (2*pi))
+  gaps <- c(diff(x), 2*pi - (x[n] - x[1]))
+  max_gap <- max(gaps)
+  min_gap <- 2*pi / n
+  c <- 1 - (max_gap - min_gap) / (2*pi - min_gap)
+  return(c)
 }
 
 #-------------------------------------------------------------------------------
@@ -392,7 +458,7 @@
     if(pars$ps$pdist.anchor=="frame"){
       pdist <- pars$ps$pdist
     } else {
-      pdist <- nnpg$edleng[[i]] / pars$ps$nrc
+      pdist <- (nnpg$edleng[[i]] / pars$ps$nrc) * pars$ps$pdist
     }
     nnpg$pdist_dth[[i]] <- pdist * pfun(nnpg$dtheta[[i]], pars$ps$beta)
   }
@@ -481,10 +547,9 @@
 ### Rescale projections
 ################################################################################
 # If 'rescale = F', it will rescale 'xsig' to the original range
-.update_projections <- function(ps) {
+.update_projections <- function(ps, pars, update.config=TRUE) {
   xfloor <- ps@projections$xfloor
   xsig <- ps@projections$xsig
-  pars <- ps@pars
   if(is.null(pars$ps$rescale)) pars$ps$rescale <- TRUE
   if (!is.null(xfloor)) xsig[xfloor == 0] <- NA
   bl <- all(range(xsig, na.rm = TRUE) == 0)
@@ -513,7 +578,9 @@
       #- noise are set to background (i.e. zero).
     }
   }
-  pars$ps$configs <- .get_configs(pars)
+  if(update.config || is.null(pars$ps$configs)){
+    pars$ps$configs <- .get_configs(pars)
+  }
   ps@projections$pars <- pars
   ps@projections$gxyz <- gxyz
   return(ps)
@@ -593,6 +660,7 @@
   
     nodes <- getPathwaySpace(ps, "nodes")
     pars <- getPathwaySpace(ps, "pars")
+    pars$ps$zscale <- .get_signal_scale(nodes$signal)
     
     if(verbose) message("Mapping 'x' and 'y' coordinates...")
     gxy <- .rescale_coord(nodes, pars$ps$nrc)
@@ -614,13 +682,13 @@
     sz <- round(nbg / prod(dim(xfloor)) * 100, 2)
     if(verbose) message("Silhouette: ", sz, "% of the landscape area!")
     
-    #--- add/update projections
+    #--- add projections
     ps@projections$gxy <- gxy
     ps@projections$xfloor <- xfloor
     if (!.checkStatus(ps, "Projection")){
       ps@projections$xsig <- array(0, c(pars$ps$nrc, pars$ps$nrc))
     }
-    ps <- .update_projections(ps)
+    ps <- .update_projections(ps, pars, update.config=FALSE)
     return(ps)
 }
 
@@ -850,6 +918,14 @@
   gxy$Yint <- round(gxy$Y)
   gxy <- as.matrix(gxy)
   return(gxy)
+}
+.is_variable <- function(weight){
+  if (length(weight) > 1 && sd(weight, na.rm = TRUE) > 0) {
+    wscale <- TRUE
+  } else {
+    wscale <- FALSE
+  }
+  return(wscale)
 }
 .get_edge_dist <- function(edges, gxy) {
   dts <- sqrt((gxy[edges$name1, "X"] - gxy[edges$name2, "X"])^2 +

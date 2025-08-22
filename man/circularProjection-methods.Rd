@@ -4,16 +4,16 @@
 \name{circularProjection,PathwaySpace-method}
 \alias{circularProjection,PathwaySpace-method}
 \alias{circularProjection}
-\title{Spatial Projection of Graph-Associated Signals}
+\title{Circular Projection of Graph-Associated Signals}
 \usage{
 \S4method{circularProjection}{PathwaySpace}(
   ps,
   k = 8,
   pdist = 0.15,
   rescale = TRUE,
-  verbose = TRUE,
   decay.fun = signalDecay(),
-  aggregate.fun = signalAggregation()
+  aggregate.fun = signalAggregation(),
+  verbose = TRUE
 )
 }
 \arguments{
@@ -35,9 +35,6 @@ the signal. If the signal \code{>=0}, then it will be rescaled to
 \code{[-1, 0]}; and if the signal in \code{(-Inf, +Inf)}, then it will be 
 rescaled to \code{[-1, 1]}.}
 
-\item{verbose}{A single logical value specifying to display detailed 
-messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
-
 \item{decay.fun}{A signal decay function. Available options include 
 'Weibull', 'exponential', and 'linear' (see \code{\link{signalDecay}}).
 Users may also define a custom decay model with at least two arguments, 
@@ -50,6 +47,9 @@ It must be provided as a unary function, e.g., \code{function(x) { ... }},
 which should aggregate a vector of signals to a single scalar value. 
 Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean' 
 (See \code{\link{signalAggregation}}).}
+
+\item{verbose}{A single logical value specifying to display detailed 
+messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
 }
 \value{
 A preprocessed \linkS4class{PathwaySpace} class object.

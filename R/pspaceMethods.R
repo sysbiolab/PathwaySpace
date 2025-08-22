@@ -43,8 +43,8 @@ buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE,
   g = deprecated()) {
   if(verbose) message("Validating arguments...")
   #--- validate argument types
-  .validate.args("singleInteger", "nrc", nrc)
-  .validate.args("singleLogical", "verbose", verbose)
+  .validate.ps.args("singleInteger", "nrc", nrc)
+  .validate.ps.args("singleLogical", "verbose", verbose)
   ### deprecate
   if (lifecycle::is_present(g)) {
     gs <- g
@@ -67,7 +67,7 @@ buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE,
   return(ps)
 }
 
-#' @title Spatial Projection of Graph-Associated Signals
+#' @title Circular Projection of Graph-Associated Signals
 #'
 #' @description \code{circularProjection} implements a convolution
 #' algorithm to project signals onto a 2D-coordinate system.
@@ -86,8 +86,6 @@ buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE,
 #' \code{[0, 1]}; if the signal \code{<=0}, then it will be rescaled to 
 #' \code{[-1, 0]}; and if the signal in \code{(-Inf, +Inf)}, then it will be 
 #' rescaled to \code{[-1, 1]}.
-#' @param verbose A single logical value specifying to display detailed 
-#' messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).
 #' @param decay.fun A signal decay function. Available options include 
 #' 'Weibull', 'exponential', and 'linear' (see \code{\link{signalDecay}}).
 #' Users may also define a custom decay model with at least two arguments, 
@@ -99,6 +97,8 @@ buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE,
 #' which should aggregate a vector of signals to a single scalar value. 
 #' Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean' 
 #' (See \code{\link{signalAggregation}}).
+#' @param verbose A single logical value specifying to display detailed 
+#' messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).
 #' @return A preprocessed \linkS4class{PathwaySpace} class object.
 #' @author Victor Apolonio, Vinicius Chagas, Mauro Castro, 
 #' and TCGA Network.
@@ -124,21 +124,23 @@ buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE,
 #' @aliases circularProjection
 #' @export
 #'
-setMethod("circularProjection", "PathwaySpace", function(ps, k = 8,
-  pdist = 0.15, rescale = TRUE, verbose = TRUE, 
-  decay.fun = signalDecay(), aggregate.fun = signalAggregation()) {
+setMethod("circularProjection", "PathwaySpace", function(ps, 
+  k = 8, pdist = 0.15, rescale = TRUE,
+  decay.fun = signalDecay(), 
+  aggregate.fun = signalAggregation(),
+  verbose = TRUE) {
   #--- validate the pipeline status
   if (!.checkStatus(ps, "Preprocess")) {
     stop("NOTE: the 'ps' object needs preprocessing!", call. = FALSE)
   }
   if(verbose) message("Validating arguments...")
   #--- validate argument types
-  .validate.args("singleInteger", "k", k)
-  .validate.args("singleNumber", "pdist", pdist)
-  .validate.args("singleLogical", "rescale", rescale)
-  .validate.args("singleLogical", "verbose", verbose)
-  .validate.args("function", "aggregate.fun", aggregate.fun)
-  .validate.args("function", "decay.fun", decay.fun)
+  .validate.ps.args("singleInteger", "k", k)
+  .validate.ps.args("singleNumber", "pdist", pdist)
+  .validate.ps.args("singleLogical", "rescale", rescale)
+  .validate.ps.args("singleLogical", "verbose", verbose)
+  .validate.ps.args("function", "aggregate.fun", aggregate.fun)
+  .validate.ps.args("function", "decay.fun", decay.fun)
   #--- validate argument values
   if (k < 1) {
     stop("'k' should be >=1", call. = FALSE)
@@ -170,7 +172,7 @@ setMethod("circularProjection", "PathwaySpace", function(ps, k = 8,
   return(ps)
 })
 
-#' @title Spatial Projection of Graph-Associated Signals
+#' @title Polar Projection of Graph-Associated Signals
 #'
 #' @description \code{polarProjection} implements a convolution algorithm
 #' to project signals across a 2D-coordinate system.
@@ -203,8 +205,6 @@ setMethod("circularProjection", "PathwaySpace", function(ps, k = 8,
 #' \code{"edge"} to scale distances based on edge lengths or \code{"frame"} 
 #' to scale distances using the full coordinate space. This affects how 
 #' projected signals are scaled and accumulated. Default is \code{"edge"}.
-#' @param verbose A single logical value specifying to display detailed 
-#' messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).
 #' @param decay.fun A signal decay function. Available options include 
 #' 'Weibull', 'exponential', and 'linear' (see \code{\link{signalDecay}}).
 #' Users may also define a custom decay model with at least two arguments, 
@@ -217,6 +217,8 @@ setMethod("circularProjection", "PathwaySpace", function(ps, k = 8,
 #' Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean' 
 #' (See \code{\link{signalAggregation}}).
 #' @param polar.fun A polar decay function (see \code{\link{polarDecay}}).
+#' @param verbose A single logical value specifying to display detailed 
+#' messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).
 #' @param theta Deprecated from PathwaySpace 1.0.2; use 'beta' instead.
 #' @return A preprocessed \linkS4class{PathwaySpace} class object.
 #' @author Sysbiolab Team, Mauro Castro.
@@ -224,7 +226,7 @@ setMethod("circularProjection", "PathwaySpace", function(ps, k = 8,
 #' @examples
 #' # Load a demo igraph
 #' data('gtoy2', package = 'RGraphSpace')
-#'
+#' 
 #' # Create a new PathwaySpace object
 #' ps <- buildPathwaySpace(gtoy2, nrc = 100)
 #' # note: adjust 'nrc' to increase image resolution
@@ -232,21 +234,24 @@ setMethod("circularProjection", "PathwaySpace", function(ps, k = 8,
 #' # Set '1s' as vertex signal
 #' vertexSignal(ps) <- 1
 #' 
+#' gs_edge_attr(ps, "weight") <- c(-1, 1, 1, 1, 1, 1)
+#' 
 #' # Create a 2D-landscape image
-#' ps <- polarProjection(ps)
-#'
+#' ps <- polarProjection(ps, pdist=1)
+#' 
 #' @import methods
 #' @docType methods
 #' @rdname polarProjection-methods
 #' @aliases polarProjection
 #' @export
 #'
-setMethod("polarProjection", "PathwaySpace", function(ps, k = 2, 
-  pdist = 0.5, beta = 10, directional = FALSE, rescale = TRUE, 
-  pdist.anchor = c("edge", "frame"), verbose = TRUE, 
+setMethod("polarProjection", "PathwaySpace", function(ps, 
+  k = 2, pdist = 0.5, beta = 10, directional = FALSE, 
+  rescale = TRUE, pdist.anchor = c("edge", "frame"),
   decay.fun = signalDecay(),
   aggregate.fun = signalAggregation(), 
   polar.fun = polarDecay(), 
+  verbose = TRUE, 
   theta = deprecated()) {
   #--- validate the pipeline status
   if (!.checkStatus(ps, "Preprocess")) {
@@ -259,16 +264,16 @@ setMethod("polarProjection", "PathwaySpace", function(ps, k = 2,
   }
   ###
   if(verbose) message("Validating arguments...")
-  .validate.args("singleInteger", "k", k)
-  .validate.args("singleNumber", "pdist", pdist)
-  .validate.args("singleNumber", "beta", beta)
-  .validate.args("singleLogical", "directional", directional)
-  .validate.args("singleLogical", "rescale", rescale)
-  .validate.args("allCharacter", "pdist.anchor", pdist.anchor)
-  .validate.args("singleLogical", "verbose", verbose)
-  .validate.args("function", "decay.fun", decay.fun)
-  .validate.args("function", "polar.fun", polar.fun)
-  .validate.args("function", "aggregate.fun", aggregate.fun)
+  .validate.ps.args("singleInteger", "k", k)
+  .validate.ps.args("singleNumber", "pdist", pdist)
+  .validate.ps.args("singleNumber", "beta", beta)
+  .validate.ps.args("singleLogical", "directional", directional)
+  .validate.ps.args("singleLogical", "rescale", rescale)
+  .validate.ps.args("allCharacter", "pdist.anchor", pdist.anchor)
+  .validate.ps.args("singleLogical", "verbose", verbose)
+  .validate.ps.args("function", "decay.fun", decay.fun)
+  .validate.ps.args("function", "polar.fun", polar.fun)
+  .validate.ps.args("function", "aggregate.fun", aggregate.fun)
   pdist.anchor <- match.arg(pdist.anchor)
   if (k < 1) {
     stop("'k' should be >=1", call. = FALSE)
@@ -357,10 +362,10 @@ setMethod("silhouetteMapping", "PathwaySpace", function(ps, baseline = 0.01,
   }
   if(verbose) message("Validating arguments...")
   #--- validate argument types
-  .validate.args("singleNumber", "baseline", baseline)
-  .validate.args("singleNumber", "pdist", pdist)
-  .validate.args("singleLogical", "fill.cavity", fill.cavity)
-  .validate.args("singleLogical", "verbose", verbose)
+  .validate.ps.args("singleNumber", "baseline", baseline)
+  .validate.ps.args("singleNumber", "pdist", pdist)
+  .validate.ps.args("singleLogical", "fill.cavity", fill.cavity)
+  .validate.ps.args("singleLogical", "verbose", verbose)
   #--- validate argument values
   if (baseline < 0 || baseline > 1) {
     stop("'baseline' should be in [0,1]", call. = FALSE)
@@ -426,11 +431,11 @@ setMethod("summitMapping", "PathwaySpace", function(ps, maxset = 30,
         stop(msg, call. = FALSE)
     }
     #--- validate argument types
-    .validate.args("singleInteger", "maxset", maxset)
-    .validate.args("singleInteger", "minsize", minsize)
-    .validate.args("singleNumber", "threshold", threshold)
-    .validate.args("singleLogical", "verbose", verbose)
-    .validate.args("function", "segm_fun", segm_fun)
+    .validate.ps.args("singleInteger", "maxset", maxset)
+    .validate.ps.args("singleInteger", "minsize", minsize)
+    .validate.ps.args("singleNumber", "threshold", threshold)
+    .validate.ps.args("singleLogical", "verbose", verbose)
+    .validate.ps.args("function", "segm_fun", segm_fun)
     #--- validate argument values
     if (maxset < 1) {
         stop("'maxset' should be >=1", call. = FALSE)
@@ -643,6 +648,11 @@ setMethod("vertexDecay<-", "PathwaySpace",
 #' # Modify a single value within a vertex attribute
 #' gs_vertex_attr(ps, "signal")["n1"] <- 1
 #'
+#' # Access a specific edge attribute
+#' gs_edge_attr(ps, "weight")
+#' 
+#' # Replace an entire edge attribute
+#' gs_edge_attr(ps, "weight") <- 1
 #' 
 #' @rdname PathwaySpace-accessors
 #' @importFrom RGraphSpace gs_vertex_attr<- gs_edge_attr<-
@@ -680,6 +690,7 @@ setReplaceMethod(
 #-------------------------------------------------------------------------------
 .validate_ps_containers <- function(ps) {
   ps <- .validate_signal(ps)
+  ps <- .validate_weights(ps)
   ps <- .validate_decayFunction(ps)
   return(ps)
 }
@@ -693,9 +704,7 @@ setReplaceMethod(
   if (!is.numeric(signal)){
     stop("vertex 'signal' variable must be numeric.", call. = FALSE)
   }
-  signal <- .revise_signal(signal)
-  ps@pars$ps$zscale <- .get_signal_scale(signal)
-  ps@nodes$signal <- signal
+  ps@nodes$signal <- .revise_signal(signal)
   return(ps)
 }
 .revise_signal <- function(x){
@@ -704,6 +713,38 @@ setReplaceMethod(
   x[x == -Inf] <- NA
   if (all(is.na(x))) x[] <- 0
   return(x)
+}
+
+#-------------------------------------------------------------------------------
+.validate_weights <- function(ps) {
+  if(gs_ecount(ps)>0){
+    weight <- gs_edge_attr(ps, "weight")
+    if(is.null(weight)){
+      stop("'weight' edge attribute must be available.", call. = FALSE)
+    }
+    if (!is.numeric(weight)){
+      stop("edge 'weight' variable must be numeric.", call. = FALSE)
+    }
+    ps@edges$weight <- .revise_weights(weight)
+  }
+  return(ps)
+}
+.revise_weights <- function(wt){
+  if (all(is.na(wt))) wt[] <- 1
+  if (sd(wt, na.rm = TRUE) != 0) {
+    wt <- wt/max(abs(wt), na.rm = TRUE)
+    wt[is.na(wt)] <- 0
+  } else {
+    wt[] <- 1
+  }
+  # if(!.all_binaryValues(abs(wt))){
+  #   warning("Invalid edge weight: expected integer values in {-1, 0, 1}.",
+  #     call. = FALSE)
+  #   wt[] <- 1
+  # } else {
+  #   wt[is.na(wt)] <- 1
+  # }
+  return(wt)
 }
 
 #-------------------------------------------------------------------------------
@@ -722,7 +763,9 @@ setReplaceMethod(
   }
   not_used <- lapply(decayFunction, .check_decay_args, nodes=ps@nodes)
   if(.all_equal_fun(decayFunction)){
-    ps@pars$ps$decay$fun <- decayFunction[[1]]
+    dfun <- attributes(decayFunction)$name
+    dfun <- ifelse(.is_singleString(dfun), dfun, "customized")
+    ps@pars$ps$decay$fun <- dfun
     ps@pars$ps$decay$info <- "global-defined-decay"
   } else {
     ps@pars$ps$decay$fun <- "customized"

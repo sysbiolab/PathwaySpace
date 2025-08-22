@@ -115,34 +115,34 @@ setMethod("plotPathwaySpace", "PathwaySpace",
       stop("NOTE: 'ps' needs to be evaluated by a 'projection' method!",
         call. = FALSE)
     }
-    .validate.args("singleNumber", "si.alpha", si.alpha)
-    .validate.args("singleString", "title", title)
-    .validate.args("singleString", "xlab", xlab)
-    .validate.args("singleString", "ylab", ylab)
-    .validate.args("singleString", "zlab", zlab)
-    .validate.args("singleNumber", "font.size", font.size)
-    .validate.args("singleInteger", "slices", slices)
-    .validate.args("singleLogical", "add.grid", add.grid)
-    .validate.args("singleLogical", "add.summits", add.summits)
-    .validate.args("singleLogical", "label.summits", label.summits)
-    .validate.args("singleLogical", "add.marks", add.marks)
-    .validate.plot.args("marks", marks)
-    .validate.args("singleNumber", "mark.size", mark.size)
+    .validate.ps.args("singleNumber", "si.alpha", si.alpha)
+    .validate.ps.args("singleString", "title", title)
+    .validate.ps.args("singleString", "xlab", xlab)
+    .validate.ps.args("singleString", "ylab", ylab)
+    .validate.ps.args("singleString", "zlab", zlab)
+    .validate.ps.args("singleNumber", "font.size", font.size)
+    .validate.ps.args("singleInteger", "slices", slices)
+    .validate.ps.args("singleLogical", "add.grid", add.grid)
+    .validate.ps.args("singleLogical", "add.summits", add.summits)
+    .validate.ps.args("singleLogical", "label.summits", label.summits)
+    .validate.ps.args("singleLogical", "add.marks", add.marks)
+    .validate.ps.args("singleNumber", "mark.size", mark.size)
+    .validate.ps.args("singleNumber", "mark.padding", mark.padding)
+    .validate.ps.args("singleNumber","mark.line.width", mark.line.width)
+    .validate.ps.args("singleLogical", "use.dotmark", use.dotmark)
+    .validate.ps.args("singleLogical", "add.image", add.image)
     .validate.colors("singleColor", "mark.color", mark.color)
-    .validate.args("singleNumber", "mark.padding", mark.padding)
-    .validate.args("singleNumber","mark.line.width", mark.line.width)
-    .validate.args("singleLogical", "use.dotmark", use.dotmark)
-    .validate.args("singleLogical", "add.image", add.image)
     .validate.colors("allColors","colors", colors)
     .validate.colors("singleColor", "bg.color", bg.color)
     .validate.colors("singleColor", "si.color", si.color)
     .validate.colors("singleColor", "font.color", font.color)
     .validate.colors("singleColor", "grid.color", grid.color)
     .validate.colors("singleColor", "summit.color", summit.color)
-    .validate.plot.args("trim.colors", trim.colors)
+    .validate.psplot.args("marks", marks)
+    .validate.psplot.args("trim.colors", trim.colors)
     theme <- match.arg(theme)
     if(!is.null(zlim)) {
-      .validate.args("numeric_vec", "zlim", zlim)
+      .validate.ps.args("numeric_vec", "zlim", zlim)
       if(length(zlim)!=2) 
         stop("'zlim' should be a numeric vector of lenght 2.", call. = FALSE)
     }
@@ -307,7 +307,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
   ggp <- ggp + ggplot2::annotate("text", label = title,
     colour = fcol, size = font.size*3.5, x = 0, y = 0.99, 
     hjust = 0, vjust = 1)
-  dfun <- attributes(pars$ps$decay$fun)$name
+  dfun <- pars$ps$decay$fun
   if(!is.null(dfun)){
     if(dfun == "weibullDecay"){
       dfun <- "Weibull decay"

@@ -118,8 +118,8 @@ attributes(linearDecay)$name <- "linearDecay"
 signalDecay <- function(method = c("weibull", "exp", "linear"), 
     decay = 0.001, shape = 1.05){
     method <- match.arg(method)
-    .validate.args("singleNumber", "decay", decay)
-    .validate.args("singleNumber", "shape", shape)
+    .validate.ps.args("singleNumber", "decay", decay)
+    .validate.ps.args("singleNumber", "shape", shape)
     if(decay < 0 || decay > 1){
         stop("'decay' must be in (0,1)", call. = FALSE)
     }
@@ -287,9 +287,9 @@ attributes(signalAggregation)$name <- "signalAggregation"
 polarDecay <- function(method = c("power", "gaussian", "logistic"), 
     s = 0.5, k = 10, m = 0.5) {
     
-    .validate.args("singleNumber", "s", s)
-    .validate.args("singleNumber", "k", k)
-    .validate.args("singleNumber", "m", m)
+    .validate.ps.args("singleNumber", "s", s)
+    .validate.ps.args("singleNumber", "k", k)
+    .validate.ps.args("singleNumber", "m", m)
     method <- match.arg(method)
     
     if(s < 0 || s>1)stop("'s' must be in [0,1]", call. = FALSE)
