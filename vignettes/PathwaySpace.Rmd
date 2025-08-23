@@ -309,10 +309,11 @@ knitr::include_graphics("figures/fig8.png")
 
 Note that the original signal vector was rescale to `[-1, +1]`. If the signal vector is `>=0`, then it will be rescaled to `[0, 1]`; if the signal vector is `<=0`, it will be rescaled to `[-1, 0]`; and if the signal vector is in `(-Inf, +Inf)`, then it will be rescaled to `[-1, +1]`. To override this signal processing, simply set the `rescale` argument to `FALSE` in the projection functions.
 
-# Other vignettes
 
-## Visualizing gene sets
-https://sysbiolab.github.io/PathwaySpace/visualizing-gene-sets.html
+# Other examples
+
+[Visualizing large graphs](https://sysbiolab.github.io/PathwaySpace/visualizing-large-graphs.html){target="_blank" rel="noopener"}
+
 
 # Citation
 
@@ -322,6 +323,7 @@ If you use *PathwaySpace*, please cite:
 
 * Ellrott et al. Classification of non-TCGA cancer samples to TCGA molecular subtypes using compact feature sets. *Cancer Cell* 43(2):195-212.e11, 2025. https://doi.org/10.1016/j.ccell.2024.12.002
 
+
 # Other useful links
 
 * Castro MA, Wang X, Fletcher MN, Meyer KB, Markowetz F (2012). "RedeR: R/Bioconductor package for representing modular structures, nested networks and multiple levels of hierarchical associations." *Genome Biology*, 13(4), R29. 
@@ -330,6 +332,7 @@ https://bioconductor.org/packages/RedeR/
 * Cardoso MA, Rizzardi LEA, Kume LW, Groeneveld C, Trefflich S, Morais DAA, Dalmolin RJS, Ponder BAJ, Meyer KB, Castro MAA. "TreeAndLeaf: an R/Bioconductor package for graphs and trees with focus on the leaves." *Bioinformatics*, 38(5):1463-1464, 2022. https://bioconductor.org/packages/TreeAndLeaf/
 
 * Csardi G and Nepusz T. "The Igraph Software Package for Complex Network Research." *InterJournal*, ComplexSystems:1695, 2006. https://igraph.org
+
 
 # Session information
 ```{r label='Session information', eval=TRUE, echo=FALSE}
