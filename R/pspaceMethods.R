@@ -763,7 +763,7 @@ setReplaceMethod(
   }
   not_used <- lapply(decayFunction, .check_decay_args, nodes=ps@nodes)
   if(.all_equal_fun(decayFunction)){
-    dfun <- attributes(decayFunction)$name
+    dfun <- attributes(decayFunction[[1]])$name
     dfun <- ifelse(.is_singleString(dfun), dfun, "customized")
     ps@pars$ps$decay$fun <- dfun
     ps@pars$ps$decay$info <- "global-defined-decay"
