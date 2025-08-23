@@ -46,20 +46,18 @@ remotes::install_github("sysbiolab/RGraphSpace", build_vignettes=TRUE)
 remotes::install_github("sysbiolab/PathwaySpace", build_vignettes=TRUE)
 ```
 
-### Examples
-
-Follow the *PathwaySpace* vignette and try to make some *brain plots*!
+### Vignette
 
 ```r
 library(PathwaySpace)
 vignette("PathwaySpace")
 ```
 
-### Vignettes
+### Tutorials
 
-[Introduction](https://sysbiolab.github.io/PathwaySpace/){target="_blank"}
+[Introduction](https://sysbiolab.github.io/PathwaySpace/)
 
-[Visualizing gene sets](https://sysbiolab.github.io/PathwaySpace/visualizing-gene-sets.html){target="_blank"}
+[Visualizing gene sets](https://sysbiolab.github.io/PathwaySpace/visualizing-gene-sets.html)
 
 ### Citation
 
