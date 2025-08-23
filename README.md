@@ -57,11 +57,10 @@ vignette("PathwaySpace")
 
 ### Vignettes
 
-##### Introduction
-https://sysbiolab.github.io/PathwaySpace/
+[Introduction](https://sysbiolab.github.io/PathwaySpace/){:target="_blank" rel="noopener"}
 
-##### Visualizing gene sets
-https://sysbiolab.github.io/PathwaySpace/visualizing-gene-sets.html
+[Visualizing gene sets](https://sysbiolab.github.io/PathwaySpace/visualizing-gene-sets.html){:target="_blank" rel="noopener"}
+
 
 ### Citation
 
