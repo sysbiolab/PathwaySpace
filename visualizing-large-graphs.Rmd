@@ -1,0 +1,195 @@
+---
+title: "Visualizing large graphs in *PathwaySpace*."
+author: "TCGA Analysis Network"
+date: "`r Sys.Date()`"
+bibliography: bibliography.bib
+output: 
+  html_document:
+    theme: cerulean
+    self_contained: yes
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    css: custom.css
+vignette: >
+  %\VignetteIndexEntry{"Gene sets in PathwaySpace"}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Overview
+
+In order to enhance clarity and make it less likely for viewers to miss important details of large graphs, in this section we introduce visual elements to large *PathwaySpace* images. We will use an *igraph* object with `n = 12990` vertices to create a large *PathwaySpace* object, upon which we will project binary signals from a relatively small number of vertices. This example will emphasize clusters of vertices forming *summits*, but it might also come at the cost of reduced clarity in displaying the graph's overall structure, particularly in regions far from the summit areas. We will outline graph silhouettes as decoration elements in the *PathwaySpace* image, emphasizing clusters and maintaining the visibility of the graph structure. The examples in this section are adapted from @Ellrott2025 and @Tercan2025.
+
+```{r Load packages - case study, eval=TRUE, message=FALSE}
+#--- Load required packages for this section
+library(PathwaySpace)
+library(RGraphSpace)
+library(igraph)
+library(ggplot2)
+```
+
+## Loading a large graph
+
+Next, we will load an *igraph* object with `n = 12990` vertices, containing gene interaction data available from the *Pathway Commons* database (version 12) [@Rodchenkov2019].
+
+```{r PathwaySpace decoration - 1, eval=TRUE, message=FALSE, results='hide'}
+# Load a large igraph object
+data("PCv12_pruned_igraph", package = "PathwaySpace")
+
+# Check number of vertices
+length(PCv12_pruned_igraph)
+# [1] 12990
+
+# Check vertex names
+head(V(PCv12_pruned_igraph)$name)
+# [1] "A1BG" "AKT1" "CRISP3" "GRB2" "PIK3CA" "PIK3R1"
+
+# Get top-connected nodes for visualization
+top10hubs <- igraph::degree(PCv12_pruned_igraph)
+top10hubs <- names(sort(top10hubs, decreasing = TRUE)[1:10])
+head(top10hubs)
+# [1] "GNB1" "TRIM28" "RPS27A" "CTNNB1" "TP53" "ACTB"
+```
+
+```{r PathwaySpace decoration - 2, eval=TRUE, message=FALSE}
+## Check graph validity
+g_space_PCv12 <- GraphSpace(PCv12_pruned_igraph, mar = 0.1)
+```
+
+```{r PathwaySpace decoration - 3, eval=FALSE, message=FALSE}
+## Visualize the graph layout labeled with 'top10hubs' nodes
+plotGraphSpace(g_space_PCv12, node.labels = top10hubs, label.color = "blue", theme = "th3")
+```
+
+```{r fig1.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+# gg <- plotGraphSpace(g_space_PCv12, node.labels = top10hubs,
+# label.color = "blue",  theme = "th3", label.size = 2)
+# ggsave(filename = "./figures/fig1.png", height=3.5, width=4.5,
+#   units="in", device="png", dpi=300, plot=gg)
+```
+
+```{r fig1, echo=FALSE, out.width = '80%', purl=FALSE}
+knitr::include_graphics("figures/fig1.png")
+```
+
+We will also load gene sets from the *MSigDB* collection [@Liberzon2015], which are subsequently used to project a binary signal in the *PathwaySpace* image.
+
+```{r PathwaySpace decoration - 4, eval=FALSE, message=FALSE}
+# Load a list with Hallmark gene sets
+data("Hallmarks_v2023_1_Hs_symbols", package = "PathwaySpace")
+
+# There are 50 gene sets in "hallmarks"
+length(hallmarks)
+# [1] 50
+
+# We will use the 'HALLMARK_P53_PATHWAY' (n=200 genes) for demonstration
+length(hallmarks$HALLMARK_P53_PATHWAY)
+# [1] 200
+```
+
+
+## Running *PathwaySpace*
+
+We now follow the *PathwaySpace* pipeline as explained in the previous sections, that is, using the `buildPathwaySpace()` constructor to initialize a new *PathwaySpace* object with the *Pathway Commons* interactions.
+
+```{r PathwaySpace decoration - 5, eval=FALSE, message=FALSE}
+# Run the PathwaySpace constructor
+p_space_PCv12 <- buildPathwaySpace(gs=g_space_PCv12, nrc=500)
+# Note: 'nrc' sets the number of rows and columns of the
+# image space, which will affect the image resolution (in pixels)
+```
+
+...and now we mark the *HALLMARK_P53_PATHWAY* genes in the *PathwaySpace* object.
+
+```{r PathwaySpace decoration - 6, eval=FALSE, message=FALSE}
+# Intersect Hallmark genes with the PathwaySpace
+hallmarks <- lapply(hallmarks, intersect, y = names(p_space_PCv12) )
+
+# After intersection, the 'HALLMARK_P53_PATHWAY' dropped to n=173 genes
+length(hallmarks$HALLMARK_P53_PATHWAY)
+# [1] 173
+
+# Set a binary signal (1s) to 'HALLMARK_P53_PATHWAY' genes
+vertexSignal(p_space_PCv12) <- 0
+vertexSignal(p_space_PCv12)[ hallmarks$HALLMARK_P53_PATHWAY ] <- 1
+```
+
+...and run the `circularProjection()` function.
+
+```{r PathwaySpace decoration - 7, eval=FALSE, message=FALSE}
+# Run signal projection
+p_space_PCv12 <- circularProjection(p_space_PCv12)
+```
+
+## Mapping silhouettes
+
+Next, we will decorate the *PathwaySpace* image with graph's silhouettes.
+
+```{r PathwaySpace decoration - 8, eval=FALSE, message=FALSE}
+# Add silhouettes
+p_space_PCv12 <- silhouetteMapping(p_space_PCv12)
+plotPathwaySpace(p_space_PCv12, title="HALLMARK_P53_PATHWAY", marks = top10hubs, mark.size = 2, theme = "th3")
+```
+
+```{r fig2.png, eval=FALSE, message=FALSE, echo=FALSE, purl=FALSE}
+# gg <- plotPathwaySpace(p_space_PCv12, theme = "th3", 
+#   title="HALLMARK_P53_PATHWAY", marks = top10hubs, 
+#   mark.size = 2, font.size = 0.8)
+# ggsave(filename = "./figures/fig2.png", plot=gg, height=4,
+#   width=5, units="in", device="png", dpi=300)
+```
+
+```{r fig2, echo=FALSE, out.width = '90%', purl=FALSE}
+knitr::include_graphics("figures/fig2.png")
+```
+
+# Mapping summits
+
+The summits represent regions within the graph that exhibit signal values that are notably higher than the baseline level. These regions may be of interest for downstream analyses. One potential downstream analysis is to determine which vertices projected the original input signal. This could provide insights into the communities within these summit regions. One may also wish to explore other vertices within the summits, by querying associations with the original input gene set. In order to extract vertices within summits, next we use the `summitMapping()` function, which also decorate summits with contour lines.
+
+```{r Mapping summits - 1, eval=FALSE, message=FALSE}
+# Mapping summits
+p_space_PCv12 <- summitMapping(p_space_PCv12, minsize = 50)
+plotPathwaySpace(p_space_PCv12, title="HALLMARK_P53_PATHWAY", theme = "th3")
+```
+
+```{r fig3.png, eval=FALSE, message=FALSE, echo=FALSE, purl=FALSE}
+# gg <- plotPathwaySpace(p_space_PCv12, title="HALLMARK_P53_PATHWAY", 
+#   theme = "th3", font.size = 0.8,)
+# ggsave(filename = "./figures/fig3.png", plot=gg, height=4,
+#   width=5, units="in", device="png", dpi=300)
+```
+
+```{r fig3, echo=FALSE, out.width = '90%', purl=FALSE}
+knitr::include_graphics("figures/fig3.png")
+```
+
+```{r Mapping summits - 2, eval=FALSE, message=FALSE}
+# Extracting summits from a PathwaySpace
+summits <- getPathwaySpace(p_space_PCv12, "summits")
+class(summits)
+# [1] "list"
+```
+
+
+# Citation
+
+If you use *PathwaySpace*, please cite:
+
+* Tercan & Apolonio et al. Protocol for assessing distances in pathway space for classifier feature sets from machine learning methods. *STAR Protocols* 6(2):103681, 2025. https://doi.org/10.1016/j.xpro.2025.103681
+
+* Ellrott et al. Classification of non-TCGA cancer samples to TCGA molecular subtypes using compact feature sets. *Cancer Cell* 43(2):195-212.e11, 2025. https://doi.org/10.1016/j.ccell.2024.12.002
+
+
+# Session information
+```{r label='Session information', eval=TRUE, echo=FALSE}
+sessionInfo()
+```
+
+# References
+
