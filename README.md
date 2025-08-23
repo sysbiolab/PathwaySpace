@@ -55,6 +55,14 @@ library(PathwaySpace)
 vignette("PathwaySpace")
 ```
 
+### Vignettes
+
+##### Introduction
+https://sysbiolab.github.io/PathwaySpace/
+
+##### Visualizing gene sets
+https://sysbiolab.github.io/PathwaySpace/visualizing-gene-sets.html
+
 ### Citation
 
 If you use *PathwaySpace*, please cite:
