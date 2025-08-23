@@ -12,7 +12,7 @@ the vertices. The package processes the signal using a convolution algorithm
 that considers the graph's topology to project the signal on a 2D space.
 **Figure 1** illustrates the convolution operation problem addressed by 
 the *PathwaySpace* package. For detailed documentation and usage examples, 
-see the package's vignettes and workflows.
+see the package's vignette and workflows.
 
 *PathwaySpace* could have various applications, such as visualizing network 
 data in a graphical format that highlights the relationships and signal 
