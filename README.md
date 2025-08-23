@@ -1,6 +1,5 @@
 ### *PathwaySpace*: Spatial projection of network signals along geodesic paths
   <!-- badges: start -->
-  <base target="_blank">
   [![](https://www.r-pkg.org/badges/version/PathwaySpace)](https://cran.r-project.org/package=PathwaySpace)
   [![](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
   [![](https://cranlogs.r-pkg.org/badges/PathwaySpace)](https://cranlogs.r-pkg.org/badges/PathwaySpace)
@@ -62,6 +61,7 @@ vignette("PathwaySpace")
 
 [Visualizing gene sets](https://sysbiolab.github.io/PathwaySpace/visualizing-gene-sets.html){:target="_blank" rel="noopener"}
 
+<a href="https://sysbiolab.github.io/PathwaySpace/" target="_blank">Link para Exemplo</a>
 
 ### Citation
 
