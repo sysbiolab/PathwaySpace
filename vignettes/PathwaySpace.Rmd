@@ -313,9 +313,8 @@ Note that the original signal vector was rescale to `[-1, +1]`. If the signal ve
 # Other vignettes
 
 ```{r, eval=FALSE}
-
+# Visualizing gene sets in PathwaySpace
 vignette("visualizing-gene-sets", package = "PathwaySpace")
-
 ```
 
 
