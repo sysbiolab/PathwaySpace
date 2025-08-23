@@ -3,7 +3,6 @@
 .Ruserdata
 renv
 .Rprofile
-/doc/
 /Meta/
 .DS_Store
 doc
