@@ -57,7 +57,7 @@ vignette("PathwaySpace")
 
 * [Introduction](https://sysbiolab.github.io/PathwaySpace/)
 
-* [Visualizing large graphs](https://sysbiolab.github.io/PathwaySpace/visualizing-large-graphs.html)
+* [Visualizing feature sets](https://sysbiolab.github.io/PathwaySpace/visualizing-feature-sets.html)
 
 ### Citation
 

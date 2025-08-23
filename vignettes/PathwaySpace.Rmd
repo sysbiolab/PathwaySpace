@@ -312,7 +312,7 @@ Note that the original signal vector was rescale to `[-1, +1]`. If the signal ve
 
 # Other examples
 
-[Visualizing large graphs](https://sysbiolab.github.io/PathwaySpace/visualizing-large-graphs.html){target="_blank" rel="noopener"}
+[Visualizing feature sets](https://sysbiolab.github.io/PathwaySpace/visualizing-feature-sets.html){target="_blank" rel="noopener"}
 
 
 # Citation
