@@ -1,5 +1,6 @@
 ### *PathwaySpace*: Spatial projection of network signals along geodesic paths
   <!-- badges: start -->
+  <base target="_blank">
   [![](https://www.r-pkg.org/badges/version/PathwaySpace)](https://cran.r-project.org/package=PathwaySpace)
   [![](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
   [![](https://cranlogs.r-pkg.org/badges/PathwaySpace)](https://cranlogs.r-pkg.org/badges/PathwaySpace)
