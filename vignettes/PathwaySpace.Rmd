@@ -177,14 +177,14 @@ p_space1 <- circularProjection(p_space1, k = 2, pdist = 0.2,
 plotPathwaySpace(p_space1, marks = "n1", theme = "th2")
 ```
 
-```{r fig5.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+```{r fig4.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
 # gg <- plotPathwaySpace(p_space1, marks = "n1", theme = "th2")
-# ggsave(filename = "./figures/fig5.png", height=3.5, width=5,
+# ggsave(filename = "./figures/fig4.png", height=3.5, width=5,
 #   units="in", device="png", dpi=350, plot=gg)
 ```
 
-```{r fig5, echo=FALSE, out.width = '75%', purl=FALSE}
-knitr::include_graphics("figures/fig5.png")
+```{r fig4, echo=FALSE, out.width = '75%', purl=FALSE}
+knitr::include_graphics("figures/fig4.png")
 ```
 
 In this case, we set `shape = 2`; this parameter allows a projection to take a variety of shapes. When `shape = 1` the projection follows an exponential decay, and when `shape > 1` the projection is first convex, then concave with an inflection point along the decay path.
@@ -205,14 +205,14 @@ g_space2 <- GraphSpace(gtoy2, mar = 0.2)
 plotGraphSpace(g_space2, add.labels = TRUE)
 ```
 
-```{r fig6.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+```{r fig5.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
 # gg <- plotGraphSpace(g_space2, add.labels = TRUE)
-# ggsave(filename = "./figures/fig6.png", height=4, width=5,
+# ggsave(filename = "./figures/fig5.png", height=4, width=5,
 #   units="in", device="png", dpi=250, plot=gg)
 ```
 
-```{r fig6, echo=FALSE, out.width = '70%', purl=FALSE}
-knitr::include_graphics("figures/fig6.png")
+```{r fig5, echo=FALSE, out.width = '70%', purl=FALSE}
+knitr::include_graphics("figures/fig5.png")
 ```
 
 ```{r Polar projection - 3, eval=TRUE, message=FALSE}
@@ -243,14 +243,14 @@ p_space2 <- polarProjection(p_space2, beta = 10, pdist = 1)
 plotPathwaySpace(p_space2, theme = "th2", add.marks = TRUE)
 ```
 
-```{r fig7.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+```{r fig6.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
 # gg <- plotPathwaySpace(p_space2, theme = "th2", add.marks = TRUE)
-# ggsave(filename = "./figures/fig7.png", height=3.5, width=5,
+# ggsave(filename = "./figures/fig6.png", height=3.5, width=5,
 #   units="in", device="png", dpi=350, plot=gg)
 ```
 
-```{r fig7, echo=FALSE, out.width = '75%', purl=FALSE}
-knitr::include_graphics("figures/fig7.png")
+```{r fig6, echo=FALSE, out.width = '75%', purl=FALSE}
+knitr::include_graphics("figures/fig6.png")
 ```
 
 Note that this projection distributes signals on the edges regardless of direction. To incorporate edge orientation, we set `directional = TRUE`, which channels the projection along the paths:
@@ -263,14 +263,14 @@ p_space2 <- polarProjection(p_space2, beta = 10, pdist = 1, directional = TRUE)
 plotPathwaySpace(p_space2, theme = "th2", marks = c("n1","n3","n4","n5"))
 ```
 
-```{r fig8.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+```{r fig7.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
 # gg <- plotPathwaySpace(p_space2, theme = "th2", marks = c("n1","n3","n4","n5"))
-# ggsave(filename = "./figures/fig8.png", height=3.5, width=5,
+# ggsave(filename = "./figures/fig7.png", height=3.5, width=5,
 #   units="in", device="png", dpi=350, plot=gg)
 ```
 
-```{r fig8, echo=FALSE, out.width = '75%', purl=FALSE}
-knitr::include_graphics("figures/fig8.png")
+```{r fig7, echo=FALSE, out.width = '75%', purl=FALSE}
+knitr::include_graphics("figures/fig7.png")
 ```
 
 This *PathwaySpace* polar projection emphasizes the signal flow along the directional pattern of a directed graph (see the *igraph* plot above). When interpreting, users should note that this approach introduces simplifications. For example, depending on the network topology, the polar projection may not capture some common features of a directed graph, such as cyclic dependencies, feedforward and feedback loops, or other intricate edge interplays.
@@ -296,27 +296,23 @@ p_space1 <- circularProjection(p_space1, k = 2,
 plotPathwaySpace(p_space1, bg.color = "white", font.color = "grey20", add.marks = TRUE, mark.color = "magenta", theme = "th2")
 ```
 
-```{r fig9.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+```{r fig8.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
 # gg <- plotPathwaySpace(p_space1, bg.color = "white", font.color = "grey20",
 #   add.marks = TRUE, mark.color = "magenta", theme = "th2")
-# ggsave(filename = "./figures/fig9.png", height=3.5, width=5,
+# ggsave(filename = "./figures/fig8.png", height=3.5, width=5,
 #   units="in", device="png", dpi=350, plot=gg)
 ```
 
-```{r fig9, echo=FALSE, out.width = '75%', purl=FALSE}
-knitr::include_graphics("figures/fig9.png")
+```{r fig8, echo=FALSE, out.width = '75%', purl=FALSE}
+knitr::include_graphics("figures/fig8.png")
 ```
 
 Note that the original signal vector was rescale to `[-1, +1]`. If the signal vector is `>=0`, then it will be rescaled to `[0, 1]`; if the signal vector is `<=0`, it will be rescaled to `[-1, 0]`; and if the signal vector is in `(-Inf, +Inf)`, then it will be rescaled to `[-1, +1]`. To override this signal processing, simply set the `rescale` argument to `FALSE` in the projection functions.
 
-
 # Other vignettes
 
-```{r, eval=FALSE}
-# Visualizing gene sets in PathwaySpace
-vignette("visualizing-gene-sets", package = "PathwaySpace")
-```
-
+## Visualizing gene sets
+https://sysbiolab.github.io/PathwaySpace/visualizing-gene-sets.html
 
 # Citation
 

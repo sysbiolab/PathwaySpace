@@ -4,6 +4,8 @@
 renv
 .Rprofile
 /Meta/
+/doc/
+doc
 .DS_Store
 .Rproj.user
 PathwaySpace.Rcheck
