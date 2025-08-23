@@ -13,7 +13,7 @@
 
 <meta name="date" content="2025-08-23" />
 
-<title>Visualizing large graphs in PathwaySpace.</title>
+<title>Visualizing large graphs and feature sets in PathwaySpace.</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1630,8 +1630,8 @@ border-radius: 0px;
 
 
 
-<h1 class="title toc-ignore">Visualizing large graphs in
-<em>PathwaySpace</em>.</h1>
+<h1 class="title toc-ignore">Visualizing large graphs and feature sets
+in <em>PathwaySpace</em>.</h1>
 <h4 class="author">TCGA Analysis Network</h4>
 <h4 class="date">2025-08-23</h4>
 
@@ -1643,17 +1643,13 @@ border-radius: 0px;
 <p>In order to enhance clarity and make it less likely for viewers to
 miss important details of large graphs, in this section we introduce
 visual elements to large <em>PathwaySpace</em> images. We will use an
-<em>igraph</em> object with <code>n = 12990</code> vertices to create a
-large <em>PathwaySpace</em> object, upon which we will project binary
-signals from a relatively small number of vertices. This example will
-emphasize clusters of vertices forming <em>summits</em>, but it might
-also come at the cost of reduced clarity in displaying the graph’s
-overall structure, particularly in regions far from the summit areas. We
-will outline graph silhouettes as decoration elements in the
-<em>PathwaySpace</em> image, emphasizing clusters and maintaining the
-visibility of the graph structure. The examples in this section are
-adapted from <span class="citation">Ellrott et al. (2025)</span> and
-<span class="citation">Tercan et al. (2025)</span>.</p>
+<em>igraph</em> object with <code>n = 12990</code> vertices, upon which
+we will project binary signals representing feature sets from a
+relatively small number of vertices. The projection will emphasize
+clusters of vertices forming <em>summits</em>. We will add silhouette
+outlines as decorative elements to preserve the visibility of the
+overall graph structure. The examples in this section are adapted from
+<span class="citation">Ellrott et al. (2025)</span> and <span class="citation">Tercan et al. (2025)</span>.</p>
 <pre class="r"><code>#--- Load required packages for this section
 library(PathwaySpace)
 library(RGraphSpace)
