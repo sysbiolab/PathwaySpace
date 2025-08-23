@@ -111,22 +111,6 @@
       ],
       "Hash": "45f0398006e83a5b10b72a90663d8d8c"
     },
-    "RGraphSpace": {
-      "Package": "RGraphSpace",
-      "Version": "1.0.5",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "R",
-        "ggplot2",
-        "grDevices",
-        "grid",
-        "igraph",
-        "methods",
-        "scales"
-      ],
-      "Hash": "e758c3e350b227094c3541c1dfb6729f"
-    },
     "Rcpp": {
       "Package": "Rcpp",
       "Version": "1.0.12",
