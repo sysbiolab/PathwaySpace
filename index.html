@@ -1643,12 +1643,11 @@ way of representing network signals.
 <div id="highlights" class="section level1">
 <h1>Highlights</h1>
 <ul>
-<li>Produces landscape images representing graphs by geodesic
-paths.</li>
+<li>Produces landscape images representing graphs by geodesic paths</li>
 <li>Projects signals using a decay function to model signal
-attenuation.</li>
+attenuation</li>
 <li>Applies a convolution algorithm to combine signals from neighboring
-nodes.</li>
+vertices</li>
 </ul>
 </div>
 <div id="overview" class="section level1">
@@ -1656,25 +1655,24 @@ nodes.</li>
 <p>For a given <em>igraph</em> object containing vertices, edges, and a
 signal associated with the vertices, <em>PathwaySpace</em> performs a
 convolution operation, which involves a weighted combination of
-neighboring signals on a 2D graph space. <strong>Figure 1</strong>
-illustrates the convolution operation problem. Each vertex’s signal is
-positioned on a grid at specific <code>x</code> and <code>y</code>
-coordinates, represented by cones (for available signals) or question
-marks (for null or missing values). Our model considers the
-vertex-signal positions as source points (or transmitters) and the
-null-signal positions as end points (or receivers). The signal values
-from vertex-signal positions are then projected to the null-signal
-positions according to a decay function, which will control how the
-signal values attenuate as they propagate across the 2D space. For a
-given null-signal position, the k-top signals are used to define the
-contributing vertices for signal convolution. The convolution operation
-aggregates the signals from these contributing vertices, considering
-their intensities reaching the end points. Users can adjust both the
-aggregation and decay functions; the aggregation function can be any
-arithmetic rule that reduces a numeric vector into a single scalar value
-(<em>e.g.</em>, mean, weighted mean), while available decay functions
-include linear, exponential, and Weibull models
-(<strong>Fig.1B</strong>). Additionally, users can assign
+neighboring signals on a graph. <strong>Figure 1</strong> illustrates
+the convolution operation problem. Each vertex’s signal is positioned on
+a grid at specific <code>x</code> and <code>y</code> coordinates,
+represented by cones (for available signals) or question marks (for null
+or missing values). Our model considers the vertex-signal positions as
+source points (or transmitters) and the null-signal positions as end
+points (or receivers). The signal values from vertex-signal positions
+are then projected to the null-signal positions according to a decay
+function, which will control how the signal values attenuate as they
+propagate across the 2D space. For a given null-signal position, the
+k-top signals are used to define the contributing vertices for signal
+convolution. The convolution operation aggregates the signals from these
+contributing vertices, considering their intensities reaching the end
+points. Users can adjust both the aggregation and decay functions; the
+aggregation function can be any arithmetic rule that reduces a numeric
+vector into a single scalar value (<em>e.g.</em>, mean, weighted mean),
+while available decay functions include linear, exponential, and Weibull
+models (<strong>Fig.1B</strong>). Additionally, users can assign
 vertex-specific decay functions to model signal projections for subsets
 of vertices that may exhibit distinct behaviors. The resulting image
 forms geodesic paths in which the signal has been projected from vertex-
