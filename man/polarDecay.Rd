@@ -70,5 +70,5 @@ polar.fun <- polarDecay("power")
 \code{\link{polarProjection}}
 }
 \author{
-Sysbiolab Team, Mauro Castro.
+Sysbiolab Team
 }

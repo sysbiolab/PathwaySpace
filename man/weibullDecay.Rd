@@ -38,5 +38,5 @@ plot(x, y)
 \code{\link{expDecay}}, \code{\link{linearDecay}}
 }
 \author{
-Sysbiolab Team, Mauro Castro.
+Sysbiolab Team
 }

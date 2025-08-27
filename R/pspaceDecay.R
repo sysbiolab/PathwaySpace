@@ -15,7 +15,7 @@
 #' the Weibull decay follows an exponential decay. When \code{shape>1}
 #' the function is first convex, then concave with an inflection point.
 #' @return A numeric vector; if missing 'x', it will return decay function.
-#' @author Sysbiolab Team, Mauro Castro.
+#' @author Sysbiolab Team
 #' @seealso \code{\link{expDecay}}, \code{\link{linearDecay}}
 #' @examples
 #' x <- seq(0, 2, 0.01)
@@ -44,9 +44,8 @@ attributes(weibullDecay)$name <- "weibullDecay"
 #' For example, at a specific distance defined by the \code{pdist} parameter 
 #' (see \code{\link{circularProjection}}), the signal intensity will
 #' be the initial signal multiplied by \code{decay}.
-#' the \code{\link{weibullDecay}} function.
 #' @return A numeric vector; if missing 'x', it will return decay function.
-#' @author Sysbiolab Team, Mauro Castro.
+#' @author Sysbiolab Team
 #' @seealso \code{\link{weibullDecay}}, \code{\link{linearDecay}}
 #' @examples
 #' x <- seq(0, 2, 0.01)
@@ -71,8 +70,13 @@ attributes(expDecay)$name <- "expDecay"
 #' @param x A numeric vector of distances (in [0,1]).
 #' @param signal A single numeric value representing a signal.
 #' \code{\link{weibullDecay}} and \code{\link{expDecay}} functions.
+#' @param decay A decay factor (in [0,1]). This term indicates how much the
+#' \code{signal} decreases as a function of distance in pathway space. 
+#' For example, at a specific distance defined by the \code{pdist} parameter 
+#' (see \code{\link{circularProjection}}), the signal intensity will
+#' be the initial signal multiplied by \code{decay}.
 #' @return A numeric vector; if missing 'x', it will return decay function.
-#' @author Sysbiolab Team, Mauro Castro.
+#' @author Sysbiolab Team
 #' @seealso \code{\link{weibullDecay}}, \code{\link{expDecay}}
 #' @examples
 #' x <- seq(0, 2, 0.01)
@@ -82,8 +86,8 @@ attributes(expDecay)$name <- "expDecay"
 #' @aliases linearDecay
 #' @export
 #'
-linearDecay <- function(x, signal = 1) {
-    y <- signal * (1 - x)
+linearDecay <- function(x, signal = 1, decay = 0.001) {
+    y <- signal * (1 - (1 - decay) * x)
     y[(y * sign(signal)) < 0] <- 0
     return(y)
 }
@@ -107,7 +111,7 @@ attributes(linearDecay)$name <- "linearDecay"
 #' @param shape A parameter (>=1) passed to the \code{\link{weibullDecay}} 
 #' function.
 #' @return Returns a function of the form: \code{function(x, signal) { ... }}
-#' @author Sysbiolab Team, Mauro Castro.
+#' @author Sysbiolab Team
 #' @seealso \code{\link{circularProjection}} and \code{\link{polarProjection}}
 #' @examples
 #' decay.fun <- signalDecay()
@@ -151,17 +155,15 @@ signalDecay <- function(method = c("weibull", "exp", "linear"),
         attributes(f)$name <- "expDecay"
         return(f)
     } else if(method=="linear"){
-        if(!missing(decay)){
-            warning("'decay' ignored unless method is 'weibull' or 'exp'.")
-        }
         if(!missing(shape)){
             warning("'shape' ignored unless method is 'weibull'.")
         }
         f <- function(x, signal){
-            y <- signal * (1 - x)
+            y <- signal * (1 - (1 - decay) * x)
             y[(y * sign(signal)) < 0] <- 0
             return(y)
         }
+        body(f) <- do.call("substitute", list(body(f), list(decay = decay)))
         attributes(f)$name <- "linearDecay"
         return(f)
     }
@@ -179,7 +181,7 @@ signalDecay <- function(method = c("weibull", "exp", "linear"),
 #' signal aggregation, returning either a customized \code{\link{mean}} or 
 #' \code{\link{weighted.mean}} function.
 #' @return Returns a function of the form: \code{function(x) { ... }}
-#' @author Sysbiolab Team, Mauro Castro.
+#' @author Sysbiolab Team
 #' @seealso \code{\link{circularProjection}}, \code{\link{polarProjection}}, 
 #' \code{\link{weighted.mean}}
 #' @examples
@@ -246,7 +248,7 @@ attributes(signalAggregation)$name <- "signalAggregation"
 #' the logistic function.
 #' @return Returns a function of the form: \code{function(x, beta) { ... }}, 
 #' that applies the specified shape-based transformation.
-#' @author Sysbiolab Team, Mauro Castro.
+#' @author Sysbiolab Team
 #' @seealso \code{\link{polarProjection}}
 #' @details 
 #' The polar transformation controls how much the projected signal decays as 

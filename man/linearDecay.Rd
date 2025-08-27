@@ -4,13 +4,19 @@
 \alias{linearDecay}
 \title{A simple linear decay function}
 \usage{
-linearDecay(x, signal = 1)
+linearDecay(x, signal = 1, decay = 0.001)
 }
 \arguments{
 \item{x}{A numeric vector of distances (in [0,1]).}
 
 \item{signal}{A single numeric value representing a signal.
 \code{\link{weibullDecay}} and \code{\link{expDecay}} functions.}
+
+\item{decay}{A decay factor (in [0,1]). This term indicates how much the
+\code{signal} decreases as a function of distance in pathway space. 
+For example, at a specific distance defined by the \code{pdist} parameter 
+(see \code{\link{circularProjection}}), the signal intensity will
+be the initial signal multiplied by \code{decay}.}
 }
 \value{
 A numeric vector; if missing 'x', it will return decay function.
@@ -29,5 +35,5 @@ plot(x, y)
 \code{\link{weibullDecay}}, \code{\link{expDecay}}
 }
 \author{
-Sysbiolab Team, Mauro Castro.
+Sysbiolab Team
 }

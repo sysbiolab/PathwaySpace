@@ -38,5 +38,5 @@ decay.fun <- signalDecay()
 \code{\link{circularProjection}} and \code{\link{polarProjection}}
 }
 \author{
-Sysbiolab Team, Mauro Castro.
+Sysbiolab Team
 }

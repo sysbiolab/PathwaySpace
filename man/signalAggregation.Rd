@@ -29,5 +29,5 @@ aggregate.fun <- signalAggregation()
 \code{\link{weighted.mean}}
 }
 \author{
-Sysbiolab Team, Mauro Castro.
+Sysbiolab Team
 }

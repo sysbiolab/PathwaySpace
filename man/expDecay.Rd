@@ -15,8 +15,7 @@ expDecay(x, signal = 1, decay = 0.001)
 \code{signal} decreases as a function of distance in pathway space. 
 For example, at a specific distance defined by the \code{pdist} parameter 
 (see \code{\link{circularProjection}}), the signal intensity will
-be the initial signal multiplied by \code{decay}.
-the \code{\link{weibullDecay}} function.}
+be the initial signal multiplied by \code{decay}.}
 }
 \value{
 A numeric vector; if missing 'x', it will return decay function.
@@ -35,5 +34,5 @@ plot(x, y)
 \code{\link{weibullDecay}}, \code{\link{linearDecay}}
 }
 \author{
-Sysbiolab Team, Mauro Castro.
+Sysbiolab Team
 }
