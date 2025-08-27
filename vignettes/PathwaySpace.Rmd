@@ -273,7 +273,7 @@ plotPathwaySpace(p_space2, theme = "th2", marks = c("n1","n3","n4","n5"))
 knitr::include_graphics("figures/fig7.png")
 ```
 
-This *PathwaySpace* polar projection emphasizes the signal flow along the directional pattern of a directed graph (see the *igraph* plot above). When interpreting, users should note that this approach introduces simplifications. For example, depending on the network topology, the polar projection may not capture some common features of a directed graph, such as cyclic dependencies, feedforward and feedback loops, or other intricate edge interplays.
+This *PathwaySpace* polar projection emphasizes the signal flow along the directional pattern of a directed graph (see the *igraph* plot above). When interpreting, users should note that this approach introduces simplifications; for example, depending on the network topology, the polar projection may fail to capture complex features of directed graphs, such as cyclic dependencies, feedforward and feedback loops, or other intricate interactions.
 
 ## Signal types
 

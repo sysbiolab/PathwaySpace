@@ -160,8 +160,8 @@
 
 #-------------------------------------------------------------------------------
 #--- get vertex-to-point distances for circular and polar projections
-.get_near_points <- function(lpts, gxy, nodes, nrc, pdist){
-  eradius <- .estimate_radius(nodes, pdist)
+.get_near_points <- function(lpts, gxy, nodes, nrc, psearch){
+  eradius <- .estimate_radius(nodes, psearch)
   eradius <- nrc * eradius
   nnpg <- list(nn = list(), dist = list())
   lpts <- as.data.frame(lpts)
@@ -195,8 +195,8 @@
   }
   return(nnpg)
 }
-.estimate_radius <- function(nodes, pdist, decay_end = 0.01){
-  maxlen <- 1/pdist
+.estimate_radius <- function(nodes, psearch, decay_end = 0.01){
+  maxlen <- 1/psearch
   x <- seq(maxlen, 0, length.out=100)
   fun <- nodes$decayFunction
   signal <- abs(nodes$signal)
@@ -209,8 +209,8 @@
       r <- 0
     } else {
       xs <- vapply(x, function(l){ f(l, s) }, numeric(1))
-      idx <- findInterval(decay_end, xs)
-      r <- ifelse(length(idx)>0, x[idx[1]], x[1])
+      idx <- findInterval(decay_end, xs)[1]
+      r <- ifelse(idx>0, x[idx], x[1])
     }
     return(r)
   }, numeric(1))
@@ -264,10 +264,11 @@
       pars$ps$psearch <- min(1, pars$ps$pdist * 1.1)
     } else {
       # get psearch within edge bounds
-      pars$ps$psearch <- max(edges$edist)/pars$ps$nrc
+      pars$ps$psearch <- (max(edges$edist)/pars$ps$nrc) * pars$ps$pdist
+      pars$ps$psearch <- min(1, pars$ps$psearch * 1.1)
     }
     lpts <- .get_points_in_matrix(pars$ps$nrc)
-    nnpg <- .get_near_points(lpts, gxy, nodes, pars$ps$nrc, pars$ps$pdist)
+    nnpg <- .get_near_points(lpts, gxy, nodes, pars$ps$nrc, pars$ps$psearch)
     nnpg <- .get_angular_dist(nnpg, lpts, gxy, edges, pars)
     nnpg <- .scale_pdist_polar(nnpg, pars)
     
