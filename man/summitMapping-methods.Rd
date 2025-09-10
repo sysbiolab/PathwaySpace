@@ -56,5 +56,5 @@ data("PCv12_pruned_igraph", package = "PathwaySpace")
 \code{\link{circularProjection}}
 }
 \author{
-Mauro Castro and TCGA Network.
+Sysbiolab Team
 }

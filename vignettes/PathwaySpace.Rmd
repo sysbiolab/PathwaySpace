@@ -32,7 +32,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Overview
 
-For a given *igraph* object containing vertices, edges, and a signal associated with the vertices, *PathwaySpace* performs a convolution operation, which involves a weighted combination of neighboring signals on a graph. **Figure 1** illustrates the convolution operation problem. Each vertex's signal is positioned on a grid at specific `x` and `y` coordinates, represented by cones (for available signals) or question marks (for null or missing values). Our model considers the vertex-signal positions as source points (or transmitters) and the null-signal positions as end points (or receivers). The signal values from vertex-signal positions are then projected to the null-signal positions according to a decay function, which will control how the signal values attenuate as they propagate across the 2D space. For a given null-signal position, the k-top signals are used to define the contributing vertices for signal convolution. The convolution operation aggregates the signals from these contributing vertices, considering their intensities reaching the end points. Users can adjust both the aggregation and decay functions; the aggregation function can be any arithmetic rule that reduces a numeric vector into a single scalar value (*e.g.*, mean, weighted mean), while available decay functions include linear, exponential, and Weibull models (**Fig.1B**). Additionally, users can assign vertex-specific decay functions to model signal projections for subsets of vertices that may exhibit distinct behaviors. The resulting image forms geodesic paths in which the signal has been projected from vertex- to null-signal positions, using a density metric to measure the signal intensity along these paths.
+For a given *igraph* object containing vertices, edges, and a signal associated with the vertices, *PathwaySpace* performs a convolution operation, which involves a weighted combination of neighboring signals on a graph. **Figure 1** illustrates the convolution operation problem. Each vertex's signal is positioned on a grid at specific `x` and `y` coordinates, represented by cones (for available signals) or question marks (for null or missing values). Our model considers the vertex-signal positions as source points (or transmitters) and the null-signal positions as end points (or receivers). The signal values from vertex-signal positions are then projected to the null-signal positions according to a decay function, which will control how the signal values attenuate as they propagate across the 2D space. For a given null-signal position, the k-top signals are used to define the contributing vertices for the convolution operation, which will aggregate the signals from these contributing vertices considering their intensities reaching the end points. Users can adjust both the aggregation and decay functions; the aggregation function can be any arithmetic rule that reduces a numeric vector into a single scalar value (*e.g.*, mean, weighted mean), while available decay functions include linear, exponential, and Weibull models (**Fig.1B**). Additionally, users can assign vertex-specific decay functions to model signal projections for subsets of vertices that may exhibit distinct behaviors. The resulting image forms geodesic paths in which the signal has been projected from vertex- to null-signal positions, using a density metric to measure the signal intensity along these paths.
 
 ```{r fig1, echo=FALSE, fig.cap="**Figure 1.** Signal processing addressed by the *PathwaySpace* package. **A**) Graph overlaid on a 2D coordinate system. Each projection cone represents the signal associated with a graph vertex (referred to as *vertex-signal positions*), while question marks indicate positions with no signal information (referred to as *null-signal positions*). **Inset**: Graph layout of the toy example used in the *quick start* section of this vignette. **B**) Illustration of signal projection from two neighboring vertices, simplified to one dimension. **Right**: Signal profiles from aggregation and decay functions.", out.width = '90%', purl=FALSE}
 knitr::include_graphics("figures/fig1.png")
@@ -144,11 +144,11 @@ vertexSignal(p_space1)
 
 ## Circular projection
 
-Following that, we will use the `circularProjection()` function to project the network signals, using the `signalDecay()` function with default settings. We set `k = 1`, defining the contributing vertices for signal convolution. In this case, each *null-signal position* will receive the projection from a single *vertex-signal position* (*i.e.* the highest signal intensity in pathway space reaching that position). We then create a landscape image using the `plotPathwaySpace()` function.
+Following that, we will use the `circularProjection()` function to project the network signals, setting `pdist = 0.4`. This term determines a distance unit for the signal convolution, affecting the extent over which the convolution operation projects the signal. For example, when `pdist = 1`, it will represent the diameter of the inscribed circle within the coordinate space. We also set `k = 1`, which defines the contributing vertices for signal convolution. In this case, each *null-signal position* will receive the projection from a single *vertex-signal position* (*i.e.* the highest signal intensity in pathway space reaching that position). We then create a landscape image using the `plotPathwaySpace()` function.
 
 ```{r Circular projection - 1, eval=FALSE, message=FALSE, out.width="70%"}
 # Run signal projection
-p_space1 <- circularProjection(p_space1, k = 1, pdist = 0.4)
+p_space1 <- circularProjection(p_space1, pdist = 0.4, k = 1)
 
 # Plot a PathwaySpace image
 plotPathwaySpace(p_space1, add.marks = TRUE)
@@ -164,13 +164,11 @@ plotPathwaySpace(p_space1, add.marks = TRUE)
 knitr::include_graphics("figures/fig3.png")
 ```
 
-The `pdist` term determines a distance unit for the signal convolution related to the pathway space. This distance unit will affect the extent over which the convolution operation projects the signal in the pathway space.
-
-Next, we reassess the same *PathwaySpace* object using `k = 2` and adjusting the `shape` of the decay function, which is passed to the `circularProjection()` function via `decay.fun` argument.
+Next, we reassess the same *PathwaySpace* object, using `pdist = 0.2`, `k = 2` and adjusting the `shape` of the decay function, which is passed to the `circularProjection()` function via `decay.fun` argument.
 
 ```{r Circular projection - 3, eval=FALSE, message=FALSE, out.width="70%"}
 # Re-run signal projection, adjusting Weibull's shape
-p_space1 <- circularProjection(p_space1, k = 2, pdist = 0.2, 
+p_space1 <- circularProjection(p_space1, pdist = 0.2, k = 2, 
   decay.fun = signalDecay(shape = 2))
 
 # Plot PathwaySpace
@@ -187,11 +185,11 @@ plotPathwaySpace(p_space1, marks = "n1", theme = "th2")
 knitr::include_graphics("figures/fig4.png")
 ```
 
-In this case, we set `shape = 2`; this parameter allows a projection to take a variety of shapes. When `shape = 1` the projection follows an exponential decay, and when `shape > 1` the projection is first convex, then concave with an inflection point along the decay path.
+The `shape` parameter allows a projection to take a variety of shapes. When `shape = 1` the projection follows an exponential decay, and when `shape > 1` the projection is first convex, then concave with an inflection point along the decay path.
 
 ## Polar projection
 
-In this section we will project the network signal using a polar coordinate system. This representation may be useful for certain types of data, for example, to highlight patterns of signal propagation on directed graphs, especially to explore the orientation aspect of signal flow. To demonstrate this feature we will used the `gtoy2` directed graph, already available in the *RGraphSpace* package.
+In this section we will project the network signal using a polar coordinate system. This representation may be useful for certain types of data, for example, to highlight patterns of signal propagation on directed graphs, especially to explore the orientation aspect of signal flow. To demonstrate this feature we will used the `gtoy2` directed graph, available in the *RGraphSpace* package.
 
 ```{r Polar projection - 1, eval=TRUE, message=FALSE, out.width="100%"}
 # Load a pre-processed directed igraph object
@@ -223,7 +221,7 @@ p_space2 <- buildPathwaySpace(g_space2)
 vertexSignal(p_space2) <- 1
 ```
 
-For fine-grained modeling of signal decay, the `vertexDecay()` accessor allows assigning decay functions at the level of individual vertices. For example, adjusting Weibull's `shape` arguments for node `n6`:
+For fine-grained modeling of signal decay, the `vertexDecay()` accessor allows assigning decay functions at the level of individual vertices. For example, adjusting Weibull's `shape` argument for node `n6`:
 
 ```{r Polar projection - 4, eval=TRUE, message=FALSE}
 # Modify decay function
@@ -233,11 +231,11 @@ vertexDecay(p_space2) <- signalDecay(shape=2)
 vertexDecay(p_space2)[["n6"]] <- signalDecay(shape=3)
 ```
 
-Next, we run signal projection using polar coordinates. The `beta` exponent will control the angular span; for values greater than zero, `beta` will progressively narrow the projection along the edge axis. Also, in the `polarProjection()` function, the `pdist` term will define a distance unit related to edge length, aiming to constrain signal projections within edge bounds. Here we set `pdist = 1` to reach full edge lengths.
+Next, we run the signal projection using polar coordinates. The `beta` exponent will control the angular span; for values greater than zero, `beta` will progressively narrow the projection along the edge axis. Also, in the `polarProjection()` function, the `pdist` term will define a distance unit related to edge length, aiming to constrain signal projections within edge bounds. Here we set `pdist = 1` to reach full edge lengths.
 
 ```{r Polar projection - 5, eval=FALSE, message=FALSE, out.width="70%"}
 # Run signal projection using polar coordinates
-p_space2 <- polarProjection(p_space2, beta = 10, pdist = 1)
+p_space2 <- polarProjection(p_space2, pdist = 1, beta = 10)
 
 # Plot PathwaySpace
 plotPathwaySpace(p_space2, theme = "th2", add.marks = TRUE)
@@ -257,7 +255,7 @@ Note that this projection distributes signals on the edges regardless of directi
 
 ```{r Polar projection - 6, eval=FALSE, message=FALSE, out.width="70%"}
 # Re-run signal projection using 'directional = TRUE'
-p_space2 <- polarProjection(p_space2, beta = 10, pdist = 1, directional = TRUE)
+p_space2 <- polarProjection(p_space2, pdist = 1, beta = 10, directional = TRUE)
 
 # Plot PathwaySpace
 plotPathwaySpace(p_space2, theme = "th2", marks = c("n1","n3","n4","n5"))
@@ -289,8 +287,7 @@ vertexSignal(p_space1)
 #  6  4 -2 -4  3 
 
 # Re-run signal projection
-p_space1 <- circularProjection(p_space1, k = 2,
-  decay.fun = signalDecay(shape = 2))
+p_space1 <- circularProjection(p_space1, decay.fun = signalDecay(shape = 2))
 
 # Plot PathwaySpace
 plotPathwaySpace(p_space1, bg.color = "white", font.color = "grey20", add.marks = TRUE, mark.color = "magenta", theme = "th2")
@@ -307,7 +304,7 @@ plotPathwaySpace(p_space1, bg.color = "white", font.color = "grey20", add.marks 
 knitr::include_graphics("figures/fig8.png")
 ```
 
-Note that the original signal vector was rescale to `[-1, +1]`. If the signal vector is `>=0`, then it will be rescaled to `[0, 1]`; if the signal vector is `<=0`, it will be rescaled to `[-1, 0]`; and if the signal vector is in `(-Inf, +Inf)`, then it will be rescaled to `[-1, +1]`. To override this signal processing, simply set the `rescale` argument to `FALSE` in the projection functions.
+Note that the original signal vector was rescale to `[-1, +1]`. If the signal vector is `>=0`, then it will be rescaled to `[0, 1]`; if the signal vector is `<=0`, it will be rescaled to `[-1, 0]`; and if the signal vector is in `(-Inf, +Inf)`, then it will be rescaled to `[-1, +1]`. To override this signal processing, simply set `rescale = FALSE` in the projection function.
 
 
 # Other examples

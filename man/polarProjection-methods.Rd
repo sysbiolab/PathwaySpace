@@ -8,15 +8,15 @@
 \usage{
 \S4method{polarProjection}{PathwaySpace}(
   ps,
-  k = 2,
   pdist = 0.5,
+  k = 2,
   beta = 10,
-  directional = FALSE,
-  rescale = TRUE,
-  pdist.anchor = c("edge", "frame"),
   decay.fun = signalDecay(),
   aggregate.fun = signalAggregation(),
   polar.fun = polarDecay(),
+  directional = FALSE,
+  edge.norm = TRUE,
+  rescale = TRUE,
   verbose = TRUE,
   theta = deprecated()
 )
@@ -24,17 +24,13 @@
 \arguments{
 \item{ps}{A \linkS4class{PathwaySpace} class object.}
 
-\item{k}{A single positive integer determining the k-top signals in the 
-signal convolution operation.}
-
 \item{pdist}{A term (in \code{[0, 1]}) determining a distance unit for 
 the signal decay function. This distance unit will affect the extent over 
-which the convolution operation projects the signal from source to 
-destination points, normalized by the \code{pdist.anchor} setting.
-When \code{pdist.anchor = "edge"}, \code{pdist} is scaled to match edge 
-lengths, aiming to constrain signal projections within edge bounds.
-When \code{pdist.anchor = "frame"}, \code{pdist} is scaled to the 
-coordinate space.}
+which the convolution operation projects the signal, from source to 
+destination points, normalized by edge length (see \code{edge.norm}).}
+
+\item{k}{A single positive integer determining the k-top signals for the 
+convolution operation.}
 
 \item{beta}{An exponent (in \code{[0, +Inf]}) used in the polar 
 projection functions (see \code{\link{polarDecay}}). It controls the  
@@ -43,26 +39,12 @@ For example, \eqn{beta = 0} yields a circular projection, \eqn{beta = 1}
 produces a cardioid-like shape, and \code{beta > 1} progressively narrows 
 the projection along a reference edge axis.}
 
-\item{directional}{If directional edges are available, this argument can 
-be used to orientate the signal projection on directed graphs.}
-
-\item{rescale}{A single logical value indicating whether to rescale 
-the signal. If the signal \code{>=0}, then it will be rescaled to 
-\code{[0, 1]}; if the signal \code{<=0}, then it will be rescaled to 
-\code{[-1, 0]}; and if the signal in \code{(-Inf, +Inf)}, then it will be 
-rescaled to \code{[-1, 1]}.}
-
-\item{pdist.anchor}{A reference frame for distance normalization. Use 
-\code{"edge"} to scale distances based on edge lengths or \code{"frame"} 
-to scale distances using the full coordinate space. This affects how 
-projected signals are scaled and accumulated. Default is \code{"edge"}.}
-
 \item{decay.fun}{A signal decay function. Available options include 
 'Weibull', 'exponential', and 'linear' (see \code{\link{signalDecay}}).
 Users may also define a custom decay model with at least two arguments, 
 e.g., \code{function(x, signal) \{ ... \}}, which should returns a vector of  
 projected signals of the same length as \code{x}. Additional arguments may  
-include any variable available as graph vertex attribute.}
+include any variable available as a graph vertex attribute.}
 
 \item{aggregate.fun}{A function used to aggregate the projected signals. 
 It must be provided as a unary function, e.g., \code{function(x) { ... }}, 
@@ -71,6 +53,19 @@ Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean'
 (See \code{\link{signalAggregation}}).}
 
 \item{polar.fun}{A polar decay function (see \code{\link{polarDecay}}).}
+
+\item{directional}{If directional edges are available, this argument can 
+be used to orientate the signal projection on directed graphs.}
+
+\item{edge.norm}{Scale distances based on edge lengths 
+(when \code{edge.norm=TRUE}) or based on full coordinate space 
+(when \code{edge.norm=FALSE}).}
+
+\item{rescale}{A single logical value indicating whether to rescale 
+the signal. If the signal \code{>=0}, then it will be rescaled to 
+\code{[0, 1]}; if the signal \code{<=0}, then it will be rescaled to 
+\code{[-1, 0]}; and if the signal in \code{(-Inf, +Inf)}, then it will be 
+rescaled to \code{[-1, 1]}.}
 
 \item{verbose}{A single logical value specifying to display detailed 
 messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
@@ -95,7 +90,8 @@ ps <- buildPathwaySpace(gtoy2, nrc = 100)
 # Set '1s' as vertex signal
 vertexSignal(ps) <- 1
 
-gs_edge_attr(ps, "weight") <- c(-1, 1, 1, 1, 1, 1)
+# Set edge weight
+# gs_edge_attr(ps, "weight") <- c(-1, 1, 1, 1, 1, 1)
 
 # Create a 2D-landscape image
 ps <- polarProjection(ps, pdist=1)
@@ -105,5 +101,5 @@ ps <- polarProjection(ps, pdist=1)
 \code{\link{buildPathwaySpace}}
 }
 \author{
-Sysbiolab Team, Mauro Castro.
+Sysbiolab Team
 }

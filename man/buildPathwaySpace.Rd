@@ -44,6 +44,5 @@ ps <- buildPathwaySpace(gs, nrc = 100)
 \code{\link[igraph]{undirected_graph}}
 }
 \author{
-Victor Apolonio, Vinicius Chagas, Mauro Castro,
-and TCGA Network.
+Sysbiolab Team
 }

@@ -8,8 +8,8 @@
 \usage{
 \S4method{silhouetteMapping}{PathwaySpace}(
   ps,
-  baseline = 0.01,
   pdist = 0.05,
+  baseline = 0.01,
   fill.cavity = TRUE,
   verbose = TRUE
 )
@@ -17,16 +17,16 @@
 \arguments{
 \item{ps}{A \linkS4class{PathwaySpace} class object.}
 
+\item{pdist}{A term (in \code{[0,1]}) determining a distance unit for the
+signal decay function. This distance will affect the extent over which 
+the convolution operation projects the image baseline.}
+
 \item{baseline}{A fraction (in \code{[0,1]}) of the signal scale of a 
 PathwaySpace image. This term only affects the image baseline projection, 
 which represents a silhouette of the graph's layout outlined in the 
 resulting image. When \code{baseline = 0} (i.e. lower level of the signal 
 scale), the baseline will extend over the entire image space, so no 
 silhouette will be visible.}
-
-\item{pdist}{A term (in \code{[0,1]}) determining a distance unit for the
-signal decay function. This distance will affect the extent over which 
-the convolution operation projects the image baseline.}
 
 \item{fill.cavity}{A single logical value specifying to fill cavities 
 in the silhouette mask (when \code{verbose=TRUE}) or not 
@@ -61,5 +61,5 @@ ps <- silhouetteMapping(ps, pdist = 0.1)
 \code{\link{circularProjection}}
 }
 \author{
-Mauro Castro and TCGA Network.
+Sysbiolab Team
 }
