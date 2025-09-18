@@ -85,7 +85,7 @@ using the `plotGraphSpace()` function.
 plotGraphSpace(g_space1, add.labels = TRUE)
 ```
 
-```{r fig2.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+```{r fig2.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
 # gg <- plotGraphSpace(g_space1, add.labels = TRUE)
 # ggsave(filename = "./figures/fig2.png", height=4, width=5,
 #   units="in", device="png", dpi=250, plot=gg)
@@ -154,7 +154,7 @@ p_space1 <- circularProjection(p_space1, pdist = 0.4, k = 1)
 plotPathwaySpace(p_space1, add.marks = TRUE)
 ```
 
-```{r fig3.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+```{r fig3.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
 # gg <- plotPathwaySpace(p_space1, add.marks = TRUE)
 # ggsave(filename = "./figures/fig3.png", height=3.5, width=5,
 #   units="in", device="png", dpi=350, plot=gg)
@@ -175,7 +175,7 @@ p_space1 <- circularProjection(p_space1, pdist = 0.2, k = 2,
 plotPathwaySpace(p_space1, marks = "n1", theme = "th2")
 ```
 
-```{r fig4.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+```{r fig4.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
 # gg <- plotPathwaySpace(p_space1, marks = "n1", theme = "th2")
 # ggsave(filename = "./figures/fig4.png", height=3.5, width=5,
 #   units="in", device="png", dpi=350, plot=gg)
@@ -203,7 +203,7 @@ g_space2 <- GraphSpace(gtoy2, mar = 0.2)
 plotGraphSpace(g_space2, add.labels = TRUE)
 ```
 
-```{r fig5.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+```{r fig5.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
 # gg <- plotGraphSpace(g_space2, add.labels = TRUE)
 # ggsave(filename = "./figures/fig5.png", height=4, width=5,
 #   units="in", device="png", dpi=250, plot=gg)
@@ -241,7 +241,7 @@ p_space2 <- polarProjection(p_space2, pdist = 1, beta = 10)
 plotPathwaySpace(p_space2, theme = "th2", add.marks = TRUE)
 ```
 
-```{r fig6.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+```{r fig6.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
 # gg <- plotPathwaySpace(p_space2, theme = "th2", add.marks = TRUE)
 # ggsave(filename = "./figures/fig6.png", height=3.5, width=5,
 #   units="in", device="png", dpi=350, plot=gg)
@@ -261,7 +261,7 @@ p_space2 <- polarProjection(p_space2, pdist = 1, beta = 10, directional = TRUE)
 plotPathwaySpace(p_space2, theme = "th2", marks = c("n1","n3","n4","n5"))
 ```
 
-```{r fig7.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+```{r fig7.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
 # gg <- plotPathwaySpace(p_space2, theme = "th2", marks = c("n1","n3","n4","n5"))
 # ggsave(filename = "./figures/fig7.png", height=3.5, width=5,
 #   units="in", device="png", dpi=350, plot=gg)
@@ -293,7 +293,7 @@ p_space1 <- circularProjection(p_space1, decay.fun = signalDecay(shape = 2))
 plotPathwaySpace(p_space1, bg.color = "white", font.color = "grey20", add.marks = TRUE, mark.color = "magenta", theme = "th2")
 ```
 
-```{r fig8.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+```{r fig8.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
 # gg <- plotPathwaySpace(p_space1, bg.color = "white", font.color = "grey20",
 #   add.marks = TRUE, mark.color = "magenta", theme = "th2")
 # ggsave(filename = "./figures/fig8.png", height=3.5, width=5,
