@@ -9,11 +9,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="TCGA Analysis Network" />
+<meta name="author" content="Sysbiolab Team" />
 
 <meta name="date" content="2025-09-25" />
 
-<title>Visualizing feature sets in large PathwaySpace graphs</title>
+<title>Getting started with PathwaySpace</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -64,29 +64,6 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-/* for pandoc --citeproc since 2.11 */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-  margin-bottom: 0em;
-}
-.hanging div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}
-</style>
 
 
 
@@ -389,132 +366,235 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Visualizing feature sets in large
-<em>PathwaySpace</em> graphs</h1>
-<h4 class="author">TCGA Analysis Network</h4>
+<h1 class="title toc-ignore">Getting started with
+<em>PathwaySpace</em></h1>
+<h4 class="author">Sysbiolab Team</h4>
 <h4 class="date">2025-09-25</h4>
 
 </div>
 
 
 <p><strong>Package</strong>: PathwaySpace 1.0.3 <br/> <br/></p>
-<div id="overview" class="section level1">
-<h1>Overview</h1>
-<p>In order to enhance clarity and make it less likely for viewers to
-miss important details of large graphs, in this section we will create a
-<em>PathwaySpace</em> object with <code>n = 12990</code> vertices, upon
-which we will project binary signals representing feature sets from a
-relatively small number of vertices. The projection will emphasize
-clusters of vertices forming <em>summits</em>. We will add silhouette
-outlines as decorative elements to preserve the visibility of the
-overall graph structure. The examples in this section are adapted from
-<span class="citation">Ellrott et al. (2025)</span> and <span
-class="citation">Tercan et al. (2025)</span>.</p>
-<p>Next, we will load an <em>igraph</em> object with
-<code>n = 12990</code> vertices, containing gene interaction data
-available from the <em>Pathway Commons</em> database (version 12) <span
-class="citation">(Rodchenkov et al. 2019)</span>.</p>
-<p><br/></p>
-</div>
-<div id="setting-input-data" class="section level1">
-<h1>Setting input data</h1>
+<div id="setting-basic-input-data" class="section level1">
+<h1>Setting basic input data</h1>
 <pre class="r"><code>#--- Load required packages for this section
-library(PathwaySpace)
-library(RGraphSpace)
 library(igraph)
-library(ggplot2)</code></pre>
-<pre class="r"><code># Load a large igraph object
-data(&quot;PCv12_pruned_igraph&quot;, package = &quot;PathwaySpace&quot;)
+library(ggplot2)
+library(RGraphSpace)
+library(PathwaySpace)</code></pre>
+<p>This section will create an <em>igraph</em> object containing a
+binary signal associated to each vertex. The graph layout is configured
+manually to ensure that users can easily view all the relevant arguments
+needed to prepare the input data for the <em>PathwaySpace</em> package.
+The <em>igraph</em>’s <code>make_star()</code> function creates a
+star-like graph and the <code>V()</code> function is used to set
+attributes for the vertices. The <em>PathwaySpace</em> package will
+require that all vertices have <code>x</code>, <code>y</code>, and
+<code>name</code> attributes.</p>
+<pre class="r"><code># Make a &#39;toy&#39; igraph object, either a directed or undirected graph
+gtoy1 &lt;- make_star(5, mode=&quot;undirected&quot;)
 
-# Check number of vertices
-length(PCv12_pruned_igraph)
-# [1] 12990
+# Assign &#39;x&#39; and &#39;y&#39; coordinates to each vertex
+# ..this can be an arbitrary unit in (-Inf, +Inf)
+V(gtoy1)$x &lt;- c(0, 2, -2, -4, -8)
+V(gtoy1)$y &lt;- c(0, 0,  2, -4,  0)
+
+# Assign a &#39;name&#39; to each vertex (here, from n1 to n5)
+V(gtoy1)$name &lt;- paste0(&quot;n&quot;, 1:5)</code></pre>
+<p><br/></p>
+<div id="checking-graph-validity" class="section level2">
+<h2>Checking graph validity</h2>
+<p>Next, we will create a <em>GraphSpace-class</em> object using the
+<code>GraphSpace()</code> constructor. This function will check the
+validity of the <em>igraph</em> object. For this example
+<code>mar = 0.2</code>, which sets the outer margins as a fraction of
+the 2D space on which the convolution operation will project the
+signal.</p>
+<pre class="r"><code># Check graph validity
+g_space1 &lt;- GraphSpace(gtoy1, mar = 0.2)</code></pre>
+<p>Our graph is now ready for the <em>PathwaySpace</em> package. We can
+check its layout using the <code>plotGraphSpace()</code> function.</p>
+<pre class="r"><code># Check the graph layout
+plotGraphSpace(g_space1, add.labels = TRUE)</code></pre>
+<p><img src="figs_intro/fig2.png" width="100%" /></p>
+</div>
+<div id="creating-a-pathwayspace-object" class="section level2">
+<h2>Creating a <em>PathwaySpace</em> object</h2>
+<p>Next, we will create a <em>PathwaySpace-class</em> object using the
+<code>buildPathwaySpace()</code> constructor. This will calculate
+pairwise distances between vertices, subsequently required by the signal
+projection methods.</p>
+<pre class="r"><code># Run the PathwaySpace constructor
+p_space1 &lt;- buildPathwaySpace(g_space1)</code></pre>
+<p>As a default behavior, the <code>buildPathwaySpace()</code>
+constructor initializes the signal of each vertex as <code>0</code>. We
+can use the <code>length()</code>, <code>names()</code>, and
+<code>vertexSignal()</code> accessors to get and set vertex signals in
+the <em>PathwaySpace</em> object; for example, in order to get vertex
+names and signal values:</p>
+<pre class="r"><code># Check the number of vertices in the PathwaySpace object
+length(p_space1)
+## [1] 5
 
 # Check vertex names
-head(V(PCv12_pruned_igraph)$name)
-# [1] &quot;A1BG&quot; &quot;AKT1&quot; &quot;CRISP3&quot; &quot;GRB2&quot; &quot;PIK3CA&quot; &quot;PIK3R1&quot;
+names(p_space1)
+## [1] &quot;n1&quot; &quot;n2&quot; &quot;n3&quot; &quot;n4&quot; &quot;n5&quot;
 
-# Get top-connected nodes for visualization
-top10hubs &lt;- igraph::degree(PCv12_pruned_igraph)
-top10hubs &lt;- names(sort(top10hubs, decreasing = TRUE)[1:10])
-head(top10hubs)
-# [1] &quot;GNB1&quot; &quot;TRIM28&quot; &quot;RPS27A&quot; &quot;CTNNB1&quot; &quot;TP53&quot; &quot;ACTB&quot;</code></pre>
-<pre class="r"><code>## Check graph validity
-g_space_PCv12 &lt;- GraphSpace(PCv12_pruned_igraph, mar = 0.1)</code></pre>
-<pre class="r"><code>## Visualize the graph layout labeled with &#39;top10hubs&#39; nodes
-plotGraphSpace(g_space_PCv12, node.labels = top10hubs, label.color = &quot;blue&quot;, theme = &quot;th3&quot;)</code></pre>
-<p><img src="figs_feature_sets/fig1.png" width="90%" /></p>
-<p>We will also load gene sets from the <em>MSigDB</em> collection <span
-class="citation">(Liberzon et al. 2015)</span>, which are subsequently
-used to project a binary signal in the <em>PathwaySpace</em> image.</p>
-<pre class="r"><code># Load a list with Hallmark gene sets
-data(&quot;Hallmarks_v2023_1_Hs_symbols&quot;, package = &quot;PathwaySpace&quot;)
+# Check signal (initialized with &#39;0&#39;)
+vertexSignal(p_space1)
+## n1 n2 n3 n4 n5 
+##  0  0  0  0  0</code></pre>
+<p>…and for setting new signal values in <em>PathwaySpace</em>
+objects:</p>
+<pre class="r"><code># Set new signal to all vertices
+vertexSignal(p_space1) &lt;- c(1, 4, 2, 4, 3)
 
-# There are 50 gene sets in &quot;hallmarks&quot;
-length(hallmarks)
-# [1] 50
+# Set a new signal to the 1st vertex
+vertexSignal(p_space1)[1] &lt;- 2
 
-# We will use the &#39;HALLMARK_P53_PATHWAY&#39; (n=200 genes) for demonstration
-length(hallmarks$HALLMARK_P53_PATHWAY)
-# [1] 200</code></pre>
+# Set a new signal to vertex &quot;n1&quot;
+vertexSignal(p_space1)[&quot;n1&quot;] &lt;- 6
+
+# Check updated signal values
+vertexSignal(p_space1)
+## n1 n2 n3 n4 n5 
+##  6  4  2  4  3</code></pre>
 <p><br/></p>
 </div>
-<div id="running-pathwayspace" class="section level1">
-<h1>Running <em>PathwaySpace</em></h1>
-<p>We now follow the <em>PathwaySpace</em> pipeline as explained in the
-introductory vignette, that is, using the
-<code>buildPathwaySpace()</code> constructor to initialize a new
-<em>PathwaySpace</em> object with the <em>Pathway Commons</em>
-interactions.</p>
-<pre class="r"><code># Run the PathwaySpace constructor
-p_space_PCv12 &lt;- buildPathwaySpace(gs=g_space_PCv12, nrc=500)
-# Note: &#39;nrc&#39; sets the number of rows and columns of the
-# image space, which will affect the image resolution (in pixels)</code></pre>
-<p>…and now we mark the <em>HALLMARK_P53_PATHWAY</em> genes in the
-<em>PathwaySpace</em> object.</p>
-<pre class="r"><code># Intersect Hallmark genes with the PathwaySpace
-hallmarks &lt;- lapply(hallmarks, intersect, y = names(p_space_PCv12) )
-
-# After intersection, the &#39;HALLMARK_P53_PATHWAY&#39; dropped to n=173 genes
-length(hallmarks$HALLMARK_P53_PATHWAY)
-# [1] 173
-
-# Set a binary signal (1s) to &#39;HALLMARK_P53_PATHWAY&#39; genes
-vertexSignal(p_space_PCv12) &lt;- 0
-vertexSignal(p_space_PCv12)[ hallmarks$HALLMARK_P53_PATHWAY ] &lt;- 1</code></pre>
-<p>…and run the <code>circularProjection()</code> function.</p>
+</div>
+<div id="signal-projection" class="section level1">
+<h1>Signal projection</h1>
+<p><br/></p>
+<div id="circular-projection" class="section level2">
+<h2>Circular projection</h2>
+<p>Following that, we will use the <code>circularProjection()</code>
+function to project the network signals, setting
+<code>pdist = 0.4</code>. This term determines a distance unit for the
+signal convolution, affecting the extent over which the convolution
+operation projects the signal. For example, when <code>pdist = 1</code>,
+it will represent the diameter of the inscribed circle within the
+coordinate space. We also set <code>k = 1</code>, which defines the
+contributing vertices for signal convolution. In this case, each
+<em>null-signal position</em> will receive the projection from a single
+<em>vertex-signal position</em> (<em>i.e.</em> the highest signal
+intensity in pathway space reaching that position). We then create a
+landscape image using the <code>plotPathwaySpace()</code> function.</p>
 <pre class="r"><code># Run signal projection
-p_space_PCv12 &lt;- circularProjection(p_space_PCv12)</code></pre>
+p_space1 &lt;- circularProjection(p_space1, pdist = 0.4, k = 1)
+
+# Plot a PathwaySpace image
+plotPathwaySpace(p_space1, add.marks = TRUE)</code></pre>
+<p><img src="figs_intro/fig3.png" width="100%" /></p>
+<p>Next, we reassess the same <em>PathwaySpace</em> object, using
+<code>pdist = 0.2</code>, <code>k = 2</code> and adjusting the
+<code>shape</code> of the decay function, which is passed to the
+<code>circularProjection()</code> function via <code>decay.fun</code>
+argument.</p>
+<pre class="r"><code># Re-run signal projection, adjusting Weibull&#39;s shape
+p_space1 &lt;- circularProjection(p_space1, pdist = 0.2, k = 2, 
+  decay.fun = signalDecay(shape = 2))
+
+# Plot PathwaySpace
+plotPathwaySpace(p_space1, marks = &quot;n1&quot;, theme = &quot;th2&quot;)</code></pre>
+<p><img src="figs_intro/fig4.png" width="100%" /></p>
+<p>The <code>shape</code> parameter allows a projection to take a
+variety of shapes. When <code>shape = 1</code> the projection follows an
+exponential decay, and when <code>shape &gt; 1</code> the projection is
+first convex, then concave with an inflection point along the decay
+path.</p>
 <p><br/></p>
-<div id="mapping-silhouettes" class="section level2">
-<h2>Mapping silhouettes</h2>
-<p>Next, we will decorate the <em>PathwaySpace</em> image with graph’s
-silhouettes.</p>
-<pre class="r"><code># Add silhouettes
-p_space_PCv12 &lt;- silhouetteMapping(p_space_PCv12)
-plotPathwaySpace(p_space_PCv12, title=&quot;HALLMARK_P53_PATHWAY&quot;, marks = top10hubs, mark.size = 2, theme = &quot;th3&quot;)</code></pre>
-<p><img src="figs_feature_sets/fig2.png" width="100%" /></p>
 </div>
-<div id="mapping-summits" class="section level2">
-<h2>Mapping summits</h2>
-<p>The summits represent regions within the graph that exhibit signal
-values that are notably higher than the baseline level. These regions
-may be of interest for downstream analyses. One potential downstream
-analysis is to determine which vertices projected the original input
-signal. This could provide insights into the communities within these
-summit regions. One may also wish to explore other vertices within the
-summits, by querying associations with the original input gene set. In
-order to extract vertices within summits, next we use the
-<code>summitMapping()</code> function, which also decorate summits with
-contour lines.</p>
-<pre class="r"><code># Mapping summits
-p_space_PCv12 &lt;- summitMapping(p_space_PCv12, minsize = 50)
-plotPathwaySpace(p_space_PCv12, title=&quot;HALLMARK_P53_PATHWAY&quot;, theme = &quot;th3&quot;)</code></pre>
-<p><img src="figs_feature_sets/fig3.png" width="100%" /></p>
-<pre class="r"><code># Extracting summits from a PathwaySpace
-summits &lt;- getPathwaySpace(p_space_PCv12, &quot;summits&quot;)
-class(summits)
-# [1] &quot;list&quot;</code></pre>
+<div id="polar-projection" class="section level2">
+<h2>Polar projection</h2>
+<p>In this section we will project the network signal using a polar
+coordinate system. This representation may be useful for certain types
+of data, for example, to highlight patterns of signal propagation on
+directed graphs, especially to explore the orientation aspect of signal
+flow. To demonstrate this feature we will used the <code>gtoy2</code>
+directed graph, available in the <em>RGraphSpace</em> package.</p>
+<pre class="r"><code># Load a pre-processed directed igraph object
+data(&quot;gtoy2&quot;, package = &quot;RGraphSpace&quot;)
+# Check graph validity
+g_space2 &lt;- GraphSpace(gtoy2, mar = 0.2)</code></pre>
+<pre class="r"><code># Check the graph layout
+plotGraphSpace(g_space2, add.labels = TRUE)</code></pre>
+<p><img src="figs_intro/fig5.png" width="100%" /></p>
+<pre class="r"><code># Build a PathwaySpace for the &#39;g_space2&#39;
+p_space2 &lt;- buildPathwaySpace(g_space2)
+
+# Set &#39;1s&#39; as vertex signal
+vertexSignal(p_space2) &lt;- 1</code></pre>
+<p>For fine-grained modeling of signal decay, the
+<code>vertexDecay()</code> accessor allows assigning decay functions at
+the level of individual vertices. For example, adjusting Weibull’s
+<code>shape</code> argument for node <code>n6</code>:</p>
+<pre class="r"><code># Modify decay function
+# ..for all vertices
+vertexDecay(p_space2) &lt;- signalDecay(shape=2)
+# ..for individual vertices
+vertexDecay(p_space2)[[&quot;n6&quot;]] &lt;- signalDecay(shape=3)</code></pre>
+<p>Next, we run the signal projection using polar coordinates. The
+<code>beta</code> exponent will control the angular span; for values
+greater than zero, <code>beta</code> will progressively narrow the
+projection along the edge axis. Also, in the
+<code>polarProjection()</code> function, the <code>pdist</code> term
+will define a distance unit related to edge length, aiming to constrain
+signal projections within edge bounds. Here we set
+<code>pdist = 1</code> to reach full edge lengths.</p>
+<pre class="r"><code># Run signal projection using polar coordinates
+p_space2 &lt;- polarProjection(p_space2, pdist = 1, beta = 10)
+
+# Plot PathwaySpace
+plotPathwaySpace(p_space2, theme = &quot;th2&quot;, add.marks = TRUE)</code></pre>
+<p><img src="figs_intro/fig6.png" width="100%" /></p>
+<p>Note that this projection distributes signals on the edges regardless
+of direction. To incorporate edge orientation, we set
+<code>directional = TRUE</code>, which channels the projection along the
+paths:</p>
+<pre class="r"><code># Re-run signal projection using &#39;directional = TRUE&#39;
+p_space2 &lt;- polarProjection(p_space2, pdist = 1, beta = 10, directional = TRUE)
+
+# Plot PathwaySpace
+plotPathwaySpace(p_space2, theme = &quot;th2&quot;, marks = c(&quot;n1&quot;,&quot;n3&quot;,&quot;n4&quot;,&quot;n5&quot;))</code></pre>
+<p><img src="figs_intro/fig7.png" width="100%" /></p>
+<p>This <em>PathwaySpace</em> polar projection emphasizes the signal
+flow along the directional pattern of a directed graph (see the
+<em>igraph</em> plot above). When interpreting, users should note that
+this approach introduces simplifications; for example, depending on the
+network topology, the polar projection may fail to capture complex
+features of directed graphs, such as cyclic dependencies, feedforward
+and feedback loops, or other intricate interactions.</p>
+<p><br/></p>
+</div>
+<div id="signal-types" class="section level2">
+<h2>Signal types</h2>
+<p>The <em>PathwaySpace</em> accepts binary, integer, and numeric signal
+types, including <code>NAs</code>. If a vertex signal is assigned with
+<code>NA</code>, it will be ignored by the convolution algorithm.
+Logical values are also allowed, but it will be treated as binary. Next,
+we show the projection of a signal that includes negative values, using
+the <code>p_space1</code> object created previously.</p>
+<pre class="r"><code># Set a negative signal to vertices &quot;n3&quot; and &quot;n4&quot;
+vertexSignal(p_space1)[c(&quot;n3&quot;,&quot;n4&quot;)] &lt;- c(-2, -4)
+
+# Check updated signal vector
+vertexSignal(p_space1)
+# n1 n2 n3 n4 n5 
+#  6  4 -2 -4  3 
+
+# Re-run signal projection
+p_space1 &lt;- circularProjection(p_space1, decay.fun = signalDecay(shape = 2))
+
+# Plot PathwaySpace
+plotPathwaySpace(p_space1, bg.color = &quot;white&quot;, font.color = &quot;grey20&quot;, add.marks = TRUE, mark.color = &quot;magenta&quot;, theme = &quot;th2&quot;)</code></pre>
+<p><img src="figs_intro/fig8.png" width="100%" /></p>
+<p>Note that the original signal vector was rescale to
+<code>[-1, +1]</code>. If the signal vector is <code>&gt;=0</code>, then
+it will be rescaled to <code>[0, 1]</code>; if the signal vector is
+<code>&lt;=0</code>, it will be rescaled to <code>[-1, 0]</code>; and if
+the signal vector is in <code>(-Inf, +Inf)</code>, then it will be
+rescaled to <code>[-1, +1]</code>. To override this signal processing,
+simply set <code>rescale = FALSE</code> in the projection function.</p>
 <p><br/></p>
 </div>
 </div>
@@ -563,52 +643,16 @@ class="uri">https://doi.org/10.1016/j.ccell.2024.12.002</a></p></li>
 ## [1] PathwaySpace_1.0.3 RGraphSpace_1.1.0  ggplot2_3.5.2.9001 igraph_2.1.4      
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] gtable_0.3.6       jsonlite_2.0.0     dplyr_1.1.4        compiler_4.5.1    
-##  [5] tidyselect_1.2.1   Rcpp_1.1.0         jquerylib_0.1.4    scales_1.4.0      
-##  [9] yaml_2.3.10        fastmap_1.2.0      R6_2.6.1           generics_0.1.4    
-## [13] knitr_1.50         ggrepel_0.9.6      tibble_3.3.0       bslib_0.9.0       
-## [17] pillar_1.11.0      RColorBrewer_1.1-3 rlang_1.1.6        cachem_1.1.0      
-## [21] RANN_2.6.2         xfun_0.53          sass_0.4.10        S7_0.2.0          
-## [25] cli_3.6.5          withr_3.0.2        magrittr_2.0.4     digest_0.6.37     
-## [29] grid_4.5.1         rstudioapi_0.17.1  fontawesome_0.5.3  lifecycle_1.0.4   
-## [33] vctrs_0.6.5        evaluate_1.0.5     glue_1.8.0         farver_2.1.2      
-## [37] rmarkdown_2.29     tools_4.5.1        pkgconfig_2.0.3    htmltools_0.5.8.1</code></pre>
-<p><br/></p>
-</div>
-<div id="references" class="section level1 unnumbered">
-<h1 class="unnumbered">References</h1>
-<div id="refs" class="references csl-bib-body hanging-indent"
-entry-spacing="0">
-<div id="ref-Ellrott2025" class="csl-entry">
-Ellrott, Kyle, Christopher K Wong, Christina Yau, Mauro A A Castro, et
-al. 2025. <span>“Classification of Non-TCGA Cancer Samples to TCGA
-Molecular Subtypes Using Compact Feature Sets.”</span> <em>Cancer
-Cell</em> 43 (2): 195–212. <a
-href="https://doi.org/10.1016/j.ccell.2024.12.002">https://doi.org/10.1016/j.ccell.2024.12.002</a>.
-</div>
-<div id="ref-Liberzon2015" class="csl-entry">
-Liberzon, Arthur, Chet Birger, Helga Thorvaldsdottir, Mahmoud Ghandi,
-Jill Mesirov, and Pablo Tamayo. 2015. <span>“The Molecular Signatures
-Database (MSigDB) Hallmark Gene Set Collection.”</span> <em>Cell
-Systems</em> 1 (5): 417–25. <a
-href="https://doi.org/10.1016/j.cels.2015.12.004">https://doi.org/10.1016/j.cels.2015.12.004</a>.
-</div>
-<div id="ref-Rodchenkov2019" class="csl-entry">
-Rodchenkov, Igor, Ozgun Babur, Augustin Luna, Bulent Arman Aksoy,
-Jeffrey V Wong, Dylan Fong, Max Franz, et al. 2019. <span>“<span
-class="nocase">Pathway Commons 2019 Update: integration, analysis and
-exploration of pathway data</span>.”</span> <em>Nucleic Acids
-Research</em> 48 (D1): D489–97. <a
-href="https://doi.org/10.1093/nar/gkz946">https://doi.org/10.1093/nar/gkz946</a>.
-</div>
-<div id="ref-Tercan2025" class="csl-entry">
-Tercan, Bahar, Victor H Apolonio, Vinicius S Chagas, Christopher K Wong,
-et al. 2025. <span>“Classification of Non-TCGA Cancer Samples to TCGA
-Molecular Subtypes Using Compact Feature Sets.”</span> <em>Cancer
-Cell</em> 43 (2): 195–212. https://doi.org/<a
-href="https://doi.org/10.1016/j.xpro.2025.103681">https://doi.org/10.1016/j.xpro.2025.103681</a>.
-</div>
-</div>
+##  [1] vctrs_0.6.5        cli_3.6.5          knitr_1.50         rlang_1.1.6       
+##  [5] xfun_0.53          ggrepel_0.9.6      generics_0.1.4     S7_0.2.0          
+##  [9] jsonlite_2.0.0     glue_1.8.0         htmltools_0.5.8.1  sass_0.4.10       
+## [13] scales_1.4.0       rmarkdown_2.29     grid_4.5.1         tibble_3.3.0      
+## [17] evaluate_1.0.5     jquerylib_0.1.4    fastmap_1.2.0      yaml_2.3.10       
+## [21] lifecycle_1.0.4    compiler_4.5.1     dplyr_1.1.4        RColorBrewer_1.1-3
+## [25] Rcpp_1.1.0         pkgconfig_2.0.3    rstudioapi_0.17.1  farver_2.1.2      
+## [29] digest_0.6.37      R6_2.6.1           RANN_2.6.2         tidyselect_1.2.1  
+## [33] pillar_1.11.0      magrittr_2.0.4     bslib_0.9.0        withr_3.0.2       
+## [37] tools_4.5.1        gtable_0.3.6       cachem_1.1.0</code></pre>
 </div>
 
 
