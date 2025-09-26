@@ -55,7 +55,7 @@ vignette("PathwaySpace")
 
 ### Tutorials
 
-https://sysbiolab.github.io/PathwaySpace/
+* https://sysbiolab.github.io/PathwaySpace/
 
 ### Citation
 
