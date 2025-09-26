@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sysbiolab Team" />
 
-<meta name="date" content="2025-09-25" />
+<meta name="date" content="2025-09-26" />
 
 <title>Visualizing spatial transcriptomics</title>
 
@@ -391,7 +391,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Visualizing spatial transcriptomics</h1>
 <h4 class="author">Sysbiolab Team</h4>
-<h4 class="date">2025-09-25</h4>
+<h4 class="date">2025-09-26</h4>
 
 </div>
 
@@ -405,9 +405,10 @@ propagation and visualization in spatial transcriptomics. By integrating
 signal processing with spatial visualization, <em>SpotSpace</em> allows
 users to project network signals onto spot-level coordinates to explore
 signal patterns on tissue microenvironments.</p>
+<p><br/></p>
 </div>
-<div id="setup-the-pathwayspace-objects" class="section level1">
-<h1>Setup the <em>PathwaySpace</em> objects</h1>
+<div id="setting-input-data" class="section level1">
+<h1>Setting input data</h1>
 <p>For this tutorial, we will use the <code>stxBrain</code> dataset from
 the <em>SeuratData</em> package, consisting of spatial transcriptomics
 data from sagittal mouse brain sections generated with Visium v1
@@ -430,9 +431,6 @@ library(patchwork)</code></pre>
 SeuratData::InstallData(&quot;stxBrain&quot;)</code></pre>
 <pre class="r"><code># Load the &#39;stxBrain&#39; dataset
 brain &lt;- LoadData(&quot;stxBrain&quot;, type = &quot;anterior1&quot;)</code></pre>
-<p><br/></p>
-<div id="extracting-data-from-the-seurat-object" class="section level2">
-<h2>Extracting data from the <em>Seurat</em> object</h2>
 <p>The <code>stxBrain</code> dataset is normalized as suggested in
 <em>Seurat</em>’s <a
 href="https://satijalab.org/seurat/articles/spatial_vignette.html"
@@ -451,47 +449,20 @@ raster_image &lt;- GetImage(brain, &quot;raster&quot;)
 # Get vst-normalized gene expression
 vst_gexp &lt;- GetAssayData(brain, layer=&quot;data&quot;)</code></pre>
 <p><br/></p>
-</div>
-<div id="creating-a-pathwayspace-object-from-spot-coordinates"
-class="section level2">
-<h2>Creating a <em>PathwaySpace</em> object from spot coordinates</h2>
-<p>Next, a <em>PathwaySpace</em> object is created from spot coordinates
-and the resulting graph is visualized overlaid on the tissue image.</p>
+<p>Next, a <em>PathwaySpace</em> object is created from the spot
+coordinates and the resulting graph is visualized overlaid on the tissue
+image.</p>
 <pre class="r"><code># Create a PathwaySpace object from &#39;spot_coord&#39;, mapped to the &#39;raster_image&#39;
 ps_brain &lt;- buildSpotSpace(spot_coord = spot_coord, raster_image = raster_image)</code></pre>
 <pre class="r"><code># Check spots on the top of the &#39;raster_image&#39;
 xy_labs &lt;- labs(x=&quot;Spot coordinates 1&quot;, y=&quot;Spot coordinates 2&quot;)
 plotGraphSpace(ps_brain, add.image = TRUE) + xy_labs</code></pre>
 <p><img src="figs_spot_space/fig1.png" width="100%" /></p>
-</div>
+<p><br/></p>
 </div>
 <div id="running-pathwayspace" class="section level1">
 <h1>Running <em>PathwaySpace</em></h1>
-<div id="adding-a-graph-silhouette" class="section level2">
-<h2>Adding a graph silhouette</h2>
-<p>The <code>silhouetteMapping()</code> function generates an image mask
-that outlines the graph layout, over which the subsequent methods will
-project a landscape image. The <code>baseline</code> argument controls
-the level at which a silhouette is sliced to form the mask. Increasing
-the baseline (in <code>[0,1]</code>) produces a more detailed, granular
-silhouette.</p>
-<pre class="r"><code># Add a graph silhouette to the PathwaySpace object
-ps_brain &lt;- silhouetteMapping(ps_brain, baseline = 0.1)
-plotPathwaySpace(ps=ps_brain, theme = &quot;th3&quot;, 
-  add.image = TRUE, si.alpha = 0.5) + xy_labs</code></pre>
-<p><img src="figs_spot_space/fig2.png" width="100%" /></p>
-</div>
-<div id="adding-gene-signals" class="section level2">
-<h2>Adding gene signals</h2>
-<p>Next, we specify the signal to be projected; for this demonstration,
-we will use expression data from the <strong>Camk2n1</strong> gene. The
-<code>vertexSignal()</code> accessor function is then used to assign the
-gene expression values to graph vertices.</p>
-<pre class="r"><code># Assign gene expression values to graph vertices
-gene &lt;- &quot;Camk2n1&quot;
-vertexSignal(ps_brain)[colnames(vst_gexp)] &lt;- vst_gexp[gene,]</code></pre>
 <p><br/></p>
-</div>
 <div id="setting-a-distance-unit" class="section level2">
 <h2>Setting a distance unit</h2>
 <p>Before projection, we need to specify a distance unit for the signal
@@ -507,8 +478,30 @@ m_dist
 # [1] 0.01395144</code></pre>
 <p><br/></p>
 </div>
-<div id="projecting-gene-signals" class="section level2">
-<h2>Projecting gene signals</h2>
+<div id="adding-a-graph-silhouette" class="section level2">
+<h2>Adding a graph silhouette</h2>
+<p>As an optional step, the <code>silhouetteMapping()</code> function
+generates an image mask that outlines the graph layout, over which the
+subsequent methods will project a landscape image. The
+<code>baseline</code> argument controls the level at which a silhouette
+is sliced to form the mask. Increasing the baseline (in
+<code>[0,1]</code>) produces a more detailed, granular silhouette.</p>
+<pre class="r"><code># Add a graph silhouette to the PathwaySpace object
+ps_brain &lt;- silhouetteMapping(ps_brain, baseline = 0.1)
+plotPathwaySpace(ps=ps_brain, theme = &quot;th3&quot;, 
+  add.image = TRUE, si.alpha = 0.5) + xy_labs</code></pre>
+<p><img src="figs_spot_space/fig2.png" width="100%" /></p>
+<p><br/></p>
+</div>
+<div id="projecting-gene-expression" class="section level2">
+<h2>Projecting gene expression</h2>
+<p>Next, we specify the signal to be projected; for this demonstration,
+we will use expression data from the <strong>Camk2n1</strong> gene. The
+<code>vertexSignal()</code> accessor function is then used to assign the
+gene expression values to graph vertices.</p>
+<pre class="r"><code># Assign gene expression values to graph vertices
+gene &lt;- &quot;Camk2n1&quot;
+vertexSignal(ps_brain)[colnames(vst_gexp)] &lt;- vst_gexp[gene,]</code></pre>
 <p>We then perform the signal projection, setting
 <code>decay = 0.5</code>. The decay parameter controls how the signal
 attenuates as a function of distance in pathway space. With
@@ -540,6 +533,7 @@ p3 &lt;- plotPathwaySpace(ps=ps_brain, theme = &quot;th3&quot;, title = gene,
   add.image = TRUE, si.alpha = 0.25, zlim = c(0.5, 1)) + xy_labs
 p2 + p3</code></pre>
 <p><img src="figs_spot_space/fig3.png" width="100%" /></p>
+<p><br/></p>
 </div>
 </div>
 <div id="citation" class="section level1">
