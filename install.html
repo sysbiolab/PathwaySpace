@@ -311,10 +311,15 @@ install.packages(&quot;knitr&quot;)
 install.packages(&quot;rmarkdown&quot;)
 install.packages(&quot;remotes&quot;)
 
-# Devel and extensions from GitHub
+# Main packages
 remotes::install_github(&quot;sysbiolab/RGraphSpace&quot;, build_vignettes=TRUE)
 remotes::install_github(&quot;sysbiolab/PathwaySpace&quot;, build_vignettes=TRUE)
-remotes::install_github(&quot;sysbiolab/SpotSpace&quot;, build_vignettes=TRUE)</code></pre>
+
+# Extension
+remotes::install_github(&quot;sysbiolab/SpotSpace&quot;, build_vignettes=TRUE)
+
+# Data package used in the extension
+remotes::install_github(&quot;satijalab/seurat-data&quot;)</code></pre>
 <p><br/></p>
 </div>
 <div id="citation" class="section level3">
