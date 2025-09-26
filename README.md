@@ -55,9 +55,7 @@ vignette("PathwaySpace")
 
 ### Tutorials
 
-* [Introduction](https://sysbiolab.github.io/PathwaySpace/)
-
-* [Visualizing feature sets](https://sysbiolab.github.io/PathwaySpace/visualizing-feature-sets.html)
+https://sysbiolab.github.io/PathwaySpace/
 
 ### Citation
 
