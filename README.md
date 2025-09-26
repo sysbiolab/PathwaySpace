@@ -29,33 +29,30 @@ the package's vignette. **B**) Illustration of signal projection from two
 neighboring vertices, simplified to one dimension. *Right*: Signal profiles 
 from aggregation and decay functions.
 
+
 ### Installation in R (>=4.4)
 
-##### Install dependencies to build the package's vignettes
+##### Dependencies to build the vignettes
 
 ```r
 install.packages("knitr")
 install.packages("rmarkdown")
+install.packages("remotes")
 ```
 
-##### Install the PathwaySpace package
+##### Development version and extensions
 
 ```r
-install.packages("remotes")
 remotes::install_github("sysbiolab/RGraphSpace", build_vignettes=TRUE)
 remotes::install_github("sysbiolab/PathwaySpace", build_vignettes=TRUE)
+remotes::install_github("sysbiolab/SpotSpace", build_vignettes=TRUE)
 ```
 
-### Vignette
-
-```r
-library(PathwaySpace)
-vignette("PathwaySpace")
-```
 
 ### Tutorials
 
 * https://sysbiolab.github.io/PathwaySpace/
+
 
 ### Citation
 
@@ -65,11 +62,13 @@ If you use *PathwaySpace*, please cite:
 
 * Ellrott *et al.* Classification of non-TCGA cancer samples to TCGA molecular subtypes using compact feature sets. *Cancer Cell*, 2025. https://doi.org/10.1016/j.ccell.2024.12.002
 
+
 #### Supporting Material for Tercan *et al.* (2025)
 
 Download and uncompress *Tercan_et_al_20250112.zip*, then follow the instructions in the *pspace_perturbation.R* script. This R script has been developed to reproduce the results presented in *Figure S1* of Tercan *et al.* (2025).
 
 * [Tercan_et_al_20250112.zip](https://github.com/sysbiolab/PathwaySpace/blob/main/Tercan_et_al_20250112.zip)
+
 
 ### Licenses 
 
