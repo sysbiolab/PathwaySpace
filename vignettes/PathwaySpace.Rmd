@@ -1,9 +1,8 @@
 ---
-title: "*PathwaySpace*: Spatial projection of network signals along geodesic paths."
+title: "Getting started with PathwaySpace"
 author: "Sysbiolab Team"
 date: "`r Sys.Date()`"
 bibliography: bibliography.bib
-abstract: "*PathwaySpace* is an R package that creates landscape images from graphs containing vertices (nodes), edges (lines), and a signal associated with the vertices. The package processes the signal using a convolution algorithm that considers the graph's topology, projecting the signal on a 2D space. *PathwaySpace* has various applications, such as visualizing network data in a graphical format that highlights the relationships and signal strengths between vertices. It can be particularly useful for understanding the influence of signals through complex networks. By combining graph theory, signal processing, and visualization, the *PathwaySpace* package provides a novel way of representing network signals."
 output: 
   html_document:
     theme: cerulean
@@ -22,7 +21,6 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-<br/>
 **Package**: PathwaySpace `r packageVersion('PathwaySpace')`
 
 # Highlights
@@ -32,13 +30,17 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Overview
 
-For a given *igraph* object containing vertices, edges, and a signal associated with the vertices, *PathwaySpace* performs a convolution operation, which involves a weighted combination of neighboring signals on a graph. **Figure 1** illustrates the convolution operation problem. Each vertex's signal is positioned on a grid at specific `x` and `y` coordinates, represented by cones (for available signals) or question marks (for null or missing values). Our model considers the vertex-signal positions as source points (or transmitters) and the null-signal positions as end points (or receivers). The signal values from vertex-signal positions are then projected to the null-signal positions according to a decay function, which will control how the signal values attenuate as they propagate across the 2D space. For a given null-signal position, the k-top signals are used to define the contributing vertices for the convolution operation, which will aggregate the signals from these contributing vertices considering their intensities reaching the end points. Users can adjust both the aggregation and decay functions; the aggregation function can be any arithmetic rule that reduces a numeric vector into a single scalar value (*e.g.*, mean, weighted mean), while available decay functions include linear, exponential, and Weibull models (**Fig.1B**). Additionally, users can assign vertex-specific decay functions to model signal projections for subsets of vertices that may exhibit distinct behaviors. The resulting image forms geodesic paths in which the signal has been projected from vertex- to null-signal positions, using a density metric to measure the signal intensity along these paths.
+For a given *igraph* object containing vertices, edges, and a signal associated with the vertices, *PathwaySpace* performs a convolution operation, which involves a weighted combination of neighboring signals on a graph. **Figure 1A** illustrates the convolution operation problem. Each vertex's signal is positioned on a grid at specific `x` and `y` coordinates, represented by cones (for available signals) or question marks (for null or missing values).
 
-```{r fig1, echo=FALSE, fig.cap="**Figure 1.** Signal processing addressed by the *PathwaySpace* package. **A**) Graph overlaid on a 2D coordinate system. Each projection cone represents the signal associated with a graph vertex (referred to as *vertex-signal positions*), while question marks indicate positions with no signal information (referred to as *null-signal positions*). **Inset**: Graph layout of the toy example used in the *quick start* section of this vignette. **B**) Illustration of signal projection from two neighboring vertices, simplified to one dimension. **Right**: Signal profiles from aggregation and decay functions.", out.width = '90%', purl=FALSE}
+```{r fig1, echo=FALSE, fig.cap="**Figure 1.** Signal processing addressed by the *PathwaySpace* package. **A**) Graph overlaid on a 2D coordinate system. Each projection cone represents the signal associated with a graph vertex (referred to as *vertex-signal positions*), while question marks indicate positions with no signal information (referred to as *null-signal positions*). **Inset**: Graph layout of the toy example used in the *quick start* section of this vignette. **B**) Illustration of signal projection from two neighboring vertices, simplified to one dimension. **Right**: Signal profiles from aggregation and decay functions.", out.width = '100%', purl=FALSE}
 knitr::include_graphics("figures/fig1.png")
 ```
 
-# Quick start
+<br/>
+
+Our model considers the vertex-signal positions as source points (or transmitters) and the null-signal positions as end points (or receivers). The signal values from vertex-signal positions are then projected to the null-signal positions according to a decay function, which will control how the signal values attenuate as they propagate across the 2D space. For a given null-signal position, the k-top signals are used to define the contributing vertices for the convolution operation, which will aggregate the signals from these contributing vertices considering their intensities reaching the end points. Users can adjust both the aggregation and decay functions; the aggregation function can be any arithmetic rule that reduces a numeric vector into a single scalar value (*e.g.*, mean, weighted mean), while available decay functions include linear, exponential, and Weibull models (**Fig.1B**). Additionally, users can assign vertex-specific decay functions to model signal projections for subsets of vertices that may exhibit distinct behaviors. The resulting image forms geodesic paths in which the signal has been projected from vertex- to null-signal positions, using a density metric to measure the signal intensity along these paths.
+
+# Setting basic input data
 
 ```{r Load packages - quick start, eval=TRUE, message=FALSE}
 #--- Load required packages for this section
@@ -47,8 +49,6 @@ library(ggplot2)
 library(RGraphSpace)
 library(PathwaySpace)
 ```
-
-## Setting basic input data
 
 This section will create an *igraph* object containing a binary signal associated to each vertex. The graph layout is configured manually to ensure that users can easily view all the relevant arguments needed to prepare the input data for the *PathwaySpace* package. The *igraph*'s `make_star()` function creates a star-like graph and the `V()` function is used to set attributes for the vertices. The *PathwaySpace* package will require that all vertices have `x`, `y`, and `name` attributes.
 
@@ -65,7 +65,7 @@ V(gtoy1)$y <- c(0, 0,  2, -4,  0)
 V(gtoy1)$name <- paste0("n", 1:5)
 ```
 
-## Checking *igraph* validity
+# Checking graph validity
 
 Next, we will create a *GraphSpace-class* object using the `GraphSpace()` 
 constructor. This function will check the validity of the *igraph* object. 
@@ -96,7 +96,7 @@ knitr::include_graphics("figures/fig2.png")
 ```
 
 
-## Creating a *PathwaySpace*
+# Creating a *PathwaySpace* object
 
 Next, we will create a *PathwaySpace-class* object using the `buildPathwaySpace()` constructor. This will calculate pairwise distances between vertices, subsequently required by the signal projection methods.
 
@@ -160,7 +160,7 @@ plotPathwaySpace(p_space1, add.marks = TRUE)
 #   units="in", device="png", dpi=350, plot=gg)
 ```
 
-```{r fig3, echo=FALSE, out.width = '70%', purl=FALSE}
+```{r fig3, echo=FALSE, out.width = '75%', purl=FALSE}
 knitr::include_graphics("figures/fig3.png")
 ```
 
@@ -209,7 +209,7 @@ plotGraphSpace(g_space2, add.labels = TRUE)
 #   units="in", device="png", dpi=250, plot=gg)
 ```
 
-```{r fig5, echo=FALSE, out.width = '70%', purl=FALSE}
+```{r fig5, echo=FALSE, out.width = '75%', purl=FALSE}
 knitr::include_graphics("figures/fig5.png")
 ```
 
@@ -273,7 +273,7 @@ knitr::include_graphics("figures/fig7.png")
 
 This *PathwaySpace* polar projection emphasizes the signal flow along the directional pattern of a directed graph (see the *igraph* plot above). When interpreting, users should note that this approach introduces simplifications; for example, depending on the network topology, the polar projection may fail to capture complex features of directed graphs, such as cyclic dependencies, feedforward and feedback loops, or other intricate interactions.
 
-## Signal types
+# Signal types
 
 The *PathwaySpace* accepts binary, integer, and numeric signal types, including `NAs`. If a vertex signal is assigned with `NA`, it will be ignored by the convolution algorithm. Logical values are also allowed, but it will be treated as binary. Next, we show the projection of a signal that includes negative values, using the `p_space1` object created previously.
 
@@ -307,10 +307,11 @@ knitr::include_graphics("figures/fig8.png")
 Note that the original signal vector was rescale to `[-1, +1]`. If the signal vector is `>=0`, then it will be rescaled to `[0, 1]`; if the signal vector is `<=0`, it will be rescaled to `[-1, 0]`; and if the signal vector is in `(-Inf, +Inf)`, then it will be rescaled to `[-1, +1]`. To override this signal processing, simply set `rescale = FALSE` in the projection function.
 
 
-# Other examples
+# Online tutorials
 
-[Visualizing feature sets in large *PathwaySpace* graphs](https://sysbiolab.github.io/PathwaySpace/visualizing-feature-sets.html){target="_blank" rel="noopener"}
+[Visualizing feature sets](https://sysbiolab.github.io/PathwaySpace/visualizing-feature-sets.html){target="_blank" rel="noopener"}
 
+[Visualizing spatial transcriptomics](https://sysbiolab.github.io/PathwaySpace/visualizing-spatial-transcriptomics.html){target="_blank" rel="noopener"}
 
 # Citation
 
@@ -323,12 +324,14 @@ If you use *PathwaySpace*, please cite:
 
 # Other useful links
 
-* Castro MA, Wang X, Fletcher MN, Meyer KB, Markowetz F (2012). "RedeR: R/Bioconductor package for representing modular structures, nested networks and multiple levels of hierarchical associations." *Genome Biology*, 13(4), R29. 
+* RGraphSpace: A Lightweight Interface Between 'ggplot2' and 'igraph' Objects
+https://cran.r-project.org/package=RGraphSpace
+
+* SpotSpace: Methods for Projecting Network Signals in Spatial Transcriptomics
+https://github.com/sysbiolab/SpotSpace
+
+* RedeR: Interactive visualization and manipulation of nested networks
 https://bioconductor.org/packages/RedeR/
-
-* Cardoso MA, Rizzardi LEA, Kume LW, Groeneveld C, Trefflich S, Morais DAA, Dalmolin RJS, Ponder BAJ, Meyer KB, Castro MAA. "TreeAndLeaf: an R/Bioconductor package for graphs and trees with focus on the leaves." *Bioinformatics*, 38(5):1463-1464, 2022. https://bioconductor.org/packages/TreeAndLeaf/
-
-* Csardi G and Nepusz T. "The Igraph Software Package for Complex Network Research." *InterJournal*, ComplexSystems:1695, 2006. https://igraph.org
 
 
 # Session information
