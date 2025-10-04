@@ -82,7 +82,7 @@
 #' @importFrom ggplot2 ggplot annotate element_text theme theme_bw theme_gray
 #' @importFrom ggplot2 scale_x_continuous scale_y_continuous expansion
 #' @importFrom ggplot2 aes scale_fill_gradientn annotation_raster
-#' @importFrom ggplot2 coord_fixed geom_raster
+#' @importFrom ggplot2 coord_fixed geom_raster labs
 #' @importFrom ggplot2 margin element_blank element_rect element_line
 #' @importFrom ggrepel geom_text_repel
 #' @importFrom grDevices convertColor col2rgb rgb as.raster
@@ -209,7 +209,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     }
     
     #--- initialize a ggplot
-    ggp <- .set_pspace(gxyz, xlab, ylab, zlab, cl, si.color)
+    ggp <- .set_pspace(gxyz, zlab, cl, si.color)
     
     #--- add image
     if(pars$image.layer){
@@ -220,8 +220,12 @@ setMethod("plotPathwaySpace", "PathwaySpace",
         ggi <- .add_image(ggp, img)
         if(add.grid) ggi <- .add_grid(ggi, gxyz, grid.color)
         ggi <- .custom_themes(ggi, theme, font.size, bg.color)
+        ggi <- ggi + ggplot2::labs(x=xlab, y=ylab)
       }
     }
+    
+    #--- add labels
+    ggp <- ggp + ggplot2::labs(x=xlab, y=ylab, fill = zlab)
     
     #--- add main projection
     ggp <- ggp + ggplot2::geom_raster(interpolate = FALSE, 
@@ -340,16 +344,16 @@ setMethod("plotPathwaySpace", "PathwaySpace",
 }
 
 #-------------------------------------------------------------------------------
-.set_pspace <- function(gxyz, xlab, ylab, zlab, cl, si.color){
+.set_pspace <- function(gxyz, zlab, cl, si.color){
   X <- Y <- Z <- NULL
   ggp <- ggplot2::ggplot(gxyz, ggplot2::aes(X, Y, fill = Z)) +
-    ggplot2::scale_x_continuous(name = xlab, breaks = cl$axis.ticks,
+    ggplot2::scale_x_continuous(breaks = cl$axis.ticks,
       labels = format(cl$axis.ticks), position = cl$x.position,
       limits = cl$xylim, expand = ggplot2::expansion(mult = 0)) +
-    ggplot2::scale_y_continuous(name = ylab, breaks = cl$axis.ticks,
+    ggplot2::scale_y_continuous(breaks = cl$axis.ticks,
       labels = format(cl$axis.ticks), limits = cl$xylim,
       expand = ggplot2::expansion(mult = 0)) +
-    ggplot2::scale_fill_gradientn(name = zlab, limits = cl$zlim,
+    ggplot2::scale_fill_gradientn(limits = cl$zlim,
       breaks = cl$breaks, labels = names(cl$breaks),
       colours = cl$pal, aesthetics = "fill", na.value = si.color) +
     ggplot2::coord_fixed()

@@ -105,7 +105,7 @@ Next, we will create a *PathwaySpace-class* object using the `buildPathwaySpace(
 p_space1 <- buildPathwaySpace(g_space1)
 ```
 
-As a default behavior, the `buildPathwaySpace()` constructor initializes the signal of each vertex as `0`. We can use the `length()`, `names()`, and `vertexSignal()` accessors to get and set vertex signals in the *PathwaySpace* object; for example, in order to get vertex names and signal values:
+As a default behavior, the `buildPathwaySpace()` constructor initializes the signal of each vertex as `0`. We can use the `vertexSignal()` accessor to get and set vertex signals in a *PathwaySpace* object; for example, in order to get vertex names and signal values:
 
 ```{r PathwaySpace constructor - 2, eval=TRUE, message=FALSE, results='hide'}
 # Check the number of vertices in the PathwaySpace object
