@@ -10,26 +10,18 @@
 
 
 
-<meta name="date" content="2025-09-26" />
+<meta name="date" content="2025-10-04" />
 
 <title>Installation Instructions</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
-<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<style>h1 {font-size: 34px;}
-       h1.title {font-size: 38px;}
-       h2 {font-size: 30px;}
-       h3 {font-size: 24px;}
-       h4 {font-size: 18px;}
-       h5 {font-size: 16px;}
-       h6 {font-size: 12px;}
-       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
-       pre:not([class]) { background-color: white }</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
+<script src="site_libs/bs3compat-0.9.0/transition.js"></script>
+<script src="site_libs/bs3compat-0.9.0/tabs.js"></script>
+<script src="site_libs/bs3compat-0.9.0/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -258,11 +250,23 @@ $(document).ready(function () {
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Introductory Vignettes</li>
     <li>
-      <a href="visualizing-feature-sets.html">Visualizing feature sets</a>
+      <a href="projection-methods.html">PathwaySpace projection methods</a>
     </li>
     <li>
-      <a href="visualizing-spatial-transcriptomics.html">Visualizing spatial transcriptomics</a>
+      <a href="modeling-signal-decay.html">Modeling signal decay functions</a>
+    </li>
+    <li>
+      <a href="signal-aggregation-rules.html">Creating signal aggregation rules</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Visualizing features</li>
+    <li>
+      <a href="sparse-feature-sets.html">Sparse feature sets</a>
+    </li>
+    <li>
+      <a href="spatial-transcriptomics-doc1.html">Spatial transcriptomics</a>
     </li>
   </ul>
 </li>
@@ -290,22 +294,20 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Installation Instructions</h1>
-<h4 class="date">2025-09-26</h4>
+<h4 class="date">2025-10-04</h4>
 
 </div>
 
 
 <p>To install <em>PathwaySpace</em>, R version 4.4 or greater is
 required.</p>
-<p><br/></p>
-<div id="release-version" class="section level3">
-<h3>Release version</h3>
+<div id="release-version" class="section level2">
+<h2>Release version</h2>
 <pre class="r"><code># Release version from CRAN
 install.packages(&quot;PathwaySpace&quot;)</code></pre>
-<p><br/></p>
 </div>
-<div id="development-version" class="section level3">
-<h3>Development version</h3>
+<div id="development-version" class="section level2">
+<h2>Development version</h2>
 <pre class="r"><code># Dependencies to build the vignettes
 install.packages(&quot;knitr&quot;)
 install.packages(&quot;rmarkdown&quot;)
@@ -320,10 +322,9 @@ remotes::install_github(&quot;sysbiolab/SpotSpace&quot;, build_vignettes=TRUE)
 
 # Data package used in the extension
 remotes::install_github(&quot;satijalab/seurat-data&quot;)</code></pre>
-<p><br/></p>
 </div>
-<div id="citation" class="section level3">
-<h3>Citation</h3>
+<div id="citation" class="section level2">
+<h2>Citation</h2>
 <p>If you use <em>PathwaySpace</em>, please cite:</p>
 <ul>
 <li><p>Tercan &amp; Apolonio <em>et al.</em> Protocol for assessing
@@ -336,10 +337,9 @@ to TCGA molecular subtypes using compact feature sets. <em>Cancer
 Cell</em>, 2025. <a href="https://doi.org/10.1016/j.ccell.2024.12.002"
 class="uri">https://doi.org/10.1016/j.ccell.2024.12.002</a></p></li>
 </ul>
-<p><br/></p>
 </div>
-<div id="licenses" class="section level3">
-<h3>Licenses</h3>
+<div id="licenses" class="section level2">
+<h2>Licenses</h2>
 <p>The <em>PathwaySpace</em> package is distributed under <a
 href="https://www.r-project.org/Licenses/Artistic-2.0">Artistic-2.0</a></p>
 </div>

@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Sysbiolab Team" />
+
+<meta name="date" content="2025-10-04" />
+
+<title>Network signal projections</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
+<script src="site_libs/bs3compat-0.9.0/transition.js"></script>
+<script src="site_libs/bs3compat-0.9.0/tabs.js"></script>
+<script src="site_libs/bs3compat-0.9.0/bs3compat.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PathwaySpace</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="install.html">Install</a>
+</li>
+<li>
+  <a href="get-started.html">Get Started</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Vignettes
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Introductory Vignettes</li>
+    <li>
+      <a href="projection-methods.html">PathwaySpace projection methods</a>
+    </li>
+    <li>
+      <a href="modeling-signal-decay.html">Modeling signal decay functions</a>
+    </li>
+    <li>
+      <a href="signal-aggregation-rules.html">Creating signal aggregation rules</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Visualizing features</li>
+    <li>
+      <a href="sparse-feature-sets.html">Sparse feature sets</a>
+    </li>
+    <li>
+      <a href="spatial-transcriptomics-doc1.html">Spatial transcriptomics</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/sysbiolab/PathwaySpace">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Network signal projections</h1>
+<h3 class="subtitle">A guided tutorial on <em>PathwaySpace</em>
+projection methods</h3>
+<h4 class="author">Sysbiolab Team</h4>
+<h4 class="date">2025-10-04</h4>
+
+</div>
+
+
+<p><strong>Package</strong>: PathwaySpace 1.0.3 <br/></p>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>In this tutorial, you’ll get to know the main <em>PathwaySpace</em>
+methods through simple toy examples. We’ll walk through how to set up
+the input data and run basic graph projections. These examples are
+designed to give users a feel for the core workflow before diving into
+larger or real-world datasets.</p>
+</div>
+<div id="setting-basic-input-data" class="section level1">
+<h1>Setting basic input data</h1>
+<pre class="r"><code>#--- Load required packages for this section
+library(igraph)
+library(ggplot2)
+library(RGraphSpace)
+library(PathwaySpace)</code></pre>
+<p>This section will create an <em>igraph</em> object containing a
+binary signal associated to each vertex. The graph layout is configured
+manually to ensure that users can easily view all the relevant arguments
+needed to prepare the input data for the <em>PathwaySpace</em> package.
+The <em>igraph</em>’s <code>make_star()</code> function creates a
+star-like graph and the <code>V()</code> function is used to set
+attributes for the vertices. The <em>PathwaySpace</em> package will
+require that all vertices have <code>x</code>, <code>y</code>, and
+<code>name</code> attributes.</p>
+<pre class="r"><code># Make a &#39;toy&#39; igraph object, either a directed or undirected graph
+gtoy1 &lt;- make_star(5, mode=&quot;undirected&quot;)
+
+# Assign &#39;x&#39; and &#39;y&#39; coordinates to each vertex
+# ..this can be an arbitrary unit in (-Inf, +Inf)
+V(gtoy1)$x &lt;- c(0, 2, -2, -4, -8)
+V(gtoy1)$y &lt;- c(0, 0,  2, -4,  0)
+
+# Assign a &#39;name&#39; to each vertex (here, from n1 to n5)
+V(gtoy1)$name &lt;- paste0(&quot;n&quot;, 1:5)</code></pre>
+<div id="checking-graph-validity" class="section level2">
+<h2>Checking graph validity</h2>
+<p>Next, we will create a <em>GraphSpace-class</em> object using the
+<code>GraphSpace()</code> constructor. This function will check the
+validity of the <em>igraph</em> object. For this example
+<code>mar = 0.2</code>, which sets the outer margins as a fraction of
+the 2D space.</p>
+<pre class="r"><code># Check graph validity
+g_space1 &lt;- GraphSpace(gtoy1, mar = 0.2)</code></pre>
+<p>Our graph is now ready for the <em>PathwaySpace</em> package. We can
+check its layout using the <code>plotGraphSpace()</code> function.</p>
+<pre class="r"><code># Check the graph layout
+plotGraphSpace(g_space1, add.labels = TRUE)</code></pre>
+<p><img src="figs_intro/fig2.png" width="100%" /></p>
+</div>
+<div id="creating-a-pathwayspace-object" class="section level2">
+<h2>Creating a <em>PathwaySpace</em> object</h2>
+<p>Next, we will create a <em>PathwaySpace-class</em> object using the
+<code>buildPathwaySpace()</code> constructor. This will calculate
+pairwise distances between vertices, subsequently required by the signal
+projection methods.</p>
+<pre class="r"><code># Run the PathwaySpace constructor
+p_space1 &lt;- buildPathwaySpace(g_space1)</code></pre>
+<p>As a default behavior, the <code>buildPathwaySpace()</code>
+constructor initializes the signal of each vertex as <code>0</code>. We
+can use the <code>vertexSignal()</code> accessor to get and set vertex
+signals in a <em>PathwaySpace</em> object; for example, in order to get
+vertex names and signal values:</p>
+<pre class="r"><code># Check the number of vertices in a PathwaySpace object
+gs_vcount(p_space1)
+## [1] 5
+
+# Check vertex names
+names(p_space1)
+## [1] &quot;n1&quot; &quot;n2&quot; &quot;n3&quot; &quot;n4&quot; &quot;n5&quot;
+
+# Check signal (initialized with &#39;0&#39;)
+vertexSignal(p_space1)
+## n1 n2 n3 n4 n5 
+##  0  0  0  0  0</code></pre>
+<p>…and for setting new signal values in the <em>PathwaySpace</em>
+object:</p>
+<pre class="r"><code># Set new signal to all vertices
+vertexSignal(p_space1) &lt;- c(1, 4, 2, 4, 3)
+
+# Set a new signal to the 1st vertex
+vertexSignal(p_space1)[1] &lt;- 2
+
+# Set a new signal to vertex &quot;n1&quot;
+vertexSignal(p_space1)[&quot;n1&quot;] &lt;- 6
+
+# Check updated signal values
+vertexSignal(p_space1)
+## n1 n2 n3 n4 n5 
+##  6  4  2  4  3</code></pre>
+</div>
+</div>
+<div id="signal-projection" class="section level1">
+<h1>Signal projection</h1>
+<div id="circular-projection" class="section level2">
+<h2>Circular projection</h2>
+<p>Following that, we will use the <code>circularProjection()</code>
+function to project the network signals, setting
+<code>pdist = 0.4</code>. This term determines a distance unit for the
+signal convolution, affecting the extent over which the convolution
+operation projects the signal. For example, when <code>pdist = 1</code>,
+it will represent the diameter of the inscribed circle within the
+coordinate space. We also set <code>k = 1</code>, which defines the
+contributing vertices for signal convolution. In this case, each
+<em>null-signal position</em> will receive the projection from a single
+<em>vertex-signal position</em> (<em>i.e.</em> the highest signal
+intensity in pathway space reaching that position). We then create a
+landscape image using the <code>plotPathwaySpace()</code> function.</p>
+<pre class="r"><code># Run signal projection
+p_space1 &lt;- circularProjection(p_space1, pdist = 0.4, k = 1)
+
+# Plot a PathwaySpace image
+plotPathwaySpace(p_space1, add.marks = TRUE)</code></pre>
+<p><img src="figs_intro/fig3.png" width="100%" /></p>
+<p>Next, we reassess the same <em>PathwaySpace</em> object, using
+<code>pdist = 0.2</code>, <code>k = 2</code> and adjusting the
+<code>shape</code> of the decay function, which is passed to the
+<code>circularProjection()</code> function via <code>decay.fun</code>
+argument.</p>
+<pre class="r"><code># Re-run signal projection, adjusting Weibull&#39;s shape
+p_space1 &lt;- circularProjection(p_space1, pdist = 0.2, k = 2, 
+  decay.fun = signalDecay(shape = 2))
+
+# Plot PathwaySpace
+plotPathwaySpace(p_space1, marks = &quot;n1&quot;, theme = &quot;th2&quot;)</code></pre>
+<p><img src="figs_intro/fig4.png" width="100%" /></p>
+<p>The <code>shape</code> parameter allows a projection to take a
+variety of shapes. When <code>shape = 1</code> the projection follows an
+exponential decay, and when <code>shape &gt; 1</code> the projection is
+first convex, then concave with an inflection point along the decay
+path. For additional examples see documentation of the
+<code>weibullDecay()</code> function.</p>
+</div>
+<div id="polar-projection" class="section level2">
+<h2>Polar projection</h2>
+<p>In this section we will project the network signal using a polar
+coordinate system. This representation may be useful for certain types
+of data, for example, to highlight patterns of signal propagation on
+directed graphs, especially to explore the orientation aspect of signal
+flow. To demonstrate this feature we will used the <code>gtoy2</code>
+directed graph, available in the <em>RGraphSpace</em> package.</p>
+<pre class="r"><code># Load a pre-processed directed igraph object
+data(&quot;gtoy2&quot;, package = &quot;RGraphSpace&quot;)
+# Check graph validity
+g_space2 &lt;- GraphSpace(gtoy2, mar = 0.2)</code></pre>
+<pre class="r"><code># Check the graph layout
+plotGraphSpace(g_space2, add.labels = TRUE)</code></pre>
+<p><img src="figs_intro/fig5.png" width="100%" /></p>
+<pre class="r"><code># Build a PathwaySpace for the &#39;g_space2&#39;
+p_space2 &lt;- buildPathwaySpace(g_space2)
+
+# Set &#39;1s&#39; as vertex signal
+vertexSignal(p_space2) &lt;- 1</code></pre>
+<p>For fine-grained modeling of signal decay, the
+<code>vertexDecay()</code> accessor allows assigning decay functions at
+the level of individual vertices. For example, adjusting Weibull’s
+<code>shape</code> argument for node <code>n6</code>:</p>
+<pre class="r"><code># Modify decay function
+# ..for all vertices
+vertexDecay(p_space2) &lt;- signalDecay(shape=2)
+# ..for individual vertices
+vertexDecay(p_space2)[[&quot;n6&quot;]] &lt;- signalDecay(shape=3)</code></pre>
+<p>Next, we run the signal projection using polar coordinates. The
+<code>beta</code> exponent will control the angular span; for values
+greater than zero, <code>beta</code> will progressively narrow the
+projection along the edge axis. Also, in the
+<code>polarProjection()</code> function, the <code>pdist</code> term
+will define a distance unit related to edge length, aiming to constrain
+signal projections within edge bounds. Here we set
+<code>pdist = 1</code> to reach full edge lengths.</p>
+<pre class="r"><code># Run signal projection using polar coordinates
+p_space2 &lt;- polarProjection(p_space2, pdist = 1, beta = 10)
+
+# Plot PathwaySpace
+plotPathwaySpace(p_space2, theme = &quot;th2&quot;, add.marks = TRUE)</code></pre>
+<p><img src="figs_intro/fig6.png" width="100%" /></p>
+<p>Note that this projection distributes signals on the edges regardless
+of direction. To incorporate edge orientation, we set
+<code>directional = TRUE</code>, which channels the projection along the
+paths:</p>
+<pre class="r"><code># Re-run signal projection using &#39;directional = TRUE&#39;
+p_space2 &lt;- polarProjection(p_space2, pdist = 1, beta = 10, directional = TRUE)
+
+# Plot PathwaySpace
+plotPathwaySpace(p_space2, theme = &quot;th2&quot;, marks = c(&quot;n1&quot;,&quot;n3&quot;,&quot;n4&quot;,&quot;n5&quot;))</code></pre>
+<p><img src="figs_intro/fig7.png" width="100%" /></p>
+<p>This <em>PathwaySpace</em> polar projection emphasizes the signal
+flow along the directional pattern of a directed graph (see the
+<em>igraph</em> plot above). When interpreting, users should note that
+this approach introduces simplifications; for example, depending on the
+network topology, the polar projection may fail to capture complex
+features of directed graphs, such as cyclic dependencies, feedforward
+and feedback loops, or other intricate interactions.</p>
+</div>
+</div>
+<div id="signal-types" class="section level1">
+<h1>Signal types</h1>
+<p>The <em>PathwaySpace</em> accepts binary, integer, and numeric signal
+types, including <code>NAs</code>. If a vertex signal is assigned with
+<code>NA</code>, it will be ignored by the convolution algorithm.
+Logical values are also allowed, but it will be treated as binary. Next,
+we show the projection of a signal that includes negative values, using
+the <code>p_space1</code> object created previously.</p>
+<pre class="r"><code># Set a negative signal to vertices &quot;n3&quot; and &quot;n4&quot;
+vertexSignal(p_space1)[c(&quot;n3&quot;,&quot;n4&quot;)] &lt;- c(-2, -4)
+
+# Check updated signal vector
+vertexSignal(p_space1)
+# n1 n2 n3 n4 n5 
+#  6  4 -2 -4  3 
+
+# Re-run signal projection
+p_space1 &lt;- circularProjection(p_space1, decay.fun = signalDecay(shape = 2))
+
+# Plot PathwaySpace
+plotPathwaySpace(p_space1, bg.color = &quot;white&quot;, font.color = &quot;grey20&quot;, add.marks = TRUE, mark.color = &quot;magenta&quot;, theme = &quot;th2&quot;)</code></pre>
+<p><img src="figs_intro/fig8.png" width="100%" /></p>
+<p>Note that the original signal vector was rescale to
+<code>[-1, +1]</code>. If the signal vector is <code>&gt;=0</code>, then
+it will be rescaled to <code>[0, 1]</code>; if the signal vector is
+<code>&lt;=0</code>, it will be rescaled to <code>[-1, 0]</code>; and if
+the signal vector is in <code>(-Inf, +Inf)</code>, then it will be
+rescaled to <code>[-1, +1]</code>. To override this signal processing,
+simply set <code>rescale = FALSE</code> in the projection function.</p>
+</div>
+<div id="citation" class="section level1">
+<h1>Citation</h1>
+<p>If you use <em>PathwaySpace</em>, please cite:</p>
+<ul>
+<li><p>Tercan &amp; Apolonio et al. Protocol for assessing distances in
+pathway space for classifier feature sets from machine learning methods.
+<em>STAR Protocols</em> 6(2):103681, 2025. <a
+href="https://doi.org/10.1016/j.xpro.2025.103681"
+class="uri">https://doi.org/10.1016/j.xpro.2025.103681</a></p></li>
+<li><p>Ellrott et al. Classification of non-TCGA cancer samples to TCGA
+molecular subtypes using compact feature sets. <em>Cancer Cell</em>
+43(2):195-212.e11, 2025. <a
+href="https://doi.org/10.1016/j.ccell.2024.12.002"
+class="uri">https://doi.org/10.1016/j.ccell.2024.12.002</a></p></li>
+</ul>
+</div>
+<div id="session-information" class="section level1">
+<h1>Session information</h1>
+<pre><code>## R version 4.5.1 (2025-06-13)
+## Platform: x86_64-pc-linux-gnu
+## Running under: Ubuntu 24.04.3 LTS
+## 
+## Matrix products: default
+## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
+## LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0
+## 
+## locale:
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## 
+## time zone: America/Sao_Paulo
+## tzcode source: system (glibc)
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] SpotSpace_0.0.1    PathwaySpace_1.0.3 RGraphSpace_1.1.0  ggplot2_3.5.2.9001
+## [5] igraph_2.1.4       bs4cards_0.1.1    
+## 
+## loaded via a namespace (and not attached):
+##   [1] deldir_2.0-4           pbapply_1.7-4          gridExtra_2.3         
+##   [4] rlang_1.1.6            magrittr_2.0.4         RcppAnnoy_0.0.22      
+##   [7] spatstat.geom_3.5-0    matrixStats_1.5.0      ggridges_0.5.7        
+##  [10] compiler_4.5.1         png_0.1-8              vctrs_0.6.5           
+##  [13] reshape2_1.4.4         stringr_1.5.2          pkgconfig_2.0.3       
+##  [16] fastmap_1.2.0          fontawesome_0.5.3      promises_1.3.3        
+##  [19] rmarkdown_2.29         purrr_1.1.0            xfun_0.53             
+##  [22] cachem_1.1.0           jsonlite_2.0.0         goftest_1.2-3         
+##  [25] later_1.4.4            spatstat.utils_3.1-5   irlba_2.3.5.1         
+##  [28] parallel_4.5.1         cluster_2.1.8.1        R6_2.6.1              
+##  [31] ica_1.0-3              spatstat.data_3.1-8    bslib_0.9.0           
+##  [34] stringi_1.8.7          RColorBrewer_1.1-3     reticulate_1.43.0     
+##  [37] spatstat.univar_3.1-4  parallelly_1.45.1      lmtest_0.9-40         
+##  [40] jquerylib_0.1.4        scattermore_1.2        Rcpp_1.1.0            
+##  [43] knitr_1.50             tensor_1.5.1           future.apply_1.20.0   
+##  [46] zoo_1.8-14             sctransform_0.4.2      httpuv_1.6.16         
+##  [49] Matrix_1.7-4           splines_4.5.1          tidyselect_1.2.1      
+##  [52] abind_1.4-8            rstudioapi_0.17.1      yaml_2.3.10           
+##  [55] spatstat.random_3.4-1  spatstat.explore_3.5-2 codetools_0.2-20      
+##  [58] miniUI_0.1.2           listenv_0.9.1          lattice_0.22-5        
+##  [61] tibble_3.3.0           plyr_1.8.9             shiny_1.11.1          
+##  [64] withr_3.0.2            S7_0.2.0               ROCR_1.0-11           
+##  [67] evaluate_1.0.5         Rtsne_0.17             future_1.67.0         
+##  [70] fastDummies_1.7.5      survival_3.8-3         polyclip_1.10-7       
+##  [73] fitdistrplus_1.2-4     pillar_1.11.0          Seurat_5.3.1.0000     
+##  [76] KernSmooth_2.23-26     plotly_4.11.0          generics_0.1.4        
+##  [79] RcppHNSW_0.6.0         sp_2.2-0               scales_1.4.0          
+##  [82] globals_0.18.0         xtable_1.8-4           glue_1.8.0            
+##  [85] lazyeval_0.2.2         tools_4.5.1            data.table_1.17.8     
+##  [88] RSpectra_0.16-2        RANN_2.6.2             fs_1.6.6              
+##  [91] dotCall64_1.2          cowplot_1.2.0          grid_4.5.1            
+##  [94] tidyr_1.3.1            nlme_3.1-168           patchwork_1.3.2       
+##  [97] cli_3.6.5              spatstat.sparse_3.1-0  spam_2.11-1           
+## [100] viridisLite_0.4.2      dplyr_1.1.4            uwot_0.2.3            
+## [103] gtable_0.3.6           sass_0.4.10            digest_0.6.37         
+## [106] progressr_0.15.1       ggrepel_0.9.6          htmlwidgets_1.6.4     
+## [109] SeuratObject_5.2.0     farver_2.1.2           htmltools_0.5.8.1     
+## [112] lifecycle_1.0.4        httr_1.4.7             mime_0.13             
+## [115] MASS_7.3-65</code></pre>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

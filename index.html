@@ -11,26 +11,18 @@
 
 <meta name="author" content="Sysbiolab Team" />
 
-<meta name="date" content="2025-09-26" />
+<meta name="date" content="2025-10-04" />
 
-<title>PathwaySpace: Spatial projection of network signals along geodesic paths.</title>
+<title>PathwaySpace: Projection of network signals along geodesic paths</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
-<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<style>h1 {font-size: 34px;}
-       h1.title {font-size: 38px;}
-       h2 {font-size: 30px;}
-       h3 {font-size: 24px;}
-       h4 {font-size: 18px;}
-       h5 {font-size: 16px;}
-       h6 {font-size: 12px;}
-       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
-       pre:not([class]) { background-color: white }</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
+<script src="site_libs/bs3compat-0.9.0/transition.js"></script>
+<script src="site_libs/bs3compat-0.9.0/tabs.js"></script>
+<script src="site_libs/bs3compat-0.9.0/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -259,11 +251,23 @@ $(document).ready(function () {
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Introductory Vignettes</li>
     <li>
-      <a href="visualizing-feature-sets.html">Visualizing feature sets</a>
+      <a href="projection-methods.html">PathwaySpace projection methods</a>
     </li>
     <li>
-      <a href="visualizing-spatial-transcriptomics.html">Visualizing spatial transcriptomics</a>
+      <a href="modeling-signal-decay.html">Modeling signal decay functions</a>
+    </li>
+    <li>
+      <a href="signal-aggregation-rules.html">Creating signal aggregation rules</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Visualizing features</li>
+    <li>
+      <a href="sparse-feature-sets.html">Sparse feature sets</a>
+    </li>
+    <li>
+      <a href="spatial-transcriptomics-doc1.html">Spatial transcriptomics</a>
     </li>
   </ul>
 </li>
@@ -290,27 +294,28 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore"><em>PathwaySpace</em>: Spatial projection
-of network signals along geodesic paths.</h1>
+<h1 class="title toc-ignore"><em>PathwaySpace</em>: Projection of
+network signals along geodesic paths</h1>
 <h4 class="author">Sysbiolab Team</h4>
-<h4 class="date">2025-09-26</h4>
+<h4 class="date">2025-10-04</h4>
 
 </div>
 
 
-<p><br/> <strong>Package</strong>: PathwaySpace 1.0.3 <br/></p>
-<div id="highlights" class="section level2">
-<h2>Highlights</h2>
+<p><strong>Package</strong>: PathwaySpace 1.0.3 <br/></p>
+<div id="highlights" class="section level1">
+<h1>Highlights</h1>
 <ul>
-<li>Produces landscape images representing graphs by geodesic paths</li>
+<li>Produces landscape images representing graphs by geodesic
+paths.</li>
 <li>Projects signals using a decay function to model signal
-attenuation</li>
+attenuation.</li>
 <li>Applies a convolution algorithm to combine signals from neighboring
-vertices</li>
+vertices.</li>
 </ul>
 </div>
-<div id="overview" class="section level2">
-<h2>Overview</h2>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
 <p>For a given <em>igraph</em> object containing vertices, edges, and a
 signal associated with the vertices, <em>PathwaySpace</em> performs a
 convolution operation, which involves a weighted combination of
@@ -355,10 +360,9 @@ of vertices that may exhibit distinct behaviors. The resulting image
 forms geodesic paths in which the signal has been projected from vertex-
 to null-signal positions, using a density metric to measure the signal
 intensity along these paths.</p>
-<p><br/></p>
 </div>
-<div id="citation" class="section level2">
-<h2>Citation</h2>
+<div id="citation" class="section level1">
+<h1>Citation</h1>
 <p>If you use <em>PathwaySpace</em>, please cite:</p>
 <ul>
 <li><p>Tercan &amp; Apolonio et al. Protocol for assessing distances in
@@ -372,10 +376,9 @@ molecular subtypes using compact feature sets. <em>Cancer Cell</em>
 href="https://doi.org/10.1016/j.ccell.2024.12.002"
 class="uri">https://doi.org/10.1016/j.ccell.2024.12.002</a></p></li>
 </ul>
-<p><br/></p>
 </div>
-<div id="licenses" class="section level2">
-<h2>Licenses</h2>
+<div id="licenses" class="section level1">
+<h1>Licenses</h1>
 <p>The <em>PathwaySpace</em> package is distributed under <a
 href="https://www.r-project.org/Licenses/Artistic-2.0">Artistic-2.0</a></p>
 </div>
