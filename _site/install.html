@@ -299,8 +299,8 @@ $(document).ready(function () {
 </div>
 
 
-<p>To install <em>PathwaySpace</em>, R version 4.4 or greater is
-required.</p>
+<p>To install <em>PathwaySpace</em>, R version <a
+href="https://www.r-project.org/">4.4</a> or greater is required.</p>
 <div id="release-version" class="section level2">
 <h2>Release version</h2>
 <pre class="r"><code># Release version from CRAN
@@ -315,12 +315,14 @@ install.packages(&quot;remotes&quot;)
 
 # Main packages
 remotes::install_github(&quot;sysbiolab/RGraphSpace&quot;, build_vignettes=TRUE)
-remotes::install_github(&quot;sysbiolab/PathwaySpace&quot;, build_vignettes=TRUE)
-
-# Extension
+remotes::install_github(&quot;sysbiolab/PathwaySpace&quot;, build_vignettes=TRUE)</code></pre>
+</div>
+<div id="extension" class="section level2">
+<h2>Extension</h2>
+<pre class="r"><code># The SpotSpace package extends PathwaySpace for spatial transcriptomics
 remotes::install_github(&quot;sysbiolab/SpotSpace&quot;, build_vignettes=TRUE)
 
-# Data package used in the extension
+# Data package used in the SpotSpace vignette
 remotes::install_github(&quot;satijalab/seurat-data&quot;)</code></pre>
 </div>
 <div id="citation" class="section level2">

@@ -1,0 +1,234 @@
+---
+title: "Visualizing spatial transcriptomics"
+subtitle: "Gene expression projections on spot coordinates"
+author: "Sysbiolab Team"
+date: "`r Sys.Date()`"
+bibliography: bibliography.bib
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**Package**: PathwaySpace `r packageVersion('PathwaySpace')`
+<br/>
+
+
+# Overview
+
+This tutorial will introduce the *SpotSpace* package, an extension to *PathwaySpace* alongside *Seurat* workflows, providing methods for signal propagation and visualization in spatial transcriptomics. By integrating signal processing with spatial visualization, *SpotSpace* allows users to project network signals onto spot coordinates to explore signal patterns in tissue microenvironments.
+
+```{r Required packages, eval=TRUE, message=FALSE}
+# The SpotSpace and SeuratData packages are required for this vignette:
+if (!require("remotes", quietly = TRUE)){
+  install.packages("remotes")
+}
+if (!require("SpotSpace", quietly = TRUE)){
+  remotes::install_github("sysbiolab/SpotSpace")
+}
+if (!require("SeuratData", quietly = TRUE)){
+  remotes::install_github("satijalab/seurat-data")
+}
+```
+
+
+# Setting input data
+
+For this tutorial, we will use the `stxBrain` dataset from the *SeuratData* package, consisting of spatial transcriptomics data from sagittal mouse brain sections generated with Visium v1 technology. This dataset is commonly used to demonstrate *Seurat* spatial workflows [@Yuhan2024]. Here, we will preprocess it with *Seurat* and then extract the relevant data for *PathwaySpace* downstream analyses.
+
+```{r Load packages, eval=TRUE, message=FALSE}
+#--- Load SpotSpace
+library(RGraphSpace)
+library(PathwaySpace)
+library(SpotSpace)
+#--- Load other required packages for this section
+library(Seurat)
+library(SeuratObject)
+library(SeuratData)
+library(patchwork)
+```
+
+```{r Intall dataset, eval=FALSE, message=FALSE, results='hide'}
+## Install a Seurat dataset (this step is required only once)
+SeuratData::InstallData("stxBrain")
+```
+
+```{r Load dataset, eval=FALSE, message=FALSE, results='hide'}
+# Load the 'stxBrain' dataset
+brain <- LoadData("stxBrain", type = "anterior1")
+```
+
+The `stxBrain` dataset is normalized as suggested in *Seurat*'s [spatial_vignette](https://satijalab.org/seurat/articles/spatial_vignette.html){target="_blank" rel="noopener"}, using the `SCTransform()` function.
+
+```{r Preprocess data, eval=FALSE, message=FALSE, results='hide'}
+# Run vst normalization on counts
+brain <- SCTransform(brain, assay = "Spatial", verbose = FALSE)
+```
+
+... and then we extract spot coordinates, tissue image, and vst-normalized data.
+
+```{r Extract data, eval=FALSE, message=FALSE, results='hide'}
+# Get spot coordinates
+spot_coord <- GetTissueCoordinates(brain, scale = "lowres")
+
+# Get raster image
+raster_image <- GetImage(brain, "raster")
+
+# Get vst-normalized gene expression
+vst_gexp <- GetAssayData(brain, layer="data")
+```
+
+Next, we create a *PathwaySpace* object from the spot coordinates and plot the resulting graph overlaid on the tissue image.
+
+```{r Create a PathwaySpace, eval=FALSE, message=FALSE}
+# Create a PathwaySpace object from 'spot_coord', mapped to the 'raster_image'
+ps_brain <- buildSpotSpace(spot_coord = spot_coord, raster_image = raster_image)
+```
+
+```{r Plot GraphSpace, eval=FALSE, message=FALSE}
+# Check spots on the top of the 'raster_image'
+xy_labs <- labs(x="Spot coordinates 1", y="Spot coordinates 2")
+plotGraphSpace(ps_brain, add.image = TRUE) + xy_labs
+```
+
+```{r fig1.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+# gg <- plotGraphSpace(ps_brain, add.image = TRUE, 
+#   xlab = "Spot coordinates 1", ylab = "Spot coordinates 2")
+# ggsave(filename = "./figs_spot_space/fig1.png", height=4, width=5,
+#   units="in", device="png", dpi=300, plot=gg)
+```
+
+```{r fig1, echo=FALSE, out.width = '100%', purl=FALSE}
+knitr::include_graphics("figs_spot_space/fig1.png")
+```
+
+
+# Running *PathwaySpace*
+
+## Setting a distance unit
+
+Before projection, we need to specify a distance unit for the signal decay function. This distance unit will affect the extent over which the convolution operation projects the signal, scaled to the coordinate space. We will use the center-to-center distance between spots, which represents 100 µm in the Visium v1 technology.
+
+```{r Check spot distances, eval=FALSE, message=FALSE}
+# Get distance to the nearest spot
+nspot <- getNearestNode(ps_brain)
+pdist <- mean(nspot$dist) # average distance
+# The 'pdist' is the center-to-center distance between spots
+pdist
+# [1] 0.01395144
+```
+
+
+## Adding a graph silhouette
+
+As an optional step, the `silhouetteMapping()` function generates an image mask that outlines the graph layout, over which the subsequent methods will project a landscape image. The `baseline` argument controls the level at which a silhouette is sliced to form the mask. Increasing the baseline (in `[0,1]`) produces a more detailed, granular silhouette.
+
+```{r Add a graph silhouette to PathwaySpace, eval=FALSE, message=FALSE}
+# Add a graph silhouette to the PathwaySpace object
+ps_brain <- silhouetteMapping(ps_brain, baseline = 0.1)
+plotPathwaySpace(ps=ps_brain, theme = "th3", 
+  add.image = TRUE, si.alpha = 0.5) + xy_labs
+```
+
+```{r fig2.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+# gg <- plotPathwaySpace(ps=ps_brain, theme = "th3",
+#   add.image = TRUE, si.alpha = 0.5, xlab = "Spot coordinates 1", 
+#   ylab = "Spot coordinates 2")
+# ggsave(filename = "./figs_spot_space/fig2.png", height=4, width=5,
+#   units="in", device="png", dpi=300, plot=gg)
+```
+
+```{r fig2, echo=FALSE, out.width = '100%', purl=FALSE}
+knitr::include_graphics("figs_spot_space/fig2.png")
+```
+
+
+## Projecting gene expression
+
+Next, we specify the signal to be projected; for this demonstration, we will use expression data from the **Camk2n1** gene. The `vertexSignal()` accessor function is then used to assign the gene expression values to graph vertices.
+
+```{r Add signal to PathwaySpace, eval=FALSE, message=FALSE}
+# Assign gene expression values to graph vertices
+gene <- "Camk2n1"
+vertexSignal(ps_brain)[colnames(vst_gexp)] <- vst_gexp[gene,]
+```
+
+We then perform the signal projection, setting `decay = 0.5`. The decay parameter controls how the signal attenuates as a function of distance in pathway space. With `decay = 0.5`, the signal decreases to half of its initial value at a distance equal to `pdist`.
+
+```{r Run PathwaySpace, eval=FALSE, message=FALSE}
+# Project gene signal
+ps_brain <- circularProjection(ps_brain, pdist = pdist, 
+  k = gs_vcount(ps_brain), decay.fun = signalDecay(decay=0.5),
+  aggregate.fun = signalAggregation("wmean"))
+```
+
+Because each spot produces an independent projection, the resulting projections are aggregated into a unified landscape. Here we use a weighted arithmetic mean, with each projection weighted by its own magnitude. At each pixel of the landscape image, this function aggregates the `k`-top signals from the contributing spots for the convolution operation.
+
+Next, we show the results with minor variations to demonstrate plot settings.
+
+```{r Plot PathwaySpace - 1, eval=FALSE, message=FALSE}
+# Plot tissue image and projection separated 
+p1 <- plotPathwaySpace(ps=ps_brain, theme = "th3", title = gene)
+p1$image <- p1$image + xy_labs
+p1$graph <- p1$graph + xy_labs
+
+p1$image + p1$graph
+```
+
+```{r fig3.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+# ggsave(filename = "./figs_spot_space/fig3.png", height=4, width=7,
+#   units="in", device="png", dpi=200, plot = p1$image + p1$graph)
+```
+
+```{r fig3, echo=FALSE, out.width = '100%', purl=FALSE}
+knitr::include_graphics("figs_spot_space/fig3.png")
+```
+
+
+```{r Plot PathwaySpace - 2, eval=FALSE, message=FALSE}
+# Plot projections overlaid on the tissue image, with alpha = 0.25
+p2 <- plotPathwaySpace(ps=ps_brain, theme = "th3", title = gene, 
+  add.image = TRUE, si.alpha = 0.25) + xy_labs
+
+# Plot projections overlaid on the tissue image, with zlim truncated at >=0.5
+p3 <- plotPathwaySpace(ps=ps_brain, theme = "th3", title = gene, 
+  add.image = TRUE, si.alpha = 0.25, zlim = c(0.5, 1)) + xy_labs
+
+p2 + p3
+```
+
+```{r fig4.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
+# ggsave(filename = "./figs_spot_space/fig4.png", height=4, width=7,
+#   units="in", device="png", dpi=200, plot = p2 + p3)
+
+# ggsave(filename = "./figs_spot_space/card1.png", height=4, width=4,
+#   units="in", device="png", dpi=200, plot = p2)
+```
+
+```{r fig4, echo=FALSE, out.width = '100%', purl=FALSE}
+knitr::include_graphics("figs_spot_space/fig4.png")
+```
+
+
+# Citation
+
+If you use *PathwaySpace*, please cite:
+
+* Tercan & Apolonio et al. Protocol for assessing distances in pathway space for classifier feature sets from machine learning methods. *STAR Protocols* 6(2):103681, 2025. https://doi.org/10.1016/j.xpro.2025.103681
+
+* Ellrott et al. Classification of non-TCGA cancer samples to TCGA molecular subtypes using compact feature sets. *Cancer Cell* 43(2):195-212.e11, 2025. https://doi.org/10.1016/j.ccell.2024.12.002
+
+
+# Session information
+```{r label='Session information', eval=TRUE, echo=FALSE}
+sessionInfo()
+```
+
+
+# References
+
