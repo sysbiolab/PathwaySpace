@@ -13,7 +13,7 @@
 
 <meta name="date" content="2025-10-05" />
 
-<title>Visualizing sparse feature sets</title>
+<title>Visualizing sparse feature sets on large graphs</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -393,8 +393,8 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Visualizing sparse feature sets</h1>
-<h3 class="subtitle">Feature set projections on large graphs</h3>
+<h1 class="title toc-ignore">Visualizing sparse feature sets on large
+graphs</h1>
 <h4 class="author">Sysbiolab Team</h4>
 <h4 class="date">2025-10-05</h4>
 
@@ -404,15 +404,16 @@ div.tocify {
 <p><strong>Package</strong>: PathwaySpace 1.0.3 <br/></p>
 <div id="overview" class="section level1">
 <h1>Overview</h1>
-<p>In order to enhance clarity and make it less likely for viewers to
-miss important details of large graphs, in this section we will create a
-<em>PathwaySpace</em> object with <code>n = 12990</code> vertices, upon
-which we will project binary signals representing feature sets from a
-relatively small number of vertices. The projection will emphasize
-clusters of vertices forming <em>summits</em>. We will add silhouette
-outlines as decorative elements to preserve the visibility of the
-overall graph structure. The examples in this section are adapted from
-<span class="citation">Ellrott et al. (2025)</span> and <span
+<p>This tutorial creates a large <em>PathwaySpace</em> object with
+<code>n = 12990</code> vertices, upon which we will project binary
+signals representing feature sets from a relatively small number of
+vertices. The goal is to enhance clarity and make it less likely for
+viewers to miss important details of large graphs when only a limited
+number of features carry relevant information. The projections will
+emphasize clusters of vertices forming <em>summits</em>, and we will add
+silhouettes as decorative elements to outline the overall graph
+structure. The examples in this section are adapted from <span
+class="citation">Ellrott et al. (2025)</span> and <span
 class="citation">Tercan et al. (2025)</span>.</p>
 <p>Next, we will load an <em>igraph</em> object with
 <code>n = 12990</code> vertices, containing gene interaction data
@@ -447,9 +448,10 @@ g_space_PCv12 &lt;- GraphSpace(PCv12_pruned_igraph, mar = 0.1)</code></pre>
 <pre class="r"><code>## Visualize the graph layout labeled with &#39;top10hubs&#39; nodes
 plotGraphSpace(g_space_PCv12, node.labels = top10hubs, label.color = &quot;blue&quot;, theme = &quot;th3&quot;)</code></pre>
 <p><img src="figs_feature_sets/fig1.png" width="90%" /></p>
-<p>We will also load gene sets from the <em>MSigDB</em> collection <span
+<p>We now load gene sets from the <em>MSigDB</em> collection <span
 class="citation">(Liberzon et al. 2015)</span>, which are subsequently
-used to project a binary signal in the <em>PathwaySpace</em> image.</p>
+used to project a binary signal onto the <em>PathwaySpace</em>
+image.</p>
 <pre class="r"><code># Load a list with Hallmark gene sets
 data(&quot;Hallmarks_v2023_1_Hs_symbols&quot;, package = &quot;PathwaySpace&quot;)
 
@@ -472,7 +474,7 @@ interactions.</p>
 p_space_PCv12 &lt;- buildPathwaySpace(gs=g_space_PCv12, nrc=500)
 # Note: &#39;nrc&#39; sets the number of rows and columns of the
 # image space, which will affect the image resolution (in pixels)</code></pre>
-<p>…and now we mark the <em>HALLMARK_P53_PATHWAY</em> genes in the
+<p>…and mark the <em>HALLMARK_P53_PATHWAY</em> genes in the
 <em>PathwaySpace</em> object.</p>
 <pre class="r"><code># Intersect Hallmark genes with the PathwaySpace
 hallmarks &lt;- lapply(hallmarks, intersect, y = names(p_space_PCv12) )
@@ -502,10 +504,10 @@ plotPathwaySpace(p_space_PCv12, title=&quot;HALLMARK_P53_PATHWAY&quot;, marks = 
 values that are notably higher than the baseline level. These regions
 may be of interest for downstream analyses. One potential downstream
 analysis is to determine which vertices projected the original input
-signal. This could provide insights into the communities within these
-summit regions. One may also wish to explore other vertices within the
-summits, by querying associations with the original input gene set. In
-order to extract vertices within summits, next we use the
+signal. This could provide insights into communities within these summit
+regions. One may also wish to explore other vertices within the summits,
+by querying associations with the original input gene set. In order to
+extract vertices within summits, next we use the
 <code>summitMapping()</code> function, which also decorate summits with
 contour lines.</p>
 <pre class="r"><code># Mapping summits

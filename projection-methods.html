@@ -384,9 +384,9 @@ projection methods</h3>
 <h1>Overview</h1>
 <p>In this tutorial, you’ll get to know the main <em>PathwaySpace</em>
 methods through simple toy examples. We’ll walk through how to set up
-the input data and run basic graph projections. These examples are
-designed to give users a feel for the core workflow before diving into
-larger or real-world datasets.</p>
+basic input data and run graph projections. These examples are designed
+to give users a feel for the core workflow before diving into larger or
+real-world datasets.</p>
 </div>
 <div id="setting-basic-input-data" class="section level1">
 <h1>Setting basic input data</h1>
@@ -482,10 +482,11 @@ signal convolution, affecting the extent over which the convolution
 operation projects the signal. For example, when <code>pdist = 1</code>,
 it will represent the diameter of the inscribed circle within the
 coordinate space. We also set <code>k = 1</code>, which defines the
-contributing vertices for signal convolution. In this case, each
+contributing vertices for the signal convolution. In this case, each
 <em>null-signal position</em> will receive the projection from a single
-<em>vertex-signal position</em> (<em>i.e.</em> the highest signal
-intensity in pathway space reaching that position). We then create a
+<em>vertex-signal position</em>, that is, the highest signal intensity
+in pathway space reaching that position (see <a
+href="index.html"><strong>Figure 1A</strong></a>). We then create a
 landscape image using the <code>plotPathwaySpace()</code> function.</p>
 <pre class="r"><code># Run signal projection
 p_space1 &lt;- circularProjection(p_space1, pdist = 0.4, k = 1)
@@ -497,7 +498,9 @@ plotPathwaySpace(p_space1, add.marks = TRUE)</code></pre>
 <code>pdist = 0.2</code>, <code>k = 2</code> and adjusting the
 <code>shape</code> of the decay function, which is passed to the
 <code>circularProjection()</code> function via <code>decay.fun</code>
-argument.</p>
+argument (for further details, see the <a
+href="modeling-signal-decay.html"><strong>modeling signal
+decay</strong></a> tutorial).</p>
 <pre class="r"><code># Re-run signal projection, adjusting Weibull&#39;s shape
 p_space1 &lt;- circularProjection(p_space1, pdist = 0.2, k = 2, 
   decay.fun = signalDecay(shape = 2))
