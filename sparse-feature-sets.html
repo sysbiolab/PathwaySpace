@@ -489,17 +489,15 @@ vertexSignal(p_space_PCv12)[ hallmarks$HALLMARK_P53_PATHWAY ] &lt;- 1</code></pr
 <p>…and run the <code>circularProjection()</code> function.</p>
 <pre class="r"><code># Run signal projection
 p_space_PCv12 &lt;- circularProjection(p_space_PCv12)</code></pre>
-<div id="mapping-silhouettes" class="section level2">
-<h2>Mapping silhouettes</h2>
-<p>Next, we will decorate the <em>PathwaySpace</em> image with graph’s
-silhouettes.</p>
+<p>Next, we decorate the <em>PathwaySpace</em> image with graph
+silhouettes and plot the results.</p>
 <pre class="r"><code># Add silhouettes
 p_space_PCv12 &lt;- silhouetteMapping(p_space_PCv12)
 plotPathwaySpace(p_space_PCv12, title=&quot;HALLMARK_P53_PATHWAY&quot;, marks = top10hubs, mark.size = 2, theme = &quot;th3&quot;)</code></pre>
 <p><img src="figs_feature_sets/fig2.png" width="100%" /></p>
 </div>
-<div id="mapping-summits" class="section level2">
-<h2>Mapping summits</h2>
+<div id="mapping-summits" class="section level1">
+<h1>Mapping summits</h1>
 <p>The summits represent regions within the graph that exhibit signal
 values that are notably higher than the baseline level. These regions
 may be of interest for downstream analyses. One potential downstream
@@ -518,7 +516,6 @@ plotPathwaySpace(p_space_PCv12, title=&quot;HALLMARK_P53_PATHWAY&quot;, theme = 
 summits &lt;- getPathwaySpace(p_space_PCv12, &quot;summits&quot;)
 class(summits)
 # [1] &quot;list&quot;</code></pre>
-</div>
 </div>
 <div id="citation" class="section level1">
 <h1>Citation</h1>
