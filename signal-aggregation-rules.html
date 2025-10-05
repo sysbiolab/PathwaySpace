@@ -394,7 +394,7 @@ library(RGraphSpace)
 library(PathwaySpace)
 library(SpotSpace)
 library(patchwork)</code></pre>
-<pre class="r"><code># Create a simple graph with six islands
+<pre class="r"><code># Create a simple graph with five islands
 g &lt;- rep(igraph::make_star(7, &quot;undirected&quot;), 5)
 V(g)$name &lt;- paste0(&quot;n&quot;,1:vcount(g))
 gs &lt;- GraphSpace(g, layout = layout_nicely(g))
