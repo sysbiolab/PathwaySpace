@@ -405,9 +405,10 @@ ps &lt;- buildPathwaySpace(gs)</code></pre>
 </div>
 <div id="setting-a-decay-function" class="section level1">
 <h1>Setting a decay function</h1>
-<p>Next, we will set a linear decay model for all vertices (for details
-see <a href="modeling-signal-decay.html"><strong>modeling signal
-decay</strong></a> section).</p>
+<p>Next, we will set a linear decay model for all vertices (for
+additional configuration details, see the <a
+href="modeling-signal-decay.html"><em>signal decay functions</em></a>
+tutorial).</p>
 <pre class="r"><code># Setting a linear signal decay model for all vertices
 vertexDecay(ps) &lt;- signalDecay(&quot;linear&quot;, decay = 0.001)</code></pre>
 <p>…and then set a distance unit.</p>

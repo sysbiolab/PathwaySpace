@@ -515,7 +515,10 @@ vertexSignal(ps_brain)[colnames(vst_gexp)] &lt;- vst_gexp[gene,]</code></pre>
 <code>decay = 0.5</code>. The decay parameter controls how the signal
 attenuates as a function of distance in pathway space. With
 <code>decay = 0.5</code>, the signal decreases to half of its initial
-value at a distance equal to <code>pdist</code>.</p>
+value at a distance equal to <code>pdist</code> (for additional
+configuration details, see the <a
+href="modeling-signal-decay.html"><em>signal decay functions</em></a>
+tutorial).</p>
 <pre class="r"><code># Project gene signal
 ps_brain &lt;- circularProjection(ps_brain, pdist = pdist, 
   k = gs_vcount(ps_brain), decay.fun = signalDecay(decay=0.5),
@@ -523,9 +526,9 @@ ps_brain &lt;- circularProjection(ps_brain, pdist = pdist,
 <p>Because each spot produces an independent projection, the resulting
 projections are aggregated into a unified landscape. Here we use a
 weighted arithmetic mean, with each projection weighted by its own
-magnitude. At each pixel of the landscape image, this function
-aggregates the <code>k</code>-top signals from the contributing spots
-for the convolution operation.</p>
+magnitude (for additional configuration details, see the <a
+href="signal-aggregation-rules.html"><em>signal aggregation
+rules</em></a> tutorial).</p>
 <p>Next, we show the results with minor variations to demonstrate plot
 settings.</p>
 <pre class="r"><code># Plot tissue image and projection separated 
