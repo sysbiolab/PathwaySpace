@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sysbiolab Team" />
 
-<meta name="date" content="2025-10-05" />
+<meta name="date" content="2025-10-07" />
 
 <title>Visualizing spatial transcriptomics</title>
 
@@ -366,7 +366,7 @@ div.tocify {
       <a href="sparse-feature-sets.html">Sparse feature sets</a>
     </li>
     <li>
-      <a href="spatial-transcriptomics-doc1.html">Spatial transcriptomics</a>
+      <a href="spatial-transcriptomics.html">Spatial transcriptomics</a>
     </li>
   </ul>
 </li>
@@ -397,7 +397,7 @@ div.tocify {
 <h3 class="subtitle">Gene expression projections on spot
 coordinates</h3>
 <h4 class="author">Sysbiolab Team</h4>
-<h4 class="date">2025-10-05</h4>
+<h4 class="date">2025-10-07</h4>
 
 </div>
 
@@ -405,7 +405,7 @@ coordinates</h3>
 <p><strong>Package</strong>: PathwaySpace 1.0.3 <br/></p>
 <div id="overview" class="section level1">
 <h1>Overview</h1>
-<p>This tutorial introduces the <em>SpotSpace</em> package, an extension
+<p>This vignette introduces the <em>SpotSpace</em> package, an extension
 to <em>PathwaySpace</em> alongside <em>Seurat</em> workflows, providing
 methods for signal propagation and visualization in spatial
 transcriptomics. By integrating signal processing with spatial
@@ -422,16 +422,6 @@ if (!require(&quot;SpotSpace&quot;, quietly = TRUE)){
 if (!require(&quot;SeuratData&quot;, quietly = TRUE)){
   remotes::install_github(&quot;satijalab/seurat-data&quot;)
 }</code></pre>
-</div>
-<div id="setting-input-data" class="section level1">
-<h1>Setting input data</h1>
-<p>For this tutorial, we will use the <code>stxBrain</code> dataset from
-the <em>SeuratData</em> package, consisting of spatial transcriptomics
-data from sagittal mouse brain sections generated with Visium v1
-technology. This dataset is commonly used to demonstrate <em>Seurat</em>
-spatial workflows <span class="citation">(Hao et al. 2024)</span>. Here,
-we will preprocess it with <em>Seurat</em> and then extract the relevant
-data for <em>PathwaySpace</em> downstream analyses.</p>
 <pre class="r"><code>#--- Load SpotSpace
 library(RGraphSpace)
 library(PathwaySpace)
@@ -441,9 +431,24 @@ library(Seurat)
 library(SeuratObject)
 library(SeuratData)
 library(patchwork)</code></pre>
+</div>
+<div id="visium-v1-dataset" class="section level1">
+<h1>Visium v1 dataset</h1>
+<div id="setting-input-data" class="section level2">
+<h2>Setting input data</h2>
+<p>For this tutorial, we will use the <code>stxBrain</code> dataset from
+the <em>SeuratData</em> package, consisting of spatial transcriptomics
+data from sagittal mouse brain sections generated with Visium v1
+technology. This dataset is commonly used to demonstrate <em>Seurat</em>
+spatial workflows <span class="citation">(Hao et al. 2024)</span>. Here,
+we will preprocess it with <em>Seurat</em> and then extract the relevant
+data for <em>PathwaySpace</em> downstream analyses.</p>
 <pre class="r"><code>## Install a Seurat dataset (this step is required only once)
 SeuratData::InstallData(&quot;stxBrain&quot;)</code></pre>
-<pre class="r"><code># Load the &#39;stxBrain&#39; dataset
+<pre class="r"><code># Check manifest of installed datasets
+# SeuratData::InstalledData()
+
+# Load the &#39;stxBrain&#39; dataset
 brain &lt;- LoadData(&quot;stxBrain&quot;, type = &quot;anterior1&quot;)</code></pre>
 <p>The <code>stxBrain</code> dataset is normalized as suggested in
 <em>Seurat</em>’s <a
@@ -466,30 +471,25 @@ vst_gexp &lt;- GetAssayData(brain, layer=&quot;data&quot;)</code></pre>
 coordinates and plot the resulting graph overlaid on the tissue
 image.</p>
 <pre class="r"><code># Create a PathwaySpace object from &#39;spot_coord&#39;, mapped to the &#39;raster_image&#39;
-ps_brain &lt;- buildSpotSpace(spot_coord = spot_coord, raster_image = raster_image)</code></pre>
+pspace_obj &lt;- buildSpotSpace(spot_coord = spot_coord, raster_image = raster_image)</code></pre>
 <pre class="r"><code># Check spots on the top of the &#39;raster_image&#39;
 xy_labs &lt;- labs(x=&quot;Spot coordinates 1&quot;, y=&quot;Spot coordinates 2&quot;)
-plotGraphSpace(ps_brain, add.image = TRUE) + xy_labs</code></pre>
+plotGraphSpace(pspace_obj, add.image = TRUE) + xy_labs</code></pre>
 <p><img src="figs_spot_space/fig1.png" width="100%" /></p>
 </div>
-<div id="running-pathwayspace" class="section level1">
-<h1>Running <em>PathwaySpace</em></h1>
-<div id="setting-a-distance-unit" class="section level2">
-<h2>Setting a distance unit</h2>
+<div id="running-pathwayspace" class="section level2">
+<h2>Running <em>PathwaySpace</em></h2>
 <p>Before projection, we need to specify a distance unit for the signal
 decay function. This distance unit will affect the extent over which the
 convolution operation projects the signal, scaled to the coordinate
 space. We will use the center-to-center distance between spots, which
 represents 100 µm in the Visium v1 technology.</p>
 <pre class="r"><code># Get distance to the nearest spot
-nspot &lt;- getNearestNode(ps_brain)
+nspot &lt;- getNearestNode(pspace_obj)
 pdist &lt;- mean(nspot$dist) # average distance
 # The &#39;pdist&#39; is the center-to-center distance between spots
 pdist
 # [1] 0.01395144</code></pre>
-</div>
-<div id="adding-a-graph-silhouette" class="section level2">
-<h2>Adding a graph silhouette</h2>
 <p>As an optional step, the <code>silhouetteMapping()</code> function
 generates an image mask that outlines the graph layout, over which the
 subsequent methods will project a landscape image. The
@@ -497,20 +497,17 @@ subsequent methods will project a landscape image. The
 is sliced to form the mask. Increasing the baseline (in
 <code>[0,1]</code>) produces a more detailed, granular silhouette.</p>
 <pre class="r"><code># Add a graph silhouette to the PathwaySpace object
-ps_brain &lt;- silhouetteMapping(ps_brain, baseline = 0.1)
-plotPathwaySpace(ps=ps_brain, theme = &quot;th3&quot;, 
+pspace_obj &lt;- silhouetteMapping(pspace_obj, baseline = 0.1)
+plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;, 
   add.image = TRUE, si.alpha = 0.5) + xy_labs</code></pre>
 <p><img src="figs_spot_space/fig2.png" width="100%" /></p>
-</div>
-<div id="projecting-gene-expression" class="section level2">
-<h2>Projecting gene expression</h2>
 <p>Next, we specify the signal to be projected; for this demonstration,
 we will use expression data from the <strong>Camk2n1</strong> gene. The
 <code>vertexSignal()</code> accessor function is then used to assign the
 gene expression values to graph vertices.</p>
 <pre class="r"><code># Assign gene expression values to graph vertices
 gene &lt;- &quot;Camk2n1&quot;
-vertexSignal(ps_brain)[colnames(vst_gexp)] &lt;- vst_gexp[gene,]</code></pre>
+vertexSignal(pspace_obj)[colnames(vst_gexp)] &lt;- vst_gexp[gene,]</code></pre>
 <p>We then perform the signal projection, setting
 <code>decay = 0.5</code>. The decay parameter controls how the signal
 attenuates as a function of distance in pathway space. With
@@ -520,8 +517,8 @@ configuration details, see the <a
 href="modeling-signal-decay.html"><em>signal decay functions</em></a>
 tutorial).</p>
 <pre class="r"><code># Project gene signal
-ps_brain &lt;- circularProjection(ps_brain, pdist = pdist, 
-  k = gs_vcount(ps_brain), decay.fun = signalDecay(decay=0.5),
+pspace_obj &lt;- circularProjection(pspace_obj, pdist = pdist, 
+  k = gs_vcount(pspace_obj), decay.fun = signalDecay(decay=0.5),
   aggregate.fun = signalAggregation(&quot;wmean&quot;))</code></pre>
 <p>Because each spot produces an independent projection, the resulting
 projections are aggregated into a unified landscape. Here we use a
@@ -532,22 +529,98 @@ rules</em></a> tutorial).</p>
 <p>Next, we show the results with minor variations to demonstrate some
 of the available plot settings.</p>
 <pre class="r"><code># Plot tissue image and projection separated 
-p1 &lt;- plotPathwaySpace(ps=ps_brain, theme = &quot;th3&quot;, title = gene)
+p1 &lt;- plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;, title = gene)
 p1$image &lt;- p1$image + xy_labs
 p1$graph &lt;- p1$graph + xy_labs
 
 p1$image + p1$graph</code></pre>
 <p><img src="figs_spot_space/fig3.png" width="100%" /></p>
 <pre class="r"><code># Plot projections overlaid on the tissue image, with alpha = 0.25
-p2 &lt;- plotPathwaySpace(ps=ps_brain, theme = &quot;th3&quot;, title = gene, 
+p2 &lt;- plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;, title = gene, 
   add.image = TRUE, si.alpha = 0.25) + xy_labs
 
 # Plot projections overlaid on the tissue image, with zlim truncated at &gt;=0.5
-p3 &lt;- plotPathwaySpace(ps=ps_brain, theme = &quot;th3&quot;, title = gene, 
+p3 &lt;- plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;, title = gene, 
   add.image = TRUE, si.alpha = 0.25, zlim = c(0.5, 1)) + xy_labs
 
 p2 + p3</code></pre>
 <p><img src="figs_spot_space/fig4.png" width="100%" /></p>
+<p></br></p>
+</div>
+</div>
+<div id="slide-seq-v2-dataset" class="section level1">
+<h1>Slide-seq v2 dataset</h1>
+<p>For this tutorial, we will use the <code>ssHippo</code> dataset from
+the <em>SeuratData</em> package, consisting of spatial transcriptomics
+data from mouse hippocampus sections generated with <strong>Slide-seq v2
+technology</strong>. We will follow the same steps applied for 10x
+Visium data, preprocessing with <em>Seurat</em> and then extracting the
+relevant data for <em>PathwaySpace</em> downstream analyses. The main
+difference is that the <code>ssHippo</code> dataset does not include a
+tissue image, so image plots are not generated. For further details on
+this dataset, see <em>Seurat</em>’s <a
+href="https://satijalab.org/seurat/articles/spatial_vignette.html"
+target="_blank" rel="noopener">spatial_vignette</a>.</p>
+<pre class="r"><code>## Install a Seurat dataset (this step is required only once)
+SeuratData::InstallData(&quot;ssHippo&quot;)</code></pre>
+<pre class="r"><code># Check manifest of installed datasets
+# SeuratData::InstalledData()
+
+# Load the &#39;kidneyref&#39; dataset
+seurat_obj &lt;- LoadData(&quot;ssHippo&quot;)</code></pre>
+<pre class="r"><code># Run vst normalization on counts
+seurat_obj &lt;- SCTransform(seurat_obj, assay = &quot;Spatial&quot;, verbose = FALSE)</code></pre>
+<pre class="r"><code># Extract spot coordinates and vst-normalized data
+# Get spot coordinates
+spot_coord &lt;- GetTissueCoordinates(seurat_obj)
+
+# Get vst-normalized gene expression
+vst_gexp &lt;- GetAssayData(seurat_obj, layer=&quot;data&quot;)</code></pre>
+<pre class="r"><code># Create a PathwaySpace object from &#39;spot_coord&#39;
+pspace_obj &lt;- buildSpotSpace(spot_coord = spot_coord, nrc=700)</code></pre>
+<div id="running-pathwayspace-1" class="section level2">
+<h2>Running <em>PathwaySpace</em></h2>
+<pre class="r"><code># Get distance to the nearest spot
+nspot &lt;- getNearestNode(pspace_obj)
+pdist &lt;- mean(nspot$dist) # average distance
+# The &#39;pdist&#39; is the center-to-center distance between spots
+pdist
+# [1] 0.002497466</code></pre>
+<pre class="r"><code># Add a graph silhouette to the PathwaySpace object
+pspace_obj &lt;- silhouetteMapping(pspace_obj, fill.cavity = FALSE, 
+  pdist = max(nspot$dist))
+
+# Check silhouette plot
+xy_labs &lt;- labs(x=&quot;Spot coordinates 1&quot;, y=&quot;Spot coordinates 2&quot;)
+plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;, 
+  add.image = TRUE, si.alpha = 0.5) + xy_labs</code></pre>
+<p><img src="figs_spot_space/fig5.png" width="100%" /></p>
+<pre class="r"><code># Assign DDN gene expression values to graph vertices
+gene &lt;- &quot;DDN&quot;
+vertexSignal(pspace_obj)[colnames(vst_gexp)] &lt;- vst_gexp[gene,]
+
+# Project gene signal
+pspace_obj &lt;- circularProjection(pspace_obj, pdist = pdist, 
+  k = gs_vcount(pspace_obj), decay.fun = signalDecay(decay=0.5))
+
+# Plot projections
+#-- as a suggestion, truncate zlim at the upper limit 
+#-- to enhance certain patters
+p1 &lt;- plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;, 
+  title = gene, zlim = c(0, 1)) + xy_labs</code></pre>
+<pre class="r"><code># Assign PCP4 gene expression values to graph vertices
+gene &lt;- &quot;PCP4&quot;
+vertexSignal(pspace_obj)[colnames(vst_gexp)] &lt;- vst_gexp[gene,]
+
+# Project gene signal
+pspace_obj &lt;- circularProjection(pspace_obj, pdist = pdist, 
+  k = gs_vcount(pspace_obj), decay.fun = signalDecay(decay=0.5))
+
+# Plot projections
+p2 &lt;- plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;, 
+  title = gene, zlim = c(0, 1)) + xy_labs</code></pre>
+<pre class="r"><code>p1 + p2</code></pre>
+<p><img src="figs_spot_space/fig6.png" width="100%" /></p>
 </div>
 </div>
 <div id="citation" class="section level1">
@@ -591,13 +664,14 @@ class="uri">https://doi.org/10.1016/j.ccell.2024.12.002</a></p></li>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] Seurat_5.3.1.0000         SeuratObject_5.2.0       
-##  [3] sp_2.2-0                  stxBrain.SeuratData_0.1.2
-##  [5] ssHippo.SeuratData_3.1.4  SeuratData_0.2.2.9002    
-##  [7] remotes_2.5.0             patchwork_1.3.2          
-##  [9] SpotSpace_0.0.1           PathwaySpace_1.0.3       
-## [11] RGraphSpace_1.1.0         ggplot2_3.5.2.9001       
-## [13] igraph_2.1.4              bs4cards_0.1.1           
+##  [1] Seurat_5.3.1.0000              SeuratObject_5.2.0            
+##  [3] sp_2.2-0                       stxBrain.SeuratData_0.1.2     
+##  [5] ssHippo.SeuratData_3.1.4       kidneyref.SeuratData_1.0.2    
+##  [7] bonemarrowref.SeuratData_1.0.0 SeuratData_0.2.2.9002         
+##  [9] remotes_2.5.0                  patchwork_1.3.2               
+## [11] SpotSpace_0.0.1                PathwaySpace_1.0.3            
+## [13] RGraphSpace_1.1.0              ggplot2_3.5.2.9001            
+## [15] igraph_2.1.4                   bs4cards_0.1.1                
 ## 
 ## loaded via a namespace (and not attached):
 ##   [1] deldir_2.0-4           pbapply_1.7-4          gridExtra_2.3         
