@@ -1,5 +1,5 @@
 ---
-title: "Getting started with PathwaySpace"
+title: "Getting started with *PathwaySpace* projection methods"
 author: "Sysbiolab Team"
 date: "`r Sys.Date()`"
 bibliography: bibliography.bib
@@ -306,12 +306,9 @@ knitr::include_graphics("figures/fig8.png")
 
 Note that the original signal vector was rescale to `[-1, +1]`. If the signal vector is `>=0`, then it will be rescaled to `[0, 1]`; if the signal vector is `<=0`, it will be rescaled to `[-1, 0]`; and if the signal vector is in `(-Inf, +Inf)`, then it will be rescaled to `[-1, +1]`. To override this signal processing, simply set `rescale = FALSE` in the projection function.
 
-
 # Online tutorials
 
-[Visualizing feature sets](https://sysbiolab.github.io/PathwaySpace/visualizing-feature-sets.html){target="_blank" rel="noopener"}
-
-[Visualizing spatial transcriptomics](https://sysbiolab.github.io/PathwaySpace/visualizing-spatial-transcriptomics.html){target="_blank" rel="noopener"}
+https://sysbiolab.github.io/PathwaySpace/
 
 # Citation
 

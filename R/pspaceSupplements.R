@@ -226,7 +226,8 @@
   fun <- nodes$decayFunction
   signal <- abs(nodes$signal)
   signal[is.na(signal)] <- 0
-  signal <- signal/max(signal)
+  mx <- max(signal)
+  if(mx!=0) signal <- signal/mx
   eradius <- vapply(seq_along(fun), function(i){
     f <- fun[[i]]
     s <- signal[i]
