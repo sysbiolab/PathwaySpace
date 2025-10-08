@@ -510,7 +510,8 @@ plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;,
 we will use expression data from the <strong>Camk2n1</strong> gene. The
 <code>vertexSignal()</code> accessor function is then used to assign the
 gene expression values to graph vertices.</p>
-<pre class="r"><code># Assign gene expression values to graph vertices
+<pre class="r"><code># Select a gene of interest (e.g., Camk2n1) and assign its 
+# expression values to graph vertices
 gene &lt;- &quot;Camk2n1&quot;
 vertexSignal(pspace_obj)[colnames(vst_gexp)] &lt;- vst_gexp[gene,]</code></pre>
 <p>We then perform the signal projection, setting
@@ -604,7 +605,8 @@ xy_labs &lt;- labs(x=&quot;Spot coordinates 1&quot;, y=&quot;Spot coordinates 2&
 plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;, 
   add.image = TRUE, si.alpha = 0.5) + xy_labs</code></pre>
 <p><img src="figs_spot_space/fig5.png" width="100%" /></p>
-<pre class="r"><code># Assign DDN gene expression values to graph vertices
+<pre class="r"><code># Choose a gene of interest (e.g., DDN) and assign its 
+# expression values to graph vertices
 gene &lt;- &quot;DDN&quot;
 vertexSignal(pspace_obj)[colnames(vst_gexp)] &lt;- vst_gexp[gene,]
 
@@ -617,7 +619,7 @@ pspace_obj &lt;- circularProjection(pspace_obj, pdist = pdist,
 #-- to enhance certain patters
 p1 &lt;- plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;, 
   title = gene, zlim = c(0, 1)) + xy_labs</code></pre>
-<pre class="r"><code># Assign PCP4 gene expression values to graph vertices
+<pre class="r"><code># ...another gene (e.g. PCP4)
 gene &lt;- &quot;PCP4&quot;
 vertexSignal(pspace_obj)[colnames(vst_gexp)] &lt;- vst_gexp[gene,]
 
@@ -698,7 +700,8 @@ xy_labs &lt;- labs(x=&quot;Spot coordinates 1&quot;, y=&quot;Spot coordinates 2&
 plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;, 
   add.image = TRUE, si.alpha = 0.5) + xy_labs</code></pre>
 <p><img src="figs_spot_space/fig7.png" width="100%" /></p>
-<pre class="r"><code># Assign Rorb gene expression values to graph vertices
+<pre class="r"><code># Choose a gene of interest (e.g., Rorb) and assign its 
+# expression values to graph vertices
 gene &lt;- &quot;Rorb&quot;
 vertexSignal(pspace_obj)[colnames(norm_gexp)] &lt;- norm_gexp[gene,]
 
@@ -709,7 +712,7 @@ pspace_obj &lt;- circularProjection(pspace_obj, pdist = pdist,
 # Plot projections
 p1 &lt;- plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;, 
   title = gene, add.image = TRUE, zlim = c(0, 1)) + xy_labs</code></pre>
-<pre class="r"><code># Assign Hpca gene expression values to graph vertices
+<pre class="r"><code># ...another gene (e.g. Hpca)
 gene &lt;- &quot;Hpca&quot;
 vertexSignal(pspace_obj)[colnames(norm_gexp)] &lt;- norm_gexp[gene,]
 
