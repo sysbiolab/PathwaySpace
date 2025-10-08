@@ -53,6 +53,7 @@ of network signals along geodesic paths. R package version 0.99.
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://sysbiolab.github.io/PathwaySpace/}
   \item \url{https://github.com/sysbiolab/PathwaySpace}
   \item Report bugs at \url{https://github.com/sysbiolab/PathwaySpace/issues}
 }
