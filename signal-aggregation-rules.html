@@ -498,9 +498,9 @@ self-weights) affects the combined projection: The standard
 influence of local groups, while the <em>contraharmonic mean</em> will
 shift the mean toward the more dominant signals.</p>
 <p>Next, we assign new aggregation functions to explore different rules.
-The <code>max</code> function will also emphasize the dominant signals
-while the <code>min</code> function will highlight the regions where
-projections intersect between two source points.</p>
+The <code>max</code> function also emphasizes the dominant signals while
+the <code>min</code> function will highlight the regions where
+projections intersect between neighbor vertices.</p>
 <pre class="r"><code># Signal aggregation by &#39;max&#39;
 ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = max)
 p1 &lt;- plotPathwaySpace(ps, theme = &quot;th3&quot;)
