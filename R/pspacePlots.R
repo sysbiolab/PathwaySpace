@@ -26,8 +26,8 @@
 #' @param xlab The title for the 'x' axis of a 2D-image space.
 #' @param ylab The title for the 'y' axis of a 2D-image space.
 #' @param zlab The title for the 'z' axis of the image signal.
-#' @param font.size A single numeric value passed to ggplot themes.
-#' @param font.color A single color passed to ggplot themes.
+#' @param font.size A single numeric value passed to plot annotations.
+#' @param font.color A single color passed to plot annotations.
 #' @param zlim The 'z' limits of the plot (a numeric vector with two numbers).
 #' If NULL, limits are determined from the range of the input values.
 #' @param slices A single positive integer value used to split 
@@ -219,7 +219,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
       } else {
         ggi <- .add_image(ggp, img)
         if(add.grid) ggi <- .add_grid(ggi, gxyz, grid.color)
-        ggi <- .custom_themes(ggi, theme, font.size, bg.color)
+        ggi <- .custom_themes(ggi, theme, bg.color)
         ggi <- ggi + ggplot2::labs(x=xlab, y=ylab)
       }
     }
@@ -257,7 +257,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     }
     
     #--- apply custom theme
-    ggp <- .custom_themes(ggp, theme, font.size, bg.color)
+    ggp <- .custom_themes(ggp, theme, bg.color)
     
     if(pars$image.layer && !add.image){
       ggl <- list(graph = ggp, image = ggi)
@@ -309,7 +309,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     hjust <- 1
   }
   ggp <- ggp + ggplot2::annotate("text", label = title,
-    colour = fcol, size = font.size*3.5, x = 0, y = 0.99, 
+    colour = fcol, size = font.size*4, x = 0, y = 0.99, 
     hjust = 0, vjust = 1)
   dfun <- pars$ps$decay$fun
   if(!is.null(dfun)){
@@ -476,32 +476,29 @@ setMethod("plotPathwaySpace", "PathwaySpace",
 }
 
 #-------------------------------------------------------------------------------
-.custom_themes <- function(gg, theme, font.size, bg.color) {
-  et1 <- ggplot2::element_text(size = 14 * font.size)
-  et2 <- ggplot2::element_text(size = 12 * font.size)
+.custom_themes <- function(gg, theme, bg.color) {
+  et1 <- ggplot2::element_text(size = 14)
+  et2 <- ggplot2::element_text(size = 12)
   if (theme == "th0") {
-    gg <- .custom_th0(gg, font.size, bg.color)
+    gg <- .custom_th0(gg, et1, et2, bg.color)
   } else if (theme == "th1") {
-    gg <- .custom_th1(gg, font.size, bg.color)
+    gg <- .custom_th1(gg, et1, et2, bg.color)
   } else if (theme == "th2") {
-    gg <- .custom_th2(gg, font.size, bg.color)
+    gg <- .custom_th2(gg, et1, et2, bg.color)
   } else {
-    gg <- .custom_th3(gg, font.size, bg.color)
+    gg <- .custom_th3(gg, et1, et2, bg.color)
   }
   return(gg)
 }
-.custom_th0 <- function(gg, font.size, bg.color) {
-  et1 <- ggplot2::element_text(size = 14 * font.size)
-  et2 <- ggplot2::element_text(size = 12 * font.size)
+.custom_th0 <- function(gg, et1, et2, bg.color) {
+  et1 <- ggplot2::element_text(size = 14)
+  et2 <- ggplot2::element_text(size = 12)
   gg <- gg + ggplot2::theme(axis.title = et1, axis.text = et2,
     legend.title = et2, legend.text = et2,
     panel.background = element_rect(fill = bg.color))
   return(gg)
 }
-.custom_th1 <- function(gg, font.size,
-  bg.color) {
-  et1 <- ggplot2::element_text(size = 14 * font.size)
-  et2 <- ggplot2::element_text(size = 12 * font.size)
+.custom_th1 <- function(gg, et1, et2, bg.color) {
   gg <- gg + ggplot2::theme_bw() +
     ggplot2::theme(axis.title = et1,
       axis.text = et2, legend.title = et2,
@@ -518,9 +515,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
       panel.border = element_rect(linewidth = 1.2))
   return(gg)
 }
-.custom_th2 <- function(gg, font.size, bg.color) {
-  et1 <- ggplot2::element_text(size = 14 * font.size)
-  et2 <- ggplot2::element_text(size = 12 * font.size)
+.custom_th2 <- function(gg, et1, et2, bg.color) {
   gg <- gg + ggplot2::theme_gray() + ggplot2::theme(axis.title = et1,
     axis.text = et2, legend.title = et2,
     legend.text = et2, legend.margin = margin(0, 0, 0, 0), 
@@ -534,12 +529,11 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     panel.background = element_rect(fill = bg.color))
   return(gg)
 }
-.custom_th3 <- function(gg, font.size, bg.color) {
-  et1 <- ggplot2::element_text(size = 14 * font.size)
-  et2 <- ggplot2::element_text(size = 12 * font.size, hjust=0.5)
+.custom_th3 <- function(gg, et1, et2, bg.color) {
+  et2 <- ggplot2::element_text(size = 12, hjust=0.5)
   gg <- gg + ggplot2::theme_gray() + 
     ggplot2::theme(axis.title = et1, axis.text = et2, 
-      legend.title = element_text(size = 12 * font.size, vjust = 1), 
+      legend.title = element_text(size = 12, vjust = 1), 
       legend.text = et2,
       legend.margin = margin(0, 0, 0, 0),
       legend.position = "bottom", 

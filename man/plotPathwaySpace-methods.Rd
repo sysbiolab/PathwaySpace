@@ -72,9 +72,9 @@ which the user can subsequently refine using \code{\link[ggplot2]{ggplot2}}.}
 
 \item{zlab}{The title for the 'z' axis of the image signal.}
 
-\item{font.size}{A single numeric value passed to ggplot themes.}
+\item{font.size}{A single numeric value passed to plot annotations.}
 
-\item{font.color}{A single color passed to ggplot themes.}
+\item{font.color}{A single color passed to plot annotations.}
 
 \item{zlim}{The 'z' limits of the plot (a numeric vector with two numbers).
 If NULL, limits are determined from the range of the input values.}
