@@ -610,15 +610,15 @@ fuzzy_einstein_sum &lt;- function(x) {
 ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = fuzzy_einstein_sum)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)</code></pre>
 <p></br></p>
-<p>Note that most of the fuzzy aggregation functions listed above,
-including t-norms (e.g., Goedel, Goguen, Hamacher) and t-conorms (e.g.,
-Goedel, Goguen, Lukasiewicz), operate within the unit interval,
+<p>Note that most of the fuzzy functions listed above, including
+<em>t-norms</em> (e.g., Goedel, Goguen, Hamacher) and <em>t-conorms</em>
+(e.g., Goedel, Goguen, Lukasiewicz), operate within the unit interval,
 accepting input values in <code>[0, 1]</code>. <em>PathwaySpace</em>
-also operate on this range of values for positive signal inputs by
-default (with <code>rescale = TRUE</code>; see
-<code>circularProjection()</code> function); however, negative signals
-are rescaled to <code>[-1, 0]</code>, and therefore are not directly
-compatible with these fuzzy operators.</p>
+also operate on this range of values for positive signals by default
+(with <code>rescale = TRUE</code>; see <code>circularProjection()</code>
+function); however, negative signals are rescaled to
+<code>[-1, 0]</code>, and therefore are not directly compatible with
+these fuzzy operators.</p>
 <p>Also, when evaluating input signals in the range
 <code>[-Inf, Inf]</code> (<em>e.g.</em>, differential expression
 values), we recommend using aggregation functions that treat negative
