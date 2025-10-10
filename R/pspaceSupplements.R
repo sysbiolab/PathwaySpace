@@ -977,6 +977,21 @@
     stop("'aggregate.fun' must be a unary function, e.g, function(x) {...}",
       call. = FALSE)
   }
+  x <- seq(0,10)/10
+  result <- tryCatch({
+    res <- aggregate.fun(x)
+    res <- ifelse(length(res)==1, TRUE, FALSE)
+    res
+  }, 
+    warning = function(w) { FALSE }, 
+    error = function(e) { FALSE }
+  )
+  if(!result){
+    ms1 <-"The 'aggregate.fun' failed validation: "
+    ms2 <-"it should take a numeric vector and return a single scalar value."
+    stop(ms1,ms2, call. = FALSE)
+  }
+  
   TRUE
 }
 #-------------------------------------------------------------------------------
