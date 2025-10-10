@@ -530,13 +530,15 @@ signals are at a given point, using a <em>t-conorm</em> like maximum. By
 combining fuzzy unions or intersections with decay functions, we can
 produce unified projections that integrate multiple signal sources into
 a single, interpretable representation.</p>
+<pre class="r"><code>if (!require(&quot;lfl&quot;, quietly = TRUE)){
+  install.packages(&quot;lfl&quot;)
+}
+# Load Fuzzy Logic functions
+library(lfl)</code></pre>
 <div id="t-norms-triangular-norms" class="section level2">
 <h2>T-norms (Triangular Norms)</h2>
 <p>These functions represent fuzzy “AND” operations:</p>
-<pre class="r"><code># Load Fuzzy Logic functions
-library(lfl)
-
-# Goedel t-norm: use when aggregation should be strictly limited by the weakest
+<pre class="r"><code># Goedel t-norm: use when aggregation should be strictly limited by the weakest
 # signal (logical AND, conservative intersection);
 # Input range in [0, 1]
 ps &lt;- circularProjection(ps, k = 2, pdist = pdist, aggregate.fun = goedel.tnorm)
@@ -548,8 +550,7 @@ plotPathwaySpace(ps, theme = &quot;th3&quot;)
 ps &lt;- circularProjection(ps, k = 2, pdist = pdist, aggregate.fun = goguen.tnorm)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
-# Hamacher product t-norm: use when you need a balanced trade-off between 
-# strictness and smoothness in intersection;
+# Hamacher product t-norm: use when you need smoothness in signal intersections;
 # Input range in [-Inf, Inf];
 fuzzy_hamacher_prod &lt;- function(x) {
   Reduce(function(a, b) (a * b) / (a + b - a * b), x)
@@ -557,8 +558,8 @@ fuzzy_hamacher_prod &lt;- function(x) {
 ps &lt;- circularProjection(ps, k = 2, pdist = pdist, aggregate.fun = fuzzy_hamacher_prod)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
-# Einstein product t-norm: use when combining signals should preserve low 
-# values softly without collapsing to zero too fast;
+# Einstein product t-norm: use when combining signals should preserve low values
+# without collapsing to zero;
 # Input range in [-Inf, Inf]
 fuzzy_einstein_prod &lt;- function(x) {
   Reduce(function(a, b) (a * b) / (1 + (1 - a) * (1 - b)), x)
@@ -570,10 +571,7 @@ plotPathwaySpace(ps, theme = &quot;th3&quot;)</code></pre>
 <div id="t-conorms-triangular-conorms" class="section level2">
 <h2>T-conorms (Triangular Conorms)</h2>
 <p>These functions represent fuzzy “OR” operations:</p>
-<pre class="r"><code># Load Fuzzy Logic functions
-library(lfl)
-
-# Goedel t-conorm: use when you want an extremely permissive OR, where the 
+<pre class="r"><code># Goedel t-conorm: use when you want an extremely permissive OR, where the 
 # strongest signal fully dominates the aggregation;
 # Input range in [0, 1]
 ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = goedel.tconorm)
@@ -585,13 +583,13 @@ plotPathwaySpace(ps, theme = &quot;th3&quot;)
 ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = goguen.tconorm)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
-# Lukasiewicz t-conorm: use when you want bounded reinforcement, saturating 
-# at 1 once contributions accumulate;
+# Lukasiewicz t-conorm: use when you want signal reinforcement, saturating at 1 
+# once contributions accumulate;
 # Input range in [0, 1]
 ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = lukas.tconorm)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
-# Hamacher sum t-conorm: use when you prefer a moderate, nonlinear reinforcement 
+# Hamacher sum t-conorm: use when you prefer a moderate, nonlinear signal reinforcement 
 # that avoids rapid saturation;
 # Input range in [0, 1]
 fuzzy_hamacher_sum &lt;- function(x) {
@@ -601,7 +599,7 @@ fuzzy_hamacher_sum &lt;- function(x) {
 ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = fuzzy_hamacher_sum)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
-# Einstein sum t-conorm: use when reinforcement should be smooth and symmetric,
+# Einstein sum t-conorm: use when signal reinforcement should be smooth and symmetric,
 # limiting extreme increases;
 # Input range in [-Inf, Inf]
 fuzzy_einstein_sum &lt;- function(x) {
