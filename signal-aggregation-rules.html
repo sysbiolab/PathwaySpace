@@ -537,17 +537,20 @@ a single, interpretable representation.</p>
 library(lfl)
 
 # Goedel t-norm: use when aggregation should be strictly limited by the weakest
-# signal (logical AND, conservative intersection)
+# signal (logical AND, conservative intersection);
+# Input range in [0, 1]
 ps &lt;- circularProjection(ps, k = 2, pdist = pdist, aggregate.fun = goedel.tnorm)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
 # Goguen t-norm: use when you want smooth multiplicative attenuation of 
-# overlapping signals (probabilistic AND).
+# overlapping signals (probabilistic AND);
+# Input range in [0, 1]
 ps &lt;- circularProjection(ps, k = 2, pdist = pdist, aggregate.fun = goguen.tnorm)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
 # Hamacher product t-norm: use when you need a balanced trade-off between 
-# strictness and smoothness in intersection
+# strictness and smoothness in intersection;
+# Input range in [-Inf, Inf];
 fuzzy_hamacher_prod &lt;- function(x) {
   Reduce(function(a, b) (a * b) / (a + b - a * b), x)
 }
@@ -555,12 +558,14 @@ ps &lt;- circularProjection(ps, k = 2, pdist = pdist, aggregate.fun = fuzzy_hama
 plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
 # Einstein product t-norm: use when combining signals should preserve low 
-# values softly without collapsing to zero too fast
+# values softly without collapsing to zero too fast;
+# Input range in [-Inf, Inf]
 fuzzy_einstein_prod &lt;- function(x) {
   Reduce(function(a, b) (a * b) / (1 + (1 - a) * (1 - b)), x)
 }
 ps &lt;- circularProjection(ps, k = 2, pdist = pdist, aggregate.fun = fuzzy_einstein_prod)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)</code></pre>
+<p></br></p>
 </div>
 <div id="t-conorms-triangular-conorms" class="section level2">
 <h2>T-conorms (Triangular Conorms)</h2>
@@ -569,22 +574,26 @@ plotPathwaySpace(ps, theme = &quot;th3&quot;)</code></pre>
 library(lfl)
 
 # Goedel t-conorm: use when you want an extremely permissive OR, where the 
-# strongest signal fully dominates the aggregation
+# strongest signal fully dominates the aggregation;
+# Input range in [0, 1]
 ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = goedel.tconorm)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
 # Goguen t-conorm: use when overlapping signals should reinforce each other in 
-# a probabilistic way (soft OR)
+# a probabilistic way (soft OR);
+# Input range in  [0, 1]
 ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = goguen.tconorm)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
 # Lukasiewicz t-conorm: use when you want bounded reinforcement, saturating 
-# at 1 once contributions accumulate.
+# at 1 once contributions accumulate;
+# Input range in [0, 1]
 ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = lukas.tconorm)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
 # Hamacher sum t-conorm: use when you prefer a moderate, nonlinear reinforcement 
-# that avoids rapid saturation
+# that avoids rapid saturation;
+# Input range in [0, 1]
 fuzzy_hamacher_sum &lt;- function(x) {
   stopifnot(is.numeric(x), all(x &gt;= 0), all(x &lt;= 1))
   Reduce(function(a, b) (a + b - 2 * a * b) / (1 - a * b), x)
@@ -593,12 +602,29 @@ ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun 
 plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
 # Einstein sum t-conorm: use when reinforcement should be smooth and symmetric,
-# limiting extreme increases
+# limiting extreme increases;
+# Input range in [-Inf, Inf]
 fuzzy_einstein_sum &lt;- function(x) {
   Reduce(function(a, b) (a + b) / (1 + a * b), x)
 }
 ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = fuzzy_einstein_sum)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)</code></pre>
+<p></br></p>
+<p>Note that most of the fuzzy aggregation functions listed above,
+including t-norms (e.g., Goedel, Goguen, Hamacher) and t-conorms (e.g.,
+Goedel, Goguen, Lukasiewicz), operate within the unit interval,
+accepting input values in <code>[0, 1]</code>. <em>PathwaySpace</em>
+also operate on this range of values for positive signal inputs by
+default (with <code>rescale = TRUE</code>; see
+<code>circularProjection()</code> function); however, negative signals
+are rescaled to <code>[-1, 0]</code>, and therefore are not directly
+compatible with these fuzzy operators.</p>
+<p>Also, when evaluating input signals in the range
+<code>[-Inf, Inf]</code> (<em>e.g.</em>, differential expression
+values), we recommend using aggregation functions that treat negative
+and positive values symmetrically. In such cases, the standard
+<em>arithmetic mean</em> and <em>self-weighted (contraharmonic)
+mean</em> provide compatible aggregation strategies.</p>
 </div>
 </div>
 <div id="session-information" class="section level1">
