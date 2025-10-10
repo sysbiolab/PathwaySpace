@@ -412,17 +412,23 @@ any unary aggregation function of the form
 <strong><code>function(x) { ... }</code></strong> can be plugged into
 the pipeline, which has essentially two steps: (i) map raw signal
 intensities to a decay function, such as linear, exponential, or
-sigmoidal, depending on the data; and (ii) use an appropriate operation
-to produce a combined projection. The decay function models the signal
-propagation (see <a href="index.html"><strong>Figure 1A</strong></a>),
-each vertex emitting a projection that decreases with distance,
-reflecting both the local strength of the signal and its spatial
-influence. Because a graph may have multiple vertices, the resulting
-projections can be aggregated in different ways.</p>
+sigmoidal, depending on the data (see <a
+href="modeling-signal-decay.html"><em>signal decay functions</em></a>);
+and (ii) use an appropriate operation to produce a combined projection.
+The decay function models the signal propagation, each vertex emitting a
+projection that decreases with distance, reflecting both the local
+strength of the signal and its spatial influence. Because a graph may
+have multiple vertices, the resulting projections can be aggregated in
+different ways (see <a href="index.html"><strong>Figure 1</strong></a>
+for a conceptual overview of signal processing in
+<em>PathwaySpace</em>).</p>
 <p>In what follows, this tutorial demonstrates how to create different
 signal aggregation functions for <em>PathwaySpace</em> projections. A
 toy graph with five small islands is used to illustrate aggregation
-rules that emphasize distinct patterns in the data.</p>
+rules that emphasize distinct patterns in the data. The final section
+suggests a list of <em>fuzzy logic</em> operators that can be use to
+aggregate signals in <em>PathwaySpace</em>, including the trade-offs of
+each approach.</p>
 </div>
 <div id="setting-basic-input-data" class="section level1">
 <h1>Setting basic input data</h1>
