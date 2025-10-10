@@ -408,16 +408,17 @@ div.tocify {
 or average their values, given that each signal carries uncertainty or
 partial information.</p>
 <p>For practical implementation with <em>PathwaySpace</em> projections,
-any unary aggregation function can be plugged into the pipeline, that
-has essentially two steps: (i) map raw signal intensities to a decay
-function, such as linear, exponential, or sigmoidal, depending on the
-data; and (ii) use an appropriate operation to produce a combined
-projection. The decay function models the signal propagation (see <a
-href="index.html"><strong>Figure 1A</strong></a>), each vertex emitting
-a projection that decreases with distance, reflecting both the local
-strength of the signal and its spatial influence. Because a graph may
-have multiple vertices, the resulting projections can be aggregated in
-different ways.</p>
+any unary aggregation function of the form
+<strong><code>function(x) { ... }</code></strong> can be plugged into
+the pipeline, which has essentially two steps: (i) map raw signal
+intensities to a decay function, such as linear, exponential, or
+sigmoidal, depending on the data; and (ii) use an appropriate operation
+to produce a combined projection. The decay function models the signal
+propagation (see <a href="index.html"><strong>Figure 1A</strong></a>),
+each vertex emitting a projection that decreases with distance,
+reflecting both the local strength of the signal and its spatial
+influence. Because a graph may have multiple vertices, the resulting
+projections can be aggregated in different ways.</p>
 <p>In what follows, this tutorial demonstrates how to create different
 signal aggregation functions for <em>PathwaySpace</em> projections. A
 toy graph with five small islands is used to illustrate aggregation
