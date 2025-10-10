@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sysbiolab Team" />
 
-<meta name="date" content="2025-10-08" />
+<meta name="date" content="2025-10-10" />
 
 <title>Creating signal aggregation rules</title>
 
@@ -56,6 +56,29 @@ if (window.hljs) {
 
 
 
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
 
 
 
@@ -372,7 +395,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Creating signal aggregation rules</h1>
 <h4 class="author">Sysbiolab Team</h4>
-<h4 class="date">2025-10-08</h4>
+<h4 class="date">2025-10-10</h4>
 
 </div>
 
@@ -380,10 +403,25 @@ div.tocify {
 <p><strong>Package</strong>: PathwaySpace 1.0.3 <br/></p>
 <div id="overview" class="section level1">
 <h1>Overview</h1>
-<p>This tutorial demonstrates how to create signal aggregation functions
-for <em>PathwaySpace</em> projections. A toy graph with five small
-islands is used to illustrate how different aggregation rules emphasize
-distinct patterns in the data.</p>
+<p>When aggregating multiple signals over a space, such as
+<em>PathwaySpace</em> projections, it’s often not enough to simply add
+or average their values, given that each signal carries uncertainty or
+partial information.</p>
+<p>For practical implementation with <em>PathwaySpace</em> projections,
+any unary aggregation function can be plugged into the pipeline, that
+has essentially two steps: (i) map raw signal intensities to a decay
+function, such as linear, exponential, or sigmoidal, depending on the
+data; and (ii) use an appropriate operation to produce a combined
+projection. The decay function models the signal propagation (see <a
+href="index.html"><strong>Figure 1A</strong></a>), each vertex emitting
+a projection that decreases with distance, reflecting both the local
+strength of the signal and its spatial influence. Because a graph may
+have multiple vertices, the resulting projections can be aggregated in
+different ways.</p>
+<p>In what follows, this tutorial demonstrates how to create different
+signal aggregation functions for <em>PathwaySpace</em> projections. A
+toy graph with five small islands is used to illustrate aggregation
+rules that emphasize distinct patterns in the data.</p>
 </div>
 <div id="setting-basic-input-data" class="section level1">
 <h1>Setting basic input data</h1>
@@ -406,7 +444,7 @@ ps &lt;- buildPathwaySpace(gs)</code></pre>
 <div id="setting-a-decay-function" class="section level1">
 <h1>Setting a decay function</h1>
 <p>Next, we will set a linear decay model for all vertices (for
-additional configuration details, see the <a
+additional configurations, see the <a
 href="modeling-signal-decay.html"><em>signal decay functions</em></a>
 tutorial).</p>
 <pre class="r"><code># Setting a linear signal decay model for all vertices
@@ -430,44 +468,137 @@ vertexSignal(ps)[names(hubs)] &lt;- 2
 gs_vcount(ps)</code></pre>
 <pre><code>## [1] 35</code></pre>
 </div>
-<div id="running-pathwayspace" class="section level1">
-<h1>Running <em>PathwaySpace</em></h1>
+<div id="setting-an-aggregation-function" class="section level1">
+<h1>Setting an aggregation function</h1>
 <p>Now we project the signals using the
-<code>circularProjection()</code> function. Note that this function will
-project <em>vertex-signal positions</em> (or source points) to
-<em>null-signal positions</em> (or end points) across the
-<em>PathwaySpace</em> (see <a href="index.html"><strong>Figure
-1A</strong></a>), so the resulting projections can be aggregated in
-different ways. In the examples below, we compare two approaches: the
-standard <em>arithmetic mean</em>, where all values contribute equally,
-and the <em>self-weighted (contraharmonic) mean</em>, where each value
-is weighted by its own magnitude.</p>
-<pre class="r"><code># Running and plotting projections
+<code>circularProjection()</code> function, in which the
+<code>aggregate.fun</code> argument defines the aggregation rule. This
+argument accepts any user-defined unary aggregation function
+(<em>e.g.</em>, <code>function(x) { ... }</code>) that aggregates a
+vector of numeric values into a single scalar output.</p>
+<p>In the examples below, we compare two approaches: a standard
+<em>arithmetic mean</em>, where all values contribute equally, and a
+<em>self-weighted (contraharmonic) mean</em>, where each value is
+weighted by its own magnitude.</p>
+<pre class="r"><code># Signal aggregation by &#39;mean&#39;
 ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = mean)
 p1 &lt;- plotPathwaySpace(ps, theme = &quot;th3&quot;)
+
+# Signal aggregation by a &#39;contraharmonic mean&#39;
 wmean &lt;- function(x){ weighted.mean(x, abs(x)) }
 ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = wmean)
 p2 &lt;- plotPathwaySpace(ps, theme = &quot;th3&quot;)
+
 p1 + p2</code></pre>
 <p><img src="signal-aggregation-rules_files/figure-html/Modeling%20signal%20decay%20-%206-1.png" width="100%" /></p>
-<p>These examples shows how changes in weighting (from equal weights to
-self-weights) can shift the mean toward the more dominant signals. Next,
-we assign new aggregation functions to explore different rules. The
-<code>max</code> function will also emphasize the dominant signals while
-the <code>min</code> function will highlight the regions where
-projections intersect between two source points. Note that the
-<code>k</code> parameter affects the aggregation, as it determines how
-many projected signals are considered at each end point. Except from
-cases where aggregation amins to highlight minimal values, we recommend
-using <code>k = gs_vcount(ps)</code> to capture contributions from all
-signals reaching the end points.</p>
-<pre class="r"><code># Running and plotting projections
+<p>These examples show how changes in weighting (from equal weights to
+self-weights) affects the combined projection: The standard
+<em>arithmetic mean</em> may be used when we want to emphasize the
+influence of local groups, while the <em>contraharmonic mean</em> will
+shift the mean toward the more dominant signals.</p>
+<p>Next, we assign new aggregation functions to explore different rules.
+The <code>max</code> function will also emphasize the dominant signals
+while the <code>min</code> function will highlight the regions where
+projections intersect between two source points.</p>
+<pre class="r"><code># Signal aggregation by &#39;max&#39;
 ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = max)
 p1 &lt;- plotPathwaySpace(ps, theme = &quot;th3&quot;)
+
+# Signal aggregation by &#39;min&#39;
 ps &lt;- circularProjection(ps, k = 2, pdist = pdist, aggregate.fun = min)
 p2 &lt;- plotPathwaySpace(ps, theme = &quot;th3&quot;)
+
 p1 + p2</code></pre>
 <p><img src="signal-aggregation-rules_files/figure-html/Modeling%20signal%20decay%20-%207-1.png" width="100%" /></p>
+<p>Note that the <code>k</code> parameter affects the aggregations, as
+it determines how many projected signals are considered at each point.
+In general, we recommend using <code>k = gs_vcount(ps)</code> to capture
+contributions from all vertices, except in special cases, such as the
+example above using the <code>min</code> function, where the aggregation
+aims to highlight minimal values between two neighbor vertices.</p>
+</div>
+<div id="fuzzy-unions-and-intersections" class="section level1">
+<h1>Fuzzy unions and intersections</h1>
+<p>This section lists <em>fuzzy logic</em> functions that can be use to
+aggregate signals in <em>PathwaySpace</em>, mostly available from the
+<em>lfl</em> package <span class="citation">(Burda and Štěpnička
+2021)</span>. A fuzzy intersection measures how strongly all signals
+agree at a given point, typically using a <em>t-norm</em> like minimum
+or product. A fuzzy union, in contrast, measures how strongly any of the
+signals are at a given point, using a <em>t-conorm</em> like maximum. By
+combining fuzzy unions or intersections with decay functions, we can
+produce unified projections that integrate multiple signal sources into
+a single, interpretable representation.</p>
+<div id="t-norms-triangular-norms" class="section level2">
+<h2>T-norms (Triangular Norms)</h2>
+<p>These functions represent fuzzy “AND” operations:</p>
+<pre class="r"><code># Load Fuzzy Logic functions
+library(lfl)
+
+# Goedel t-norm: use when aggregation should be strictly limited by the weakest
+# signal (logical AND, conservative intersection)
+ps &lt;- circularProjection(ps, k = 2, pdist = pdist, aggregate.fun = goedel.tnorm)
+plotPathwaySpace(ps, theme = &quot;th3&quot;)
+
+# Goguen t-norm: use when you want smooth multiplicative attenuation of 
+# overlapping signals (probabilistic AND).
+ps &lt;- circularProjection(ps, k = 2, pdist = pdist, aggregate.fun = goguen.tnorm)
+plotPathwaySpace(ps, theme = &quot;th3&quot;)
+
+# Hamacher product t-norm: use when you need a balanced trade-off between 
+# strictness and smoothness in intersection
+fuzzy_hamacher_prod &lt;- function(x) {
+  Reduce(function(a, b) (a * b) / (a + b - a * b), x)
+}
+ps &lt;- circularProjection(ps, k = 2, pdist = pdist, aggregate.fun = fuzzy_hamacher_prod)
+plotPathwaySpace(ps, theme = &quot;th3&quot;)
+
+# Einstein product t-norm: use when combining signals should preserve low 
+# values softly without collapsing to zero too fast
+fuzzy_einstein_prod &lt;- function(x) {
+  Reduce(function(a, b) (a * b) / (1 + (1 - a) * (1 - b)), x)
+}
+ps &lt;- circularProjection(ps, k = 2, pdist = pdist, aggregate.fun = fuzzy_einstein_prod)
+plotPathwaySpace(ps, theme = &quot;th3&quot;)</code></pre>
+</div>
+<div id="t-conorms-triangular-conorms" class="section level2">
+<h2>T-conorms (Triangular Conorms)</h2>
+<p>These functions represent fuzzy “OR” operations:</p>
+<pre class="r"><code># Load Fuzzy Logic functions
+library(lfl)
+
+# Goedel t-conorm: use when you want an extremely permissive OR, where the 
+# strongest signal fully dominates the aggregation
+ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = goedel.tconorm)
+plotPathwaySpace(ps, theme = &quot;th3&quot;)
+
+# Goguen t-conorm: use when overlapping signals should reinforce each other in 
+# a probabilistic way (soft OR)
+ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = goguen.tconorm)
+plotPathwaySpace(ps, theme = &quot;th3&quot;)
+
+# Lukasiewicz t-conorm: use when you want bounded reinforcement, saturating 
+# at 1 once contributions accumulate.
+ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = lukas.tconorm)
+plotPathwaySpace(ps, theme = &quot;th3&quot;)
+
+# Hamacher sum t-conorm: use when you prefer a moderate, nonlinear reinforcement 
+# that avoids rapid saturation
+fuzzy_hamacher_sum &lt;- function(x) {
+  stopifnot(is.numeric(x), all(x &gt;= 0), all(x &lt;= 1))
+  Reduce(function(a, b) (a + b - 2 * a * b) / (1 - a * b), x)
+}
+ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = fuzzy_hamacher_sum)
+plotPathwaySpace(ps, theme = &quot;th3&quot;)
+
+# Einstein sum t-conorm: use when reinforcement should be smooth and symmetric,
+# limiting extreme increases
+fuzzy_einstein_sum &lt;- function(x) {
+  Reduce(function(a, b) (a + b) / (1 + a * b), x)
+}
+ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = fuzzy_einstein_sum)
+plotPathwaySpace(ps, theme = &quot;th3&quot;)</code></pre>
+</div>
 </div>
 <div id="session-information" class="section level1">
 <h1>Session information</h1>
@@ -536,6 +667,18 @@ p1 + p2</code></pre>
 ## [106] ggrepel_0.9.6          htmlwidgets_1.6.4      SeuratObject_5.2.0    
 ## [109] farver_2.1.2           htmltools_0.5.8.1      lifecycle_1.0.4       
 ## [112] httr_1.4.7             mime_0.13              MASS_7.3-65</code></pre>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent"
+entry-spacing="0">
+<div id="ref-Burda2021" class="csl-entry">
+Burda, Michal, and Martin Štěpnička. 2021. <span>“Lfl: An <span>R</span>
+Package for Linguistic Fuzzy Logic.”</span> <em>Fuzzy Sets and
+Systems</em>. <a
+href="https://doi.org/10.1016/j.fss.2021.07.007">https://doi.org/10.1016/j.fss.2021.07.007</a>.
+</div>
+</div>
 </div>
 
 
