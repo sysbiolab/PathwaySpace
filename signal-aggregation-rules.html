@@ -559,20 +559,21 @@ plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
 # Hamacher product t-norm: use when you need smoothness in signal intersections;
 # Input range in [-Inf, Inf];
-fuzzy_hamacher_prod &lt;- function(x) {
+fuzzy.hamacher.tnorm &lt;- function(x) {
   Reduce(function(a, b) (a * b) / (a + b - a * b), x)
 }
-ps &lt;- circularProjection(ps, k = 2, pdist = pdist, aggregate.fun = fuzzy_hamacher_prod)
+ps &lt;- circularProjection(ps, k = 2, pdist = pdist, aggregate.fun = fuzzy.hamacher.tnorm)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
 # Einstein product t-norm: use when combining signals should preserve low values
 # without collapsing to zero;
 # Input range in [-Inf, Inf]
-fuzzy_einstein_prod &lt;- function(x) {
+fuzzy.einstein.tnorm &lt;- function(x) {
   Reduce(function(a, b) (a * b) / (1 + (1 - a) * (1 - b)), x)
 }
-ps &lt;- circularProjection(ps, k = 2, pdist = pdist, aggregate.fun = fuzzy_einstein_prod)
+ps &lt;- circularProjection(ps, k = 2, pdist = pdist, aggregate.fun = fuzzy.einstein.tnorm)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)</code></pre>
+<p><img src="figs_spot_space/fig_b1.png" width="100%" /></p>
 <p></br></p>
 </div>
 <div id="t-conorms-triangular-conorms" class="section level2">
@@ -599,22 +600,22 @@ plotPathwaySpace(ps, theme = &quot;th3&quot;)
 # Hamacher sum t-conorm: use when you prefer a moderate, nonlinear signal reinforcement 
 # that avoids rapid saturation;
 # Input range in [0, 1]
-fuzzy_hamacher_sum &lt;- function(x) {
+fuzzy.hamacher.tconorm &lt;- function(x) {
   stopifnot(is.numeric(x), all(x &gt;= 0), all(x &lt;= 1))
   Reduce(function(a, b) (a + b - 2 * a * b) / (1 - a * b), x)
 }
-ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = fuzzy_hamacher_sum)
+ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = fuzzy.hamacher.tconorm)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
 # Einstein sum t-conorm: use when signal reinforcement should be smooth and symmetric,
 # limiting extreme increases;
 # Input range in [-Inf, Inf]
-fuzzy_einstein_sum &lt;- function(x) {
+fuzzy.einstein.tconorm &lt;- function(x) {
   Reduce(function(a, b) (a + b) / (1 + a * b), x)
 }
-ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = fuzzy_einstein_sum)
+ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = fuzzy.einstein.tconorm)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)</code></pre>
-<p></br></p>
+<p><img src="figs_spot_space/fig_b2.png" width="100%" /></p>
 <p>Note that most of the fuzzy functions listed above, including
 <em>t-norms</em> (e.g., Goedel, Goguen, Hamacher) and <em>t-conorms</em>
 (e.g., Goedel, Goguen, Lukasiewicz), operate within the unit interval,
