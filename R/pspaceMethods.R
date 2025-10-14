@@ -113,7 +113,7 @@ buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE,
 #' ps <- circularProjection(ps)
 #' 
 #' @import methods
-#' @importFrom lifecycle deprecated deprecate_soft is_present
+#' @importFrom lifecycle deprecated deprecate_soft is_present deprecate_stop
 #' @docType methods
 #' @rdname circularProjection-methods
 #' @aliases circularProjection
@@ -183,7 +183,7 @@ setMethod("circularProjection", "PathwaySpace", function(ps,
 #' produces a cardioid-like shape, and \code{beta > 1} progressively narrows 
 #' the projection along a reference edge axis.
 #' @param decay.fun A signal decay function. Available options include 
-#' 'Weibull', 'exponential', and 'linear' (see \code{\link{signalDecay}}).
+#' 'Weibull', 'exponential', and 'linear' (see \code{\link{weibullDecay}}).
 #' Users may also define a custom decay model with at least two arguments, 
 #' e.g., \code{function(x, signal) \{ ... \}}, which should returns a vector of  
 #' projected signals of the same length as \code{x}. Additional arguments may  
@@ -367,7 +367,8 @@ setMethod("silhouetteMapping", "PathwaySpace", function(ps,
   #--- pack args (for default projection)
   k <- min(8, gs_vcount(ps))
   pars <- list(baseline = baseline, pdist = pdist, k = k, 
-    fill.cavity = fill.cavity, decay.fun = signalDecay())
+    fill.cavity = fill.cavity, 
+    decay.fun = weibullDecay(pdist=1))
   for (nm in names(pars)) {
     ps@pars$ps$silh[[nm]] <- pars[[nm]]
   }
@@ -562,13 +563,13 @@ setMethod("show", "PathwaySpace", function(object) {
 #' vertexDecay(ps)[["n3"]]
 #' 
 #' # Modify decay function of a specific vertex
-#' vertexDecay(ps)[["n3"]] <- signalDecay(method = "linear")
+#' vertexDecay(ps)[["n3"]] <- linearDecay()
 #' 
 #' # Modify decay functions of two vertices
-#' vertexDecay(ps)[c("n1","n3")] <- list( signalDecay() )
+#' vertexDecay(ps)[c("n1","n3")] <- list( weibullDecay() )
 #' 
 #' # Modify decay functions of all vertices
-#' vertexDecay(ps) <- signalDecay(method = "weibull", shape = 2)
+#' vertexDecay(ps) <- weibullDecay(shape = 2)
 #' 
 #' @import methods
 #' @docType methods

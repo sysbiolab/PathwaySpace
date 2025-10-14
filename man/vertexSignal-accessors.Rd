@@ -57,12 +57,12 @@ vertexSignal(ps) <- 1
 vertexDecay(ps)[["n3"]]
 
 # Modify decay function of a specific vertex
-vertexDecay(ps)[["n3"]] <- signalDecay(method = "linear")
+vertexDecay(ps)[["n3"]] <- linearDecay()
 
 # Modify decay functions of two vertices
-vertexDecay(ps)[c("n1","n3")] <- list( signalDecay() )
+vertexDecay(ps)[c("n1","n3")] <- list( weibullDecay() )
 
 # Modify decay functions of all vertices
-vertexDecay(ps) <- signalDecay(method = "weibull", shape = 2)
+vertexDecay(ps) <- weibullDecay(shape = 2)
 
 }

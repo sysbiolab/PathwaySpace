@@ -35,7 +35,7 @@ produces a cardioid-like shape, and \code{beta > 1} progressively narrows
 the projection along a reference edge axis.}
 
 \item{decay.fun}{A signal decay function. Available options include 
-'Weibull', 'exponential', and 'linear' (see \code{\link{signalDecay}}).
+'Weibull', 'exponential', and 'linear' (see \code{\link{weibullDecay}}).
 Users may also define a custom decay model with at least two arguments, 
 e.g., \code{function(x, signal) \{ ... \}}, which should returns a vector of  
 projected signals of the same length as \code{x}. Additional arguments may  

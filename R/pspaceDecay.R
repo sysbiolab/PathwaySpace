@@ -59,7 +59,7 @@
 #' @importFrom ggplot2 geom_point geom_hline
 #' @aliases weibullDecay
 #' @export
-#'
+#' 
 weibullDecay <- function(decay = 0.001, shape = 1.05, pdist = 0.15, 
   plot = FALSE, demo.signal = 1) {
   
@@ -362,81 +362,6 @@ linearDecay <- function(decay = 0.001, pdist = 0.15, plot = FALSE,
 }
 
 #-------------------------------------------------------------------------------
-#' @title Helper function to construct decay models
-#'
-#' @description 
-#' Utility functions to construct signal decay models used by
-#' \code{\link{circularProjection}} and \code{\link{polarProjection}} 
-#' internal calls.
-#' 
-#' @param method A character string specifying a method for
-#' signal decay (any of \code{weibull}, \code{exp}, or \code{linear}), 
-#' returning \code{\link{weibullDecay}}, \code{\link{expDecay}}, 
-#' or \code{\link{linearDecay}} functions, respectively.
-#' @param decay A decay factor in the interval (0,1), passed to the 
-#' \code{\link{weibullDecay}} and \code{\link{expDecay}} functions.
-#' @param shape A parameter (>=1) passed to the \code{\link{weibullDecay}} 
-#' function.
-#' @return Returns a function of the form: \code{function(x, signal) { ... }}
-#' @author Sysbiolab Team
-#' @seealso \code{\link{circularProjection}} and \code{\link{polarProjection}}
-#' @examples
-#' decay.fun <- signalDecay()
-#' 
-#' @rdname signalDecay
-#' @export
-#'
-signalDecay <- function(method = c("weibull", "exp", "linear"), 
-    decay = 0.001, shape = 1.05){
-    method <- match.arg(method)
-    .validate.ps.args("singleNumber", "decay", decay)
-    .validate.ps.args("singleNumber", "shape", shape)
-    if(decay < 0 || decay > 1){
-        stop("'decay' must be in [0,1]", call. = FALSE)
-    }
-    if(shape < 1){
-        stop("'shape' must be >=1", call. = FALSE)
-    }
-    if(method=="weibull"){
-        if(decay==0) decay <- .Machine$double.xmin
-        if(decay==1) decay <- 1 - (1/.Machine$longdouble.max.exp)
-        f <- function(x, signal){
-            y <- signal * decay^(x^shape)
-            return(y)
-        }
-        body(f) <- do.call("substitute", list(body(f),
-            list(decay = decay, shape = shape)))
-        attributes(f)$name <- "weibullDecay"
-        return(f)
-    } else if(method=="exp"){
-        if(!missing(shape)){
-            warning("'shape' ignored unless method is 'weibull'.")
-        }
-        if(decay==0) decay <- .Machine$double.xmin
-        if(decay==1) decay <- 1 - (1/.Machine$longdouble.max.exp)
-        f <- function(x, signal){
-            y <- signal * decay^x
-            return(y)
-        }
-        body(f) <- do.call("substitute", list(body(f), list(decay = decay)))
-        attributes(f)$name <- "expDecay"
-        return(f)
-    } else if(method=="linear"){
-        if(!missing(shape)){
-            warning("'shape' ignored unless method is 'weibull'.")
-        }
-        f <- function(x, signal){
-            y <- signal * (1 - (1 - decay) * x)
-            y[(y * sign(signal)) < 0] <- 0
-            return(y)
-        }
-        body(f) <- do.call("substitute", list(body(f), list(decay = decay)))
-        attributes(f)$name <- "linearDecay"
-        return(f)
-    }
-}
-
-#-------------------------------------------------------------------------------
 #' @title Signal aggregation functions
 #'
 #' @description Signal aggregation functions for \code{\link{circularProjection}}
@@ -610,3 +535,28 @@ polarDecay <- function(method = c("power", "gaussian", "logistic"),
         
     }
 }
+
+#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+#' @title Deprecated function
+#'
+#' @description 
+#' Use \code{\link{weibullDecay}}, \code{\link{expDecay}}, 
+#' and \code{\link{linearDecay}}.
+#' 
+#' @param ... Deprecated arguments
+#' @return Stop unconditionally
+#' @author Sysbiolab Team
+#' @examples
+#' decay.fun <- weibullDecay()
+#' 
+#' @rdname signalDecay
+#' @export
+#'
+signalDecay <- function(...){
+  lifecycle::deprecate_stop("1.0.3", "signalDecay()", "weibullDecay()")
+}
+
