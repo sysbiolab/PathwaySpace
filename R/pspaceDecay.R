@@ -269,8 +269,10 @@ linearDecay <- function(decay = 0.001, pdist = 0.15, plot = FALSE,
   }
   
   f <- function(x, signal){
-    y <- signal * (1 - (1 - decay) * x/pdist)
-    y[(y * sign(signal)) < 0] <- 0
+    # linear decay
+    y <- signal * ( 1 - ( (1 - decay) * x/pdist ) )
+    # clip 'y' to prevent flipping sign
+    y <- pmax(y * sign(signal), 0) * sign(signal)
     return(y)
   }
   body(f) <- do.call("substitute", list(body(f), 
