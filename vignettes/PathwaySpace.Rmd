@@ -186,7 +186,7 @@ plotPathwaySpace(p_space1, marks = "n1", theme = "th2")
 knitr::include_graphics("figures/fig4.png")
 ```
 
-The `shape` parameter allows a projection to take a variety of shapes. When `shape = 1` the projection follows an exponential decay, and when `shape > 1` the projection is first convex, then concave with an inflection point along the decay path.
+The `shape` parameter allows a projection to take a variety of shapes. When `shape = 1` the projection follows an exponential decay, and when `shape > 1` the projection is first convex, then concave with an inflection point along the decay path. For additional examples see documentation of the `weibullDecay()` function.
 
 ## Polar projection
 
