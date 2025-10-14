@@ -454,15 +454,16 @@ ps &lt;- buildPathwaySpace(gs)</code></pre>
 additional configurations, see the <a
 href="modeling-signal-decay.html"><em>signal decay functions</em></a>
 tutorial).</p>
-<pre class="r"><code># Setting a linear signal decay model for all vertices
-vertexDecay(ps) &lt;- signalDecay(&quot;linear&quot;, decay = 0.001)</code></pre>
-<p>…and then set a distance unit.</p>
+<p>…set a reference distance.</p>
 <pre class="r"><code># Get distance to the nearest nodes
 near_df &lt;- getNearestNode(ps)
 pdist &lt;- mean(near_df$dist)
 # The &#39;pdist&#39; is the average center-to-center distance between nodes
 pdist</code></pre>
 <pre><code>## [1] 0.1017829</code></pre>
+<p>…then set a decay model.</p>
+<pre class="r"><code># Setting a linear decay model for all vertices
+vertexDecay(ps) &lt;- linearDecay(pdist = pdist)</code></pre>
 <p>…and assign a numeric signal, here setting peak values at the central
 vertices or hubs.</p>
 <pre class="r"><code># Find hubs 
@@ -488,12 +489,12 @@ vector of numeric values into a single scalar output.</p>
 <em>self-weighted (contraharmonic) mean</em>, where each value is
 weighted by its own magnitude.</p>
 <pre class="r"><code># Signal aggregation by &#39;mean&#39;
-ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = mean)
+ps &lt;- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = mean)
 p1 &lt;- plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
 # Signal aggregation by a &#39;contraharmonic mean&#39;
 wmean &lt;- function(x){ weighted.mean(x, abs(x)) }
-ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = wmean)
+ps &lt;- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = wmean)
 p2 &lt;- plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
 p1 + p2</code></pre>
@@ -508,11 +509,11 @@ The <code>max</code> function also emphasizes the dominant signals while
 the <code>min</code> function will highlight the regions where
 projections intersect between neighbor vertices.</p>
 <pre class="r"><code># Signal aggregation by &#39;max&#39;
-ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = max)
+ps &lt;- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = max)
 p1 &lt;- plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
 # Signal aggregation by &#39;min&#39;
-ps &lt;- circularProjection(ps, k = 2, pdist = pdist, aggregate.fun = min)
+ps &lt;- circularProjection(ps, k = 2, aggregate.fun = min)
 p2 &lt;- plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
 p1 + p2</code></pre>
@@ -548,13 +549,13 @@ library(lfl)</code></pre>
 <pre class="r"><code># Goedel t-norm: use when aggregation should be strictly limited by the weakest
 # signal (logical AND, conservative intersection);
 # Input range in [0, 1]
-ps &lt;- circularProjection(ps, k = 2, pdist = pdist, aggregate.fun = goedel.tnorm)
+ps &lt;- circularProjection(ps, k = 2, aggregate.fun = goedel.tnorm)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
 # Goguen t-norm: use when you want smooth multiplicative attenuation of 
 # overlapping signals (probabilistic AND);
 # Input range in [0, 1]
-ps &lt;- circularProjection(ps, k = 2, pdist = pdist, aggregate.fun = goguen.tnorm)
+ps &lt;- circularProjection(ps, k = 2, aggregate.fun = goguen.tnorm)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
 # Hamacher product t-norm: use when you need smoothness in signal intersections;
@@ -562,7 +563,7 @@ plotPathwaySpace(ps, theme = &quot;th3&quot;)
 fuzzy.hamacher.tnorm &lt;- function(x) {
   Reduce(function(a, b) (a * b) / (a + b - a * b), x)
 }
-ps &lt;- circularProjection(ps, k = 2, pdist = pdist, aggregate.fun = fuzzy.hamacher.tnorm)
+ps &lt;- circularProjection(ps, k = 2, aggregate.fun = fuzzy.hamacher.tnorm)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
 # Einstein product t-norm: use when combining signals should preserve low values
@@ -571,7 +572,7 @@ plotPathwaySpace(ps, theme = &quot;th3&quot;)
 fuzzy.einstein.tnorm &lt;- function(x) {
   Reduce(function(a, b) (a * b) / (1 + (1 - a) * (1 - b)), x)
 }
-ps &lt;- circularProjection(ps, k = 2, pdist = pdist, aggregate.fun = fuzzy.einstein.tnorm)
+ps &lt;- circularProjection(ps, k = 2, aggregate.fun = fuzzy.einstein.tnorm)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)</code></pre>
 <p><img src="figs_spot_space/fig_b1.png" width="100%" /></p>
 <p></br></p>
@@ -582,19 +583,19 @@ plotPathwaySpace(ps, theme = &quot;th3&quot;)</code></pre>
 <pre class="r"><code># Goedel t-conorm: use when you want an extremely permissive OR, where the 
 # strongest signal fully dominates the aggregation;
 # Input range in [0, 1]
-ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = goedel.tconorm)
+ps &lt;- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = goedel.tconorm)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
 # Goguen t-conorm: use when overlapping signals should reinforce each other in 
 # a probabilistic way (soft OR);
 # Input range in  [0, 1]
-ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = goguen.tconorm)
+ps &lt;- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = goguen.tconorm)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
 # Lukasiewicz t-conorm: use when you want signal reinforcement, saturating at 1 
 # once contributions accumulate;
 # Input range in [0, 1]
-ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = lukas.tconorm)
+ps &lt;- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = lukas.tconorm)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
 # Hamacher sum t-conorm: use when you prefer a moderate, nonlinear signal reinforcement 
@@ -604,7 +605,7 @@ fuzzy.hamacher.tconorm &lt;- function(x) {
   stopifnot(is.numeric(x), all(x &gt;= 0), all(x &lt;= 1))
   Reduce(function(a, b) (a + b - 2 * a * b) / (1 - a * b), x)
 }
-ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = fuzzy.hamacher.tconorm)
+ps &lt;- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = fuzzy.hamacher.tconorm)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)
 
 # Einstein sum t-conorm: use when signal reinforcement should be smooth and symmetric,
@@ -613,7 +614,7 @@ plotPathwaySpace(ps, theme = &quot;th3&quot;)
 fuzzy.einstein.tconorm &lt;- function(x) {
   Reduce(function(a, b) (a + b) / (1 + a * b), x)
 }
-ps &lt;- circularProjection(ps, k = gs_vcount(ps), pdist = pdist, aggregate.fun = fuzzy.einstein.tconorm)
+ps &lt;- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = fuzzy.einstein.tconorm)
 plotPathwaySpace(ps, theme = &quot;th3&quot;)</code></pre>
 <p><img src="figs_spot_space/fig_b2.png" width="100%" /></p>
 <p>Note that most of the fuzzy functions listed above, including

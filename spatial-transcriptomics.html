@@ -523,8 +523,8 @@ configuration details, see the <a
 href="modeling-signal-decay.html"><em>signal decay functions</em></a>
 tutorial).</p>
 <pre class="r"><code># Project gene signal
-pspace_obj &lt;- circularProjection(pspace_obj, pdist = pdist, 
-  k = gs_vcount(pspace_obj), decay.fun = signalDecay(decay=0.5),
+pspace_obj &lt;- circularProjection(pspace_obj, k = gs_vcount(pspace_obj), 
+  decay.fun = weibullDecay(decay=0.5, pdist = pdist),
   aggregate.fun = signalAggregation(&quot;wmean&quot;))</code></pre>
 <p>Because each spot produces an independent projection, the resulting
 projections are aggregated into a unified landscape. Here we use a
@@ -611,8 +611,8 @@ gene &lt;- &quot;DDN&quot;
 vertexSignal(pspace_obj)[colnames(vst_gexp)] &lt;- vst_gexp[gene,]
 
 # Project gene signal
-pspace_obj &lt;- circularProjection(pspace_obj, pdist = pdist, 
-  k = gs_vcount(pspace_obj), decay.fun = signalDecay(decay=0.5))
+pspace_obj &lt;- circularProjection(pspace_obj, k = gs_vcount(pspace_obj), 
+  decay.fun = weibullDecay(decay=0.5, pdist = pdist))
 
 # Plot projections
 #-- as a suggestion, truncate zlim at the upper limit 
@@ -624,8 +624,8 @@ gene &lt;- &quot;PCP4&quot;
 vertexSignal(pspace_obj)[colnames(vst_gexp)] &lt;- vst_gexp[gene,]
 
 # Project gene signal
-pspace_obj &lt;- circularProjection(pspace_obj, pdist = pdist, 
-  k = gs_vcount(pspace_obj), decay.fun = signalDecay(decay=0.5))
+pspace_obj &lt;- circularProjection(pspace_obj, k = gs_vcount(pspace_obj), 
+  decay.fun = weibullDecay(decay=0.5, pdist = pdist))
 
 # Plot projections
 p2 &lt;- plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;, 
@@ -706,8 +706,8 @@ gene &lt;- &quot;Rorb&quot;
 vertexSignal(pspace_obj)[colnames(norm_gexp)] &lt;- norm_gexp[gene,]
 
 # Project gene signal
-pspace_obj &lt;- circularProjection(pspace_obj, pdist = pdist, 
-  k = gs_vcount(pspace_obj), decay.fun = signalDecay(decay=0.5))
+pspace_obj &lt;- circularProjection(pspace_obj, k = gs_vcount(pspace_obj), 
+  decay.fun = weibullDecay(decay=0.5, pdist = pdist))
 
 # Plot projections
 p1 &lt;- plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;, 
@@ -717,8 +717,8 @@ gene &lt;- &quot;Hpca&quot;
 vertexSignal(pspace_obj)[colnames(norm_gexp)] &lt;- norm_gexp[gene,]
 
 # Project gene signal
-pspace_obj &lt;- circularProjection(pspace_obj, pdist = pdist, 
-  k = gs_vcount(pspace_obj), decay.fun = signalDecay(decay=0.5))
+pspace_obj &lt;- circularProjection(pspace_obj, k = gs_vcount(pspace_obj), 
+  decay.fun = weibullDecay(decay=0.5, pdist = pdist))
 
 # Plot projections
 p2 &lt;- plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;, 
