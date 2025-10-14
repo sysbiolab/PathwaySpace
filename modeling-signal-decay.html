@@ -446,12 +446,13 @@ with customized parameters.</p>
 ##     y &lt;- signal * 0.25^((x/0.75)^2)
 ##     return(y)
 ## }
-## &lt;environment: 0x62f5951aac00&gt;
+## &lt;environment: 0x5b1470282850&gt;
 ## attr(,&quot;name&quot;)
 ## [1] &quot;weibullDecay&quot;</code></pre>
 <p></br></p>
-<p>… and to explore how different parameters affect the signal
-attenuation, simply set <code>plot = TRUE</code>.</p>
+<p>… and to visualize how different parameters affect the signal
+attenuation, rerun the <code>weibullDecay()</code> constructor with
+<code>plot = TRUE</code>.</p>
 <pre class="r"><code># Run Weibull constructor with decay = 0.5, shape = 1, and pdist = 0.2
 p1 &lt;- weibullDecay(decay = 0.5, shape = 1, pdist = 0.1, plot = TRUE)
 
