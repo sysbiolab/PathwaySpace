@@ -144,11 +144,12 @@ vertexSignal(p_space1)
 
 ## Circular projection
 
-Following that, we will use the `circularProjection()` function to project the network signals, setting `pdist = 0.4`. This term determines a distance unit for the signal convolution, affecting the extent over which the convolution operation projects the signal. For example, when `pdist = 1`, it will represent the diameter of the inscribed circle within the coordinate space. We also set `k = 1`, which defines the contributing vertices for signal convolution. In this case, each *null-signal position* will receive the projection from a single *vertex-signal position* (*i.e.* the highest signal intensity in pathway space reaching that position). We then create a landscape image using the `plotPathwaySpace()` function.
+Following that, we will use the `circularProjection()` function to project the network signals, using Weibull decay with `pdist = 0.4`, which is passed by the `decay.fun` argument. This term determines a distance unit for the signal convolution, affecting the extent over which the convolution operation projects the signal. For example, when `pdist = 1`, it will represent the diameter of the inscribed circle within the coordinate space. We also set `k = 1`, which defines the contributing vertices for signal convolution. In this case, each *null-signal position* will receive the projection from a single *vertex-signal position* (*i.e.* the highest signal intensity in pathway space reaching that position). We then create a landscape image using the `plotPathwaySpace()` function.
 
 ```{r Circular projection - 1, eval=FALSE, message=FALSE, out.width="70%"}
 # Run signal projection
-p_space1 <- circularProjection(p_space1, pdist = 0.4, k = 1)
+p_space1 <- circularProjection(p_space1, k = 1, 
+  decay.fun = weibullDecay(pdist = 0.4))
 
 # Plot a PathwaySpace image
 plotPathwaySpace(p_space1, add.marks = TRUE)
@@ -164,12 +165,12 @@ plotPathwaySpace(p_space1, add.marks = TRUE)
 knitr::include_graphics("figures/fig3.png")
 ```
 
-Next, we reassess the same *PathwaySpace* object, using `pdist = 0.2`, `k = 2` and adjusting the `shape` of the decay function, which is passed to the `circularProjection()` function via `decay.fun` argument.
+Next, we reassess the same *PathwaySpace* object, using `pdist = 0.2`, `k = 2` and adjusting the `shape` of the decay function.
 
 ```{r Circular projection - 3, eval=FALSE, message=FALSE, out.width="70%"}
 # Re-run signal projection, adjusting Weibull's shape
-p_space1 <- circularProjection(p_space1, pdist = 0.2, k = 2, 
-  decay.fun = signalDecay(shape = 2))
+p_space1 <- circularProjection(p_space1, k = 2, 
+  decay.fun = weibullDecay(shape = 2, pdist = 0.2))
 
 # Plot PathwaySpace
 plotPathwaySpace(p_space1, marks = "n1", theme = "th2")
@@ -226,16 +227,16 @@ For fine-grained modeling of signal decay, the `vertexDecay()` accessor allows a
 ```{r Polar projection - 4, eval=TRUE, message=FALSE}
 # Modify decay function
 # ..for all vertices
-vertexDecay(p_space2) <- signalDecay(shape=2)
+vertexDecay(p_space2) <- weibullDecay(shape=2, pdist = 1)
 # ..for individual vertices
-vertexDecay(p_space2)[["n6"]] <- signalDecay(shape=3)
+vertexDecay(p_space2)[["n6"]] <- weibullDecay(shape=3, pdist = 1)
 ```
 
-Next, we run the signal projection using polar coordinates. The `beta` exponent will control the angular span; for values greater than zero, `beta` will progressively narrow the projection along the edge axis. Also, in the `polarProjection()` function, the `pdist` term will define a distance unit related to edge length, aiming to constrain signal projections within edge bounds. Here we set `pdist = 1` to reach full edge lengths.
+Next, we run the signal projection using polar coordinates. The `beta` exponent will control the angular span; for values greater than zero, `beta` will progressively narrow the projection along the edge axis. Also, in the `polarProjection()` function, the `edge.norm = TRUE` is used by default and it will constrain signal projections within edge bounds. Here we set `pdist = 1` to reach full edge lengths.
 
 ```{r Polar projection - 5, eval=FALSE, message=FALSE, out.width="70%"}
 # Run signal projection using polar coordinates
-p_space2 <- polarProjection(p_space2, pdist = 1, beta = 10)
+p_space2 <- polarProjection(p_space2, beta = 10, edge.norm = TRUE)
 
 # Plot PathwaySpace
 plotPathwaySpace(p_space2, theme = "th2", add.marks = TRUE)
@@ -255,7 +256,7 @@ Note that this projection distributes signals on the edges regardless of directi
 
 ```{r Polar projection - 6, eval=FALSE, message=FALSE, out.width="70%"}
 # Re-run signal projection using 'directional = TRUE'
-p_space2 <- polarProjection(p_space2, pdist = 1, beta = 10, directional = TRUE)
+p_space2 <- polarProjection(p_space2, beta = 10, directional = TRUE)
 
 # Plot PathwaySpace
 plotPathwaySpace(p_space2, theme = "th2", marks = c("n1","n3","n4","n5"))
@@ -287,7 +288,7 @@ vertexSignal(p_space1)
 #  6  4 -2 -4  3 
 
 # Re-run signal projection
-p_space1 <- circularProjection(p_space1, decay.fun = signalDecay(shape = 2))
+p_space1 <- circularProjection(p_space1, decay.fun = weibullDecay(shape = 2))
 
 # Plot PathwaySpace
 plotPathwaySpace(p_space1, bg.color = "white", font.color = "grey20", add.marks = TRUE, mark.color = "magenta", theme = "th2")

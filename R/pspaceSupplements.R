@@ -56,7 +56,6 @@
   if(verbose) message("Mapping 'x' and 'y' coordinates...")
   gxy <- .rescale_coord(nodes, pars$ps$nrc)
   lpts <- .get_points_in_matrix(pars$ps$nrc)
-  pars$ps$psearch <- min(1, pars$ps$pdist * 1.1)
   nnpg <- .get_near_points(lpts, gxy, nodes, pars)
   
   # project signal
@@ -83,9 +82,8 @@
   if(pars$ps$decay$is_default_args){
     for(i in seq_len(nrow(nodes))){
       decay_fun <- nodes$decayFunction[[i]]
-      signal <- nodes$signal[i]
-      x <- nnpg$dist[[i]] / (pars$ps$nrc * pars$ps$pdist)
-      signal <- signal / pars$ps$zscale$maxsig
+      signal <- nodes$signal[i] / pars$ps$zscale$maxsig
+      x <- nnpg$dist[[i]] / pars$ps$nrc
       nsig[[i]] <- decay_fun(x=x, signal=signal)
     }
   } else {
@@ -94,7 +92,7 @@
       decay_fun <- nodes$decayFunction[[i]]
       decay_args <- formalArgs(decay_fun)
       args_list <- as.list(nodes[i, decay_args, drop=FALSE])
-      args_list$x <- nnpg$dist[[i]] / (pars$ps$nrc * pars$ps$pdist)
+      args_list$x <- nnpg$dist[[i]] / pars$ps$nrc
       args_list$signal <- args_list$signal / pars$ps$zscale$maxsig
       nsig[[i]] <- do.call(decay_fun, args_list)
     }
@@ -186,7 +184,7 @@
 #-------------------------------------------------------------------------------
 #--- get vertex-to-point distances for circular and polar projections
 .get_near_points <- function(lpts, gxy, nodes, pars){
-  eradius <- .estimate_radius(nodes, pars$ps$psearch, pars$ps$baseline)
+  eradius <- .estimate_radius(nodes, pars$ps$baseline)
   eradius <- pars$ps$nrc * eradius
   nnpg <- list(nn = list(), dist = list())
   lpts <- as.data.frame(lpts)
@@ -220,9 +218,8 @@
   }
   return(nnpg)
 }
-.estimate_radius <- function(nodes, psearch, baseline = 0.01){
-  maxlen <- 1/psearch
-  x <- seq(maxlen, 0, length.out=100)
+.estimate_radius <- function(nodes, baseline = 0.01){
+  x <- seq(1, 0, length.out=100)
   fun <- nodes$decayFunction
   signal <- abs(nodes$signal)
   signal[is.na(signal)] <- 0
@@ -240,7 +237,6 @@
     }
     return(r)
   }, numeric(1))
-  eradius <- eradius/maxlen
   return(eradius)
 }
 
@@ -286,20 +282,12 @@
     }
     
     if(verbose) message("Computing linear and angular distances...")
-    # for polar, 'pdist' is scaled to edge dist and polar coordinates
+    # for polar, 'dist' is scaled to edge dist and polar coordinates
     edges$edist <- .get_edge_dist(edges, gxy)
-    # adjust pdist to search a larger projection area
-    if(pars$ps$edge.norm){
-      # get psearch within edge bounds
-      pars$ps$psearch <- (max(edges$edist)/pars$ps$nrc) * pars$ps$pdist
-      pars$ps$psearch <- min(1, pars$ps$psearch * 1.1)
-    } else {
-      pars$ps$psearch <- min(1, pars$ps$pdist * 1.1)
-    }
     lpts <- .get_points_in_matrix(pars$ps$nrc)
     nnpg <- .get_near_points(lpts, gxy, nodes, pars)
     nnpg <- .get_angular_dist(nnpg, lpts, gxy, edges, pars)
-    nnpg <- .scale_pdist_polar(nnpg, pars)
+    nnpg <- .scale_dist_polar(nnpg, pars)
     
     # project signal
     if(verbose) message("Running signal convolution...")
@@ -330,7 +318,7 @@
     for(i in seq_len(nrow(nodes))){
       decay_fun <- nodes$decayFunction[[i]]
       signal <- nodes$signal[i]
-      x <- nnpg$dist[[i]] / (nnpg$pdist_dth[[i]] * pars$ps$nrc)
+      x <- nnpg$dist[[i]] / (nnpg$dist_dth[[i]] * pars$ps$nrc)
       signal <- signal / pars$ps$zscale$maxsig
       if(pars$eweight) signal <- signal * nnpg$edwght[[i]]
       nsig[[i]] <- decay_fun(x=x, signal=signal)
@@ -341,7 +329,7 @@
       decay_fun <- nodes$decayFunction[[i]]
       decay_args <- formalArgs(decay_fun)
       args_list <- as.list(nodes[i, decay_args, drop=FALSE])
-      args_list$x <- nnpg$dist[[i]] / (nnpg$pdist_dth[[i]] * pars$ps$nrc)
+      args_list$x <- nnpg$dist[[i]] / (nnpg$dist_dth[[i]] * pars$ps$nrc)
       args_list$signal <- args_list$signal / pars$ps$zscale$maxsig
       if(pars$eweight) args_list$signal <- args_list$signal * nnpg$edwght[[i]]
       nsig[[i]] <- do.call(decay_fun, args_list)
@@ -369,14 +357,10 @@
 
 #-------------------------------------------------------------------------------
 .get_angular_dist <- function(nnpg, lpts, gxy, edges, pars){
-  # scale edist ..only used when edge.norm = TRUE
-  rg <- range(edges$edist)
-  rg <- rg[1] + ( (rg - rg[1]) * pars$ps$pdist )
-  edges$scaled_eleng <- scales::rescale(edges$edist, to=rg)
   # get polar coords
   edlist <- .edge_list(edges, gxy)
   etheta <- .edge_list_theta(edlist, gxy)
-  edleng <- .edge_attr(edges, gxy, "scaled_eleng")
+  edleng <- .edge_attr(edges, gxy, "edist")
   edwght <- .edge_attr(edges, gxy, "weight")
   if(pars$ps$directional){
     emode <- .edge_mode(edges, gxy)
@@ -415,8 +399,8 @@
         dth_iso <- 0
       } else {
         ## For isolated nodes, 'dth_iso' will aim the area of a cardioid,
-        ## as result from the adjusted 'pdist', computed in the expression: 
-        ## pdist_dth = pdist * dth_iso^beta
+        ## as result from the adjusted 'dist', computed in the expression: 
+        ## dist_dth = dist * dth_iso^beta
         ## 1) cf: geometric factor to adjust circle's radius for a cardioid area
         cf <- sqrt(3/8)
         ## 2) dth_iso: rescaled 'dth'; here the effect of 'beta' is removed
@@ -488,15 +472,15 @@
 }
 
 #-------------------------------------------------------------------------------
-.scale_pdist_polar <- function(nnpg, pars) {
+.scale_dist_polar <- function(nnpg, pars) {
   pfun <- pars$ps$polar.fun
   for(i in seq_len(length(nnpg$nn))){
     if(pars$ps$edge.norm){
-      pdist <- (nnpg$edleng[[i]] / pars$ps$nrc) * pars$ps$pdist
+      edleng <- (nnpg$edleng[[i]] / pars$ps$nrc)
     } else {
-      pdist <- pars$ps$pdist
+      edleng <- 1
     }
-    nnpg$pdist_dth[[i]] <- pdist * pfun(nnpg$dtheta[[i]], pars$ps$beta)
+    nnpg$dist_dth[[i]] <- edleng * pfun(nnpg$dtheta[[i]], pars$ps$beta)
   }
   return(nnpg)
 }
@@ -512,7 +496,7 @@
     names(el) <- nms
     return(el)
 }
-.edge_attr <- function(edges, gxy, eattr = "scaled_eleng") {
+.edge_attr <- function(edges, gxy, eattr = "edist") {
     nms <- rownames(gxy)
     el <- lapply(nms, function(nm) {
         idx1 <- edges$name1 == nm

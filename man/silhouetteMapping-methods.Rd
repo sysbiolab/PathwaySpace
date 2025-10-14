@@ -26,11 +26,11 @@ When \code{baseline = 0} (i.e. lower level of the projection), the
 silhouette will extend over the entire image space, so no outline will 
 be visible.}
 
-\item{fill.cavity}{A single logical value specifying to fill cavities 
+\item{fill.cavity}{A logical value specifying to fill cavities 
 in the silhouette mask (when \code{verbose=TRUE}) or not 
 (when \code{verbose=FALSE}).}
 
-\item{verbose}{A single logical value specifying to display detailed 
+\item{verbose}{A logical value specifying to display detailed 
 messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
 }
 \value{

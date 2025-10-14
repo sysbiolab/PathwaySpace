@@ -16,7 +16,7 @@ to \code{name} vertex attribute.}
 columns (in pixels) for a square image matrix. This argument will 
 affect the resulting image size and resolution.}
 
-\item{verbose}{A single logical value specifying to display detailed 
+\item{verbose}{A logical value specifying to display detailed 
 messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
 
 \item{g}{Deprecated from PathwaySpace 1.0.1; use 'gs' instead.}

@@ -8,31 +8,26 @@
 \usage{
 \S4method{polarProjection}{PathwaySpace}(
   ps,
-  pdist = 0.5,
   k = 2,
   beta = 10,
-  decay.fun = signalDecay(),
+  decay.fun = weibullDecay(pdist = 1),
   aggregate.fun = signalAggregation(),
   polar.fun = polarDecay(),
   directional = FALSE,
   edge.norm = TRUE,
   rescale = TRUE,
   verbose = TRUE,
-  theta = deprecated()
+  theta = deprecated(),
+  pdist = deprecated()
 )
 }
 \arguments{
 \item{ps}{A \linkS4class{PathwaySpace} class object.}
 
-\item{pdist}{A term (in \code{[0, 1]}) determining a distance unit for 
-the signal decay function. This distance unit will affect the extent over 
-which the convolution operation projects the signal, from source to 
-destination points, normalized by edge length (see \code{edge.norm}).}
-
 \item{k}{A single positive integer determining the k-top signals for the 
 convolution operation.}
 
-\item{beta}{An exponent (in \code{[0, +Inf]}) used in the polar 
+\item{beta}{An exponent (in \code{[0, +Inf)}) used in the polar 
 projection functions (see \code{\link{polarDecay}}). It controls the  
 shape of the polar projection by modulating the angular span.
 For example, \eqn{beta = 0} yields a circular projection, \eqn{beta = 1} 
@@ -48,7 +43,7 @@ include any variable available as a graph vertex attribute.}
 
 \item{aggregate.fun}{A function used to aggregate the projected signals. 
 It must be provided as a unary function, e.g., \code{function(x) { ... }}, 
-which should aggregate a vector of signals to a single scalar value. 
+which should aggregate a vector of signals to a scalar value. 
 Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean' 
 (See \code{\link{signalAggregation}}).}
 
@@ -61,16 +56,19 @@ be used to orientate the signal projection on directed graphs.}
 (when \code{edge.norm=TRUE}) or based on full coordinate space 
 (when \code{edge.norm=FALSE}).}
 
-\item{rescale}{A single logical value indicating whether to rescale 
+\item{rescale}{A logical value indicating whether to rescale 
 the signal. If the signal \code{>=0}, then it will be rescaled to 
 \code{[0, 1]}; if the signal \code{<=0}, then it will be rescaled to 
 \code{[-1, 0]}; and if the signal in \code{(-Inf, +Inf)}, then it will be 
 rescaled to \code{[-1, 1]}.}
 
-\item{verbose}{A single logical value specifying to display detailed 
+\item{verbose}{A logical value specifying to display detailed 
 messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
 
-\item{theta}{Deprecated from PathwaySpace 1.0.2; use 'beta' instead.}
+\item{theta}{Deprecated as of PathwaySpace 1.0.2; use 'beta' instead.}
+
+\item{pdist}{Deprecated as of PathwaySpace 1.0.2; this parameter is now 
+passed internally through \code{decay.fun}.}
 }
 \value{
 A preprocessed \linkS4class{PathwaySpace} class object.

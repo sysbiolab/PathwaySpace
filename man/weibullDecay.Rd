@@ -2,40 +2,80 @@
 % Please edit documentation in R/pspaceDecay.R
 \name{weibullDecay}
 \alias{weibullDecay}
-\title{Weibull decay function}
+\title{Constructor of Weibull decay functions}
 \usage{
-weibullDecay(x, signal = 1, decay = 0.001, shape = 1.05)
+weibullDecay(
+  decay = 0.001,
+  shape = 1.05,
+  pdist = 0.15,
+  plot = FALSE,
+  demo.signal = 1
+)
 }
 \arguments{
-\item{x}{A numeric vector of distances (in [0,1]).}
-
-\item{signal}{A single numeric value representing a signal.}
-
-\item{decay}{A decay factor (in [0,1]). This term indicates how much the
+\item{decay}{A decay factor (in [0,1]). This term indicates how much a
 \code{signal} decreases as a function of distance in pathway space. 
-For example, at a specific distance defined by the \code{pdist} parameter 
-(see \code{\link{circularProjection}}), the signal intensity will
-be the initial signal multiplied by \code{decay}.}
+For example, at a specific distance defined by the \code{pdist} parameter, 
+the signal intensity will be the initial signal multiplied by \code{decay}.}
 
 \item{shape}{A parameter (>=1) of a Weibull function. When \code{shape=1}
 the Weibull decay follows an exponential decay. When \code{shape>1}
 the function is first convex, then concave with an inflection point.}
+
+\item{pdist}{A distance normalization term (in (0, 1]) at which the signal 
+reaches `signal * decay`. This parameter is used to anchor the decay to 
+a meaningful distance (see `details`). Also, when \code{pdist = 1}, it will
+represent the diameter of the inscribed circle within the coordinate space
+of a `PathwaySpace` object.}
+
+\item{plot}{A logical value indicating whether to return a `ggplot` object.}
+
+\item{demo.signal}{A numeric value in `[-Inf, Inf]`, only passed when 
+\code{plot = TRUE} to visualize the decay curve with a specific signal 
+intensity. The value is ignored by the function constructor, as the decay 
+function itself is returned without using an initial signal.}
 }
 \value{
-A numeric vector; if missing 'x', it will return decay function.
+Returns either a function of the form 
+\code{function(x, signal) \{ ... \}} or, if \code{plot = TRUE}, a `ggplot`
+object illustrating the decay model.
 }
 \description{
-The \code{weibullDecay} function is used by
-PathwaySpace's methods for signal convolution and projection.
+The `weibullDecay()` constructor either creates a decay function or 
+returns a `ggplot` object for visualizing the decay model. It is a utility 
+function used internally by \code{\link{circularProjection}} and 
+\code{\link{polarProjection}}.
+}
+\details{
+The `weibullDecay()` constructor creates a decay model based on the Weibull 
+distribution. It describes how a signal decreases as a function of distance, 
+controlled by both a decay rate and a shape parameter.
+
+The decay function is defined as:
+
+\deqn{y = signal \times decay^{\left(\frac{x}{pdist}\right)^{shape}}}
+
+where \eqn{signal} represents the initial intensity, \eqn{decay} controls 
+the rate of attenuation, \eqn{x} is a vector of normalized distances,
+and \eqn{shape} adjusts the curvature of the decay. When \eqn{shape = 1}, 
+the function follows an exponential decay. For \eqn{shape > 1}, the curve 
+transitions from convex to concave, exhibiting an inflection point. The 
+\eqn{pdist} parameter anchors the model such that:
+\itemize{
+  \item \eqn{y = signal} when \eqn{x = 0}
+  \item \eqn{y = signal \times decay} when \eqn{x = pdist}
+}
 }
 \examples{
-x <- seq(0, 2, 0.01)
-y <- weibullDecay(x, signal = 1, decay = 0.5, shape = 4)
-plot(x, y)
+# Return a decay function
+decay_fun <- weibullDecay(decay = 0.5, shape = 2, pdist = 0.4)
+
+# Plot decay model parameters
+# weibullDecay(decay = 0.5, shape = 2, pdist = 0.4, plot = TRUE)
 
 }
 \seealso{
-\code{\link{expDecay}}, \code{\link{linearDecay}}
+\code{\link{linearDecay}}, \code{\link{expDecay}}
 }
 \author{
 Sysbiolab Team

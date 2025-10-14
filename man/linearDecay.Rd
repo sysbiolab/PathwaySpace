@@ -2,37 +2,71 @@
 % Please edit documentation in R/pspaceDecay.R
 \name{linearDecay}
 \alias{linearDecay}
-\title{A simple linear decay function}
+\title{Constructor of linear decay functions}
 \usage{
-linearDecay(x, signal = 1, decay = 0.001)
+linearDecay(decay = 0.001, pdist = 0.15, plot = FALSE, demo.signal = 1)
 }
 \arguments{
-\item{x}{A numeric vector of distances (in [0,1]).}
-
-\item{signal}{A single numeric value representing a signal.
-\code{\link{weibullDecay}} and \code{\link{expDecay}} functions.}
-
-\item{decay}{A decay factor (in [0,1]). This term indicates how much the
+\item{decay}{A decay factor (in [0,1]). This term indicates how much a
 \code{signal} decreases as a function of distance in pathway space. 
-For example, at a specific distance defined by the \code{pdist} parameter 
-(see \code{\link{circularProjection}}), the signal intensity will
-be the initial signal multiplied by \code{decay}.}
+For example, at a specific distance defined by the \code{pdist} parameter, 
+the signal intensity will be the initial signal multiplied by \code{decay}.}
+
+\item{pdist}{A distance normalization term (in (0, 1]) at which the signal 
+reaches `signal * decay`. This parameter is used to anchor the decay to 
+a meaningful distance (see `details`). Also, when \code{pdist = 1}, it will
+represent the diameter of the inscribed circle within the coordinate space
+of a `PathwaySpace` object.}
+
+\item{plot}{A logical value indicating whether to return a `ggplot` object.}
+
+\item{demo.signal}{A numeric value in `[-Inf, Inf]`, only passed when 
+\code{plot = TRUE} to visualize the decay curve with a specific signal 
+intensity. The value is ignored by the function constructor, as the decay 
+function itself is returned without using an initial signal.}
 }
 \value{
-A numeric vector; if missing 'x', it will return decay function.
+Returns either a function of the form 
+\code{function(x, signal) \{ ... \}} or, if \code{plot = TRUE}, a `ggplot`
+object illustrating the decay model.
 }
 \description{
-The \code{linearDecay} function is used by PathwaySpace's
-methods for signal convolution and projection.
+The `linearDecay()` constructor either creates a decay function or 
+returns a `ggplot` object for visualizing the decay model. It is a utility 
+function used internally by \code{\link{circularProjection}} and 
+\code{\link{polarProjection}}.
+}
+\details{
+The `linearDecay()` constructor creates a simple linear decay model. It 
+describes how a signal decreases proportionally with distance.
+
+The decay function is defined as:
+\deqn{y = signal \times \left(1 - (1 - decay) \times \frac{x}{pdist}\right)}
+
+where \eqn{signal} represents the initial intensity, \eqn{decay} defines 
+the relative signal level at \eqn{pdist}, and \eqn{x} is a vector of 
+normalized distances. The signal decreases uniformly from its initial 
+value to \eqn{pdist}, which is a reference distance that anchors 
+the model such that:
+\itemize{
+  \item \eqn{y = signal} when \eqn{x = 0}
+  \item \eqn{y = signal \times decay} when \eqn{x = pdist}
+}
+
+This makes the linear form consistent with the exponential and Weibull decay
+functions, both of which also reach \eqn{signal \times decay} at the
+reference distance.
 }
 \examples{
-x <- seq(0, 2, 0.01)
-y <- linearDecay(x, signal = 1)
-plot(x, y)
+# Return a decay function
+decay_fun <- linearDecay(decay = 0.5, pdist = 0.25)
+
+# Plot decay model parameters
+# linearDecay(decay = 0.5, pdist = 0.25, plot = TRUE)
 
 }
 \seealso{
-\code{\link{weibullDecay}}, \code{\link{expDecay}}
+\code{\link{expDecay}}, \code{\link{weibullDecay}}
 }
 \author{
 Sysbiolab Team
