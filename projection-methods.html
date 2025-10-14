@@ -476,34 +476,33 @@ vertexSignal(p_space1)
 <div id="circular-projection" class="section level2">
 <h2>Circular projection</h2>
 <p>Following that, we will use the <code>circularProjection()</code>
-function to project the network signals, setting
-<code>pdist = 0.4</code>. This term determines a distance unit for the
-signal convolution, affecting the extent over which the convolution
-operation projects the signal. For example, when <code>pdist = 1</code>,
-it will represent the diameter of the inscribed circle within the
-coordinate space. We also set <code>k = 1</code>, which defines the
-contributing vertices for the signal convolution. In this case, each
-<em>null-signal position</em> will receive the projection from a single
-<em>vertex-signal position</em>, that is, the highest signal intensity
-in pathway space reaching that position (see <a
-href="index.html"><strong>Figure 1A</strong></a>). We then create a
+function to project the network signals, using Weibull decay with
+<code>pdist = 0.4</code>, which is passed by the <code>decay.fun</code>
+argument. This term determines a distance unit for the signal
+convolution, affecting the extent over which the convolution operation
+projects the signal. For example, when <code>pdist = 1</code>, it will
+represent the diameter of the inscribed circle within the coordinate
+space. We also set <code>k = 1</code>, which defines the contributing
+vertices for signal convolution. In this case, each <em>null-signal
+position</em> will receive the projection from a single
+<em>vertex-signal position</em> (<em>i.e.</em> the highest signal
+intensity in pathway space reaching that position). We then create a
 landscape image using the <code>plotPathwaySpace()</code> function.</p>
 <pre class="r"><code># Run signal projection
-p_space1 &lt;- circularProjection(p_space1, pdist = 0.4, k = 1)
+p_space1 &lt;- circularProjection(p_space1, k = 1, 
+  decay.fun = weibullDecay(pdist = 0.4))
 
 # Plot a PathwaySpace image
 plotPathwaySpace(p_space1, add.marks = TRUE)</code></pre>
 <p><img src="figs_intro/fig3.png" width="100%" /></p>
 <p>Next, we reassess the same <em>PathwaySpace</em> object, using
 <code>pdist = 0.2</code>, <code>k = 2</code> and adjusting the
-<code>shape</code> of the decay function, which is passed to the
-<code>circularProjection()</code> function via <code>decay.fun</code>
-argument (for further details, see the <a
-href="modeling-signal-decay.html"><strong>modeling signal
+<code>shape</code> of the decay function (for further details, see the
+<a href="modeling-signal-decay.html"><strong>modeling signal
 decay</strong></a> tutorial).</p>
 <pre class="r"><code># Re-run signal projection, adjusting Weibull&#39;s shape
-p_space1 &lt;- circularProjection(p_space1, pdist = 0.2, k = 2, 
-  decay.fun = signalDecay(shape = 2))
+p_space1 &lt;- circularProjection(p_space1, k = 2, 
+  decay.fun = weibullDecay(shape = 2, pdist = 0.2))
 
 # Plot PathwaySpace
 plotPathwaySpace(p_space1, marks = &quot;n1&quot;, theme = &quot;th2&quot;)</code></pre>
@@ -541,9 +540,9 @@ the level of individual vertices. For example, adjusting Weibull’s
 <code>shape</code> argument for node <code>n6</code>:</p>
 <pre class="r"><code># Modify decay function
 # ..for all vertices
-vertexDecay(p_space2) &lt;- signalDecay(shape=2)
+vertexDecay(p_space2) &lt;- weibullDecay(shape=2, pdist = 1)
 # ..for individual vertices
-vertexDecay(p_space2)[[&quot;n6&quot;]] &lt;- signalDecay(shape=3)</code></pre>
+vertexDecay(p_space2)[[&quot;n6&quot;]] &lt;- weibullDecay(shape=3, pdist = 1)</code></pre>
 <p>Next, we run the signal projection using polar coordinates. The
 <code>beta</code> exponent will control the angular span; for values
 greater than zero, <code>beta</code> will progressively narrow the
@@ -553,7 +552,7 @@ will define a distance unit related to edge length, aiming to constrain
 signal projections within edge bounds. Here we set
 <code>pdist = 1</code> to reach full edge lengths.</p>
 <pre class="r"><code># Run signal projection using polar coordinates
-p_space2 &lt;- polarProjection(p_space2, pdist = 1, beta = 10)
+p_space2 &lt;- polarProjection(p_space2, beta = 10)
 
 # Plot PathwaySpace
 plotPathwaySpace(p_space2, theme = &quot;th2&quot;, add.marks = TRUE)</code></pre>
@@ -563,7 +562,7 @@ of direction. To incorporate edge orientation, we set
 <code>directional = TRUE</code>, which channels the projection along the
 paths:</p>
 <pre class="r"><code># Re-run signal projection using &#39;directional = TRUE&#39;
-p_space2 &lt;- polarProjection(p_space2, pdist = 1, beta = 10, directional = TRUE)
+p_space2 &lt;- polarProjection(p_space2, beta = 10, directional = TRUE)
 
 # Plot PathwaySpace
 plotPathwaySpace(p_space2, theme = &quot;th2&quot;, marks = c(&quot;n1&quot;,&quot;n3&quot;,&quot;n4&quot;,&quot;n5&quot;))</code></pre>
@@ -594,7 +593,7 @@ vertexSignal(p_space1)
 #  6  4 -2 -4  3 
 
 # Re-run signal projection
-p_space1 &lt;- circularProjection(p_space1, decay.fun = signalDecay(shape = 2))
+p_space1 &lt;- circularProjection(p_space1, decay.fun = weibullDecay(shape = 2))
 
 # Plot PathwaySpace
 plotPathwaySpace(p_space1, bg.color = &quot;white&quot;, font.color = &quot;grey20&quot;, add.marks = TRUE, mark.color = &quot;magenta&quot;, theme = &quot;th2&quot;)</code></pre>
