@@ -446,20 +446,19 @@ with customized parameters.</p>
 ##     y &lt;- signal * 0.25^((x/0.75)^2)
 ##     return(y)
 ## }
-## &lt;environment: 0x640719b90a80&gt;
+## &lt;environment: 0x62f5951aac00&gt;
 ## attr(,&quot;name&quot;)
 ## [1] &quot;weibullDecay&quot;</code></pre>
 <p></br></p>
 <p>… and to explore how different parameters affect the signal
-attenuation, simply set <code>plot = TRUE</code>, which will generate a
-<code>ggplot</code> illustrating the decay curves.</p>
-<pre class="r"><code># Run Weibull decay with decay = 0.5, shape = 1, and pdist = 0.2
+attenuation, simply set <code>plot = TRUE</code>.</p>
+<pre class="r"><code># Run Weibull constructor with decay = 0.5, shape = 1, and pdist = 0.2
 p1 &lt;- weibullDecay(decay = 0.5, shape = 1, pdist = 0.1, plot = TRUE)
 
-# Run Weibull decay with decay = 0.5, shape = 2, and pdist = 0.50
+# Run Weibull constructor with decay = 0.5, shape = 2, and pdist = 0.50
 p2 &lt;- weibullDecay(decay = 0.5, shape = 2, pdist = 0.50, plot = TRUE)
 
-# Run Weibull decay with decay = 0.25, shape = 3, and pdist = 0.75
+# Run Weibull constructor with decay = 0.25, shape = 3, and pdist = 0.75
 p3 &lt;- weibullDecay(decay = 0.25, shape = 4, pdist = 0.75, plot = TRUE)
 
 p1 + p2 + p3</code></pre>
