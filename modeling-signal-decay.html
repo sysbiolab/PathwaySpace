@@ -459,7 +459,7 @@ returns a decay function with customized parameters.</p>
 ##     y &lt;- signal * 0.25^((x/0.75)^2)
 ##     return(y)
 ## }
-## &lt;environment: 0x63cb61fc9df0&gt;
+## &lt;environment: 0x58f49f401c70&gt;
 ## attr(,&quot;name&quot;)
 ## [1] &quot;weibullDecay&quot;</code></pre>
 <p></br></p>
@@ -489,14 +489,34 @@ class="math inline">\(\textbf{shape} = 1\)</span>, the function follows
 an exponential decay; and for <span class="math inline">\(\textbf{shape}
 &gt; 1\)</span>, the curve transitions from convex to concave,
 increasingly sigmoidal.</p>
+<p>Next, we demonstrate the <code>expDecay()</code> and
+<code>linearDecay()</code> constructors:</p>
+<pre class="r"><code># Run the exp expDecay constructor with decay = 0.4 and pdist = 0.2
+p1 &lt;- expDecay(decay = 0.4, pdist = 0.2, plot = TRUE)
+
+# Run the linearDecay constructor with decay = 0.5,and pdist = 0.25
+p2 &lt;- linearDecay(decay = 0.5, pdist = 0.25, plot = TRUE)
+
+p1 + p2</code></pre>
+<p><img src="modeling-signal-decay_files/figure-html/Creating%20a%20decay%20function%20-%204.3-1.png" width="100%" /></p>
+<p>The exponential model follows an asymptotic decay, while the linear
+model decreases proportionally with distance and is clipped at zero to
+prevent flipping sign. Together, these decay models produce distinct
+geometric profiles when projecting signals onto the 2D coordinate space,
+ranging from cone-like projections in the linear model (see the
+conceptual representation in <a href="index.html"><strong>Figure
+1A</strong></a>) to radially symmetric peaks in the exponential model,
+with the Weibull model transitioning between them to form dome-like
+surfaces depending on its <span
+class="math inline">\(\textbf{shape}\)</span> parameter.</p>
 </div>
 <div id="assigning-decay-to-vertices" class="section level1">
 <h1>Assigning decay to vertices</h1>
-<p>Returning to our lattice example, next we assign a linear decay
-function to the <em>PathwaySpace</em> vertices, setting <span
-class="math inline">\(\boldsymbol{pdist}\)</span> as the average
-center-to-center distance between them. For more details, refer to the
-documentation of the <code>linearDecay()</code> constructor.</p>
+<p>Returning to our lattice example, next we assign a linear decay model
+to the <em>PathwaySpace</em> object, setting <span
+class="math inline">\(\textbf{pdist}\)</span> as the average
+center-to-center distance between vertices. For more details, refer to
+the documentation of the <code>linearDecay()</code> constructor.</p>
 <pre class="r"><code># Get distance to the nearest vertex
 near_df &lt;- getNearestNode(ps)
 pdist &lt;- mean(near_df$dist)
