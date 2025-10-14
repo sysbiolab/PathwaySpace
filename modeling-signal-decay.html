@@ -415,46 +415,59 @@ how a signal decreases as a function of distance, modeling the gradual
 loss of intensity. These functions are used to attenuate signals over
 graph-based domains, so contributions from distant vertices are weighted
 less than those nearby. <em>PathwaySpace</em> provides three built-in
-decay function constructors, <code>linearDecay()</code>,
-<code>expDecay()</code>, and <code>weibullDecay()</code>, all sharing a
+decay function constructors, <code>weibullDecay()</code>,
+<code>expDecay()</code>, and <code>linearDecay()</code>, all sharing a
 consistent argument structure for ease use and comparison:</p>
 <p><span class="math display">\[
-\begin{aligned}
-y &amp;= signal \times \Bigl(1 - (1 - decay) \times
-\tfrac{x}{\text{pdist}}\Bigr) &amp;&amp; (\text{Linear}) \\[10pt]
-y &amp;= signal \times decay^{\left(\tfrac{x}{\text{pdist}}\right)}
-&amp;&amp; (\text{Exponential}) \\[14pt]
-y &amp;= signal \times
-decay^{\left(\tfrac{x}{\text{pdist}}\right)^{\text{shape}}} &amp;&amp;
-(\text{Weibull})
-\end{aligned}
-\]</span> where <span class="math inline">\(\boldsymbol{signal}\)</span>
-represents the initial intensity, <span
-class="math inline">\(\boldsymbol{decay}\)</span> controls the rate of
-attenuation, <span class="math inline">\(\boldsymbol{x}\)</span> is a
-vector of normalized distances, <span
-class="math inline">\(\boldsymbol{shape}\)</span> adjusts the curvature
-of the decay, <span class="math inline">\(\boldsymbol{pdist}\)</span> is
-a normalization term, and <span
-class="math inline">\(\boldsymbol{y}\)</span> is the resulting signal
-decay values. Next, the main arguments are illustrated using the
-<code>weibullDecay()</code> constructor, which returns a decay function
-with customized parameters.</p>
+\begin{gather}
+\small
+y = signal \times
+\text{decay}^{\left(\tfrac{x}{\text{pdist}}\right)^{\text{shape}}}
+&amp;&amp; \scriptsize{(\text{Weibull})}
+\end{gather}
+\]</span> <span class="math display">\[
+\begin{gather}
+\small
+y = signal \times \text{decay}^{\left(\tfrac{x}{\text{pdist}}\right)}
+&amp;&amp; \scriptsize{(\text{Exponential})}
+\end{gather}
+\]</span></p>
+<p><span class="math display">\[
+\begin{gather}
+\small
+y = signal \times \Bigl(1 - (1 - \text{decay}) \times
+\tfrac{x}{\text{pdist}}\Bigr) \ |
+\ y \cdot \mathrm{sgn}(signal) \ge 0 &amp; \scriptsize{(\text{Linear*})}
+\\
+\end{gather} \\[10pt]
+\scriptstyle\text{*output clipped to prevent flipping sign}
+\]</span></p>
+<p>where <span class="math inline">\(\textbf{signal}\)</span> represents
+the initial intensity, <span
+class="math inline">\(\textbf{decay}\)</span> controls the rate of
+attenuation, <span class="math inline">\(\textbf{x}\)</span> is a vector
+of normalized distances, <span
+class="math inline">\(\textbf{shape}\)</span> adjusts the curvature of
+the decay, <span class="math inline">\(\textbf{pdist}\)</span> is a
+normalization term, and <span class="math inline">\(\textbf{y}\)</span>
+is the resulting signal decay values. Next, the main arguments are
+illustrated using the <code>weibullDecay()</code> constructor, which
+returns a decay function with customized parameters.</p>
 <pre class="r"><code>weibullDecay(decay = 0.25, shape = 2, pdist = 0.75)</code></pre>
 <pre><code>## function (x, signal) 
 ## {
 ##     y &lt;- signal * 0.25^((x/0.75)^2)
 ##     return(y)
 ## }
-## &lt;environment: 0x5b1470282850&gt;
+## &lt;environment: 0x63cb61fc9df0&gt;
 ## attr(,&quot;name&quot;)
 ## [1] &quot;weibullDecay&quot;</code></pre>
 <p></br></p>
 <p>… and to visualize how different parameters affect the signal
 attenuation, rerun the <code>weibullDecay()</code> constructor with
 <code>plot = TRUE</code>.</p>
-<pre class="r"><code># Run Weibull constructor with decay = 0.5, shape = 1, and pdist = 0.2
-p1 &lt;- weibullDecay(decay = 0.5, shape = 1, pdist = 0.1, plot = TRUE)
+<pre class="r"><code># Run Weibull constructor with decay = 0.5, shape = 1, and pdist = 0.25
+p1 &lt;- weibullDecay(decay = 0.5, shape = 1, pdist = 0.25, plot = TRUE)
 
 # Run Weibull constructor with decay = 0.5, shape = 2, and pdist = 0.50
 p2 &lt;- weibullDecay(decay = 0.5, shape = 2, pdist = 0.50, plot = TRUE)
@@ -465,16 +478,17 @@ p3 &lt;- weibullDecay(decay = 0.25, shape = 4, pdist = 0.75, plot = TRUE)
 p1 + p2 + p3</code></pre>
 <p><img src="modeling-signal-decay_files/figure-html/Creating%20a%20decay%20function%20-%204.2-1.png" width="100%" /></p>
 <p>Note that the normalization term <span
-class="math inline">\(\boldsymbol{pdist}\)</span> anchors the decay to a
+class="math inline">\(\textbf{pdist}\)</span> anchors the decay to a
 reference distance where the initial signal <span
 class="math inline">\(S_0\)</span> decreases to <span
-class="math inline">\(S_0 * decay\)</span>, controlling the extent over
-which the signal is projected along x-axis. The <span
-class="math inline">\(\boldsymbol{shape}\)</span> parameter, on the
-other hand, controls the curvature of the decay function: When
-<code>shape = 1</code>, the function follows an exponential decay; and
-for <code>shape &gt; 1</code>, the curve transitions from convex to
-concave, increasingly sigmoidal.</p>
+class="math inline">\(S_0 * \textbf{decay}\)</span>, controlling the
+extent over which the signal is projected along the x-axis. The <span
+class="math inline">\(\textbf{shape}\)</span> parameter, on the other
+hand, controls the curvature of the decay function: When <span
+class="math inline">\(\textbf{shape} = 1\)</span>, the function follows
+an exponential decay; and for <span class="math inline">\(\textbf{shape}
+&gt; 1\)</span>, the curve transitions from convex to concave,
+increasingly sigmoidal.</p>
 </div>
 <div id="assigning-decay-to-vertices" class="section level1">
 <h1>Assigning decay to vertices</h1>
@@ -501,7 +515,7 @@ set.seed(10)
 vertexSignal(ps) &lt;- sample(c(0,1), gs_vcount(ps), replace = TRUE)</code></pre>
 <pre class="r"><code># Running and plotting projections
 ps &lt;- circularProjection(ps, k = 1)
-plotPathwaySpace(ps)</code></pre>
+plotPathwaySpace(ps, marks = &quot;n34&quot;)</code></pre>
 <p><img src="modeling-signal-decay_files/figure-html/Running%20PathwaySpace%20-%202-1.png" width="672" /></p>
 <p>By assigning a new decay model to specific vertices, we can explore
 how signals propagate across the network under different rules. To
