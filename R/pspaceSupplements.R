@@ -15,7 +15,7 @@
     #--- initialize vertex function
     att <- names(gs_vertex_attr(gs))
     if( ! "decayFunction" %in% att ){
-      gs_vertex_attr(gs, "decayFunction") <- signalDecay()
+      gs_vertex_attr(gs, "decayFunction") <- weibullDecay()
     }
     
     #--- initialize edge weight
