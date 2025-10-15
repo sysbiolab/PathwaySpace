@@ -493,19 +493,20 @@ aggregates a vector of numeric values into a single scalar output.</p>
 weighted by its own magnitude.</p>
 <pre class="r"><code># Signal aggregation by &#39;mean&#39;
 ps &lt;- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = mean)
-p1 &lt;- plotPathwaySpace(ps, theme = &quot;th3&quot;)
+p1 &lt;- plotPathwaySpace(ps, theme = &quot;th3&quot;, title = &quot;mean()&quot;)
 
-# Signal aggregation by a &#39;contraharmonic mean&#39;
+# Signal aggregation by a &#39;self-weighted mean&#39;
+# (generalized contraharmonic to -/+ values)
 wmean &lt;- function(x){ weighted.mean(x, abs(x)) }
 ps &lt;- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = wmean)
-p2 &lt;- plotPathwaySpace(ps, theme = &quot;th3&quot;)
+p2 &lt;- plotPathwaySpace(ps, theme = &quot;th3&quot;, title = &quot;wmean()&quot;)
 
 p1 + p2</code></pre>
 <p><img src="signal-aggregation-rules_files/figure-html/Modeling%20signal%20decay%20-%206-1.png" width="100%" /></p>
 <p>These examples show how changes in weighting (from equal weights to
 self-weights) affects the combined projection: The standard
 <em>arithmetic mean</em> may be used when we want to emphasize the
-influence of local groups, while the <em>contraharmonic mean</em> will
+influence of local groups, while the <em>self-weighted mean</em> will
 shift the mean toward the more dominant signals.</p>
 <p>Next, we assign new aggregation functions to explore different rules.
 The <code>max</code> function also emphasizes the dominant signals while
@@ -513,11 +514,11 @@ the <code>min</code> function will highlight the regions where
 projections intersect between neighbor vertices.</p>
 <pre class="r"><code># Signal aggregation by &#39;max&#39;
 ps &lt;- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = max)
-p1 &lt;- plotPathwaySpace(ps, theme = &quot;th3&quot;)
+p1 &lt;- plotPathwaySpace(ps, theme = &quot;th3&quot;, title = &quot;max()&quot;)
 
 # Signal aggregation by &#39;min&#39;
 ps &lt;- circularProjection(ps, k = 2, aggregate.fun = min)
-p2 &lt;- plotPathwaySpace(ps, theme = &quot;th3&quot;)
+p2 &lt;- plotPathwaySpace(ps, theme = &quot;th3&quot;, title = &quot;min()&quot;)
 
 p1 + p2</code></pre>
 <p><img src="signal-aggregation-rules_files/figure-html/Modeling%20signal%20decay%20-%207-1.png" width="100%" /></p>
@@ -636,8 +637,8 @@ section).</p>
 <code>(-Inf, Inf)</code> (<em>e.g.</em>, differential expression
 values), we recommend using aggregation functions that treat negative
 and positive values symmetrically. In such cases, the standard
-<em>arithmetic mean</em> and <em>self-weighted (contraharmonic)
-mean</em> provide compatible aggregation strategies.</p>
+<em>arithmetic mean</em> and <em>self-weighted mean</em> provide
+compatible sign-symmetric aggregation strategies.</p>
 </div>
 </div>
 </div>
