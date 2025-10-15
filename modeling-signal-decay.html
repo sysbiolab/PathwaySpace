@@ -459,7 +459,7 @@ returns a decay function with customized parameters.</p>
 ##     y &lt;- signal * 0.25^((x/0.75)^2)
 ##     return(y)
 ## }
-## &lt;environment: 0x58f49f401c70&gt;
+## &lt;environment: 0x632465cd8c70&gt;
 ## attr(,&quot;name&quot;)
 ## [1] &quot;weibullDecay&quot;</code></pre>
 <p></br></p>
@@ -516,7 +516,7 @@ class="math inline">\(\textbf{shape}\)</span> parameter.</p>
 to the <em>PathwaySpace</em> object, setting <span
 class="math inline">\(\textbf{pdist}\)</span> as the average
 center-to-center distance between vertices. For more details, refer to
-the documentation of the <code>linearDecay()</code> constructor.</p>
+the documentation of the <code>vertexDecay()</code> accessor.</p>
 <pre class="r"><code># Get distance to the nearest vertex
 near_df &lt;- getNearestNode(ps)
 pdist &lt;- mean(near_df$dist)
@@ -541,7 +541,7 @@ plotPathwaySpace(ps, marks = &quot;n34&quot;)</code></pre>
 how signals propagate across the network under different rules. To
 illustrate, next we assign a Weibull decay function to vertex
 <code>n34</code>.</p>
-<pre class="r"><code># Setting a Weibull decay function for vertex &#39;n34&#39;
+<pre class="r"><code># Changing decay model of vertex &#39;n34&#39;
 vertexDecay(ps)[[&quot;n34&quot;]] &lt;- weibullDecay(shape = 2, pdist = pdist*10)</code></pre>
 <pre class="r"><code># Running and plotting projections
 ps &lt;- circularProjection(ps, k = 1)
