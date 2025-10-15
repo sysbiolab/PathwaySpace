@@ -448,9 +448,9 @@ plotGraphSpace(gs, add.labels = TRUE)</code></pre>
 <pre class="r"><code># Build a PathwaySpace object
 ps &lt;- buildPathwaySpace(gs)</code></pre>
 </div>
-<div id="setting-a-decay-function" class="section level1">
-<h1>Setting a decay function</h1>
-<p>Next, we will set a linear decay model for all vertices (for
+<div id="assigning-a-decay-model" class="section level1">
+<h1>Assigning a decay model</h1>
+<p>Next, we will assign a linear decay model for all vertices (for
 additional details, see the <a
 href="modeling-signal-decay.html"><em>modeling signal decay</em></a>
 tutorial).</p>
@@ -462,9 +462,6 @@ pdist</code></pre>
 <pre><code>## [1] 0.1017829</code></pre>
 <pre class="r"><code># Setting a linear decay model for all vertices
 vertexDecay(ps) &lt;- linearDecay(pdist = pdist)</code></pre>
-</div>
-<div id="setting-a-numeric-signal" class="section level1">
-<h1>Setting a numeric signal</h1>
 <p>As a default behavior, the <code>buildPathwaySpace()</code>
 constructor initializes each vertex’s signal with <code>0</code>. We
 will update this signal, setting peak values at the central vertices or
@@ -479,8 +476,8 @@ vertexSignal(ps)[names(hubs)] &lt;- 2
 gs_vcount(ps)</code></pre>
 <pre><code>## [1] 35</code></pre>
 </div>
-<div id="aggregation-functions" class="section level1">
-<h1>Aggregation functions</h1>
+<div id="creating-aggregation-rules" class="section level1">
+<h1>Creating aggregation rules</h1>
 <div id="means-max-and-min" class="section level2">
 <h2>Means, max, and min</h2>
 <p>Now we project the signals using the
@@ -630,7 +627,9 @@ also operate on this range of values for positive signals by default
 (with <code>rescale = TRUE</code>; see <code>circularProjection()</code>
 function); however, negative signals are rescaled to
 <code>[-1, 0]</code>, and therefore are not directly compatible with
-these fuzzy operators.</p>
+these fuzzy operators (for more details, see the <a
+href="projection-methods.html#Signal_types"><em>signal types</em></a>
+section).</p>
 <p>Also, when evaluating input signals in the range
 <code>(-Inf, Inf)</code> (<em>e.g.</em>, differential expression
 values), we recommend using aggregation functions that treat negative
