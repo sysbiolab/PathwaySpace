@@ -56,7 +56,7 @@
 #' # Plot decay model parameters
 #' # weibullDecay(decay = 0.5, shape = 2, pdist = 0.4, plot = TRUE)
 #' 
-#' @importFrom ggplot2 geom_point geom_hline
+#' @importFrom ggplot2 geom_point geom_hline rel
 #' @aliases weibullDecay
 #' @export
 #' 
@@ -346,9 +346,12 @@ linearDecay <- function(decay = 0.001, pdist = 0.15, plot = FALSE,
     annotate("text", 
       x = max(x), y = signal, label=call, 
       vjust = ifelse(si,1,0), hjust = 1, size=4) + 
-    geom_point(color = "grey30") + 
+    geom_point(color = "grey50") + 
     theme(aspect.ratio = 0.85, axis.text = et1, axis.title = et2,
-      panel.background = element_rect(fill = "grey92"))
+      panel.background = element_rect(fill = "grey95"), 
+      panel.grid.major = element_line(linewidth = rel(1.2), colour = "white"),
+      panel.grid.minor = element_line(linewidth = rel(0.6), colour = "white")
+      )
   
   # Add the new point to the plot
   p <- p + 
