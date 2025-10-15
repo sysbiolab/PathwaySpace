@@ -419,8 +419,7 @@ V(gtoy1)$name &lt;- paste0(&quot;n&quot;, 1:5)</code></pre>
 <p>Next, we will create a <em>GraphSpace-class</em> object using the
 <code>GraphSpace()</code> constructor. This function will check the
 validity of the <em>igraph</em> object. For this example
-<code>mar = 0.2</code>, which sets the outer margins as a fraction of
-the 2D space.</p>
+<code>mar = 0.2</code>, which sets the outer margins of the graph.</p>
 <pre class="r"><code># Check graph validity
 g_space1 &lt;- GraphSpace(gtoy1, mar = 0.2)</code></pre>
 <p>Our graph is now ready for the <em>PathwaySpace</em> package. We can
@@ -476,18 +475,15 @@ vertexSignal(p_space1)
 <div id="circular-projection" class="section level2">
 <h2>Circular projection</h2>
 <p>Following that, we will use the <code>circularProjection()</code>
-function to project the network signals, using Weibull decay with
-<code>pdist = 0.4</code>, which is passed by the <code>decay.fun</code>
-argument. This term determines a distance unit for the signal
-convolution, affecting the extent over which the convolution operation
-projects the signal. For example, when <code>pdist = 1</code>, it will
-represent the diameter of the inscribed circle within the coordinate
-space. We also set <code>k = 1</code>, which defines the contributing
-vertices for signal convolution. In this case, each <em>null-signal
-position</em> will receive the projection from a single
-<em>vertex-signal position</em> (<em>i.e.</em> the highest signal
-intensity in pathway space reaching that position). We then create a
-landscape image using the <code>plotPathwaySpace()</code> function.</p>
+function to project the network signals by the
+<code>weibullDecay()</code> function with <code>pdist = 0.4</code>,
+which is passed by the <code>decay.fun</code> argument. This term
+determines a distance unit for the signal convolution, affecting the
+extent over which the convolution operation projects the signal. For
+example, when <code>pdist = 1</code>, it will represent the diameter of
+the inscribed circle within the coordinate space. We also set
+<code>k = 1</code>, which defines the contributing vertices for signal
+convolution.</p>
 <pre class="r"><code># Run signal projection
 p_space1 &lt;- circularProjection(p_space1, k = 1, 
   decay.fun = weibullDecay(pdist = 0.4))
@@ -511,12 +507,13 @@ plotPathwaySpace(p_space1, marks = &quot;n1&quot;, theme = &quot;th2&quot;)</cod
 variety of shapes. When <code>shape = 1</code> the projection follows an
 exponential decay, and when <code>shape &gt; 1</code> the projection is
 first convex, then concave with an inflection point along the decay
-path. For additional examples see documentation of the
-<code>weibullDecay()</code> function.</p>
+path. For additional examples see <a
+href="modeling-signal-decay.html"><strong>modeling signal
+decay</strong></a> tutorial.</p>
 </div>
 <div id="polar-projection" class="section level2">
 <h2>Polar projection</h2>
-<p>In this section we will project the network signal using a polar
+<p>In this section we will project network signals using a polar
 coordinate system. This representation may be useful for certain types
 of data, for example, to highlight patterns of signal propagation on
 directed graphs, especially to explore the orientation aspect of signal
@@ -543,14 +540,13 @@ the level of individual vertices. For example, adjusting Weibull’s
 vertexDecay(p_space2) &lt;- weibullDecay(shape=2, pdist = 1)
 # ..for individual vertices
 vertexDecay(p_space2)[[&quot;n6&quot;]] &lt;- weibullDecay(shape=3, pdist = 1)</code></pre>
-<p>Next, we run the signal projection using polar coordinates. The
-<code>beta</code> exponent will control the angular span; for values
-greater than zero, <code>beta</code> will progressively narrow the
-projection along the edge axis. Also, in the
-<code>polarProjection()</code> function, the <code>pdist</code> term
-will define a distance unit related to edge length, aiming to constrain
-signal projections within edge bounds. Here we set
-<code>pdist = 1</code> to reach full edge lengths.</p>
+<p>In polar projections, the <code>pdist</code> term defines a reference
+distance related to edge length, aiming to constrain signal projections
+within edge bounds. Here we set <code>pdist = 1</code> to reach full
+edge lengths. Next, we run the signal projection using polar
+coordinates. The <code>beta</code> exponent will control the angular
+span; for values greater than zero, <code>beta</code> will progressively
+narrow the projection along the edge axis.</p>
 <pre class="r"><code># Run signal projection using polar coordinates
 p_space2 &lt;- polarProjection(p_space2, beta = 10)
 

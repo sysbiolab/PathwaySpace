@@ -413,7 +413,7 @@ any unary aggregation function of the form
 the pipeline, which has essentially two steps: (i) map raw signal
 intensities to a decay function, such as linear, exponential, or
 sigmoidal, depending on the data (see <a
-href="modeling-signal-decay.html"><em>signal decay functions</em></a>);
+href="modeling-signal-decay.html"><em>modeling signal decay</em></a>);
 and (ii) use an appropriate operation to produce a combined projection.
 The decay function models the signal propagation, each vertex emitting a
 projection that decreases with distance, reflecting both the local
@@ -451,21 +451,24 @@ ps &lt;- buildPathwaySpace(gs)</code></pre>
 <div id="setting-a-decay-function" class="section level1">
 <h1>Setting a decay function</h1>
 <p>Next, we will set a linear decay model for all vertices (for
-additional configurations, see the <a
-href="modeling-signal-decay.html"><em>signal decay functions</em></a>
+additional details, see the <a
+href="modeling-signal-decay.html"><em>modeling signal decay</em></a>
 tutorial).</p>
-<p>…set a reference distance.</p>
 <pre class="r"><code># Get distance to the nearest nodes
 near_df &lt;- getNearestNode(ps)
 pdist &lt;- mean(near_df$dist)
 # The &#39;pdist&#39; is the average center-to-center distance between nodes
 pdist</code></pre>
 <pre><code>## [1] 0.1017829</code></pre>
-<p>…then set a decay model.</p>
 <pre class="r"><code># Setting a linear decay model for all vertices
 vertexDecay(ps) &lt;- linearDecay(pdist = pdist)</code></pre>
-<p>…and assign a numeric signal, here setting peak values at the central
-vertices or hubs.</p>
+</div>
+<div id="setting-a-numeric-signal" class="section level1">
+<h1>Setting a numeric signal</h1>
+<p>As a default behavior, the <code>buildPathwaySpace()</code>
+constructor initializes each vertex’s signal with <code>0</code>. We
+will update this signal, setting peak values at the central vertices or
+hubs.</p>
 <pre class="r"><code># Find hubs 
 hubs &lt;- degree(ps@graph)
 hubs &lt;- hubs[hubs&gt;1]
@@ -476,14 +479,15 @@ vertexSignal(ps)[names(hubs)] &lt;- 2
 gs_vcount(ps)</code></pre>
 <pre><code>## [1] 35</code></pre>
 </div>
-<div id="setting-an-aggregation-function" class="section level1">
-<h1>Setting an aggregation function</h1>
+<div id="aggregation-functions" class="section level1">
+<h1>Aggregation functions</h1>
+<div id="means-max-and-min" class="section level2">
+<h2>Means, max, and min</h2>
 <p>Now we project the signals using the
 <code>circularProjection()</code> function, in which the
 <code>aggregate.fun</code> argument defines the aggregation rule. This
-argument accepts any user-defined unary aggregation function
-(<em>e.g.</em>, <code>function(x) { ... }</code>) that aggregates a
-vector of numeric values into a single scalar output.</p>
+argument accepts any user-defined unary aggregation function that
+aggregates a vector of numeric values into a single scalar output.</p>
 <p>In the examples below, we compare two approaches: a standard
 <em>arithmetic mean</em>, where all values contribute equally, and a
 <em>self-weighted (contraharmonic) mean</em>, where each value is
@@ -519,14 +523,15 @@ p2 &lt;- plotPathwaySpace(ps, theme = &quot;th3&quot;)
 p1 + p2</code></pre>
 <p><img src="signal-aggregation-rules_files/figure-html/Modeling%20signal%20decay%20-%207-1.png" width="100%" /></p>
 <p>Note that the <code>k</code> parameter affects the aggregations, as
-it determines how many projected signals are considered at each point.
-In general, we recommend using <code>k = gs_vcount(ps)</code> to capture
-contributions from all vertices, except in special cases, such as the
-example above using the <code>min</code> function, where the aggregation
-aims to highlight minimal values between two neighbor vertices.</p>
+it determines how many projected signals are considered at each point in
+space. In general, we recommend using <code>k = gs_vcount(ps)</code> to
+capture contributions from all vertices, except in special cases, such
+as the example above using the <code>min</code> function, where the
+aggregation aims to highlight minimal values between two neighbor
+vertices.</p>
 </div>
-<div id="fuzzy-unions-and-intersections" class="section level1">
-<h1>Fuzzy unions and intersections</h1>
+<div id="fuzzy-unions-and-intersections" class="section level2">
+<h2>Fuzzy unions and intersections</h2>
 <p>This section lists <em>fuzzy logic</em> functions that can be use to
 aggregate signals in <em>PathwaySpace</em>, mostly available from the
 <em>lfl</em> package <span class="citation">(Burda and Štěpnička
@@ -543,8 +548,8 @@ a single, interpretable representation.</p>
 # Load Fuzzy Logic functions
 library(lfl)</code></pre>
 <p></br></p>
-<div id="t-norms-triangular-norms" class="section level2">
-<h2>T-norms (Triangular Norms)</h2>
+<div id="t-norms-triangular-norms" class="section level3">
+<h3>T-norms (Triangular Norms)</h3>
 <p>These functions represent fuzzy “AND” operations:</p>
 <pre class="r"><code># Goedel t-norm: use when aggregation should be strictly limited by the weakest
 # signal (logical AND, conservative intersection);
@@ -577,8 +582,8 @@ plotPathwaySpace(ps, theme = &quot;th3&quot;)</code></pre>
 <p><img src="figs_spot_space/fig_b1.png" width="100%" /></p>
 <p></br></p>
 </div>
-<div id="t-conorms-triangular-conorms" class="section level2">
-<h2>T-conorms (Triangular Conorms)</h2>
+<div id="t-conorms-triangular-conorms" class="section level3">
+<h3>T-conorms (Triangular Conorms)</h3>
 <p>These functions represent fuzzy “OR” operations:</p>
 <pre class="r"><code># Goedel t-conorm: use when you want an extremely permissive OR, where the 
 # strongest signal fully dominates the aggregation;
@@ -627,11 +632,12 @@ function); however, negative signals are rescaled to
 <code>[-1, 0]</code>, and therefore are not directly compatible with
 these fuzzy operators.</p>
 <p>Also, when evaluating input signals in the range
-<code>[-Inf, Inf]</code> (<em>e.g.</em>, differential expression
+<code>(-Inf, Inf)</code> (<em>e.g.</em>, differential expression
 values), we recommend using aggregation functions that treat negative
 and positive values symmetrically. In such cases, the standard
 <em>arithmetic mean</em> and <em>self-weighted (contraharmonic)
 mean</em> provide compatible aggregation strategies.</p>
+</div>
 </div>
 </div>
 <div id="session-information" class="section level1">
