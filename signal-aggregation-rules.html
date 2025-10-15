@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sysbiolab Team" />
 
-<meta name="date" content="2025-10-14" />
+<meta name="date" content="2025-10-15" />
 
 <title>Creating signal aggregation rules</title>
 
@@ -395,7 +395,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Creating signal aggregation rules</h1>
 <h4 class="author">Sysbiolab Team</h4>
-<h4 class="date">2025-10-14</h4>
+<h4 class="date">2025-10-15</h4>
 
 </div>
 
@@ -463,9 +463,11 @@ pdist</code></pre>
 <pre class="r"><code># Setting a linear decay model for all vertices
 vertexDecay(ps) &lt;- linearDecay(pdist = pdist)</code></pre>
 <p>As a default behavior, the <code>buildPathwaySpace()</code>
-constructor initializes each vertex’s signal with <code>0</code>. We
-will update this signal, setting peak values at the central vertices or
-hubs.</p>
+constructor initializes each vertex’s signal with <code>0</code> (for
+more details, see the <a
+href="projection-methods.html#Signal_types"><em>signal types</em></a>
+section). We will update this signal, setting peak values at the central
+vertices or hubs.</p>
 <pre class="r"><code># Find hubs 
 hubs &lt;- degree(ps@graph)
 hubs &lt;- hubs[hubs&gt;1]
