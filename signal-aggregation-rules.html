@@ -430,8 +430,8 @@ suggests a list of <em>fuzzy logic</em> operators that can be use to
 aggregate signals in <em>PathwaySpace</em>, including the trade-offs of
 each approach.</p>
 </div>
-<div id="setting-basic-input-data" class="section level1">
-<h1>Setting basic input data</h1>
+<div id="required-packages" class="section level1">
+<h1>Required packages</h1>
 <pre class="r"><code># Check required packages for this vignette
 if (!require(&quot;remotes&quot;, quietly = TRUE)){
   install.packages(&quot;remotes&quot;)
@@ -445,7 +445,7 @@ if (!require(&quot;PathwaySpace&quot;, quietly = TRUE)){
 if (!require(&quot;SpotSpace&quot;, quietly = TRUE)){
   remotes::install_github(&quot;sysbiolab/SpotSpace&quot;)
 }</code></pre>
-<pre class="r"><code># Check required versions
+<pre class="r"><code># Check versions
 if (packageVersion(&quot;RGraphSpace&quot;) &lt; &quot;1.1.0&quot;){
   message(&quot;Need to update &#39;RGraphSpace&#39; for this vignette&quot;)
   remotes::install_github(&quot;sysbiolab/RGraphSpace&quot;)
@@ -458,13 +458,16 @@ if (packageVersion(&quot;SpotSpace&quot;) &lt; &quot;0.0.2&quot;){
   message(&quot;Need to update &#39;SpotSpace&#39; for this vignette&quot;)
   remotes::install_github(&quot;sysbiolab/SpotSpace&quot;)
 }</code></pre>
-<pre class="r"><code>#--- Load required packages
+<pre class="r"><code># Load packages
 library(igraph)
 library(ggplot2)
 library(RGraphSpace)
 library(PathwaySpace)
 library(SpotSpace)
 library(patchwork)</code></pre>
+</div>
+<div id="setting-basic-input-data" class="section level1">
+<h1>Setting basic input data</h1>
 <pre class="r"><code># Create a simple graph with five islands
 g &lt;- rep(igraph::make_star(7, &quot;undirected&quot;), 5)
 V(g)$name &lt;- paste0(&quot;n&quot;,1:vcount(g))

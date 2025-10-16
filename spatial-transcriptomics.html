@@ -432,7 +432,7 @@ continuing.</p>
 </div>
 <div id="required-packages" class="section level1">
 <h1>Required packages</h1>
-<pre class="r"><code># Check required packages
+<pre class="r"><code># Check required packages for this vignette
 if (!require(&quot;remotes&quot;, quietly = TRUE)){
   install.packages(&quot;remotes&quot;)
 }
@@ -448,7 +448,7 @@ if (!require(&quot;SpotSpace&quot;, quietly = TRUE)){
 if (!require(&quot;SeuratData&quot;, quietly = TRUE)){
   remotes::install_github(&quot;satijalab/seurat-data&quot;)
 }</code></pre>
-<pre class="r"><code># Check required versions
+<pre class="r"><code># Check versions
 if (packageVersion(&quot;RGraphSpace&quot;) &lt; &quot;1.1.0&quot;){
   message(&quot;Need to update &#39;RGraphSpace&#39; for this vignette&quot;)
   remotes::install_github(&quot;sysbiolab/RGraphSpace&quot;)
@@ -465,11 +465,10 @@ if (packageVersion(&quot;Seurat&quot;) &lt; &quot;5.3.1.9999&quot;){
   message(&quot;Need to update &#39;Seurat&#39; for this vignette&quot;)
   remotes::install_github(&quot;satijalab/Seurat&quot;)
 }</code></pre>
-<pre class="r"><code>#--- Load SpotSpace
+<pre class="r"><code># Load packages
 library(RGraphSpace)
 library(PathwaySpace)
 library(SpotSpace)
-#--- Load other required packages for this section
 library(Seurat)
 library(SeuratObject)
 library(SeuratData)

@@ -390,8 +390,8 @@ graphs, such as from <a
 href="spatial-transcriptomics.html"><strong>spatial
 transcriptomics</strong></a> data.</p>
 </div>
-<div id="setting-basic-input-data" class="section level1">
-<h1>Setting basic input data</h1>
+<div id="required-packages" class="section level1">
+<h1>Required packages</h1>
 <pre class="r"><code># Check required packages for this vignette
 if (!require(&quot;remotes&quot;, quietly = TRUE)){
   install.packages(&quot;remotes&quot;)
@@ -405,7 +405,7 @@ if (!require(&quot;PathwaySpace&quot;, quietly = TRUE)){
 if (!require(&quot;SpotSpace&quot;, quietly = TRUE)){
   remotes::install_github(&quot;sysbiolab/SpotSpace&quot;)
 }</code></pre>
-<pre class="r"><code># Check required versions
+<pre class="r"><code># Check versions
 if (packageVersion(&quot;RGraphSpace&quot;) &lt; &quot;1.1.0&quot;){
   message(&quot;Need to update &#39;RGraphSpace&#39; for this vignette&quot;)
   remotes::install_github(&quot;sysbiolab/RGraphSpace&quot;)
@@ -418,13 +418,16 @@ if (packageVersion(&quot;SpotSpace&quot;) &lt; &quot;0.0.2&quot;){
   message(&quot;Need to update &#39;SpotSpace&#39; for this vignette&quot;)
   remotes::install_github(&quot;sysbiolab/SpotSpace&quot;)
 }</code></pre>
-<pre class="r"><code>#--- Load required packages
+<pre class="r"><code># Load packages
 library(igraph)
 library(ggplot2)
 library(RGraphSpace)
 library(PathwaySpace)
 library(SpotSpace)
 library(patchwork)</code></pre>
+</div>
+<div id="setting-basic-input-data" class="section level1">
+<h1>Setting basic input data</h1>
 <pre class="r"><code># Create a lattice graph with igraph
 g &lt;- make_lattice(c(9, 9), directed = FALSE)
 V(g)$name &lt;- paste0(&quot;n&quot;,1:vcount(g))
@@ -483,7 +486,7 @@ returns a decay function with customized parameters.</p>
 ##     y &lt;- signal * 0.25^((x/0.75)^2)
 ##     return(y)
 ## }
-## &lt;environment: 0x6351e54d7538&gt;
+## &lt;environment: 0x5b27777d5ea0&gt;
 ## attr(,&quot;name&quot;)
 ## [1] &quot;weibullDecay&quot;</code></pre>
 <p></br></p>

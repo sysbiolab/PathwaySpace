@@ -420,8 +420,8 @@ class="citation">Tercan et al. (2025)</span>.</p>
 available from the <em>Pathway Commons</em> database (version 12) <span
 class="citation">(Rodchenkov et al. 2019)</span>.</p>
 </div>
-<div id="setting-input-data" class="section level1">
-<h1>Setting input data</h1>
+<div id="required-packages" class="section level1">
+<h1>Required packages</h1>
 <pre class="r"><code># Check required packages for this vignette
 if (!require(&quot;remotes&quot;, quietly = TRUE)){
   install.packages(&quot;remotes&quot;)
@@ -432,7 +432,7 @@ if (!require(&quot;RGraphSpace&quot;, quietly = TRUE)){
 if (!require(&quot;PathwaySpace&quot;, quietly = TRUE)){
   remotes::install_github(&quot;sysbiolab/PathwaySpace&quot;)
 }</code></pre>
-<pre class="r"><code># Check required versions
+<pre class="r"><code># Check versions
 if (packageVersion(&quot;RGraphSpace&quot;) &lt; &quot;1.1.0&quot;){
   message(&quot;Need to update &#39;RGraphSpace&#39; for this vignette&quot;)
   remotes::install_github(&quot;sysbiolab/RGraphSpace&quot;)
@@ -441,11 +441,14 @@ if (packageVersion(&quot;PathwaySpace&quot;) &lt; &quot;1.0.3.1&quot;){
   message(&quot;Need to update &#39;PathwaySpace&#39; for this vignette&quot;)
   remotes::install_github(&quot;sysbiolab/PathwaySpace&quot;)
 }</code></pre>
-<pre class="r"><code>#--- Load required packages
+<pre class="r"><code># Load packages
 library(PathwaySpace)
 library(RGraphSpace)
 library(igraph)
 library(ggplot2)</code></pre>
+</div>
+<div id="setting-input-data" class="section level1">
+<h1>Setting input data</h1>
 <pre class="r"><code># Load a large igraph object
 data(&quot;PCv12_pruned_igraph&quot;, package = &quot;PathwaySpace&quot;)
 
