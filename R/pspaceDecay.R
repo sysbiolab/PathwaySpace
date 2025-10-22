@@ -11,14 +11,14 @@
 #' \code{signal} decreases as a function of distance in pathway space. 
 #' For example, at a specific distance defined by the \code{pdist} parameter, 
 #' the signal intensity will be the initial signal multiplied by \code{decay}.
-#' @param shape A parameter (>=1) of a Weibull function. When \code{shape=1}
-#' the Weibull decay follows an exponential decay. When \code{shape>1}
-#' the function is first convex, then concave with an inflection point.
 #' @param pdist A distance normalization term (in (0, 1]) at which the signal 
 #' reaches `signal * decay`. This parameter is used to anchor the decay to 
 #' a meaningful distance (see `details`). Also, when \code{pdist = 1}, it will
 #' represent the diameter of the inscribed circle within the coordinate space
 #' of a `PathwaySpace` object.
+#' @param shape A parameter (>=1) of a Weibull function. When \code{shape=1}
+#' the Weibull decay follows an exponential decay. When \code{shape>1}
+#' the function is first convex, then concave with an inflection point.
 #' @param plot A logical value indicating whether to return a `ggplot` object.
 #' @param demo.signal A numeric value in `[-Inf, Inf]`, only passed when 
 #' \code{plot = TRUE} to visualize the decay curve with a specific signal 
@@ -51,21 +51,21 @@
 #' 
 #' @examples
 #' # Return a decay function
-#' decay_fun <- weibullDecay(decay = 0.5, shape = 2, pdist = 0.4)
+#' decay_fun <- weibullDecay(decay = 0.5, pdist = 0.4, shape = 2)
 #'
 #' # Plot decay model parameters
-#' # weibullDecay(decay = 0.5, shape = 2, pdist = 0.4, plot = TRUE)
+#' # weibullDecay(decay = 0.5, pdist = 0.4, shape = 2, plot = TRUE)
 #' 
 #' @importFrom ggplot2 geom_point geom_hline rel
 #' @aliases weibullDecay
 #' @export
 #' 
-weibullDecay <- function(decay = 0.001, shape = 1.05, pdist = 0.15, 
+weibullDecay <- function(decay = 0.001, pdist = 0.15, shape = 1.05,
   plot = FALSE, demo.signal = 1) {
   
   .validate.ps.args("singleNumber", "decay", decay)
-  .validate.ps.args("singleNumber", "shape", shape)
   .validate.ps.args("singleNumber", "pdist", pdist)
+  .validate.ps.args("singleNumber", "shape", shape)
   .validate.ps.args("singleNumber", "demo.signal", demo.signal)
 
   if(decay < 0 || decay > 1){
@@ -303,8 +303,8 @@ linearDecay <- function(decay = 0.001, pdist = 0.15, plot = FALSE,
   } else {
     call <- paste0(name,"(...)\n", 
       "decay = ", format(decay, digits=2), "\n", 
-      "shape = ", format(shape, digits=2), "\n", 
-      "pdist = ", format(pdist, digits=2)
+      "pdist = ", format(pdist, digits=2), "\n", 
+      "shape = ", format(shape, digits=2)
     )
   }
   si <- ifelse(signal>=0, TRUE, FALSE)
@@ -326,6 +326,7 @@ linearDecay <- function(decay = 0.001, pdist = 0.15, plot = FALSE,
   et2 <- element_text(size=13)
   p <- ggplot(aes(x = x, y = y), data = data) +
     scale_y_continuous(limits = limits, breaks = breaks) + 
+    scale_x_continuous(breaks = seq(0, 1, 0.2)) + 
     labs(y="Signal Intensity", x="Normalized Distance") + 
     # geom_vline(xintercept=0, color="grey40") +
     # geom_hline(yintercept=0, color="grey40") +

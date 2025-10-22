@@ -6,8 +6,8 @@
 \usage{
 weibullDecay(
   decay = 0.001,
-  shape = 1.05,
   pdist = 0.15,
+  shape = 1.05,
   plot = FALSE,
   demo.signal = 1
 )
@@ -18,15 +18,15 @@ weibullDecay(
 For example, at a specific distance defined by the \code{pdist} parameter, 
 the signal intensity will be the initial signal multiplied by \code{decay}.}
 
-\item{shape}{A parameter (>=1) of a Weibull function. When \code{shape=1}
-the Weibull decay follows an exponential decay. When \code{shape>1}
-the function is first convex, then concave with an inflection point.}
-
 \item{pdist}{A distance normalization term (in (0, 1]) at which the signal 
 reaches `signal * decay`. This parameter is used to anchor the decay to 
 a meaningful distance (see `details`). Also, when \code{pdist = 1}, it will
 represent the diameter of the inscribed circle within the coordinate space
 of a `PathwaySpace` object.}
+
+\item{shape}{A parameter (>=1) of a Weibull function. When \code{shape=1}
+the Weibull decay follows an exponential decay. When \code{shape>1}
+the function is first convex, then concave with an inflection point.}
 
 \item{plot}{A logical value indicating whether to return a `ggplot` object.}
 
@@ -68,10 +68,10 @@ transitions from convex to concave, exhibiting an inflection point. The
 }
 \examples{
 # Return a decay function
-decay_fun <- weibullDecay(decay = 0.5, shape = 2, pdist = 0.4)
+decay_fun <- weibullDecay(decay = 0.5, pdist = 0.4, shape = 2)
 
 # Plot decay model parameters
-# weibullDecay(decay = 0.5, shape = 2, pdist = 0.4, plot = TRUE)
+# weibullDecay(decay = 0.5, pdist = 0.4, shape = 2, plot = TRUE)
 
 }
 \seealso{
