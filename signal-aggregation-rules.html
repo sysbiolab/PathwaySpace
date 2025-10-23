@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sysbiolab Team" />
 
-<meta name="date" content="2025-10-21" />
+<meta name="date" content="2025-10-23" />
 
 <title>Creating signal aggregation rules</title>
 
@@ -395,7 +395,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Creating signal aggregation rules</h1>
 <h4 class="author">Sysbiolab Team</h4>
-<h4 class="date">2025-10-21</h4>
+<h4 class="date">2025-10-23</h4>
 
 </div>
 
@@ -426,7 +426,7 @@ for a conceptual overview of signal processing in
 signal aggregation functions for <em>PathwaySpace</em> projections. A
 toy graph with five small islands is used to illustrate aggregation
 rules that emphasize distinct patterns in the data. The final section
-suggests a list of <em>fuzzy logic</em> operators that can be use to
+suggests a list of <em>fuzzy logic</em> operators that can be used to
 aggregate signals in <em>PathwaySpace</em>, including the trade-offs of
 each approach.</p>
 </div>
@@ -471,7 +471,8 @@ library(patchwork)</code></pre>
 <pre class="r"><code># Create a simple graph with five islands
 g &lt;- rep(igraph::make_star(7, &quot;undirected&quot;), 5)
 V(g)$name &lt;- paste0(&quot;n&quot;,1:vcount(g))
-gs &lt;- GraphSpace(g, layout = layout_nicely(g))
+set.seed(123) # for reproducible &#39;layout_with_fr&#39; layout
+gs &lt;- GraphSpace(g, layout = layout_with_fr(g))
 plotGraphSpace(gs, add.labels = TRUE)</code></pre>
 <p><img src="signal-aggregation-rules_files/figure-html/Modeling%20signal%20decay%20-%201-1.png" width="672" /></p>
 <pre class="r"><code># Build a PathwaySpace object
@@ -486,9 +487,9 @@ tutorial).</p>
 <pre class="r"><code># Get distance to the nearest nodes
 near_df &lt;- getNearestNode(ps)
 pdist &lt;- mean(near_df$dist)
-# The &#39;pdist&#39; is the average center-to-center distance between nodes
+# &#39;pdist&#39; as the average center-to-center distance
 pdist</code></pre>
-<pre><code>## [1] 0.1017494</code></pre>
+<pre><code>## [1] 0.09879871</code></pre>
 <pre class="r"><code># Setting a linear decay model for all vertices
 vertexDecay(ps) &lt;- linearDecay(pdist = pdist)</code></pre>
 <p>As a default behavior, the <code>buildPathwaySpace()</code>
@@ -561,12 +562,12 @@ vertices.</p>
 </div>
 <div id="fuzzy-unions-and-intersections" class="section level2">
 <h2>Fuzzy unions and intersections</h2>
-<p>This section lists <em>fuzzy logic</em> functions that can be use to
+<p>This section lists <em>fuzzy logic</em> functions that can be used to
 aggregate signals in <em>PathwaySpace</em>, mostly available from the
 <em>lfl</em> package <span class="citation">(Burda and Štěpnička
 2021)</span>. A fuzzy intersection measures how strongly all signals
 agree at a given point, typically using a <em>t-norm</em> like minimum
-or product. A fuzzy union, in contrast, measures how strongly any of the
+or product. A fuzzy union, in contrast, measures how strong any of the
 signals are at a given point, using a <em>t-conorm</em> like maximum. By
 combining fuzzy unions or intersections with decay functions, we can
 produce unified projections that integrate multiple signal sources into

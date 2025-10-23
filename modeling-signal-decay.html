@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sysbiolab Team" />
 
-<meta name="date" content="2025-10-21" />
+<meta name="date" content="2025-10-23" />
 
 <title>Modeling signal decay functions</title>
 
@@ -372,7 +372,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Modeling signal decay functions</h1>
 <h4 class="author">Sysbiolab Team</h4>
-<h4 class="date">2025-10-21</h4>
+<h4 class="date">2025-10-23</h4>
 
 </div>
 
@@ -384,7 +384,7 @@ div.tocify {
 targeted at specific nodes. Using a simple lattice graph, we describe
 the steps to create and apply different decay functions for
 <em>PathwaySpace</em> projections. Nodes in this example represent
-spots, providing an intuitive starting for understanding how these
+spots, providing an intuitive starting point for understanding how these
 functions can be used to capture behaviors in larger or more complex
 graphs, such as from <a
 href="spatial-transcriptomics.html"><strong>spatial
@@ -486,7 +486,7 @@ returns a decay function with customized parameters.</p>
 ##     y &lt;- signal * 0.25^((x/0.75)^2)
 ##     return(y)
 ## }
-## &lt;environment: 0x60088e39c550&gt;
+## &lt;environment: 0x57e323969190&gt;
 ## attr(,&quot;name&quot;)
 ## [1] &quot;weibullDecay&quot;</code></pre>
 <p></br></p>
@@ -547,7 +547,7 @@ the documentation of the <code>vertexDecay()</code> accessor.</p>
 <pre class="r"><code># Get distance to the nearest vertex
 near_df &lt;- getNearestNode(ps)
 pdist &lt;- mean(near_df$dist)
-# The &#39;pdist&#39; is the average center-to-center distance between vertices
+# &#39;pdist&#39; as the average center-to-center
 pdist</code></pre>
 <pre><code>## [1] 0.1</code></pre>
 <pre class="r"><code># Setting a linear decay model for all vertices
@@ -566,7 +566,7 @@ plotPathwaySpace(ps, marks = &quot;n34&quot;)</code></pre>
 <p><img src="modeling-signal-decay_files/figure-html/Running%20PathwaySpace%20-%202-1.png" width="672" /></p>
 <p>By assigning a new decay model to specific vertices, we can explore
 how signals propagate across the network under different rules. To
-illustrate, next we assign a Weibull decay function to vertex
+illustrate, we assign a Weibull decay function to vertex
 <code>n34</code>.</p>
 <pre class="r"><code># Changing decay model of vertex &#39;n34&#39;
 vertexDecay(ps)[[&quot;n34&quot;]] &lt;- weibullDecay(shape = 2, pdist = pdist*10)</code></pre>
