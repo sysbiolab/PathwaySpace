@@ -484,10 +484,10 @@ ps &lt;- buildPathwaySpace(gs)</code></pre>
 additional details, see the <a
 href="modeling-signal-decay.html"><em>modeling signal decay</em></a>
 tutorial).</p>
-<pre class="r"><code># Get distance to the nearest nodes
+<pre class="r"><code># Get distance to the nearest vertex
 near_df &lt;- getNearestNode(ps)
 pdist &lt;- mean(near_df$dist)
-# &#39;pdist&#39; as the average center-to-center distance
+# &#39;pdist&#39; as the average center-to-center distance between vertices
 pdist</code></pre>
 <pre><code>## [1] 0.09879871</code></pre>
 <pre class="r"><code># Setting a linear decay model for all vertices
