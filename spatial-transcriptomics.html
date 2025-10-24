@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sysbiolab Team" />
 
-<meta name="date" content="2025-10-23" />
+<meta name="date" content="2025-10-24" />
 
 <title>Visualizing spatial transcriptomics</title>
 
@@ -397,7 +397,7 @@ div.tocify {
 <h3 class="subtitle">Gene expression projections on spot
 coordinates</h3>
 <h4 class="author">Sysbiolab Team</h4>
-<h4 class="date">2025-10-23</h4>
+<h4 class="date">2025-10-24</h4>
 
 </div>
 
@@ -536,7 +536,7 @@ represents 100 µm in the Visium v1 technology.</p>
 <pre class="r"><code># Get distance to the nearest spot
 nspot &lt;- getNearestNode(pspace_obj)
 pdist &lt;- mean(nspot$dist) # average distance
-# &#39;pdist&#39; as the average center-to-center distance between spots
+# &#39;pdist&#39; set as the average center-to-center distance between spots
 pdist
 # [1] 0.01395144</code></pre>
 <p>As an optional step, the <code>silhouetteMapping()</code> function
@@ -645,7 +645,7 @@ pspace_obj &lt;- buildSpotSpace(spot_coord = spot_coord, nrc=700)</code></pre>
 <pre class="r"><code># Get distance to the nearest spot
 nspot &lt;- getNearestNode(pspace_obj)
 pdist &lt;- mean(nspot$dist) # average distance
-# &#39;pdist&#39; as the average center-to-center distance between spots
+# &#39;pdist&#39; set as the average center-to-center distance between spots
 pdist
 # [1] 0.002497466</code></pre>
 <pre class="r"><code># Add a graph silhouette to the PathwaySpace object
@@ -743,7 +743,7 @@ pspace_obj &lt;- buildSpotSpace(spot_coord = spot_coord,
 <pre class="r"><code># Get distance to the nearest spot
 nspot &lt;- getNearestNode(pspace_obj)
 pdist &lt;- mean(nspot$dist) # average distance
-# &#39;pdist&#39; as the average center-to-center distance between spots
+# &#39;pdist&#39; set as the average center-to-center distance between spots
 pdist
 # [1] 0.002516144</code></pre>
 <pre class="r"><code># Add a graph silhouette to the PathwaySpace object

@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sysbiolab Team" />
 
-<meta name="date" content="2025-10-23" />
+<meta name="date" content="2025-10-24" />
 
 <title>Modeling signal decay functions</title>
 
@@ -372,7 +372,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Modeling signal decay functions</h1>
 <h4 class="author">Sysbiolab Team</h4>
-<h4 class="date">2025-10-23</h4>
+<h4 class="date">2025-10-24</h4>
 
 </div>
 
@@ -486,7 +486,7 @@ returns a decay function with customized parameters.</p>
 ##     y &lt;- signal * 0.25^((x/0.75)^2)
 ##     return(y)
 ## }
-## &lt;environment: 0x5796bea9e260&gt;
+## &lt;environment: 0x6473f9ddebf8&gt;
 ## attr(,&quot;name&quot;)
 ## [1] &quot;weibullDecay&quot;</code></pre>
 <p></br></p>
@@ -547,7 +547,7 @@ the documentation of the <code>vertexDecay()</code> accessor.</p>
 <pre class="r"><code># Get distance to the nearest vertex
 near_df &lt;- getNearestNode(ps)
 pdist &lt;- mean(near_df$dist)
-# &#39;pdist&#39; as the average center-to-center between vertices
+# &#39;pdist&#39; set as the average center-to-center distance between vertices
 pdist</code></pre>
 <pre><code>## [1] 0.1</code></pre>
 <pre class="r"><code># Setting a linear decay model for all vertices
