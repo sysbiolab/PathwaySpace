@@ -15,9 +15,10 @@ convolution operation problem addressed by the *PathwaySpace* package.
 For detailed documentation and usage examples, see the [package's vignettes 
 and workflows](https://sysbiolab.github.io/PathwaySpace/get-started.html).
 
-*PathwaySpace* could have various applications, such as visualizing network 
-data in a graphical format that highlights the relationships and signal 
-strengths between vertices.
+*PathwaySpace* could have various applications, such as highlighting 
+relationships and signal strengths between network vertices, visualizing 
+sparse feature sets on large graphs, and exploring signal patterns in 
+spatial transcriptomics.
 
 
 ### Installation in R (>=4.4)
