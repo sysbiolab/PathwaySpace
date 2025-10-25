@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sysbiolab Team" />
 
-<meta name="date" content="2025-10-24" />
+<meta name="date" content="2025-10-25" />
 
 <title>Visualizing spatial transcriptomics</title>
 
@@ -397,7 +397,7 @@ div.tocify {
 <h3 class="subtitle">Gene expression projections on spot
 coordinates</h3>
 <h4 class="author">Sysbiolab Team</h4>
-<h4 class="date">2025-10-24</h4>
+<h4 class="date">2025-10-25</h4>
 
 </div>
 
@@ -406,15 +406,15 @@ coordinates</h3>
 <div id="overview" class="section level1">
 <h1>Overview</h1>
 <p>This vignette introduces the <em>SpotSpace</em> package, a
-<em>PathwaySpace</em> extension for <em>Seurat</em> <span
+<em>PathwaySpace</em> extension for <em>Seurat</em> package <span
 class="citation">(Hao et al. 2024)</span>, providing methods for signal
 propagation and visualization in spatial transcriptomics.
 <em>SpotSpace</em> extends existing spatial analysis workflows to
 explore signal patterns in tissue microenvironments. In what follows, we
 present three step-by-step tutorials describing how to prepare input
-data for <em>SpotSpace</em>. The results reproduce examples featured in
-<em>Seurat</em>’s tutorials, so users are encouraged to see how these
-packages can be used together.</p>
+data for <em>SpotSpace</em>. The results reproduce and refine examples
+featured in <em>Seurat</em>’s tutorials, so users are encouraged to see
+how these packages can be used together.</p>
 </div>
 <div id="before-you-start" class="section level1">
 <h1>Before You Start</h1>
@@ -494,8 +494,9 @@ seurat_obj &lt;- LoadData(&quot;stxBrain&quot;, type = &quot;anterior1&quot;)</c
 <p>The <code>stxBrain</code> dataset is normalized as suggested in
 <em>Seurat</em>’s <a
 href="https://satijalab.org/seurat/articles/spatial_vignette.html"
-target="_blank" rel="noopener">spatial_vignette</a>, using the
-<code>SCTransform()</code> function.</p>
+target="_blank" rel="noopener">spatial_vignette</a>, either using the
+<code>SCTransform()</code> and <code>NormalizeData()</code>
+functions.</p>
 <pre class="r"><code># Run vst normalization on counts
 # seurat_obj &lt;- SCTransform(seurat_obj, assay = &quot;Spatial&quot;, verbose = FALSE)
 
@@ -704,18 +705,23 @@ target="_blank" rel="noopener">visiumhd_analysis_vignette</a>.</p>
 <p>The Visium HD dataset can be downloaded from the 10x Genomics
 repository at:</p>
 <ul>
-<li>Dataset name: Visium HD Spatial Gene Expression Library, Mouse Brain
+<li>Dataset: Visium HD Spatial Gene Expression Library, Mouse Brain
 (FFPE)</li>
-<li>Repository URL: <a
+<li>Repository: <a
 href="https://www.10xgenomics.com/datasets/visium-hd-cytassist-gene-expression-libraries-of-mouse-brain-he"
-target="_blank"
-rel="noopener">https://www.10xgenomics.com/datasets</a></li>
+target="_blank" rel="noopener">https://www.10xgenomics.com/datasets
+…</a></li>
+<li>Location: Output and supplemental files</li>
+<li>Download: <a
+href="https://cf.10xgenomics.com/samples/spatial-exp/3.0.0/Visium_HD_Mouse_Brain/Visium_HD_Mouse_Brain_binned_outputs.tar.gz">Binned
+outputs (all bin levels)</a></li>
 <li>File name: Visium_HD_Mouse_Brain_binned_outputs.tar.gz</li>
+<li>MD5: 2e728d1c1bda99a36535ba45b4319a98</li>
 <li>Size: 4.62 GB</li>
 </ul>
-<pre class="r"><code># Set &#39;localdir&#39; to the folder where the dataset was downloaded
+<pre class="r"><code># Extract the tar.gz and set &#39;localdir&#39; to the dataset folder
 # Use &#39;bin.size&#39; to choose the data resolution to load (2, 8, or 16 µm)
-localdir &lt;- &quot;../Visium_HD_Mouse_Brain_binned_outputs&quot;
+localdir &lt;- &quot;path/to/data/directory&quot;
 seurat_obj &lt;- Load10X_Spatial(data.dir = localdir, bin.size = 16)
 
 # Check default assay

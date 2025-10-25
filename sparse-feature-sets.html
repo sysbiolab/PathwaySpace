@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sysbiolab Team" />
 
-<meta name="date" content="2025-10-24" />
+<meta name="date" content="2025-10-25" />
 
 <title>Visualizing sparse feature sets on large graphs</title>
 
@@ -396,7 +396,7 @@ div.tocify {
 <h1 class="title toc-ignore">Visualizing sparse feature sets on large
 graphs</h1>
 <h4 class="author">Sysbiolab Team</h4>
-<h4 class="date">2025-10-24</h4>
+<h4 class="date">2025-10-25</h4>
 
 </div>
 
@@ -415,7 +415,7 @@ silhouettes as decorative elements to outline the overall graph
 structure. The examples in this section are adapted from <span
 class="citation">Ellrott et al. (2025)</span> and <span
 class="citation">Tercan et al. (2025)</span>.</p>
-<p>Next, we will load an <em>igraph</em> object containing gene
+<p>We will start by loading an <em>igraph</em> object containing gene
 interaction data available from the <em>Pathway Commons</em> database
 (version 12) <span class="citation">(Rodchenkov et al. 2019)</span>.</p>
 </div>
@@ -487,9 +487,9 @@ length(hallmarks$HALLMARK_P53_PATHWAY)
 <div id="running-pathwayspace" class="section level1">
 <h1>Running <em>PathwaySpace</em></h1>
 <p>We now follow the <em>PathwaySpace</em> pipeline as explained in the
-introductory vignette, that is, using the
-<code>buildPathwaySpace()</code> constructor to initialize a new
-<em>PathwaySpace</em> object with the <em>Pathway Commons</em>
+<a href="projection-methods.html">introductory vignette</a>, that is,
+using the <code>buildPathwaySpace()</code> constructor to initialize a
+new <em>PathwaySpace</em> object with the <em>Pathway Commons</em>
 interactions.</p>
 <pre class="r"><code># Run the PathwaySpace constructor
 p_space_PCv12 &lt;- buildPathwaySpace(gs=g_space_PCv12, nrc=500)
@@ -527,7 +527,7 @@ signal. This could provide insights into communities within these summit
 regions. One may also wish to explore other vertices within the summits,
 by querying associations with the original input gene set. In order to
 extract vertices within summits, next we use the
-<code>summitMapping()</code> function, which also decorate summits with
+<code>summitMapping()</code> function, which also decorates summits with
 contour lines.</p>
 <pre class="r"><code># Mapping summits
 p_space_PCv12 &lt;- summitMapping(p_space_PCv12, minsize = 50)
