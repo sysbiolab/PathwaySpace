@@ -10,7 +10,7 @@
 containing vertices (nodes), edges (lines), and a signal associated with 
 the vertices. The package processes the signal using a convolution algorithm 
 that considers the graph's topology to project the signal on a 2D space.
-[**Figure1**](https://sysbiolab.github.io/PathwaySpace/) illustrates the 
+[Figure1](https://sysbiolab.github.io/PathwaySpace/) illustrates the 
 convolution operation problem addressed by the *PathwaySpace* package. 
 For detailed documentation and usage examples, see the [package's vignettes 
 and workflows](https://sysbiolab.github.io/PathwaySpace/get-started.html).
