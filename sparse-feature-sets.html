@@ -514,6 +514,7 @@ p_space_PCv12 &lt;- circularProjection(p_space_PCv12)</code></pre>
 silhouettes and plot the results.</p>
 <pre class="r"><code># Add silhouettes
 p_space_PCv12 &lt;- silhouetteMapping(p_space_PCv12)
+# Plot the results
 plotPathwaySpace(p_space_PCv12, title=&quot;HALLMARK_P53_PATHWAY&quot;, marks = top10hubs, mark.size = 2, theme = &quot;th3&quot;)</code></pre>
 <p><img src="figs_feature_sets/fig2.png" width="100%" /></p>
 </div>
@@ -531,7 +532,7 @@ extract vertices within summits, next we use the
 contour lines.</p>
 <pre class="r"><code># Mapping summits
 p_space_PCv12 &lt;- summitMapping(p_space_PCv12, minsize = 50)
-plotPathwaySpace(p_space_PCv12, title=&quot;HALLMARK_P53_PATHWAY&quot;, theme = &quot;th3&quot;)</code></pre>
+plotPathwaySpace(p_space_PCv12, title=&quot;Summit regions&quot;, theme = &quot;th3&quot;)</code></pre>
 <p><img src="figs_feature_sets/fig3.png" width="100%" /></p>
 <pre class="r"><code># Extracting summits from a PathwaySpace
 summits &lt;- getPathwaySpace(p_space_PCv12, &quot;summits&quot;)
