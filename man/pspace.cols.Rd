@@ -4,10 +4,12 @@
 \alias{pspace.cols}
 \title{A simple vector of colors for PathwaySpace images}
 \usage{
-pspace.cols(n = 5)
+pspace.cols(n = 25, ...)
 }
 \arguments{
-\item{n}{Number of colors.}
+\item{n}{The number of colors to generate in the output palette.}
+
+\item{...}{Additional arguments (not used).}
 }
 \value{
 A vector with hexadecimal color codes.
@@ -20,5 +22,5 @@ pspace.cols()
 
 }
 \seealso{
-\code{\link{plotPathwaySpace}}
+\code{\link{plotPathwaySpace}}, \code{\link{pspace.pals}}
 }

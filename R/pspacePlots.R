@@ -4,15 +4,7 @@
 #' create dedicated ggplot graphics for PathwaySpace-class objects.
 #'
 #' @param ps A \linkS4class{PathwaySpace} class object.
-#' @param colors A vector of colors. Each color is a specific hue used to 
-#' create a customized color palette, interpolated according to the provided 
-#' sequence in the vector of colors. The proportion of each color hue can be 
-#' adjusted by the 'trim.colors' argument. This palette is designed to 
-#' fine-tune the visibility of summits and valleys within the image space.
-#' To bypass this automatic palette generation and use the 'colors' 
-#' input as-is, simply set 'trim.colors' to NULL.
-#' @param trim.colors An vector with 5 positive integer numbers. This argument
-#' can be used to adjust the proportion of each color hue in the palette.
+#' @param colors A vector of colors.
 #' @param bg.color A single color for background.
 #' @param si.color A single color for silhouette.
 #' (see \code{\link{silhouetteMapping}}).
@@ -84,6 +76,7 @@
 #' @importFrom ggplot2 aes scale_fill_gradientn annotation_raster
 #' @importFrom ggplot2 coord_fixed geom_raster labs
 #' @importFrom ggplot2 margin element_blank element_rect element_line
+#' @importFrom grid unit
 #' @importFrom ggrepel geom_text_repel
 #' @importFrom grDevices convertColor col2rgb rgb as.raster
 #' @importFrom grDevices adjustcolor colorRampPalette
@@ -94,9 +87,8 @@
 #' @export
 #'
 setMethod("plotPathwaySpace", "PathwaySpace", 
-  function(ps, 
-    colors = pspace.cols(), trim.colors = c(3, 2, 1, 2, 3), 
-    bg.color = "grey95", si.color = "grey85", si.alpha = 1,
+  function(ps, colors = pspace.cols(), bg.color = "grey95", 
+    si.color = "grey85", si.alpha = 1,
     theme = c("th0", "th1", "th2", "th3"),
     title = "PathwaySpace", 
     xlab = "Pathway coordinates 1", 
@@ -133,13 +125,14 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     .validate.ps.args("singleLogical", "add.image", add.image)
     .validate.colors("singleColor", "mark.color", mark.color)
     .validate.colors("allColors","colors", colors)
-    .validate.colors("singleColor", "bg.color", bg.color)
     .validate.colors("singleColor", "si.color", si.color)
     .validate.colors("singleColor", "font.color", font.color)
     .validate.colors("singleColor", "grid.color", grid.color)
     .validate.colors("singleColor", "summit.color", summit.color)
     .validate.psplot.args("marks", marks)
-    .validate.psplot.args("trim.colors", trim.colors)
+    if(!is.na(bg.color) ){
+      .validate.colors("singleColor", "bg.color", bg.color)
+    }
     theme <- match.arg(theme)
     if(!is.null(zlim)) {
       .validate.ps.args("numeric_vec", "zlim", zlim)
@@ -158,9 +151,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     pars <- getPathwaySpace(ps, "projections")$pars
     
     #--- set colors
-    if(!is.null(trim.colors)){
-      colors <- .pspacePalette(colors, trim.colors)
-    }
+    colors <- colorRampPalette(colors)(25)
     if(pars$ps$configs$scale.type=="negpos"){
       slices <- ceiling(slices/2) * 2
     }
@@ -219,7 +210,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
       } else {
         ggi <- .add_image(ggp, img)
         if(add.grid) ggi <- .add_grid(ggi, gxyz, grid.color)
-        ggi <- .custom_themes(ggi, theme, bg.color)
+        ggi <- .custom_themes(ggi, theme, bg = "grey95")
         ggi <- ggi + ggplot2::labs(x=xlab, y=ylab)
       }
     }
@@ -257,7 +248,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     }
     
     #--- apply custom theme
-    ggp <- .custom_themes(ggp, theme, bg.color)
+    ggp <- .custom_themes(ggp, theme, bg = "grey95")
     
     if(pars$image.layer && !add.image){
       ggl <- list(graph = ggp, image = ggi)
@@ -476,29 +467,29 @@ setMethod("plotPathwaySpace", "PathwaySpace",
 }
 
 #-------------------------------------------------------------------------------
-.custom_themes <- function(gg, theme, bg.color) {
+.custom_themes <- function(gg, theme, bg) {
   et1 <- ggplot2::element_text(size = 14)
   et2 <- ggplot2::element_text(size = 12)
   if (theme == "th0") {
-    gg <- .custom_th0(gg, et1, et2, bg.color)
+    gg <- .custom_th0(gg, et1, et2, bg)
   } else if (theme == "th1") {
-    gg <- .custom_th1(gg, et1, et2, bg.color)
+    gg <- .custom_th1(gg, et1, et2, bg)
   } else if (theme == "th2") {
-    gg <- .custom_th2(gg, et1, et2, bg.color)
+    gg <- .custom_th2(gg, et1, et2, bg)
   } else {
-    gg <- .custom_th3(gg, et1, et2, bg.color)
+    gg <- .custom_th3(gg, et1, et2, bg)
   }
   return(gg)
 }
-.custom_th0 <- function(gg, et1, et2, bg.color) {
+.custom_th0 <- function(gg, et1, et2, bg) {
   et1 <- ggplot2::element_text(size = 14)
   et2 <- ggplot2::element_text(size = 12)
   gg <- gg + ggplot2::theme(axis.title = et1, axis.text = et2,
     legend.title = et2, legend.text = et2,
-    panel.background = element_rect(fill = bg.color))
+    panel.background = element_rect(fill = bg))
   return(gg)
 }
-.custom_th1 <- function(gg, et1, et2, bg.color) {
+.custom_th1 <- function(gg, et1, et2, bg) {
   gg <- gg + ggplot2::theme_bw() +
     ggplot2::theme(axis.title = et1,
       axis.text = et2, legend.title = et2,
@@ -507,15 +498,15 @@ setMethod("plotPathwaySpace", "PathwaySpace",
       legend.background = element_blank(),
       legend.box.background = element_blank(),
       panel.grid.minor = element_line(linewidth = 0.7, 
-        colour = bg.color),
+        colour = bg),
       panel.grid.major = element_line(linewidth = 0.7,
-        colour = bg.color),
+        colour = bg),
       axis.ticks = element_line(linewidth = 0.7),
       axis.line = element_blank(),
       panel.border = element_rect(linewidth = 1.2))
   return(gg)
 }
-.custom_th2 <- function(gg, et1, et2, bg.color) {
+.custom_th2 <- function(gg, et1, et2, bg) {
   gg <- gg + ggplot2::theme_gray() + ggplot2::theme(axis.title = et1,
     axis.text = et2, legend.title = et2,
     legend.text = et2, legend.margin = margin(0, 0, 0, 0), 
@@ -526,10 +517,10 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     panel.grid.major = element_blank(),
     axis.ticks = element_line(linewidth = 0.7),
     axis.line = element_blank(), panel.border = element_blank(),
-    panel.background = element_rect(fill = bg.color))
+    panel.background = element_rect(fill = bg))
   return(gg)
 }
-.custom_th3 <- function(gg, et1, et2, bg.color) {
+.custom_th3 <- function(gg, et1, et2, bg) {
   et2 <- ggplot2::element_text(size = 12, hjust=0.5)
   gg <- gg + ggplot2::theme_gray() + 
     ggplot2::theme(axis.title = et1, axis.text = et2, 
@@ -537,6 +528,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
       legend.text = et2,
       legend.margin = margin(0, 0, 0, 0),
       legend.position = "bottom", 
+      legend.key.height = grid::unit(5, "mm"),
       plot.margin = margin(5, 5, 5, 5), 
       legend.box.margin = margin(0, 0, 0, 0),
       legend.background = element_blank(),
@@ -545,7 +537,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
       panel.grid.major = element_blank(),
       axis.ticks = element_line(linewidth = 0.5),
       axis.line = element_blank(), panel.border = element_blank(),
-      panel.background = element_rect(fill = bg.color))
+      panel.background = element_rect(fill = bg))
   return(gg)
 }
 .set_theme_bks <- function(theme, cl=list()){
@@ -605,33 +597,10 @@ setMethod("plotPathwaySpace", "PathwaySpace",
 }
 
 #-------------------------------------------------------------------------------
-.pspacePalette <- function(colors, trim.colors) {
-  if(length(colors) != 5){
-    colors <- colorRampPalette(colors)(5)
-  } 
-  tms <- trim.colors * 3
-  offset <- list()
-  offset[[1]] <- c(0.03, 0.09, 0.07, 0)
-  offset[[2]] <- c(0.12, 0.26, 0.08, 0)
-  offset[[3]] <- c(0.25, 0.11, 0.09, 0)
-  offset[[4]] <- c(0.00, 0.31, 0.10, 0)
-  offset[[5]] <- c(0.31, 0.30, 0.09, 0)
-  cols <- lapply(seq_along(colors), function(i){
-    cl <- adjustcolor(colors[i], offset = offset[[i]])
-    colorRampPalette(c(colors[i], cl))(tms[i])
-  })
-  cols[[4]] <- rev(cols[[4]])
-  cols[[5]] <- rev(cols[[5]])
-  cols <- unlist(cols)
-  cols <- colorRampPalette(cols)(25)
-  return(cols)
-}
-
-#-------------------------------------------------------------------------------
 .trimcols <- function(colors, bg.color, zlim, pars) {
   if(pars$ps$configs$scale.type == "negpos") {
     
-    if (is.null(bg.color)) {
+    if (is.na(bg.color)) {
       if (length(colors) %% 2 == 1){
         bg.color <- colors[(length(colors)+1)/2]
       } else {
@@ -651,7 +620,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     
   } else if(pars$ps$configs$scale.type=="neg") {
     
-    if (is.null(bg.color)) {
+    if (is.na(bg.color)) {
       bg.color <- colors[length(colors)]
       colors <- colors[-length(colors)]
     }
@@ -661,7 +630,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     
   } else {
     
-    if (is.null(bg.color)) {
+    if (is.na(bg.color)) {
       bg.color <- colors[1]
       colors <- colors[-1]
     }

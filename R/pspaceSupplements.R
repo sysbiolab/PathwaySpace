@@ -615,16 +615,16 @@
   if(zconfig$rescaled){
     zconfig$zlim <- zconfig$scaling
   } else {
-    mx <- zconfig$maxsig
-    if(mx==0) mx <- 1
-    if(zconfig$scale.type=="negpos"){
-      zlim <- c(-mx, mx)
-    } else if(zconfig$scale.type=="neg"){
-      zlim <- c(-mx, 0)
-    } else {
-      zlim <- c(0, mx)
-    }
-    zconfig$zlim <- zlim
+    # mx <- zconfig$maxsig
+    # if(mx==0) mx <- 1
+    # if(zconfig$scale.type=="negpos"){
+    #   zlim <- c(-mx, mx)
+    # } else if(zconfig$scale.type=="neg"){
+    #   zlim <- c(-mx, 0)
+    # } else {
+    #   zlim <- c(0, mx)
+    # }
+    zconfig$zlim <- zconfig$range
   }
   return(zconfig)
 }
@@ -634,17 +634,21 @@
   xp <- xsig
   xp[xp <= 0] <- NA
   qt <- quantile(as.numeric(xp), na.rm = TRUE, probs = pr)
-  xp[xp < qt[1]] <- qt[1]
-  xp[xp > qt[2]] <- qt[2]
-  xp <- scales::rescale(xp, to = c(0, to[2]))
+  if(!any(is.na(qt))){
+    xp[xp < qt[1]] <- qt[1]
+    xp[xp > qt[2]] <- qt[2]
+    xp <- scales::rescale(xp, to = c(0, to[2]))
+  }
   # neg
   pr <- c(endpoints[2], 1 - endpoints[1])
   xn <- xsig
   xn[xn >= 0] <- NA
   qt <- quantile(as.numeric(xn), na.rm = TRUE, probs = pr)
-  xn[xn < qt[1]] <- qt[1]
-  xn[xn > qt[2]] <- qt[2]
-  xn <- scales::rescale(xn, to = c(to[1], 0))
+  if(!any(is.na(qt))){
+    xn[xn < qt[1]] <- qt[1]
+    xn[xn > qt[2]] <- qt[2]
+    xn <- scales::rescale(xn, to = c(to[1], 0))
+  }
   # update xsig
   xsig[!is.na(xn)] <- xn[!is.na(xn)]
   xsig[!is.na(xp)] <- xp[!is.na(xp)]
@@ -694,6 +698,7 @@
     if (nrow(nodes)>0 & pars$ps$silh$pdist > 0) {
         xfloor[lpts[, c("Y", "X")]] <- .get_ldfloor(pars, nnbg)
     }
+    # image(.transpose_and_flip(xfloor))
     xfloor <- .cutfloor(xfloor, pars)
     xfloor[gxy[, c("Yint", "Xint")]] <- 1
     
@@ -745,6 +750,7 @@
 
 #-------------------------------------------------------------------------------
 .cutfloor <- function(xfloor, pars) {
+    size <- pi * (pars$ps$silh$pdist * 2 * pars$ps$nrc)^2
     rg <- range(xfloor, na.rm = TRUE)
     if (rg[1] != rg[2]) {
         xfloor <- xfloor - rg[1]
@@ -752,7 +758,11 @@
         mask <- xfloor
         mask[mask < pars$ps$silh$baseline] <- 0
         mask[mask > 0] <- 1
-        if(pars$ps$silh$fill.cavity) mask <- .fillCavity(mask)
+        if(pars$ps$silh$fill.cavity){
+          mask <- .fillCavity(mask)
+        } else {
+          mask <- .fillSpots(mask, spot.size = size)
+        }
         xfloor[mask == 0] <- 0
         xfloor[mask > 0] <- 1
     } else {

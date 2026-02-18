@@ -9,7 +9,6 @@
 \S4method{plotPathwaySpace}{PathwaySpace}(
   ps,
   colors = pspace.cols(),
-  trim.colors = c(3, 2, 1, 2, 3),
   bg.color = "grey95",
   si.color = "grey85",
   si.alpha = 1,
@@ -40,16 +39,7 @@
 \arguments{
 \item{ps}{A \linkS4class{PathwaySpace} class object.}
 
-\item{colors}{A vector of colors. Each color is a specific hue used to 
-create a customized color palette, interpolated according to the provided 
-sequence in the vector of colors. The proportion of each color hue can be 
-adjusted by the 'trim.colors' argument. This palette is designed to 
-fine-tune the visibility of summits and valleys within the image space.
-To bypass this automatic palette generation and use the 'colors' 
-input as-is, simply set 'trim.colors' to NULL.}
-
-\item{trim.colors}{An vector with 5 positive integer numbers. This argument
-can be used to adjust the proportion of each color hue in the palette.}
+\item{colors}{A vector of colors.}
 
 \item{bg.color}{A single color for background.}
 

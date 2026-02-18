@@ -11,7 +11,7 @@
 .validate.ps.args <- function(check, name, para) {
   if (check == "numeric_vec") {
     msg <- paste0("'", name, "' should be a numeric vector.")
-    if (!is.numeric(para) || !is.vector(para)) stop(msg, call. = FALSE)
+    if (!.is_numericVector(para)) stop(msg, call. = FALSE)
   } else if (check == "numeric_mtx") {
     msg <- paste0("'", name, "' should be a numeric matrix.")
     if (!is.numeric(para) || !is.matrix(para)) 
@@ -75,20 +75,7 @@
 #-------------------------------------------------------------------------------
 # Validate custom plot args
 .validate.psplot.args <- function(name, para) {
-  if (name == "trim.colors") {
-    if (!is.null(para)){
-      if (!.all_integerValues(para)) {
-        msg <- paste0(
-          "'", name,
-          "' should be a vector with integer values."
-        )
-        stop(msg, call. = FALSE)
-      } else if (length(para) != 5) {
-        msg <- paste0("'", name, "' should be a vector of length 5.")
-        stop(msg, call. = FALSE)
-      }
-    }
-  } else if (name == "marks") {
+  if (name == "marks") {
     if (!is.null(para)) {
       if (!.all_characterValues(para)) {
         msg <- paste0("'", name, "' should be a vector with strings.")

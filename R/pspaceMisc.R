@@ -180,23 +180,122 @@ NULL
 #' data(Hallmarks_v2023_1_Hs_symbols)
 NULL
 
+
+################################################################################
+### Colors for PathwaySpace
+################################################################################
+#' @title Create interpolated color palettes for PathwaySpace images
+#' 
+#' @description
+#' Creates mixed color palettes by interpolating and offsetting hues, useful for
+#' generating transitions between hues.
+#' 
+#' @param colors A vector of five base colors used to construct the custom
+#' diverging palette. These colors are interpolated according to the
+#' `trim.colors` values.
+#' @param trim.colors A vector of five positive integers that control the
+#' relative weight of each hue in the five-color diverging palette.
+#' @param offset Adjusts brightness by shifting hues toward the center,
+#' either brighter (`offset > 0`) or darker (` offset < 0`).
+#' @param n The number of colors to generate in the output palette.
+#' @return A vector with hexadecimal color codes.
+#' @seealso \code{\link{plotPathwaySpace}}
+#' @examples
+#' pspace.pals()
+#'
+#' @importFrom colorspace lighten
+#' @aliases pspace.pals
+#' @export
+#'
+pspace.pals <- function(
+    colors = c("#303f9d","#578edb","#63b946","#f3930c","#a60d0d"),
+  trim.colors = c(3, 2, 1, 2, 3), offset = 0.5, n = 25) {
+  .validate.colors("allColors","colors", colors)
+  .validate.ps.args("allInteger", "trim.colors", trim.colors)
+  .validate.ps.args("singleInteger", "n", n)
+  .validate.ps.args("singleNumber", "offset", offset)
+  if(any(trim.colors < 0)){
+    stop("'trim.colors' should be a vector with 5 positive integers.",
+      call. = FALSE)
+  }
+  if(length(colors)!=5){
+    colors <- colorRampPalette(colors)(5)
+  }
+  if(length(trim.colors)!=5){
+    if(length(trim.colors)==1){
+      trim.colors <- rep(trim.colors, 5)
+    } else {
+      stop("'trim.colors' should be a vector with 5 positive integers.",
+        call. = FALSE)
+    }
+  }
+  colors <- .pspace_pals(colors, trim.colors, offset)
+  colorRampPalette(colors)(n)
+}
+
+.pspace_pals <- function(colors, trim.colors, offset) {
+  tms <- trim.colors^2
+  center <- ceiling(length(colors)/2)
+  cols <- vector("list", 5)
+  idx <- seq(1, center-1)
+  cols[idx] <- lapply(idx, function(i){
+    cl <- colorspace::lighten(colors[i], amount = offset)
+    colorRampPalette(c(colors[i], cl))(tms[i])
+  })
+  idx <- seq(center+1, length(colors))
+  cols[idx] <- lapply(idx, function(i){
+    cl <- colorspace::lighten(colors[i], amount = offset)
+    colorRampPalette(c(cl, colors[i]))(tms[i])
+  })
+  cl <- colorspace::lighten(colors[center], amount = offset)
+  cols[[center]] <- colorRampPalette(c(colors[center], cl , colors[center]))(tms[center])
+  cols <- unlist(cols)
+  cols <- colorspace::lighten(cols, amount = -offset/5)
+  cols <- colorRampPalette(cols)(25)
+  return(cols)
+}
+
+
 ################################################################################
 ### Colors for PathwaySpace
 ################################################################################
 #' @title A simple vector of colors for PathwaySpace images
 #'
-#' @param n Number of colors.
+#' @param n The number of colors to generate in the output palette.
+#' @param ... Additional arguments (not used).
 #' @return A vector with hexadecimal color codes.
-#' @seealso \code{\link{plotPathwaySpace}}
+#' @seealso \code{\link{plotPathwaySpace}}, \code{\link{pspace.pals}}
 #' @examples
 #' pspace.cols()
 #'
+#' @importFrom colorspace lighten
 #' @aliases pspace.cols
 #' @export
 #'
-pspace.cols <- function(n=5) {
-    colors <- c("#303f9d","#578edb","#63b946","#f3930c","#a60d0d")
-    colorRampPalette(colors)(n)
+pspace.cols <- function(n = 25, ...) {
+  .validate.ps.args("singleInteger", "n", n)
+  colors <- c("#303f9d","#578edb","#63b946","#f3930c","#a60d0d")
+  colors <- .pspace_cols(colors)
+  colorRampPalette(colors)(n)
+}
+
+.pspace_cols <- function(colors) {
+  trim.colors <- c(3, 2, 1, 2, 3)
+  tms <- trim.colors * 3
+  offset <- list()
+  offset[[1]] <- c(0.03, 0.09, 0.07, 0)
+  offset[[2]] <- c(0.12, 0.26, 0.08, 0)
+  offset[[3]] <- c(0.25, 0.11, 0.09, 0)
+  offset[[4]] <- c(0.00, 0.31, 0.10, 0)
+  offset[[5]] <- c(0.31, 0.30, 0.09, 0)
+  cols <- lapply(seq_along(colors), function(i){
+    cl <- adjustcolor(colors[i], offset = offset[[i]])
+    colorRampPalette(c(colors[i], cl))(tms[i])
+  })
+  cols[[4]] <- rev(cols[[4]])
+  cols[[5]] <- rev(cols[[5]])
+  cols <- unlist(cols)
+  return(cols)
 }
 
 ################################################################################
@@ -554,6 +653,38 @@ plotPathDistances <- function(pdist, z.transform=FALSE){
         }
     }
     mask
+}
+.fillSpots <- function(mask, spot.size = 6) {
+  xm <- mask
+  xm[is.na(xm)] <- 0
+  ids <- sort(unique(as.numeric(xm)), decreasing = TRUE)
+  ids <- ids[ids > 0]
+  for (id in ids) {
+    idx <- which(xm == id, arr.ind = TRUE)
+    rr <- range(idx[, 1])
+    rr <- rr[1]:rr[2]
+    rc <- range(idx[, 2])
+    rc <- rc[1]:rc[2]
+    if (length(rr) > 3 && length(rc) > 3) {
+      x1 <- x2 <- xm[rr, rc, drop = FALSE]
+      x2[x2 != id] <- 0
+      x2 <- x2 == 0
+      x2 <- .expandMask(x2, val = 1)
+      #--- fill small spots
+      x3 <- .labelMask(x2)
+      x3 <- .relabelBySize(x3)
+      spot_th <- which(table(x3)[-1] <= spot.size)[1]
+      x3 <- .reduceMask(x3)
+      x1[x1 == 0 & x3 > spot_th] <- id
+      #--- fill small spots
+      x3 <- .removeTips(x2, n = 3)
+      x3 <- .reduceMask(x3)
+      x4 <- .reduceMask(x2)
+      x1[x3 != x4] <- id
+      mask[rr, rc] <- x1
+    }
+  }
+  mask
 }
 .countCavity <- function(mask) {
     xm <- mask
