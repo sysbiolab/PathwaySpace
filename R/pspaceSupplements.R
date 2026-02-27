@@ -284,6 +284,7 @@
     if(verbose) message("Computing linear and angular distances...")
     # for polar, 'dist' is scaled to edge dist and polar coordinates
     edges$edist <- .get_edge_dist(edges, gxy)
+    edges$emode <- .get_emode(edges$arrowType)
     lpts <- .get_points_in_matrix(pars$ps$nrc)
     nnpg <- .get_near_points(lpts, gxy, nodes, pars)
     nnpg <- .get_angular_dist(nnpg, lpts, gxy, edges, pars)
@@ -306,6 +307,13 @@
 .get_edge_signal <- function(nodes, edges){
   c( nodes[edges$vertex1,"signal"] * edges$weight,
   nodes[edges$vertex2,"signal"] * edges$weight)
+}
+
+#-------------------------------------------------------------------------------
+.get_emode <- function(arrow_type){
+  emode <- abs(arrow_type)
+  emode[emode>3] <- 3
+  return(emode)
 }
 
 #-------------------------------------------------------------------------------
