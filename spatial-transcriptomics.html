@@ -533,15 +533,16 @@ xy_labs &lt;- labs(x=&quot;Spot coordinates 1&quot;, y=&quot;Spot coordinates 2&
 plotGraphSpace(pspace_obj, add.image = TRUE) + xy_labs</code></pre>
 <p><img src="figs_spot_space/fig1.png" width="100%" /></p>
 <p><strong>Note on image alignment</strong>: Proper spatial alignment
-between spot coordinates and the background image depends on consistent
-coordinate conventions. Different graphics systems and external tools
-may use distinct origins and rendering directions (e.g., top-left
-vs. bottom-left). To address these differences,
-<code>buildSpotSpace()</code> provides orientation control through the
+between spot coordinates and the background image requires consistent
+coordinate conventions. Spatial misalignment may occur when the input
+spot coordinates and image follow origin placements or axis orientations
+that differ from the package’s internal coordinate definitions (e.g.,
+top-left versus bottom-left origins). To accommodate these differences,
+<code>buildSpotSpace()</code> provides orientation controls through the
 <code>rotate.xy</code>, <code>flip.x</code>, and <code>flip.y</code>
-arguments. If the spots appear misaligned with the image, try
-alternative combinations of these parameters to correct the image
-orientation and ensure proper alignment between spots and the image.</p>
+arguments. If the spots appear misaligned with the input image, try
+alternative combinations of these parameters to correct the
+alignment.</p>
 </div>
 <div id="running-pathwayspace" class="section level2">
 <h2>Running <em>PathwaySpace</em></h2>
