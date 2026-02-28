@@ -6,6 +6,9 @@
   [![](https://img.shields.io/badge/license-Artistic--2.0-blue.svg)](https://cran.r-project.org/web/licenses/Artistic-2.0)
   [![](https://img.shields.io/badge/doi-10.32614/CRAN.package.PathwaySpace-blue.svg)](https://doi.org/10.32614/CRAN.package.PathwaySpace)
   <!-- badges: end -->
+<p align="center">
+  <img src="header_art.png" width="100%" />
+</p>
 *PathwaySpace* is an R package that creates landscape images from graphs 
 containing vertices (nodes), edges (lines), and a signal associated with 
 the vertices. The package processes the signal using a convolution algorithm 
