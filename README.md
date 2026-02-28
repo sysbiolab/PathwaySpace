@@ -8,7 +8,7 @@
   <!-- badges: end -->
 <p align="center">
   <a href="https://sysbiolab.github.io/PathwaySpace/">
-    <img src="man/figures/pathwayspace_header.png" width="100%" alt="Open PathwaySpace vignette"/>
+    <img src="pathwayspace_header.png" width="100%" alt="Open PathwaySpace vignette"/>
   </a>
 </p>
 
