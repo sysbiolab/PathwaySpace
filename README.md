@@ -7,7 +7,9 @@
   [![](https://img.shields.io/badge/doi-10.32614/CRAN.package.PathwaySpace-blue.svg)](https://doi.org/10.32614/CRAN.package.PathwaySpace)
   <!-- badges: end -->
 <p align="center">
-  <img src="header_art.png" width="100%" />
+  <a href="https://sysbiolab.github.io/PathwaySpace/">
+    <img src="man/figures/pathwayspace_header.png" width="100%" alt="Open PathwaySpace vignette"/>
+  </a>
 </p>
 
 *PathwaySpace* is an R package that creates landscape images from graphs 
