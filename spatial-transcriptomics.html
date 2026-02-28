@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sysbiolab Team" />
 
-<meta name="date" content="2026-02-27" />
+<meta name="date" content="2026-02-28" />
 
 <title>Visualizing spatial transcriptomics</title>
 
@@ -397,7 +397,7 @@ div.tocify {
 <h3 class="subtitle">Gene expression projections on spot
 coordinates</h3>
 <h4 class="author">Sysbiolab Team</h4>
-<h4 class="date">2026-02-27</h4>
+<h4 class="date">2026-02-28</h4>
 
 </div>
 
@@ -532,6 +532,16 @@ pspace_obj &lt;- buildSpotSpace(spot_coord = spot_coord,
 xy_labs &lt;- labs(x=&quot;Spot coordinates 1&quot;, y=&quot;Spot coordinates 2&quot;)
 plotGraphSpace(pspace_obj, add.image = TRUE) + xy_labs</code></pre>
 <p><img src="figs_spot_space/fig1.png" width="100%" /></p>
+<p><strong>Note on image alignment</strong>: Proper spatial alignment
+between spot coordinates and the background image depends on consistent
+coordinate conventions. Different graphics systems and external tools
+may use distinct origins and rendering directions (e.g., top-left
+vs. bottom-left). To address these differences,
+<code>buildSpotSpace()</code> provides orientation control through the
+<code>rotate.xy</code>, <code>flip.x</code>, and <code>flip.y</code>
+arguments. If the spots appear misaligned with the image, try
+alternative combinations of these parameters to correct the image
+orientation and ensure proper alignment between spots and the image.</p>
 </div>
 <div id="running-pathwayspace" class="section level2">
 <h2>Running <em>PathwaySpace</em></h2>
