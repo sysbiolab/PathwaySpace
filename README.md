@@ -9,6 +9,7 @@
 <p align="center">
   <img src="header_art.png" width="100%" />
 </p>
+
 *PathwaySpace* is an R package that creates landscape images from graphs 
 containing vertices (nodes), edges (lines), and a signal associated with 
 the vertices. The package processes the signal using a convolution algorithm 
