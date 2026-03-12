@@ -27,8 +27,8 @@ silhouette will extend over the entire image space, so no outline will
 be visible.}
 
 \item{fill.cavity}{A logical value specifying to fill cavities 
-in the silhouette mask (when \code{verbose=TRUE}) or not 
-(when \code{verbose=FALSE}).}
+in the silhouette mask (when \code{fill.cavity=TRUE}) or not 
+(when \code{fill.cavity=FALSE}).}
 
 \item{verbose}{A logical value specifying to display detailed 
 messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}

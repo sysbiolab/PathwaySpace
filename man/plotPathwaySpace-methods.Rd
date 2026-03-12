@@ -129,7 +129,8 @@ ps <- buildPathwaySpace(gs, nrc = 300)
 vertexSignal(ps) <- 1
 
 # Create a 2D-landscape image
-ps <- circularProjection(ps, k = 2, pdist = 0.4)
+ps <- circularProjection(ps, k = 2, 
+         decay.fun = weibullDecay(pdist = 0.4))
 
 # Plot a 2D-landscape image
 plotPathwaySpace(ps)
