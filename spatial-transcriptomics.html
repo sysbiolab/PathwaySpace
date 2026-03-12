@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sysbiolab Team" />
 
-<meta name="date" content="2026-02-28" />
+<meta name="date" content="2026-03-11" />
 
 <title>Visualizing spatial transcriptomics</title>
 
@@ -397,12 +397,12 @@ div.tocify {
 <h3 class="subtitle">Gene expression projections on spot
 coordinates</h3>
 <h4 class="author">Sysbiolab Team</h4>
-<h4 class="date">2026-02-28</h4>
+<h4 class="date">2026-03-11</h4>
 
 </div>
 
 
-<p><strong>Package</strong>: PathwaySpace 1.1.1 <br/></p>
+<p><strong>Package</strong>: PathwaySpace 1.1.2 <br/></p>
 <div id="overview" class="section level1">
 <h1>Overview</h1>
 <p>This vignette introduces the <em>SpotSpace</em> package, a
@@ -453,15 +453,15 @@ if (!require(&quot;SeuratData&quot;, quietly = TRUE)){
   remotes::install_github(&quot;satijalab/seurat-data&quot;)
 }</code></pre>
 <pre class="r"><code># Check versions
-if (packageVersion(&quot;RGraphSpace&quot;) &lt; &quot;1.1.1&quot;){
+if (packageVersion(&quot;RGraphSpace&quot;) &lt; &quot;1.1.2&quot;){
   message(&quot;Need to update &#39;RGraphSpace&#39; for this vignette&quot;)
   remotes::install_github(&quot;sysbiolab/RGraphSpace&quot;)
 }
-if (packageVersion(&quot;PathwaySpace&quot;) &lt; &quot;1.1.1&quot;){
+if (packageVersion(&quot;PathwaySpace&quot;) &lt; &quot;1.1.2&quot;){
   message(&quot;Need to update &#39;PathwaySpace&#39; for this vignette&quot;)
   remotes::install_github(&quot;sysbiolab/PathwaySpace&quot;)
 }
-if (packageVersion(&quot;SpotSpace&quot;) &lt; &quot;0.0.5&quot;){
+if (packageVersion(&quot;SpotSpace&quot;) &lt; &quot;0.0.6&quot;){
   message(&quot;Need to update &#39;SpotSpace&#39; for this vignette&quot;)
   remotes::install_github(&quot;sysbiolab/SpotSpace&quot;)
 }
@@ -527,7 +527,7 @@ coordinates and plot the resulting graph overlaid on the tissue
 image.</p>
 <pre class="r"><code># Create a PathwaySpace object from &#39;spot_coord&#39;, mapped to the &#39;raster_image&#39;
 pspace_obj &lt;- buildSpotSpace(spot_coord = spot_coord, 
-  raster_image = raster_image, rotate.xy = FALSE)</code></pre>
+  raster_image = raster_image, flip.y = FALSE)</code></pre>
 <pre class="r"><code># Check spots on the top of the &#39;raster_image&#39;
 xy_labs &lt;- labs(x=&quot;Spot coordinates 1&quot;, y=&quot;Spot coordinates 2&quot;)
 plotGraphSpace(pspace_obj, add.image = TRUE) + xy_labs</code></pre>
@@ -556,7 +556,7 @@ nspot &lt;- getNearestNode(pspace_obj)
 pdist &lt;- mean(nspot$dist) # average distance
 # &#39;pdist&#39; set as the average center-to-center distance between spots
 pdist
-# [1] 0.01395144</code></pre>
+# [1] 0.013</code></pre>
 <p>As an optional step, the <code>silhouetteMapping()</code> function
 generates an image mask that outlines the graph layout, over which the
 subsequent methods will project a landscape image. The
@@ -656,7 +656,8 @@ vst_gexp &lt;- GetAssayData(seurat_obj, layer=&quot;data&quot;)
 # If needed, remove seurat_obj to free memory
 rm(seurat_obj)</code></pre>
 <pre class="r"><code># Create a PathwaySpace object from &#39;spot_coord&#39;
-pspace_obj &lt;- buildSpotSpace(spot_coord = spot_coord, nrc=700, rotate.xy = FALSE)</code></pre>
+pspace_obj &lt;- buildSpotSpace(spot_coord = spot_coord, 
+  nrc=700, rotate.xy = TRUE, flip.y = TRUE)</code></pre>
 </div>
 <div id="running-pathwayspace-1" class="section level2">
 <h2>Running <em>PathwaySpace</em></h2>
@@ -665,7 +666,7 @@ nspot &lt;- getNearestNode(pspace_obj)
 pdist &lt;- mean(nspot$dist) # average distance
 # &#39;pdist&#39; set as the average center-to-center distance between spots
 pdist
-# [1] 0.002497466</code></pre>
+# [1] 0.0024</code></pre>
 <pre class="r"><code># Add a graph silhouette to the PathwaySpace object
 pspace_obj &lt;- silhouetteMapping(pspace_obj, fill.cavity = FALSE, 
   pdist = max(nspot$dist))
@@ -673,7 +674,7 @@ pspace_obj &lt;- silhouetteMapping(pspace_obj, fill.cavity = FALSE,
 # Check silhouette plot
 xy_labs &lt;- labs(x=&quot;Spot coordinates 1&quot;, y=&quot;Spot coordinates 2&quot;)
 plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;, 
-  add.image = TRUE, si.alpha = 0.5) + xy_labs</code></pre>
+  si.alpha = 0.5) + xy_labs</code></pre>
 <p><img src="figs_spot_space/fig5.png" width="100%" /></p>
 <pre class="r"><code># Choose a gene of interest (e.g., DDN) and assign its 
 # expression values to graph vertices
@@ -759,7 +760,7 @@ norm_gexp &lt;- GetAssayData(seurat_obj, layer=&quot;data&quot;)
 rm(seurat_obj)</code></pre>
 <pre class="r"><code># Create a PathwaySpace object from &#39;spot_coord&#39;, mapped to the &#39;raster_image&#39;
 pspace_obj &lt;- buildSpotSpace(spot_coord = spot_coord, 
-  raster_image = raster_image, nrc = 700, rotate.xy = FALSE)</code></pre>
+  raster_image = raster_image, nrc = 700)</code></pre>
 </div>
 <div id="running-pathwayspace-2" class="section level2">
 <h2>Running <em>PathwaySpace</em></h2>
@@ -768,7 +769,7 @@ nspot &lt;- getNearestNode(pspace_obj)
 pdist &lt;- mean(nspot$dist) # average distance
 # &#39;pdist&#39; set as the average center-to-center distance between spots
 pdist
-# [1] 0.002516144</code></pre>
+# [1] 0.0024</code></pre>
 <pre class="r"><code># Add a graph silhouette to the PathwaySpace object
 pspace_obj &lt;- silhouetteMapping(pspace_obj, fill.cavity = FALSE, 
   pdist = max(nspot$dist))
@@ -851,8 +852,8 @@ class="uri">https://doi.org/10.1016/j.ccell.2024.12.002</a></p></li>
 ##  [5] ssHippo.SeuratData_3.1.4       kidneyref.SeuratData_1.0.2    
 ##  [7] bonemarrowref.SeuratData_1.0.0 SeuratData_0.2.2.9002         
 ##  [9] fontawesome_0.5.3              patchwork_1.3.2               
-## [11] igraph_2.2.0                   SpotSpace_0.0.5               
-## [13] PathwaySpace_1.1.1             RGraphSpace_1.1.1             
+## [11] igraph_2.2.0                   SpotSpace_0.0.6               
+## [13] PathwaySpace_1.1.2             RGraphSpace_1.1.2             
 ## [15] ggplot2_4.0.0.9000             remotes_2.5.0                 
 ## [17] bs4cards_0.1.1                
 ## 

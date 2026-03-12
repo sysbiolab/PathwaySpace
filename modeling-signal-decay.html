@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sysbiolab Team" />
 
-<meta name="date" content="2026-02-28" />
+<meta name="date" content="2026-03-11" />
 
 <title>Modeling signal decay functions</title>
 
@@ -372,12 +372,12 @@ div.tocify {
 
 <h1 class="title toc-ignore">Modeling signal decay functions</h1>
 <h4 class="author">Sysbiolab Team</h4>
-<h4 class="date">2026-02-28</h4>
+<h4 class="date">2026-03-11</h4>
 
 </div>
 
 
-<p><strong>Package</strong>: PathwaySpace 1.1.1 <br/></p>
+<p><strong>Package</strong>: PathwaySpace 1.1.2 <br/></p>
 <div id="overview" class="section level1">
 <h1>Overview</h1>
 <p>In this tutorial, we demonstrate how to model signal decay functions
@@ -406,15 +406,15 @@ if (!require(&quot;SpotSpace&quot;, quietly = TRUE)){
   remotes::install_github(&quot;sysbiolab/SpotSpace&quot;)
 }</code></pre>
 <pre class="r"><code># Check versions
-if (packageVersion(&quot;RGraphSpace&quot;) &lt; &quot;1.1.1&quot;){
+if (packageVersion(&quot;RGraphSpace&quot;) &lt; &quot;1.1.2&quot;){
   message(&quot;Need to update &#39;RGraphSpace&#39; for this vignette&quot;)
   remotes::install_github(&quot;sysbiolab/RGraphSpace&quot;)
 }
-if (packageVersion(&quot;PathwaySpace&quot;) &lt; &quot;1.1.1&quot;){
+if (packageVersion(&quot;PathwaySpace&quot;) &lt; &quot;1.1.2&quot;){
   message(&quot;Need to update &#39;PathwaySpace&#39; for this vignette&quot;)
   remotes::install_github(&quot;sysbiolab/PathwaySpace&quot;)
 }
-if (packageVersion(&quot;SpotSpace&quot;) &lt; &quot;0.0.5&quot;){
+if (packageVersion(&quot;SpotSpace&quot;) &lt; &quot;0.0.6&quot;){
   message(&quot;Need to update &#39;SpotSpace&#39; for this vignette&quot;)
   remotes::install_github(&quot;sysbiolab/SpotSpace&quot;)
 }</code></pre>
@@ -486,7 +486,7 @@ returns a decay function with customized parameters.</p>
 ##     y &lt;- signal * 0.25^((x/0.75)^2)
 ##     return(y)
 ## }
-## &lt;environment: 0x6176ef339288&gt;
+## &lt;environment: 0x55d3432cb568&gt;
 ## attr(,&quot;name&quot;)
 ## [1] &quot;weibullDecay&quot;</code></pre>
 <p></br></p>
@@ -600,8 +600,8 @@ plotPathwaySpace(ps, marks = &quot;n34&quot;)</code></pre>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] patchwork_1.3.2    igraph_2.2.0       SpotSpace_0.0.5    PathwaySpace_1.1.1
-## [5] RGraphSpace_1.1.1  ggplot2_4.0.0.9000 remotes_2.5.0      bs4cards_0.1.1    
+## [1] patchwork_1.3.2    igraph_2.2.0       SpotSpace_0.0.6    PathwaySpace_1.1.2
+## [5] RGraphSpace_1.1.2  ggplot2_4.0.0.9000 remotes_2.5.0      bs4cards_0.1.1    
 ## 
 ## loaded via a namespace (and not attached):
 ##   [1] RColorBrewer_1.1-3     rstudioapi_0.17.1      jsonlite_2.0.0        
