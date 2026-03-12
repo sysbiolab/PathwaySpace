@@ -27,7 +27,7 @@ sparse feature sets on large graphs, and exploring signal patterns in
 spatial transcriptomics.
 
 
-### Installation in R (>=4.4)
+### Installation in R (>=4.5)
 
 ##### Dependencies to build the vignettes
 
