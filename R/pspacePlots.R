@@ -56,6 +56,8 @@
 #' # # Check graph validity
 #' gs <- GraphSpace(gtoy1)
 #' 
+#' gs <- normalizeGraphSpace(gs)
+#' 
 #' # Create a PathwaySpace object
 #' ps <- buildPathwaySpace(gs, nrc = 300)
 #' # note: adjust 'nrc' to increase image resolution
@@ -64,8 +66,8 @@
 #' vertexSignal(ps) <- 1
 #'
 #' # Create a 2D-landscape image
-#' ps <- circularProjection(ps, k = 2, 
-#'          decay.fun = weibullDecay(pdist = 0.4))
+#' ps <- circularProjection(ps, k = 2,
+#'    decay.fun = weibullDecay(pdist = 0.4))
 #'
 #' # Plot a 2D-landscape image
 #' plotPathwaySpace(ps)
@@ -82,7 +84,7 @@
 #' @importFrom grDevices convertColor col2rgb rgb as.raster
 #' @importFrom grDevices adjustcolor colorRampPalette
 #' @importFrom stats runif
-#' @importFrom RGraphSpace plotGraphSpace theme_gspace_axes
+#' @importFrom RGraphSpace plotGraphSpace theme_gspace_coords
 #' @rdname plotPathwaySpace-methods
 #' @aliases plotPathwaySpace
 #' @export
@@ -167,7 +169,11 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     if (all(zlim == 0)) zlim[2] <- 1
     
     #--- set gspace theme
-    gs_theme <- theme_gspace_axes(theme, font.size, "grey95", xlab, ylab)
+    gs_theme <- theme_gspace_coords(theme = theme, 
+      is_norm = TRUE, xlab = xlab, ylab = ylab, 
+      txt_size = font.size, leg_size = font.size, 
+      bg_color = "grey95")
+    
     gs_pars <- attributes(gs_theme)$gspace_pars
     
     #--- trim colors and set zlim args
@@ -205,10 +211,14 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     #--- initialize ggplot
     ggp <- .set_pspace(gxyz, zlab, cl, si.color)
     
-    #--- apply custom theme
-    ggp <- ggp + gs_theme + 
-      ggplot2::theme(legend.position = gs_pars$leg.position)
-    
+    #--- adjust gs_theme
+    ggp <- ggp + gs_theme
+    if(theme == "th2"){
+      ggp <- ggp + ggplot2::theme(panel.grid = element_blank())
+    } else if(theme == "th3"){
+      ggp <- ggp + ggplot2::theme(panel.grid = element_blank(),
+        legend.position = "bottom")
+    }
     #--- add image
     if(pars$image.layer){
       img <- getPathwaySpace(ps, "image")
@@ -392,8 +402,10 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     } else {
       nudgex <- sign(xy.tx$X - 0.5) * xy.tx$X
       nudgey <- sign(xy.tx$Y - 0.5) * xy.tx$Y
-      ggp <- ggp + ggrepel::geom_text_repel(mapping = aes(label = rownames(xy.tx),
-        segment.size = 0.4), data = xy.tx, min.segment.length = 0.1,
+      ggp <- ggp + ggrepel::geom_text_repel(
+        mapping = aes(label = rownames(xy.tx),segment.size = 0.4), 
+        xlim = c(0.1, 0.9), ylim = c(0.1, 0.9),
+        data = xy.tx, min.segment.length = 0.1,
         fontface = "bold", force = 3, segment.linetype = 1,
         max.overlaps = nrow(xy.tx) + 5, point.padding = 0, seed = 123,
         max.iter = 20000, max.time = 30, nudge_x = nudgex * 0.075,
@@ -436,14 +448,22 @@ setMethod("plotPathwaySpace", "PathwaySpace",
       colour = mark.color, size = mark.size * 0.4, stroke = 0.4, 
       x = gxy_df$X, y = gxy_df$Y)
   }
-  nudgex <- sign(gxy_df$X - 0.5) * gxy_df$X
-  nudgey <- sign(gxy_df$Y - 0.5) * gxy_df$Y
-  ggp <- ggp + ggrepel::geom_text_repel(mapping = aes(label = ID,
-    segment.size = mark.line.width), data = gxy_df, min.segment.length = 0.1,
+  
+  nudgex <- sign(gxy_df$X - 0.5) * gxy_df$X * 0.1
+  nudgey <- sign(gxy_df$Y - 0.5) * gxy_df$Y * 0.1
+  nudgex <- pmax(nudgex,-0.1)
+  nudgey <- pmax(nudgey,-0.1)
+  nudgex <- pmin(nudgex, 0.1)
+  nudgey <- pmin(nudgey, 0.1)
+  
+  ggp <- ggp + ggrepel::geom_text_repel(
+    mapping = aes(label = ID,segment.size = mark.line.width), 
+    xlim = c(0.1, 0.9), ylim = c(0.1, 0.9),
+    data = gxy_df, min.segment.length = 0.1,
     fontface = "bold", force = 3, segment.linetype = "2121", 
     max.overlaps = nrow(gxy_df) + 5, point.padding = 0, seed = 123, 
-    max.iter = 20000, max.time = 30, nudge_x = nudgex * 0.15, 
-    nudge_y = nudgey * 0.15, size = mark.size, colour = mark.color, 
+    max.iter = 20000, max.time = 30, nudge_x = nudgex, 
+    nudge_y = nudgey, size = mark.size, colour = mark.color, 
     segment.colour = mark.color, box.padding = mark.padding)
   
   return(ggp)

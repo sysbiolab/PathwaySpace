@@ -67,24 +67,26 @@ V(gtoy1)$name <- paste0("n", 1:5)
 
 # Checking graph validity
 
-Next, we will create a *GraphSpace-class* object using the `GraphSpace()` constructor. This function will check the validity of the *igraph* object. For this example `mar = 0.2`, which sets the outer margins of the graph.
+Next, we will create a *GraphSpace-class* object using the `GraphSpace()` constructor, followed by a call to `normalizeGraphSpace()`. The constructor ensures the validity of the input *igraph* object, while `normalizeGraphSpace()` scales the network coordinates. In this example, we set `mar = 0.2` to define the graph's outer margins.
 
 ```{r GraphSpace constructor - 1, eval=TRUE, message=FALSE}
 # Check graph validity
-g_space1 <- GraphSpace(gtoy1, mar = 0.2)
+gs1 <- GraphSpace(gtoy1)
+# Normalize node coordinates 
+gs1 <- normalizeGraphSpace(gs1)
 ```
 
 Our graph is now ready for the *PathwaySpace* package. We can check its layout using the `plotGraphSpace()` function. 
 
 ```{r GraphSpace constructor - 2, eval=FALSE, message=FALSE, out.width="100%"}
 # Check the graph layout
-plotGraphSpace(g_space1, add.labels = TRUE)
+plotGraphSpace(gs1, add.labels = TRUE)
 ```
 
 ```{r fig2.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-# gg <- plotGraphSpace(g_space1, add.labels = TRUE)
-# ggsave(filename = "./figures/fig2.png", height=4, width=5,
-#   units="in", device="png", dpi=250, plot=gg)
+gg <- plotGraphSpace(gs1, add.labels = TRUE)
+ggsave(filename = "./figures/fig2.png", height=4, width=5,
+  units="in", device="png", dpi=250, plot=gg)
 ```
 
 ```{r fig2, echo=FALSE, out.width = '70%', purl=FALSE}
@@ -98,7 +100,7 @@ Next, we will create a *PathwaySpace-class* object using the `buildPathwaySpace(
 
 ```{r PathwaySpace constructor - 1, eval=TRUE, message=FALSE}
 # Run the PathwaySpace constructor
-p_space1 <- buildPathwaySpace(g_space1)
+p_space1 <- buildPathwaySpace(gs1)
 ```
 
 As a default behavior, the `buildPathwaySpace()` constructor initializes the signal of each vertex as `0`. We can use the `vertexSignal()` accessor to get and set vertex signals in a *PathwaySpace* object; for example, in order to get vertex names and signal values:
@@ -152,9 +154,9 @@ plotPathwaySpace(p_space1, add.marks = TRUE)
 ```
 
 ```{r fig3.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-# gg <- plotPathwaySpace(p_space1, add.marks = TRUE)
-# ggsave(filename = "./figures/fig3.png", height=3.5, width=5,
-#   units="in", device="png", dpi=350, plot=gg)
+gg <- plotPathwaySpace(p_space1, add.marks = TRUE)
+ggsave(filename = "./figures/fig3.png", height=3.5, width=5,
+  units="in", device="png", dpi=350, plot=gg)
 ```
 
 ```{r fig3, echo=FALSE, out.width = '75%', purl=FALSE}
@@ -173,9 +175,9 @@ plotPathwaySpace(p_space1, marks = "n1", theme = "th2")
 ```
 
 ```{r fig4.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-# gg <- plotPathwaySpace(p_space1, marks = "n1", theme = "th2")
-# ggsave(filename = "./figures/fig4.png", height=3.5, width=5,
-#   units="in", device="png", dpi=350, plot=gg)
+gg <- plotPathwaySpace(p_space1, marks = "n1", theme = "th2")
+ggsave(filename = "./figures/fig4.png", height=3.5, width=5,
+  units="in", device="png", dpi=350, plot=gg)
 ```
 
 ```{r fig4, echo=FALSE, out.width = '75%', purl=FALSE}
@@ -192,18 +194,19 @@ In this section we will project network signals using a polar coordinate system.
 # Load a pre-processed directed igraph object
 data("gtoy2", package = "RGraphSpace")
 # Check graph validity
-g_space2 <- GraphSpace(gtoy2, mar = 0.2)
+gs2 <- GraphSpace(gtoy2)
+gs2 <- normalizeGraphSpace(gs2, mar = 0.2)
 ```
 
 ```{r Polar projection - 2, eval=FALSE, message=FALSE, out.width="100%"}
 # Check the graph layout
-plotGraphSpace(g_space2, add.labels = TRUE)
+plotGraphSpace(gs2, add.labels = TRUE)
 ```
 
 ```{r fig5.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-# gg <- plotGraphSpace(g_space2, add.labels = TRUE)
-# ggsave(filename = "./figures/fig5.png", height=4, width=5,
-#   units="in", device="png", dpi=250, plot=gg)
+gg <- plotGraphSpace(gs2, add.labels = TRUE)
+ggsave(filename = "./figures/fig5.png", height=4, width=5,
+  units="in", device="png", dpi=250, plot=gg)
 ```
 
 ```{r fig5, echo=FALSE, out.width = '75%', purl=FALSE}
@@ -211,8 +214,8 @@ knitr::include_graphics("figures/fig5.png")
 ```
 
 ```{r Polar projection - 3, eval=TRUE, message=FALSE}
-# Build a PathwaySpace for the 'g_space2'
-p_space2 <- buildPathwaySpace(g_space2)
+# Build a PathwaySpace for the 'gs2'
+p_space2 <- buildPathwaySpace(gs2)
 
 # Set '1s' as vertex signal
 vertexSignal(p_space2) <- 1
@@ -239,9 +242,9 @@ plotPathwaySpace(p_space2, theme = "th2", add.marks = TRUE)
 ```
 
 ```{r fig6.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-# gg <- plotPathwaySpace(p_space2, theme = "th2", add.marks = TRUE)
-# ggsave(filename = "./figures/fig6.png", height=3.5, width=5,
-#   units="in", device="png", dpi=350, plot=gg)
+gg <- plotPathwaySpace(p_space2, theme = "th2", add.marks = TRUE)
+ggsave(filename = "./figures/fig6.png", height=3.5, width=5,
+  units="in", device="png", dpi=350, plot=gg)
 ```
 
 ```{r fig6, echo=FALSE, out.width = '75%', purl=FALSE}
@@ -252,16 +255,18 @@ Note that this projection distributes signals on the edges regardless of directi
 
 ```{r Polar projection - 6, eval=FALSE, message=FALSE, out.width="70%"}
 # Re-run signal projection using 'directional = TRUE'
-p_space2 <- polarProjection(p_space2, beta = 10, directional = TRUE)
+p_space2 <- polarProjection(p_space2, 
+  beta = 10, directional = TRUE)
 
 # Plot PathwaySpace
-plotPathwaySpace(p_space2, theme = "th2", marks = c("n1","n3","n4","n5"))
+plotPathwaySpace(p_space2, theme = "th2", 
+  marks = c("n1","n3","n4","n5"))
 ```
 
 ```{r fig7.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-# gg <- plotPathwaySpace(p_space2, theme = "th2", marks = c("n1","n3","n4","n5"))
-# ggsave(filename = "./figures/fig7.png", height=3.5, width=5,
-#   units="in", device="png", dpi=350, plot=gg)
+gg <- plotPathwaySpace(p_space2, theme = "th2", marks = c("n1","n3","n4","n5"))
+ggsave(filename = "./figures/fig7.png", height=3.5, width=5,
+  units="in", device="png", dpi=350, plot=gg)
 ```
 
 ```{r fig7, echo=FALSE, out.width = '75%', purl=FALSE}
@@ -284,17 +289,19 @@ vertexSignal(p_space1)
 #  6  4 -2 -4  3 
 
 # Re-run signal projection
-p_space1 <- circularProjection(p_space1, decay.fun = weibullDecay(shape = 2))
+p_space1 <- circularProjection(p_space1, 
+  decay.fun = weibullDecay(shape = 2))
 
 # Plot PathwaySpace
-plotPathwaySpace(p_space1, bg.color = "white", font.color = "grey20", add.marks = TRUE, mark.color = "magenta", theme = "th2")
+plotPathwaySpace(p_space1, bg.color = "white", 
+  font.color = "grey20", add.marks = TRUE, 
+  mark.color = "magenta", theme = "th3")
 ```
 
 ```{r fig8.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-# gg <- plotPathwaySpace(p_space1, bg.color = "white", font.color = "grey20",
-#   add.marks = TRUE, mark.color = "magenta", theme = "th2")
-# ggsave(filename = "./figures/fig8.png", height=3.5, width=5,
-#   units="in", device="png", dpi=350, plot=gg)
+gg <- plotPathwaySpace(p_space1, bg.color = "white", font.color = "grey20", add.marks = TRUE, mark.color = "magenta", theme = "th3")
+ggsave(filename = "./figures/fig8.png", height=3.5, width=5,
+  units="in", device="png", dpi=350, plot=gg)
 ```
 
 ```{r fig8, echo=FALSE, out.width = '75%', purl=FALSE}

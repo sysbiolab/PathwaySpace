@@ -33,7 +33,9 @@ PathwaySpace-class objects.
 data('gtoy1', package = 'RGraphSpace')
 
 # Check graph validity
-gs <- GraphSpace(gtoy1, mar = 0.1)
+gs <- GraphSpace(gtoy1)
+
+gs <- normalizeGraphSpace(gs)
 
 # Create a new PathwaySpace object
 ps <- buildPathwaySpace(gs, nrc = 100)

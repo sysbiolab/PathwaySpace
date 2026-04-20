@@ -22,7 +22,9 @@
 #' data('gtoy1', package = 'RGraphSpace')
 #' 
 #' # Check graph validity
-#' gs <- GraphSpace(gtoy1, mar = 0.1)
+#' gs <- GraphSpace(gtoy1)
+#' 
+#' gs <- normalizeGraphSpace(gs)
 #' 
 #' # Create a new PathwaySpace object
 #' ps <- buildPathwaySpace(gs, nrc = 100)
@@ -33,7 +35,7 @@
 #' @importFrom igraph simplify V E 'V<-' 'E<-' is_directed
 #' @importFrom stats quantile sd
 #' @importFrom scales rescale
-#' @importFrom RGraphSpace GraphSpace getGraphSpace
+#' @importFrom RGraphSpace GraphSpace getGraphSpace normalizeGraphSpace
 #' @importFrom RANN nn2
 #' @aliases buildPathwaySpace
 #' @export
@@ -57,9 +59,13 @@ buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE,
   if(is_igraph(gs)){
     if(verbose) message("Validating the 'igraph' object...")
     gs <- GraphSpace(gs, verbose=FALSE)
+    gs <- normalizeGraphSpace(gs)
   }
   .validate.gspace(gs)
-  
+  if(!gs@pars$is.normalized){
+    gs <- normalizeGraphSpace(gs)
+  }
+    
   #--- build PathwaySpace-class
   ps <- .buildPathwaySpace(gs, nrc, verbose)
   ps <- .updateStatus(ps, "Preprocess")
@@ -729,13 +735,6 @@ setReplaceMethod(
   } else {
     wt[] <- 1
   }
-  # if(!.all_binaryValues(abs(wt))){
-  #   warning("Invalid edge weight: expected integer values in {-1, 0, 1}.",
-  #     call. = FALSE)
-  #   wt[] <- 1
-  # } else {
-  #   wt[is.na(wt)] <- 1
-  # }
   return(wt)
 }
 
