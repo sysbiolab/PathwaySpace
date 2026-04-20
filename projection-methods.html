@@ -11,18 +11,18 @@
 
 <meta name="author" content="Sysbiolab Team" />
 
-<meta name="date" content="2026-03-11" />
+<meta name="date" content="2026-04-19" />
 
 <title>Network signal projections</title>
 
-<script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
-<script src="site_libs/bs3compat-0.9.0/transition.js"></script>
-<script src="site_libs/bs3compat-0.9.0/tabs.js"></script>
-<script src="site_libs/bs3compat-0.9.0/bs3compat.js"></script>
+<script src="site_libs/bs3compat-0.10.0/transition.js"></script>
+<script src="site_libs/bs3compat-0.10.0/tabs.js"></script>
+<script src="site_libs/bs3compat-0.10.0/bs3compat.js"></script>
 <script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
@@ -374,12 +374,12 @@ div.tocify {
 <h3 class="subtitle">A guided tutorial on <em>PathwaySpace</em>
 projection methods</h3>
 <h4 class="author">Sysbiolab Team</h4>
-<h4 class="date">2026-03-11</h4>
+<h4 class="date">2026-04-19</h4>
 
 </div>
 
 
-<p><strong>Package</strong>: PathwaySpace 1.1.2 <br/></p>
+<p><strong>Package</strong>: PathwaySpace 1.1.3 <br/></p>
 <div id="overview" class="section level1">
 <h1>Overview</h1>
 <p>This tutorial introduces the core <em>PathwaySpace</em> methods using
@@ -401,11 +401,11 @@ if (!require(&quot;PathwaySpace&quot;, quietly = TRUE)){
   remotes::install_github(&quot;sysbiolab/PathwaySpace&quot;)
 }</code></pre>
 <pre class="r"><code># Check versions
-if (packageVersion(&quot;RGraphSpace&quot;) &lt; &quot;1.1.2&quot;){
+if (packageVersion(&quot;RGraphSpace&quot;) &lt; &quot;1.1.3&quot;){
   message(&quot;Need to update &#39;RGraphSpace&#39; for this vignette&quot;)
   remotes::install_github(&quot;sysbiolab/RGraphSpace&quot;)
 }
-if (packageVersion(&quot;PathwaySpace&quot;) &lt; &quot;1.1.2&quot;){
+if (packageVersion(&quot;PathwaySpace&quot;) &lt; &quot;1.1.3&quot;){
   message(&quot;Need to update &#39;PathwaySpace&#39; for this vignette&quot;)
   remotes::install_github(&quot;sysbiolab/PathwaySpace&quot;)
 }</code></pre>
@@ -439,16 +439,20 @@ V(gtoy1)$name &lt;- paste0(&quot;n&quot;, 1:5)</code></pre>
 <div id="checking-graph-validity" class="section level2">
 <h2>Checking graph validity</h2>
 <p>Next, we will create a <em>GraphSpace-class</em> object using the
-<code>GraphSpace()</code> constructor. This function will check the
-validity of the <em>igraph</em> object. For this example
-<code>mar = 0.2</code>, which sets the outer margins of the graph.</p>
+<code>GraphSpace()</code> constructor, followed by a call to
+<code>normalizeGraphSpace()</code>. The constructor ensures the validity
+of the input <em>igraph</em> object, while
+<code>normalizeGraphSpace()</code> scales the network coordinates. In
+this example, we set <code>mar = 0.2</code> to define the graph’s outer
+margins.</p>
 <pre class="r"><code># Check graph validity
-g_space1 &lt;- GraphSpace(gtoy1, mar = 0.2)</code></pre>
+gs1 &lt;- GraphSpace(gtoy1)
+gs1 &lt;- normalizeGraphSpace(gs1, mar = 0.2)</code></pre>
 <p>Our graph is now ready for the <em>PathwaySpace</em> package. We can
 check its layout using the <code>plotGraphSpace()</code> function.</p>
 <pre class="r"><code># Check the graph layout
-plotGraphSpace(g_space1, add.labels = TRUE)</code></pre>
-<p><img src="figs_intro/fig2.png" width="100%" /></p>
+plotGraphSpace(gs1, add.labels = TRUE)</code></pre>
+<p><img src="figs_intro/fig2.png" alt="" width="100%" /></p>
 </div>
 <div id="creating-a-pathwayspace-object" class="section level2">
 <h2>Creating a <em>PathwaySpace</em> object</h2>
@@ -457,7 +461,7 @@ plotGraphSpace(g_space1, add.labels = TRUE)</code></pre>
 pairwise distances between vertices, subsequently required by the signal
 projection methods.</p>
 <pre class="r"><code># Run the PathwaySpace constructor
-p_space1 &lt;- buildPathwaySpace(g_space1)</code></pre>
+p_space1 &lt;- buildPathwaySpace(gs1)</code></pre>
 <p>As a default behavior, the <code>buildPathwaySpace()</code>
 constructor initializes the signal of each vertex as <code>0</code>. We
 can use the <code>vertexSignal()</code> accessor to get and set vertex
@@ -512,7 +516,7 @@ p_space1 &lt;- circularProjection(p_space1, k = 1,
 
 # Plot a PathwaySpace image
 plotPathwaySpace(p_space1, add.marks = TRUE)</code></pre>
-<p><img src="figs_intro/fig3.png" width="100%" /></p>
+<p><img src="figs_intro/fig3.png" alt="" width="100%" /></p>
 <p>Next, we reassess the same <em>PathwaySpace</em> object, using
 <code>pdist = 0.2</code>, <code>k = 2</code> and adjusting the
 <code>shape</code> of the decay function (for further details, see the
@@ -524,7 +528,7 @@ p_space1 &lt;- circularProjection(p_space1, k = 2,
 
 # Plot PathwaySpace
 plotPathwaySpace(p_space1, marks = &quot;n1&quot;, theme = &quot;th2&quot;)</code></pre>
-<p><img src="figs_intro/fig4.png" width="100%" /></p>
+<p><img src="figs_intro/fig4.png" alt="" width="100%" /></p>
 <p>The <code>shape</code> parameter allows a projection to take a
 variety of shapes. When <code>shape = 1</code> the projection follows an
 exponential decay, and when <code>shape &gt; 1</code> the projection is
@@ -544,12 +548,14 @@ directed graph, available in the <em>RGraphSpace</em> package.</p>
 <pre class="r"><code># Load a pre-processed directed igraph object
 data(&quot;gtoy2&quot;, package = &quot;RGraphSpace&quot;)
 # Check graph validity
-g_space2 &lt;- GraphSpace(gtoy2, mar = 0.2)</code></pre>
+gs2 &lt;- GraphSpace(gtoy2)
+# Normalize node coordinates
+gs2 &lt;- normalizeGraphSpace(gs2, mar = 0.2)</code></pre>
 <pre class="r"><code># Check the graph layout
-plotGraphSpace(g_space2, add.labels = TRUE)</code></pre>
-<p><img src="figs_intro/fig5.png" width="100%" /></p>
-<pre class="r"><code># Build a PathwaySpace for the &#39;g_space2&#39;
-p_space2 &lt;- buildPathwaySpace(g_space2)
+plotGraphSpace(gs2, add.labels = TRUE)</code></pre>
+<p><img src="figs_intro/fig5.png" alt="" width="100%" /></p>
+<pre class="r"><code># Build a PathwaySpace for the &#39;gs2&#39;
+p_space2 &lt;- buildPathwaySpace(gs2)
 
 # Set &#39;1s&#39; as vertex signal
 vertexSignal(p_space2) &lt;- 1</code></pre>
@@ -574,17 +580,19 @@ p_space2 &lt;- polarProjection(p_space2, beta = 10)
 
 # Plot PathwaySpace
 plotPathwaySpace(p_space2, theme = &quot;th2&quot;, add.marks = TRUE)</code></pre>
-<p><img src="figs_intro/fig6.png" width="100%" /></p>
+<p><img src="figs_intro/fig6.png" alt="" width="100%" /></p>
 <p>Note that this projection distributes signals on the edges regardless
 of direction. To incorporate edge orientation, we set
 <code>directional = TRUE</code>, which channels the projection along the
 paths:</p>
 <pre class="r"><code># Re-run signal projection using &#39;directional = TRUE&#39;
-p_space2 &lt;- polarProjection(p_space2, beta = 10, directional = TRUE)
+p_space2 &lt;- polarProjection(p_space2, 
+  beta = 10, directional = TRUE)
 
 # Plot PathwaySpace
-plotPathwaySpace(p_space2, theme = &quot;th2&quot;, marks = c(&quot;n1&quot;,&quot;n3&quot;,&quot;n4&quot;,&quot;n5&quot;))</code></pre>
-<p><img src="figs_intro/fig7.png" width="100%" /></p>
+plotPathwaySpace(p_space2, theme = &quot;th2&quot;, 
+  marks = c(&quot;n1&quot;,&quot;n3&quot;,&quot;n4&quot;,&quot;n5&quot;))</code></pre>
+<p><img src="figs_intro/fig7.png" alt="" width="100%" /></p>
 <p>This <em>PathwaySpace</em> polar projection emphasizes the signal
 flow along the directional pattern of a directed graph (see the
 <em>igraph</em> plot above). When interpreting, users should note that
@@ -611,11 +619,14 @@ vertexSignal(p_space1)
 #  6  4 -2 -4  3 
 
 # Re-run signal projection
-p_space1 &lt;- circularProjection(p_space1, decay.fun = weibullDecay(shape = 2))
+p_space1 &lt;- circularProjection(p_space1, 
+  decay.fun = weibullDecay(shape = 2))
 
 # Plot PathwaySpace
-plotPathwaySpace(p_space1, bg.color = &quot;white&quot;, font.color = &quot;grey20&quot;, add.marks = TRUE, mark.color = &quot;magenta&quot;, theme = &quot;th2&quot;)</code></pre>
-<p><img src="figs_intro/fig8.png" width="100%" /></p>
+plotPathwaySpace(p_space1, bg.color = &quot;white&quot;, 
+  font.color = &quot;grey20&quot;, add.marks = TRUE,
+  mark.color = &quot;magenta&quot;, theme = &quot;th3&quot;)</code></pre>
+<p><img src="figs_intro/fig8.png" alt="" width="100%" /></p>
 <p>Note that the original signal vector was rescale to
 <code>[-1, +1]</code>. If the signal vector is <code>&gt;=0</code>, then
 it will be rescaled to <code>[0, 1]</code>; if the signal vector is
@@ -642,7 +653,7 @@ class="uri">https://doi.org/10.1016/j.ccell.2024.12.002</a></p></li>
 </div>
 <div id="session-information" class="section level1">
 <h1>Session information</h1>
-<pre><code>## R version 4.5.2 (2025-10-31)
+<pre><code>## R version 4.5.3 (2026-03-11)
 ## Platform: x86_64-pc-linux-gnu
 ## Running under: Ubuntu 24.04.4 LTS
 ## 
@@ -665,51 +676,51 @@ class="uri">https://doi.org/10.1016/j.ccell.2024.12.002</a></p></li>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] patchwork_1.3.2    igraph_2.2.0       SpotSpace_0.0.6    PathwaySpace_1.1.2
-## [5] RGraphSpace_1.1.2  ggplot2_4.0.0.9000 remotes_2.5.0      bs4cards_0.1.1    
+## [1] patchwork_1.3.2    igraph_2.2.3       SpotSpace_0.0.7    PathwaySpace_1.1.3
+## [5] RGraphSpace_1.1.3  ggplot2_4.0.2.9000 remotes_2.5.0      bs4cards_0.1.1    
 ## 
 ## loaded via a namespace (and not attached):
 ##   [1] RColorBrewer_1.1-3     rstudioapi_0.17.1      jsonlite_2.0.0        
-##   [4] shape_1.4.6.1          magrittr_2.0.4         spatstat.utils_3.2-0  
-##   [7] ggbeeswarm_0.7.2       farver_2.1.2           rmarkdown_2.30        
-##  [10] GlobalOptions_0.1.2    fs_1.6.6               vctrs_0.6.5           
-##  [13] ROCR_1.0-11            spatstat.explore_3.5-3 htmltools_0.5.8.1     
-##  [16] sass_0.4.10            sctransform_0.4.2      parallelly_1.45.1     
-##  [19] KernSmooth_2.23-26     bslib_0.9.0            htmlwidgets_1.6.4     
-##  [22] ica_1.0-3              fontawesome_0.5.3      plyr_1.8.9            
-##  [25] plotly_4.11.0          zoo_1.8-14             cachem_1.1.0          
-##  [28] mime_0.13              lifecycle_1.0.4        pkgconfig_2.0.3       
-##  [31] Matrix_1.7-4           R6_2.6.1               fastmap_1.2.0         
-##  [34] fitdistrplus_1.2-4     future_1.67.0          shiny_1.11.1          
-##  [37] digest_0.6.37          colorspace_2.1-1       Seurat_5.4.0.9009     
-##  [40] tensor_1.5.1           RSpectra_0.16-2        irlba_2.3.5.1         
-##  [43] progressr_0.17.0       spatstat.sparse_3.1-0  httr_1.4.7            
-##  [46] polyclip_1.10-7        abind_1.4-8            compiler_4.5.2        
-##  [49] withr_3.0.2            S7_0.2.0               fastDummies_1.7.5     
-##  [52] MASS_7.3-65            tools_4.5.2            vipor_0.4.7           
-##  [55] lmtest_0.9-40          beeswarm_0.4.0         httpuv_1.6.16         
-##  [58] future.apply_1.20.0    goftest_1.2-3          glue_1.8.0            
-##  [61] nlme_3.1-168           promises_1.3.3         grid_4.5.2            
-##  [64] Rtsne_0.17             cluster_2.1.8.2        reshape2_1.4.4        
-##  [67] generics_0.1.4         gtable_0.3.6           spatstat.data_3.1-8   
-##  [70] tidyr_1.3.1            data.table_1.17.8      sp_2.2-0              
-##  [73] spatstat.geom_3.6-0    RcppAnnoy_0.0.22       ggrepel_0.9.6         
-##  [76] RANN_2.6.2             pillar_1.11.1          stringr_1.5.2         
-##  [79] spam_2.11-1            RcppHNSW_0.6.0         later_1.4.4           
-##  [82] circlize_0.4.16        splines_4.5.2          dplyr_1.1.4           
-##  [85] lattice_0.22-9         survival_3.8-6         deldir_2.0-4          
-##  [88] tidyselect_1.2.1       miniUI_0.1.2           pbapply_1.7-4         
-##  [91] knitr_1.50             gridExtra_2.3          scattermore_1.2       
-##  [94] xfun_0.54              matrixStats_1.5.0      stringi_1.8.7         
-##  [97] lazyeval_0.2.2         yaml_2.3.10            evaluate_1.0.5        
-## [100] codetools_0.2-20       tibble_3.3.0           cli_3.6.5             
-## [103] uwot_0.2.3             xtable_1.8-4           reticulate_1.44.1     
-## [106] jquerylib_0.1.4        dichromat_2.0-0.1      Rcpp_1.1.0            
-## [109] globals_0.18.0         spatstat.random_3.4-2  png_0.1-8             
-## [112] ggrastr_1.0.2          spatstat.univar_3.1-4  parallel_4.5.2        
-## [115] dotCall64_1.2          listenv_0.9.1          viridisLite_0.4.2     
-## [118] scales_1.4.0           ggridges_0.5.7         SeuratObject_5.3.0    
-## [121] purrr_1.1.0            rlang_1.1.6            cowplot_1.2.0</code></pre>
+##   [4] magrittr_2.0.5         spatstat.utils_3.2-2   ggbeeswarm_0.7.2      
+##   [7] farver_2.1.2           rmarkdown_2.31         fs_2.0.1              
+##  [10] vctrs_0.7.3            ROCR_1.0-12            spatstat.explore_3.8-0
+##  [13] htmltools_0.5.9        sass_0.4.10            sctransform_0.4.3     
+##  [16] parallelly_1.46.1      KernSmooth_2.23-26     bslib_0.10.0          
+##  [19] htmlwidgets_1.6.4      ica_1.0-3              fontawesome_0.5.3     
+##  [22] plyr_1.8.9             plotly_4.12.0          zoo_1.8-15            
+##  [25] cachem_1.1.0           mime_0.13              lifecycle_1.0.5       
+##  [28] pkgconfig_2.0.3        Matrix_1.7-5           R6_2.6.1              
+##  [31] fastmap_1.2.0          fitdistrplus_1.2-6     future_1.70.0         
+##  [34] shiny_1.13.0           digest_0.6.39          colorspace_2.1-1      
+##  [37] Seurat_5.4.0.9019      tensor_1.5.1           RSpectra_0.16-2       
+##  [40] irlba_2.3.7            progressr_0.19.0       spatstat.sparse_3.1-0 
+##  [43] httr_1.4.8             polyclip_1.10-7        abind_1.4-8           
+##  [46] compiler_4.5.3         withr_3.0.2            S7_0.2.1              
+##  [49] fastDummies_1.7.5      MASS_7.3-65            tools_4.5.3           
+##  [52] vipor_0.4.7            lmtest_0.9-40          otel_0.2.0            
+##  [55] beeswarm_0.4.0         httpuv_1.6.17          future.apply_1.20.2   
+##  [58] goftest_1.2-3          glue_1.8.0             nlme_3.1-169          
+##  [61] promises_1.5.0         grid_4.5.3             Rtsne_0.17            
+##  [64] cluster_2.1.8.2        reshape2_1.4.5         generics_0.1.4        
+##  [67] gtable_0.3.6           spatstat.data_3.1-9    tidyr_1.3.2           
+##  [70] data.table_1.18.2.1    sp_2.2-1               spatstat.geom_3.7-3   
+##  [73] RcppAnnoy_0.0.23       ggrepel_0.9.8          RANN_2.6.2            
+##  [76] pillar_1.11.1          stringr_1.6.0          spam_2.11-3           
+##  [79] RcppHNSW_0.6.0         later_1.4.8            splines_4.5.3         
+##  [82] dplyr_1.2.1            lattice_0.22-9         survival_3.8-6        
+##  [85] deldir_2.0-4           tidyselect_1.2.1       miniUI_0.1.2          
+##  [88] pbapply_1.7-4          knitr_1.51             gridExtra_2.3         
+##  [91] scattermore_1.2        xfun_0.57              matrixStats_1.5.0     
+##  [94] stringi_1.8.7          lazyeval_0.2.3         yaml_2.3.12           
+##  [97] evaluate_1.0.5         codetools_0.2-20       tibble_3.3.1          
+## [100] cli_3.6.6              uwot_0.2.4             xtable_1.8-8          
+## [103] reticulate_1.46.0      jquerylib_0.1.4        dichromat_2.0-0.1     
+## [106] Rcpp_1.1.1             globals_0.19.1         spatstat.random_3.4-5 
+## [109] png_0.1-9              ggrastr_1.0.2          spatstat.univar_3.1-7 
+## [112] parallel_4.5.3         dotCall64_1.2          listenv_0.10.1        
+## [115] viridisLite_0.4.3      scales_1.4.0           ggridges_0.5.7        
+## [118] SeuratObject_5.4.0     purrr_1.2.2            rlang_1.2.0           
+## [121] cowplot_1.2.0</code></pre>
 </div>
 
 

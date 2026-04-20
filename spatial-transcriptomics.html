@@ -11,18 +11,18 @@
 
 <meta name="author" content="Sysbiolab Team" />
 
-<meta name="date" content="2026-03-11" />
+<meta name="date" content="2026-04-19" />
 
 <title>Visualizing spatial transcriptomics</title>
 
-<script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
-<script src="site_libs/bs3compat-0.9.0/transition.js"></script>
-<script src="site_libs/bs3compat-0.9.0/tabs.js"></script>
-<script src="site_libs/bs3compat-0.9.0/bs3compat.js"></script>
+<script src="site_libs/bs3compat-0.10.0/transition.js"></script>
+<script src="site_libs/bs3compat-0.10.0/tabs.js"></script>
+<script src="site_libs/bs3compat-0.10.0/bs3compat.js"></script>
 <script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
@@ -397,12 +397,12 @@ div.tocify {
 <h3 class="subtitle">Gene expression projections on spot
 coordinates</h3>
 <h4 class="author">Sysbiolab Team</h4>
-<h4 class="date">2026-03-11</h4>
+<h4 class="date">2026-04-19</h4>
 
 </div>
 
 
-<p><strong>Package</strong>: PathwaySpace 1.1.2 <br/></p>
+<p><strong>Package</strong>: PathwaySpace 1.1.3 <br/></p>
 <div id="overview" class="section level1">
 <h1>Overview</h1>
 <p>This vignette introduces the <em>SpotSpace</em> package, a
@@ -431,7 +431,7 @@ continuing.</p>
 <p><strong>Computational requirement:</strong></p>
 <ul>
 <li><p>Hardware: RAM &gt;= 16 GB</p></li>
-<li><p>Software: R (&gt;=4.4) and RStudio</p></li>
+<li><p>Software: R (&gt;=4.5) and RStudio</p></li>
 </ul>
 </div>
 <div id="required-packages" class="section level1">
@@ -453,15 +453,15 @@ if (!require(&quot;SeuratData&quot;, quietly = TRUE)){
   remotes::install_github(&quot;satijalab/seurat-data&quot;)
 }</code></pre>
 <pre class="r"><code># Check versions
-if (packageVersion(&quot;RGraphSpace&quot;) &lt; &quot;1.1.2&quot;){
+if (packageVersion(&quot;RGraphSpace&quot;) &lt; &quot;1.1.3&quot;){
   message(&quot;Need to update &#39;RGraphSpace&#39; for this vignette&quot;)
   remotes::install_github(&quot;sysbiolab/RGraphSpace&quot;)
 }
-if (packageVersion(&quot;PathwaySpace&quot;) &lt; &quot;1.1.2&quot;){
+if (packageVersion(&quot;PathwaySpace&quot;) &lt; &quot;1.1.3&quot;){
   message(&quot;Need to update &#39;PathwaySpace&#39; for this vignette&quot;)
   remotes::install_github(&quot;sysbiolab/PathwaySpace&quot;)
 }
-if (packageVersion(&quot;SpotSpace&quot;) &lt; &quot;0.0.6&quot;){
+if (packageVersion(&quot;SpotSpace&quot;) &lt; &quot;0.0.7&quot;){
   message(&quot;Need to update &#39;SpotSpace&#39; for this vignette&quot;)
   remotes::install_github(&quot;sysbiolab/SpotSpace&quot;)
 }
@@ -526,12 +526,13 @@ rm(seurat_obj)</code></pre>
 coordinates and plot the resulting graph overlaid on the tissue
 image.</p>
 <pre class="r"><code># Create a PathwaySpace object from &#39;spot_coord&#39;, mapped to the &#39;raster_image&#39;
-pspace_obj &lt;- buildSpotSpace(spot_coord = spot_coord, 
-  raster_image = raster_image, flip.y = FALSE)</code></pre>
+gspace_obj &lt;- buildSpotSpace(spot_coord = spot_coord, 
+  raster_image = raster_image)
+pspace_obj &lt;- buildPathwaySpace(gspace_obj)</code></pre>
 <pre class="r"><code># Check spots on the top of the &#39;raster_image&#39;
 xy_labs &lt;- labs(x=&quot;Spot coordinates 1&quot;, y=&quot;Spot coordinates 2&quot;)
 plotGraphSpace(pspace_obj, add.image = TRUE) + xy_labs</code></pre>
-<p><img src="figs_spot_space/fig1.png" width="100%" /></p>
+<p><img src="figs_spot_space/fig1.png" alt="" width="90%" /></p>
 <p><strong>Note on image alignment</strong>: Proper spatial alignment
 between spot coordinates and the background image requires consistent
 coordinate conventions. Spatial misalignment may occur when the input
@@ -567,7 +568,7 @@ is sliced to form the mask. Increasing the baseline (in
 pspace_obj &lt;- silhouetteMapping(pspace_obj, baseline = 0.1)
 plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;, 
   add.image = TRUE, si.alpha = 0.5) + xy_labs</code></pre>
-<p><img src="figs_spot_space/fig2.png" width="100%" /></p>
+<p><img src="figs_spot_space/fig2.png" alt="" width="90%" /></p>
 <p>Next, we specify the signal to be projected; for this demonstration,
 we will use expression data from the <strong>Camk2n1</strong> gene. The
 <code>vertexSignal()</code> accessor function is then used to assign the
@@ -602,7 +603,7 @@ p1$image &lt;- p1$image + xy_labs
 p1$graph &lt;- p1$graph + xy_labs
 
 p1$image + p1$graph</code></pre>
-<p><img src="figs_spot_space/fig3.png" width="100%" /></p>
+<p><img src="figs_spot_space/fig3.png" alt="" width="100%" /></p>
 <pre class="r"><code># Plot projections overlaid on the tissue image, with alpha = 0.25
 p2 &lt;- plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;, title = gene, 
   add.image = TRUE, si.alpha = 0.25) + xy_labs
@@ -612,7 +613,7 @@ p3 &lt;- plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;, title = gene,
   add.image = TRUE, si.alpha = 0.25, zlim = c(0.5, 1)) + xy_labs
 
 p2 + p3</code></pre>
-<p><img src="figs_spot_space/fig4.png" width="100%" /></p>
+<p><img src="figs_spot_space/fig4.png" alt="" width="100%" /></p>
 <p></br></p>
 </div>
 </div>
@@ -656,8 +657,9 @@ vst_gexp &lt;- GetAssayData(seurat_obj, layer=&quot;data&quot;)
 # If needed, remove seurat_obj to free memory
 rm(seurat_obj)</code></pre>
 <pre class="r"><code># Create a PathwaySpace object from &#39;spot_coord&#39;
-pspace_obj &lt;- buildSpotSpace(spot_coord = spot_coord, 
-  nrc=700, rotate.xy = TRUE, flip.y = TRUE)</code></pre>
+# Set &quot;rotate.xy = T&quot; to follow image orientation in Seurat&#39;s vignette
+gspace_obj &lt;- buildSpotSpace(spot_coord = spot_coord, rotate.xy = TRUE)
+pspace_obj &lt;- buildPathwaySpace(gspace_obj)</code></pre>
 </div>
 <div id="running-pathwayspace-1" class="section level2">
 <h2>Running <em>PathwaySpace</em></h2>
@@ -675,7 +677,7 @@ pspace_obj &lt;- silhouetteMapping(pspace_obj, fill.cavity = FALSE,
 xy_labs &lt;- labs(x=&quot;Spot coordinates 1&quot;, y=&quot;Spot coordinates 2&quot;)
 plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;, 
   si.alpha = 0.5) + xy_labs</code></pre>
-<p><img src="figs_spot_space/fig5.png" width="100%" /></p>
+<p><img src="figs_spot_space/fig5.png" alt="" width="90%" /></p>
 <pre class="r"><code># Choose a gene of interest (e.g., DDN) and assign its 
 # expression values to graph vertices
 gene &lt;- &quot;DDN&quot;
@@ -702,7 +704,7 @@ pspace_obj &lt;- circularProjection(pspace_obj, k = gs_vcount(pspace_obj),
 p2 &lt;- plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;, 
   title = gene, zlim = c(0, 1)) + xy_labs</code></pre>
 <pre class="r"><code>p1 + p2</code></pre>
-<p><img src="figs_spot_space/fig6.png" width="100%" /></p>
+<p><img src="figs_spot_space/fig6.png" alt="" width="100%" /></p>
 </div>
 </div>
 <div id="visium-hd-dataset" class="section level1">
@@ -759,8 +761,9 @@ norm_gexp &lt;- GetAssayData(seurat_obj, layer=&quot;data&quot;)
 # If needed, remove seurat_obj to free memory
 rm(seurat_obj)</code></pre>
 <pre class="r"><code># Create a PathwaySpace object from &#39;spot_coord&#39;, mapped to the &#39;raster_image&#39;
-pspace_obj &lt;- buildSpotSpace(spot_coord = spot_coord, 
-  raster_image = raster_image, nrc = 700)</code></pre>
+gspace_obj &lt;- buildSpotSpace(spot_coord = spot_coord, 
+  raster_image = raster_image)
+pspace_obj &lt;- buildPathwaySpace(gspace_obj, nrc = 700)</code></pre>
 </div>
 <div id="running-pathwayspace-2" class="section level2">
 <h2>Running <em>PathwaySpace</em></h2>
@@ -778,7 +781,7 @@ pspace_obj &lt;- silhouetteMapping(pspace_obj, fill.cavity = FALSE,
 xy_labs &lt;- labs(x=&quot;Spot coordinates 1&quot;, y=&quot;Spot coordinates 2&quot;)
 plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;, 
   add.image = TRUE, si.alpha = 0.5) + xy_labs</code></pre>
-<p><img src="figs_spot_space/fig7.png" width="100%" /></p>
+<p><img src="figs_spot_space/fig7.png" alt="" width="100%" /></p>
 <pre class="r"><code># Choose a gene of interest (e.g., Rorb) and assign its 
 # expression values to graph vertices
 gene &lt;- &quot;Rorb&quot;
@@ -803,7 +806,7 @@ pspace_obj &lt;- circularProjection(pspace_obj, k = gs_vcount(pspace_obj),
 p2 &lt;- plotPathwaySpace(ps=pspace_obj, theme = &quot;th3&quot;, 
   title = gene, add.image = TRUE, zlim = c(0, 1)) + xy_labs</code></pre>
 <pre class="r"><code>p1 + p2</code></pre>
-<p><img src="figs_spot_space/fig8.png" width="100%" /></p>
+<p><img src="figs_spot_space/fig8.png" alt="" width="100%" /></p>
 </div>
 </div>
 <div id="citation" class="section level1">
@@ -824,7 +827,7 @@ class="uri">https://doi.org/10.1016/j.ccell.2024.12.002</a></p></li>
 </div>
 <div id="session-information" class="section level1">
 <h1>Session information</h1>
-<pre><code>## R version 4.5.2 (2025-10-31)
+<pre><code>## R version 4.5.3 (2026-03-11)
 ## Platform: x86_64-pc-linux-gnu
 ## Running under: Ubuntu 24.04.4 LTS
 ## 
@@ -847,58 +850,58 @@ class="uri">https://doi.org/10.1016/j.ccell.2024.12.002</a></p></li>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] Seurat_5.4.0.9009              SeuratObject_5.3.0            
-##  [3] sp_2.2-0                       stxBrain.SeuratData_0.1.2     
+##  [1] Seurat_5.4.0.9019              SeuratObject_5.4.0            
+##  [3] sp_2.2-1                       stxBrain.SeuratData_0.1.2     
 ##  [5] ssHippo.SeuratData_3.1.4       kidneyref.SeuratData_1.0.2    
 ##  [7] bonemarrowref.SeuratData_1.0.0 SeuratData_0.2.2.9002         
 ##  [9] fontawesome_0.5.3              patchwork_1.3.2               
-## [11] igraph_2.2.0                   SpotSpace_0.0.6               
-## [13] PathwaySpace_1.1.2             RGraphSpace_1.1.2             
-## [15] ggplot2_4.0.0.9000             remotes_2.5.0                 
+## [11] igraph_2.2.3                   SpotSpace_0.0.7               
+## [13] PathwaySpace_1.1.3             RGraphSpace_1.1.3             
+## [15] ggplot2_4.0.2.9000             remotes_2.5.0                 
 ## [17] bs4cards_0.1.1                
 ## 
 ## loaded via a namespace (and not attached):
 ##   [1] RColorBrewer_1.1-3     rstudioapi_0.17.1      jsonlite_2.0.0        
-##   [4] shape_1.4.6.1          magrittr_2.0.4         spatstat.utils_3.2-0  
-##   [7] ggbeeswarm_0.7.2       farver_2.1.2           rmarkdown_2.30        
-##  [10] GlobalOptions_0.1.2    fs_1.6.6               vctrs_0.6.5           
-##  [13] ROCR_1.0-11            spatstat.explore_3.5-3 htmltools_0.5.8.1     
-##  [16] sass_0.4.10            sctransform_0.4.2      parallelly_1.45.1     
-##  [19] KernSmooth_2.23-26     bslib_0.9.0            htmlwidgets_1.6.4     
-##  [22] ica_1.0-3              plyr_1.8.9             plotly_4.11.0         
-##  [25] zoo_1.8-14             cachem_1.1.0           mime_0.13             
-##  [28] lifecycle_1.0.4        pkgconfig_2.0.3        Matrix_1.7-4          
-##  [31] R6_2.6.1               fastmap_1.2.0          fitdistrplus_1.2-4    
-##  [34] future_1.67.0          shiny_1.11.1           digest_0.6.37         
-##  [37] colorspace_2.1-1       tensor_1.5.1           RSpectra_0.16-2       
-##  [40] irlba_2.3.5.1          progressr_0.17.0       spatstat.sparse_3.1-0 
-##  [43] httr_1.4.7             polyclip_1.10-7        abind_1.4-8           
-##  [46] compiler_4.5.2         withr_3.0.2            S7_0.2.0              
-##  [49] fastDummies_1.7.5      MASS_7.3-65            rappdirs_0.3.3        
-##  [52] tools_4.5.2            vipor_0.4.7            lmtest_0.9-40         
-##  [55] beeswarm_0.4.0         httpuv_1.6.16          future.apply_1.20.0   
-##  [58] goftest_1.2-3          glue_1.8.0             nlme_3.1-168          
-##  [61] promises_1.3.3         grid_4.5.2             Rtsne_0.17            
-##  [64] cluster_2.1.8.2        reshape2_1.4.4         generics_0.1.4        
-##  [67] gtable_0.3.6           spatstat.data_3.1-8    tidyr_1.3.1           
-##  [70] data.table_1.17.8      spatstat.geom_3.6-0    RcppAnnoy_0.0.22      
-##  [73] ggrepel_0.9.6          RANN_2.6.2             pillar_1.11.1         
-##  [76] stringr_1.5.2          spam_2.11-1            RcppHNSW_0.6.0        
-##  [79] later_1.4.4            circlize_0.4.16        splines_4.5.2         
-##  [82] dplyr_1.1.4            lattice_0.22-9         survival_3.8-6        
+##   [4] magrittr_2.0.5         spatstat.utils_3.2-2   ggbeeswarm_0.7.2      
+##   [7] farver_2.1.2           rmarkdown_2.31         ragg_1.4.0            
+##  [10] fs_2.0.1               vctrs_0.7.3            ROCR_1.0-12           
+##  [13] spatstat.explore_3.8-0 htmltools_0.5.9        sass_0.4.10           
+##  [16] sctransform_0.4.3      parallelly_1.46.1      KernSmooth_2.23-26    
+##  [19] bslib_0.10.0           htmlwidgets_1.6.4      ica_1.0-3             
+##  [22] plyr_1.8.9             plotly_4.12.0          zoo_1.8-15            
+##  [25] cachem_1.1.0           mime_0.13              lifecycle_1.0.5       
+##  [28] pkgconfig_2.0.3        Matrix_1.7-5           R6_2.6.1              
+##  [31] fastmap_1.2.0          fitdistrplus_1.2-6     future_1.70.0         
+##  [34] shiny_1.13.0           digest_0.6.39          colorspace_2.1-1      
+##  [37] tensor_1.5.1           RSpectra_0.16-2        irlba_2.3.7           
+##  [40] textshaping_1.0.1      progressr_0.19.0       spatstat.sparse_3.1-0 
+##  [43] httr_1.4.8             polyclip_1.10-7        abind_1.4-8           
+##  [46] compiler_4.5.3         withr_3.0.2            S7_0.2.1              
+##  [49] fastDummies_1.7.5      MASS_7.3-65            rappdirs_0.3.4        
+##  [52] tools_4.5.3            vipor_0.4.7            lmtest_0.9-40         
+##  [55] otel_0.2.0             beeswarm_0.4.0         httpuv_1.6.17         
+##  [58] future.apply_1.20.2    goftest_1.2-3          glue_1.8.0            
+##  [61] nlme_3.1-169           promises_1.5.0         grid_4.5.3            
+##  [64] Rtsne_0.17             cluster_2.1.8.2        reshape2_1.4.5        
+##  [67] generics_0.1.4         gtable_0.3.6           spatstat.data_3.1-9   
+##  [70] tidyr_1.3.2            data.table_1.18.2.1    spatstat.geom_3.7-3   
+##  [73] RcppAnnoy_0.0.23       ggrepel_0.9.8          RANN_2.6.2            
+##  [76] pillar_1.11.1          stringr_1.6.0          spam_2.11-3           
+##  [79] RcppHNSW_0.6.0         later_1.4.8            splines_4.5.3         
+##  [82] dplyr_1.2.1            lattice_0.22-9         survival_3.8-6        
 ##  [85] deldir_2.0-4           tidyselect_1.2.1       miniUI_0.1.2          
-##  [88] pbapply_1.7-4          knitr_1.50             gridExtra_2.3         
-##  [91] scattermore_1.2        xfun_0.54              matrixStats_1.5.0     
-##  [94] stringi_1.8.7          lazyeval_0.2.2         yaml_2.3.10           
-##  [97] evaluate_1.0.5         codetools_0.2-20       tibble_3.3.0          
-## [100] cli_3.6.5              uwot_0.2.3             xtable_1.8-4          
-## [103] reticulate_1.44.1      jquerylib_0.1.4        dichromat_2.0-0.1     
-## [106] Rcpp_1.1.0             globals_0.18.0         spatstat.random_3.4-2 
-## [109] png_0.1-8              ggrastr_1.0.2          spatstat.univar_3.1-4 
-## [112] parallel_4.5.2         dotCall64_1.2          listenv_0.9.1         
-## [115] viridisLite_0.4.2      scales_1.4.0           ggridges_0.5.7        
-## [118] crayon_1.5.3           purrr_1.1.0            rlang_1.1.6           
-## [121] cowplot_1.2.0</code></pre>
+##  [88] pbapply_1.7-4          knitr_1.51             gridExtra_2.3         
+##  [91] scattermore_1.2        xfun_0.57              matrixStats_1.5.0     
+##  [94] stringi_1.8.7          lazyeval_0.2.3         yaml_2.3.12           
+##  [97] evaluate_1.0.5         codetools_0.2-20       tibble_3.3.1          
+## [100] cli_3.6.6              uwot_0.2.4             systemfonts_1.2.3     
+## [103] xtable_1.8-8           reticulate_1.46.0      jquerylib_0.1.4       
+## [106] dichromat_2.0-0.1      Rcpp_1.1.1             globals_0.19.1        
+## [109] spatstat.random_3.4-5  png_0.1-9              ggrastr_1.0.2         
+## [112] spatstat.univar_3.1-7  parallel_4.5.3         dotCall64_1.2         
+## [115] listenv_0.10.1         viridisLite_0.4.3      scales_1.4.0          
+## [118] ggridges_0.5.7         crayon_1.5.3           purrr_1.2.2           
+## [121] rlang_1.2.0            cowplot_1.2.0</code></pre>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>
