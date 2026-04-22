@@ -40,15 +40,8 @@ install.packages("remotes")
 ##### Development version
 
 ```r
-# Main packages
 remotes::install_github("sysbiolab/RGraphSpace", build_vignettes=TRUE)
 remotes::install_github("sysbiolab/PathwaySpace", build_vignettes=TRUE)
-
-# Extension
-remotes::install_github("sysbiolab/SpotSpace", build_vignettes=TRUE)
-
-# Data package used in the extension
-remotes::install_github("satijalab/seurat-data")
 ```
 
 

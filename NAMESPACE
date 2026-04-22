@@ -2,6 +2,7 @@
 
 export(buildPathwaySpace)
 export(expDecay)
+export(getNearestNode)
 export(linearDecay)
 export(pathDistances)
 export(plotPathDistances)

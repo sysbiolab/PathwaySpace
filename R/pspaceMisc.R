@@ -182,6 +182,37 @@ NULL
 
 
 ################################################################################
+### Wrapper around 
+################################################################################
+#' @title getNearestNode
+#' 
+#' @description
+#' Retrieves the nearest neighbor for each node from a 
+#' \linkS4class{PathwaySpace} object using Euclidean distance.
+#' 
+#' @param ps Either a \linkS4class{PathwaySpace} or 
+#' \link[RGraphSpace]{GraphSpace} object.
+#' @seealso \code{\link[RANN]{nn2}}
+#' @examples
+#' # See examples in the PathwaySpace's tutorials:
+#' # https://sysbiolab.github.io/PathwaySpace/
+#' 
+#' @importFrom RANN nn2
+#' @aliases getNearestNode
+#' @export
+getNearestNode <- function(ps){
+  if(!inherits(ps, "GraphSpace")){
+    stop("'ps' should be either a 'PathwaySpace' or 'GraphSpace' object.")
+  }
+  nodes <- getGraphSpace(ps, "nodes")
+  nnpg <- nn2(nodes[,c("x","y")], nodes[,c("x","y")], k=2)
+  nn.idx <- nnpg$nn.idx[,2]
+  nn.dists <- nnpg$nn.dists[,2]
+  nn <- data.frame(from=nodes$name, to=nodes$name[nn.idx], dist=nn.dists)
+  return(nn)
+}
+
+################################################################################
 ### Colors for PathwaySpace
 ################################################################################
 #' @title Create interpolated color palettes for PathwaySpace images
