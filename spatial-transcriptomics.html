@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sysbiolab Team" />
 
-<meta name="date" content="2026-04-19" />
+<meta name="date" content="2026-04-21" />
 
 <title>Visualizing spatial transcriptomics</title>
 
@@ -397,7 +397,7 @@ div.tocify {
 <h3 class="subtitle">Gene expression projections on spot
 coordinates</h3>
 <h4 class="author">Sysbiolab Team</h4>
-<h4 class="date">2026-04-19</h4>
+<h4 class="date">2026-04-21</h4>
 
 </div>
 
@@ -405,16 +405,15 @@ coordinates</h3>
 <p><strong>Package</strong>: PathwaySpace 1.1.3 <br/></p>
 <div id="overview" class="section level1">
 <h1>Overview</h1>
-<p>This vignette introduces the <em>SpotSpace</em> package, a
-<em>PathwaySpace</em> extension for the <em>Seurat</em> package <span
-class="citation">(Hao et al. 2024)</span>, providing methods for signal
-propagation and visualization in spatial transcriptomics.
-<em>SpotSpace</em> extends existing spatial analysis workflows to
-explore signal patterns in tissue microenvironments. In what follows, we
-present three step-by-step tutorials describing how to prepare input
-data for <em>SpotSpace</em>. The results reproduce and refine examples
-featured in <em>Seurat</em>’s tutorials, so users are encouraged to see
-how these packages can be used together.</p>
+<p>This vignette introduces <em>PathwaySpace</em> as an extension for
+the <em>Seurat</em> package <span class="citation">(Hao et al.
+2024)</span>, providing methods for signal propagation and visualization
+in spatial transcriptomics. It extends existing spatial analysis
+workflows to explore signal patterns in tissue microenvironments. In
+what follows, we present three step-by-step tutorials describing how to
+prepare input data for <em>PathwaySpace</em>. The results reproduce and
+refine examples featured in <em>Seurat</em>’s tutorials, so users are
+encouraged to see how these packages can be used together.</p>
 </div>
 <div id="before-you-start" class="section level1">
 <h1>Before you start</h1>
@@ -446,9 +445,6 @@ if (!require(&quot;RGraphSpace&quot;, quietly = TRUE)){
 if (!require(&quot;PathwaySpace&quot;, quietly = TRUE)){
   remotes::install_github(&quot;sysbiolab/PathwaySpace&quot;)
 }
-if (!require(&quot;SpotSpace&quot;, quietly = TRUE)){
-  remotes::install_github(&quot;sysbiolab/SpotSpace&quot;)
-}
 if (!require(&quot;SeuratData&quot;, quietly = TRUE)){
   remotes::install_github(&quot;satijalab/seurat-data&quot;)
 }</code></pre>
@@ -461,10 +457,6 @@ if (packageVersion(&quot;PathwaySpace&quot;) &lt; &quot;1.1.3&quot;){
   message(&quot;Need to update &#39;PathwaySpace&#39; for this vignette&quot;)
   remotes::install_github(&quot;sysbiolab/PathwaySpace&quot;)
 }
-if (packageVersion(&quot;SpotSpace&quot;) &lt; &quot;0.0.7&quot;){
-  message(&quot;Need to update &#39;SpotSpace&#39; for this vignette&quot;)
-  remotes::install_github(&quot;sysbiolab/SpotSpace&quot;)
-}
 if (packageVersion(&quot;Seurat&quot;) &lt; &quot;5.4.0.9009&quot;){
   message(&quot;Need to update &#39;Seurat&#39; for this vignette&quot;)
   remotes::install_github(&quot;satijalab/Seurat&quot;)
@@ -472,7 +464,6 @@ if (packageVersion(&quot;Seurat&quot;) &lt; &quot;5.4.0.9009&quot;){
 <pre class="r"><code># Load packages
 library(RGraphSpace)
 library(PathwaySpace)
-library(SpotSpace)
 library(Seurat)
 library(SeuratObject)
 library(SeuratData)
@@ -525,13 +516,19 @@ rm(seurat_obj)</code></pre>
 <p>Next, we create a <em>PathwaySpace</em> object from the spot
 coordinates and plot the resulting graph overlaid on the tissue
 image.</p>
-<pre class="r"><code># Create a PathwaySpace object from &#39;spot_coord&#39;, mapped to the &#39;raster_image&#39;
-gspace_obj &lt;- buildSpotSpace(spot_coord = spot_coord, 
-  raster_image = raster_image)
-pspace_obj &lt;- buildPathwaySpace(gspace_obj)</code></pre>
-<pre class="r"><code># Check spots on the top of the &#39;raster_image&#39;
+<pre class="r"><code># Create a GraphSpace from &#39;spot_coord&#39;, mapped to the &#39;raster_image&#39;
+# Note: &#39;spot_coord&#39; must contain &#39;x&#39; and &#39;y&#39; columns.
+spot_coord$nodeSize &lt;- 1 #making spots smaller for better visual inspection
+gs &lt;- GraphSpace(spot_coord)
+
+# Normalization: by default, this attempts to align the graph&#39;s 
+# bottom-up coordinates with the image&#39;s top-down matrix layout.
+gs &lt;- normalizeGraphSpace(gs, image = raster_image)</code></pre>
+<pre class="r"><code># Check the overlay:
+# In case of any misalignment, consider using &#39;flip.y = TRUE&#39;  
+# in the normalizeGraphSpace() call above.
 xy_labs &lt;- labs(x=&quot;Spot coordinates 1&quot;, y=&quot;Spot coordinates 2&quot;)
-plotGraphSpace(pspace_obj, add.image = TRUE) + xy_labs</code></pre>
+plotGraphSpace(gs, add.image = TRUE) + xy_labs</code></pre>
 <p><img src="figs_spot_space/fig1.png" alt="" width="90%" /></p>
 <p><strong>Note on image alignment</strong>: Proper spatial alignment
 between spot coordinates and the background image requires consistent
@@ -539,11 +536,12 @@ coordinate conventions. Spatial misalignment may occur when the input
 spot coordinates and image follow origin placements or axis orientations
 that differ from the package’s internal coordinate definitions (e.g.,
 top-left versus bottom-left origins). To accommodate these differences,
-<code>buildSpotSpace()</code> provides orientation controls through the
-<code>rotate.xy</code>, <code>flip.x</code>, and <code>flip.y</code>
-arguments. If the spots appear misaligned with the input image, try
-alternative combinations of these parameters to correct the
-alignment.</p>
+<code>normalizeGraphSpace()</code> provides orientation controls through
+the <code>flip.*</code> and <code>rotate.*</code> arguments. If the
+spots appear misaligned with the input image, try alternative
+combinations of these parameters to correct the alignment.</p>
+<pre class="r"><code># Create a PathwaySpace object
+pspace_obj &lt;- buildPathwaySpace(gs)</code></pre>
 </div>
 <div id="running-pathwayspace" class="section level2">
 <h2>Running <em>PathwaySpace</em></h2>
@@ -657,9 +655,10 @@ vst_gexp &lt;- GetAssayData(seurat_obj, layer=&quot;data&quot;)
 # If needed, remove seurat_obj to free memory
 rm(seurat_obj)</code></pre>
 <pre class="r"><code># Create a PathwaySpace object from &#39;spot_coord&#39;
-# Set &quot;rotate.xy = T&quot; to follow image orientation in Seurat&#39;s vignette
-gspace_obj &lt;- buildSpotSpace(spot_coord = spot_coord, rotate.xy = TRUE)
-pspace_obj &lt;- buildPathwaySpace(gspace_obj)</code></pre>
+# &#39;flip.y&#39; and &#39;rotate.xy&#39; to follow image orientation in Seurat&#39;s vignette
+gs &lt;- GraphSpace(spot_coord)
+gs &lt;- normalizeGraphSpace(gs, flip.y = TRUE, rotate.xy = TRUE)
+pspace_obj &lt;- buildPathwaySpace(gs)</code></pre>
 </div>
 <div id="running-pathwayspace-1" class="section level2">
 <h2>Running <em>PathwaySpace</em></h2>
@@ -761,9 +760,9 @@ norm_gexp &lt;- GetAssayData(seurat_obj, layer=&quot;data&quot;)
 # If needed, remove seurat_obj to free memory
 rm(seurat_obj)</code></pre>
 <pre class="r"><code># Create a PathwaySpace object from &#39;spot_coord&#39;, mapped to the &#39;raster_image&#39;
-gspace_obj &lt;- buildSpotSpace(spot_coord = spot_coord, 
-  raster_image = raster_image)
-pspace_obj &lt;- buildPathwaySpace(gspace_obj, nrc = 700)</code></pre>
+gs &lt;- GraphSpace(spot_coord)
+gs &lt;- normalizeGraphSpace(gs, image = raster_image)
+pspace_obj &lt;- buildPathwaySpace(gs, nrc = 700)</code></pre>
 </div>
 <div id="running-pathwayspace-2" class="section level2">
 <h2>Running <em>PathwaySpace</em></h2>
