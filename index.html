@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sysbiolab Team" />
 
-<meta name="date" content="2026-04-21" />
+<meta name="date" content="2026-04-24" />
 
 <title>PathwaySpace: Projection of network signals along geodesic paths</title>
 
@@ -297,12 +297,12 @@ $(document).ready(function () {
 <h1 class="title toc-ignore"><em>PathwaySpace</em>: Projection of
 network signals along geodesic paths</h1>
 <h4 class="author">Sysbiolab Team</h4>
-<h4 class="date">2026-04-21</h4>
+<h4 class="date">2026-04-24</h4>
 
 </div>
 
 
-<p><strong>Package</strong>: PathwaySpace 1.1.4 <br/></p>
+<p><strong>Package</strong>: PathwaySpace 1.2.0 <br/></p>
 <div id="highlights" class="section level1">
 <h1>Highlights</h1>
 <ul>
@@ -341,19 +341,19 @@ from aggregation and decay functions.
 </p>
 </div>
 <p><br/></p>
-<p>Our model considers the vertex-signal positions as source points (or
-transmitters) and the null-signal positions as end points (or
-receivers). The signal values from vertex-signal positions are then
-projected to the null-signal positions according to a decay function,
-which will control how the signal values attenuate as they propagate
-across the 2D space. For a given null-signal position, the k-top signals
-are used to define the contributing vertices for the convolution
-operation, which will aggregate the signals from these contributing
-vertices considering their intensities reaching the end points. Users
-can adjust both the aggregation and decay functions; the aggregation
-function can be any arithmetic rule that reduces a numeric vector into a
-single scalar value (<em>e.g.</em>, mean, weighted mean), while
-available decay functions include linear, exponential, and Weibull
+<p><em>PathwaySpace</em> model considers the vertex-signal positions as
+source points (or transmitters) and the null-signal positions as end
+points (or receivers). The signal values from vertex-signal positions
+are then projected to the null-signal positions according to a decay
+function, which will control how the signal values attenuate as they
+propagate across the 2D space. For a given null-signal position, the
+k-top signals are used to define the contributing vertices for the
+convolution operation, which will aggregate the signals from these
+contributing vertices considering their intensities reaching the end
+points. Users can adjust both the aggregation and decay functions; the
+aggregation function can be any arithmetic rule that reduces a numeric
+vector into a single scalar value (<em>e.g.</em>, mean, weighted mean),
+while available decay functions include linear, exponential, and Weibull
 models (<strong>Fig.1B</strong>). Additionally, users can assign
 vertex-specific decay functions to model signal projections for subsets
 of vertices that may exhibit distinct behaviors. The resulting image

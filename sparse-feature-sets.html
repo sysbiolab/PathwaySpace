@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sysbiolab Team" />
 
-<meta name="date" content="2026-04-21" />
+<meta name="date" content="2026-04-24" />
 
 <title>Visualizing sparse feature sets on large graphs</title>
 
@@ -61,7 +61,6 @@ if (window.hljs) {
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
-  margin-bottom: 0em;
 }
 .hanging div.csl-entry {
   margin-left:2em;
@@ -396,12 +395,12 @@ div.tocify {
 <h1 class="title toc-ignore">Visualizing sparse feature sets on large
 graphs</h1>
 <h4 class="author">Sysbiolab Team</h4>
-<h4 class="date">2026-04-21</h4>
+<h4 class="date">2026-04-24</h4>
 
 </div>
 
 
-<p><strong>Package</strong>: PathwaySpace 1.1.4 <br/></p>
+<p><strong>Package</strong>: PathwaySpace 1.2.0 <br/></p>
 <div id="overview" class="section level1">
 <h1>Overview</h1>
 <p>This tutorial creates a large <em>PathwaySpace</em> object with
@@ -413,8 +412,9 @@ number of features carry relevant information. The projections will
 emphasize clusters of vertices forming <em>summits</em>, and we will add
 silhouettes as decorative elements to outline the overall graph
 structure. The examples in this section are adapted from <span
-class="citation">Ellrott et al. (2025)</span> and <span
-class="citation">Tercan et al. (2025)</span>.</p>
+class="citation"><span class="nocase">Ellrott et al.</span>
+(2025)</span> and <span class="citation"><span class="nocase">Tercan et
+al.</span> (2025)</span>.</p>
 <p>We will start by loading an <em>igraph</em> object containing gene
 interaction data available from the <em>Pathway Commons</em> database
 (version 12) <span class="citation">(Rodchenkov et al. 2019)</span>.</p>
@@ -588,7 +588,7 @@ class="uri">https://doi.org/10.1016/j.ccell.2024.12.002</a></p></li>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] patchwork_1.3.2    igraph_2.3.0       PathwaySpace_1.1.4 RGraphSpace_1.1.4 
+## [1] patchwork_1.3.2    igraph_2.3.0       PathwaySpace_1.2.0 RGraphSpace_1.2.0 
 ## [5] ggplot2_4.0.2.9000 remotes_2.5.0      bs4cards_0.1.1    
 ## 
 ## loaded via a namespace (and not attached):
@@ -608,13 +608,12 @@ class="uri">https://doi.org/10.1016/j.ccell.2024.12.002</a></p></li>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>
-<div id="refs" class="references csl-bib-body hanging-indent"
-entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Ellrott2025" class="csl-entry">
-Ellrott, Kyle, Christopher K Wong, Christina Yau, Mauro A A Castro, et
-al. 2025. <span>“Classification of Non-TCGA Cancer Samples to TCGA
-Molecular Subtypes Using Compact Feature Sets.”</span> <em>Cancer
-Cell</em> 43 (2): 195–212. <a
+<span class="nocase">Ellrott, Kyle, Christopher K Wong, Christina Yau,
+Mauro A A Castro, et al.</span> 2025. <span>“Classification of Non-TCGA
+Cancer Samples to TCGA Molecular Subtypes Using Compact Feature
+Sets.”</span> <em>Cancer Cell</em> 43 (2): 195–212. <a
 href="https://doi.org/10.1016/j.ccell.2024.12.002">https://doi.org/10.1016/j.ccell.2024.12.002</a>.
 </div>
 <div id="ref-Liberzon2015" class="csl-entry">
@@ -625,18 +624,18 @@ Systems</em> 1 (5): 417–25. <a
 href="https://doi.org/10.1016/j.cels.2015.12.004">https://doi.org/10.1016/j.cels.2015.12.004</a>.
 </div>
 <div id="ref-Rodchenkov2019" class="csl-entry">
-Rodchenkov, Igor, Ozgun Babur, Augustin Luna, Bulent Arman Aksoy,
-Jeffrey V Wong, Dylan Fong, Max Franz, et al. 2019. <span>“<span
+Rodchenkov, Igor, Ozgun Babur, Augustin Luna, et al. 2019. <span>“<span
 class="nocase">Pathway Commons 2019 Update: integration, analysis and
 exploration of pathway data</span>.”</span> <em>Nucleic Acids
 Research</em> 48 (D1): D489–97. <a
 href="https://doi.org/10.1093/nar/gkz946">https://doi.org/10.1093/nar/gkz946</a>.
 </div>
 <div id="ref-Tercan2025" class="csl-entry">
-Tercan, Bahar, Victor H Apolonio, Vinicius S Chagas, Christopher K Wong,
-et al. 2025. <span>“Protocol for Assessing Distances in Pathway Space
-for Classifier Feature Sets from Machine Learning Methods.”</span>
-<em>STAR Protocols</em> 6 (2): 103681. https://doi.org/<a
+<span class="nocase">Tercan, Bahar, Victor H Apolonio, Vinicius S
+Chagas, Christopher K Wong, et al.</span> 2025. <span>“Protocol for
+Assessing Distances in Pathway Space for Classifier Feature Sets from
+Machine Learning Methods.”</span> <em>STAR Protocols</em> 6 (2): 103681.
+https://doi.org/<a
 href="https://doi.org/10.1016/j.xpro.2025.103681">https://doi.org/10.1016/j.xpro.2025.103681</a>.
 </div>
 </div>
