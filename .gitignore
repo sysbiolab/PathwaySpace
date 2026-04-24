@@ -12,3 +12,4 @@ PathwaySpace.Rcheck
 ..Rcheck
 *.tar.gz
 *.zip
+.positai

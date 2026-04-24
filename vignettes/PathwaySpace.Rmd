@@ -38,7 +38,7 @@ knitr::include_graphics("figures/fig1.png")
 
 <br/>
 
-Our model considers the vertex-signal positions as source points (or transmitters) and the null-signal positions as end points (or receivers). The signal values from vertex-signal positions are then projected to the null-signal positions according to a decay function, which will control how the signal values attenuate as they propagate across the 2D space. For a given null-signal position, the k-top signals are used to define the contributing vertices for the convolution operation, which will aggregate the signals from these contributing vertices considering their intensities reaching the end points. Users can adjust both the aggregation and decay functions; the aggregation function can be any arithmetic rule that reduces a numeric vector into a single scalar value (*e.g.*, mean, weighted mean), while available decay functions include linear, exponential, and Weibull models (**Fig.1B**). Additionally, users can assign vertex-specific decay functions to model signal projections for subsets of vertices that may exhibit distinct behaviors. The resulting image forms geodesic paths in which the signal has been projected from vertex- to null-signal positions, using a density metric to measure the signal intensity along these paths.
+*PathwaySpace* model considers the vertex-signal positions as source points (or transmitters) and the null-signal positions as end points (or receivers). The signal values from vertex-signal positions are then projected to the null-signal positions according to a decay function, which will control how the signal values attenuate as they propagate across the 2D space. For a given null-signal position, the k-top signals are used to define the contributing vertices for the convolution operation, which will aggregate the signals from these contributing vertices considering their intensities reaching the end points. Users can adjust both the aggregation and decay functions; the aggregation function can be any arithmetic rule that reduces a numeric vector into a single scalar value (*e.g.*, mean, weighted mean), while available decay functions include linear, exponential, and Weibull models (**Fig.1B**). Additionally, users can assign vertex-specific decay functions to model signal projections for subsets of vertices that may exhibit distinct behaviors. The resulting image forms geodesic paths in which the signal has been projected from vertex- to null-signal positions, using a density metric to measure the signal intensity along these paths.
 
 # Setting basic input data
 
@@ -84,9 +84,9 @@ plotGraphSpace(gs1, add.labels = TRUE)
 ```
 
 ```{r fig2.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-gg <- plotGraphSpace(gs1, add.labels = TRUE)
-ggsave(filename = "./figures/fig2.png", height=4, width=5,
-  units="in", device="png", dpi=250, plot=gg)
+# gg <- plotGraphSpace(gs1, add.labels = TRUE)
+# ggsave(filename = "./figures/fig2.png", height=4, width=5,
+#   units="in", device="png", dpi=250, plot=gg)
 ```
 
 ```{r fig2, echo=FALSE, out.width = '70%', purl=FALSE}
@@ -154,9 +154,9 @@ plotPathwaySpace(p_space1, add.marks = TRUE)
 ```
 
 ```{r fig3.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-gg <- plotPathwaySpace(p_space1, add.marks = TRUE)
-ggsave(filename = "./figures/fig3.png", height=3.5, width=5,
-  units="in", device="png", dpi=350, plot=gg)
+# gg <- plotPathwaySpace(p_space1, add.marks = TRUE)
+# ggsave(filename = "./figures/fig3.png", height=3.5, width=5,
+#   units="in", device="png", dpi=350, plot=gg)
 ```
 
 ```{r fig3, echo=FALSE, out.width = '75%', purl=FALSE}
@@ -175,9 +175,9 @@ plotPathwaySpace(p_space1, marks = "n1", theme = "th2")
 ```
 
 ```{r fig4.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-gg <- plotPathwaySpace(p_space1, marks = "n1", theme = "th2")
-ggsave(filename = "./figures/fig4.png", height=3.5, width=5,
-  units="in", device="png", dpi=350, plot=gg)
+# gg <- plotPathwaySpace(p_space1, marks = "n1", theme = "th2")
+# ggsave(filename = "./figures/fig4.png", height=3.5, width=5,
+#   units="in", device="png", dpi=350, plot=gg)
 ```
 
 ```{r fig4, echo=FALSE, out.width = '75%', purl=FALSE}
@@ -204,9 +204,9 @@ plotGraphSpace(gs2, add.labels = TRUE)
 ```
 
 ```{r fig5.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-gg <- plotGraphSpace(gs2, add.labels = TRUE)
-ggsave(filename = "./figures/fig5.png", height=4, width=5,
-  units="in", device="png", dpi=250, plot=gg)
+# gg <- plotGraphSpace(gs2, add.labels = TRUE)
+# ggsave(filename = "./figures/fig5.png", height=4, width=5,
+#   units="in", device="png", dpi=250, plot=gg)
 ```
 
 ```{r fig5, echo=FALSE, out.width = '75%', purl=FALSE}
@@ -242,9 +242,9 @@ plotPathwaySpace(p_space2, theme = "th2", add.marks = TRUE)
 ```
 
 ```{r fig6.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-gg <- plotPathwaySpace(p_space2, theme = "th2", add.marks = TRUE)
-ggsave(filename = "./figures/fig6.png", height=3.5, width=5,
-  units="in", device="png", dpi=350, plot=gg)
+# gg <- plotPathwaySpace(p_space2, theme = "th2", add.marks = TRUE)
+# ggsave(filename = "./figures/fig6.png", height=3.5, width=5,
+#   units="in", device="png", dpi=350, plot=gg)
 ```
 
 ```{r fig6, echo=FALSE, out.width = '75%', purl=FALSE}
@@ -264,9 +264,9 @@ plotPathwaySpace(p_space2, theme = "th2",
 ```
 
 ```{r fig7.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-gg <- plotPathwaySpace(p_space2, theme = "th2", marks = c("n1","n3","n4","n5"))
-ggsave(filename = "./figures/fig7.png", height=3.5, width=5,
-  units="in", device="png", dpi=350, plot=gg)
+# gg <- plotPathwaySpace(p_space2, theme = "th2", marks = c("n1","n3","n4","n5"))
+# ggsave(filename = "./figures/fig7.png", height=3.5, width=5,
+#   units="in", device="png", dpi=350, plot=gg)
 ```
 
 ```{r fig7, echo=FALSE, out.width = '75%', purl=FALSE}
@@ -299,9 +299,9 @@ plotPathwaySpace(p_space1, bg.color = "white",
 ```
 
 ```{r fig8.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-gg <- plotPathwaySpace(p_space1, bg.color = "white", font.color = "grey20", add.marks = TRUE, mark.color = "magenta", theme = "th3")
-ggsave(filename = "./figures/fig8.png", height=3.5, width=5,
-  units="in", device="png", dpi=350, plot=gg)
+# gg <- plotPathwaySpace(p_space1, bg.color = "white", font.color = "grey20", add.marks = TRUE, mark.color = "magenta", theme = "th3")
+# ggsave(filename = "./figures/fig8.png", height=3.5, width=5,
+#   units="in", device="png", dpi=350, plot=gg)
 ```
 
 ```{r fig8, echo=FALSE, out.width = '75%', purl=FALSE}
@@ -327,9 +327,6 @@ If you use *PathwaySpace*, please cite:
 
 * RGraphSpace: A Lightweight Interface Between 'ggplot2' and 'igraph' Objects
 https://cran.r-project.org/package=RGraphSpace
-
-* SpotSpace: Methods for Projecting Network Signals in Spatial Transcriptomics
-https://github.com/sysbiolab/SpotSpace
 
 * RedeR: Interactive visualization and manipulation of nested networks
 https://bioconductor.org/packages/RedeR/
