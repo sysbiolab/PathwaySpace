@@ -1,0 +1,68 @@
+---
+title: "Getting started with PathwaySpace"
+author: "Sysbiolab Team"
+date: "`r Sys.Date()`"
+bibliography: bibliography.bib
+output:
+  html_document:
+    toc: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(bs4cards)
+```
+
+
+# Introductory vignettes
+
+These tutorials introduce *PathwaySpace* using simple toy examples: **Network Signal Projections** walks through the main *PathwaySpace* projection methods; **Signal Decay Functions** describes how to set up decay functions to model specific network nodes; and **Signal Aggregation Rules** demonstrates how to create signal aggregation functions to emphasize patterns in the data.
+
+```{r, include=FALSE}
+title <- c("Network Signal Projections", "Signal Decay Functions", "Signal Aggregation Rules")
+image <- c("figs_intro/card1.png", "figs_intro/card2.png", "figs_intro/card3.png")
+link <- c("projection-methods.html","modeling-signal-decay.html","signal-aggregation-rules.html")
+ps_cards1 <- data.frame(title = title, image = image, link = link)
+```
+
+```{r, echo=FALSE}
+ps_cards1 %>% 
+  cards(
+      title = title,
+      image = image,
+      link = link,
+      layout = "label-below", 
+      width = 3,
+      border_radius = 5
+  )
+```
+
+---
+
+<div class="mt-5 mb-4"></div>
+
+# Visualizing features in *PathwaySpace*
+
+These tutorials showcase *PathwaySpace* applied to real-world scenarios, highlighting complex feature patterns. The **Sparse Feature Sets** vignette demonstrates how to analyze feature signals when only a limited number of nodes carry relevant information, while the **Spatial Transcriptomics** vignette illustrates how to project gene expression signals across tissue sections.
+
+```{r, include=FALSE}
+title <- c("Sparse Feature Sets", "Spatial Transcriptomics")
+image <- c("figs_fsets/card1.png", "figs_spatl/card1.png")
+link <- c("sparse-feature-sets.html","spatial-transcriptomics.html")
+ps_cards2 <- data.frame(title = title, image = image, link = link)
+```
+
+```{r, echo=FALSE}
+ps_cards2 %>% 
+  cards(
+      title = title,
+      image = image,
+      link = link,
+      layout = "label-below", 
+      width = 3,
+      border_radius = 5
+  )
+```
+
+
+

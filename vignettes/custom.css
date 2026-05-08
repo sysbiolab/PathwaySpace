@@ -1,8 +1,4 @@
 
-.title {
-  margin: 1.2em 0 0.6em 0;
-}
-
 h1, h2, h3, h4, h5, h6 {
   padding: 0 0 0 0;
   text-indent: 0;
@@ -11,11 +7,9 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
   font-size: 18pt;
-  padding: 0 0 0 0;
-  text-indent: 0;
-  margin: 1.2em 0 0.6em 0;
-  line-height: 1.4em;
-  border-bottom: 2px #1a81c2 solid;
+  margin: 2.2em 0 0.6em 0;
+  line-height: 2.4em;
+  border-bottom: 2px #2c3e50 solid;
 }
 
 p.abstract {
@@ -31,6 +25,10 @@ div.abstract {
 
 h2 {
   font-size: 16pt;
+}
+
+.section.level2 {
+  padding: 0.5em 0 0 0;
 }
 
 h3, h4, h5 {
@@ -51,12 +49,25 @@ span.header-section-number {
   width: 35px;
 }
 
-h1.title {
-    font-size: 20pt;
+h1.title.toc-ignore {
+    margin: 1em 0 0.3em 0;
+    font-size: 24pt;
     color: #87b13f;
-    line-height: 1.1em;
-    margin-top: 25px;
-    border-bottom: 0px;
+    line-height: 1em;
+    padding-top: 0.5em;
+    border-bottom: none;
+}
+
+h3.subtitle {
+    font-size: 18pt;
+    padding: 0 0 0 0;
+    margin: 0 0 0 0;
+    color: #87b13f;
+}
+
+h5.card-title {
+    text-align: center;
+    font-size: 16pt;
 }
 
 p.author-name, h4.author {
@@ -89,10 +100,10 @@ img {
 }
 
 p.caption {
-    font-size: 7pt;
+    font-size: 11pt;
     display:block;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
     margin:auto;
     width:85%;
 }
@@ -148,11 +159,14 @@ ol, ul {
     list-style: square;
 }
 
-.tocify {
-    width: 100% !important;
+pre.r {
+  margin: 0 0 0.5em 0;
 }
 
+.tocify {
+    padding: 1em 0 0 0;
+}
 
-
-
-
+div.navbar {
+  padding: 0.5em 0 0.5em 0;
+}

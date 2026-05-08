@@ -1,0 +1,157 @@
+## *PathwaySpace*: Spatial projection of network signals along geodesic paths
+
+[![CRAN
+status](https://www.r-pkg.org/badges/version/PathwaySpace)](https://cran.r-project.org/package=PathwaySpace)
+[![Lifecycle:
+stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![CRAN
+downloads](https://cranlogs.r-pkg.org/badges/PathwaySpace)](https://cranlogs.r-pkg.org/badges/PathwaySpace)
+[![License:
+Artistic-2.0](https://img.shields.io/badge/license-Artistic--2.0-blue.svg)](https://cran.r-project.org/web/licenses/Artistic-2.0)
+[![DOI](https://img.shields.io/badge/doi-10.32614/CRAN.package.PathwaySpace-blue.svg)](https://doi.org/10.32614/CRAN.package.PathwaySpace)
+
+## Highlights
+
+- Produces landscape images representing graphs by geodesic paths.
+- Projects signals using a decay function to model signal attenuation.
+- Applies a convolution algorithm to combine signals from neighboring
+  vertices.
+
+## Overview
+
+For a given *igraph* object containing vertices, edges, and a signal
+associated with the vertices, *PathwaySpace* performs a convolution
+operation, which involves a weighted combination of neighboring signals
+on a graph. **Figure 1A** illustrates the convolution operation problem.
+Each vertex’s signal is positioned on a grid at specific `x` and `y`
+coordinates, represented by cones (for available signals) or question
+marks (for null or missing values).
+
+![fig1.png](articles/figs_intro/fig1.png)
+
+> “**Figure 1.** Signal processing addressed by the *PathwaySpace*
+> package. **A**) Graph overlaid on a 2D coordinate system. Each
+> projection cone represents the signal associated with a graph vertex
+> (referred to as *vertex-signal positions*), while question marks
+> indicate positions with no signal information (referred to as
+> *null-signal positions*). **Inset**: Graph layout of the toy example
+> used in the *quick start* section of this vignette. **B**)
+> Illustration of signal projection from two neighboring vertices,
+> simplified to one dimension. **Right**: Signal profiles from
+> aggregation and decay functions.”
+
+The projection model considers the vertex-signal positions as source
+points (or transmitters) and the null-signal positions as end points (or
+receivers). The signal values from vertex-signal positions are then
+projected to the null-signal positions according to a decay function,
+which will control how the signal values attenuate as they propagate
+across the 2D space. For a given null-signal position, the k-top signals
+are used to define the contributing vertices for the convolution
+operation, which will aggregate the signals from these contributing
+vertices considering their intensities reaching the end points. Users
+can adjust both the aggregation and decay functions; the aggregation
+function can be any arithmetic rule that reduces a numeric vector into a
+single scalar value (*e.g.*, mean, weighted mean), while available decay
+functions include linear, exponential, and Weibull models (**Fig.1B**).
+Additionally, users can assign vertex-specific decay functions to model
+signal projections for subsets of vertices that may exhibit distinct
+behaviors. The resulting image forms geodesic paths in which the signal
+has been projected from vertex- to null-signal positions, using a
+density metric to measure the signal intensity along these paths.
+
+### Citation
+
+- Tercan & Apolonio *et al.* Protocol for assessing distances in pathway
+  space for classifier feature sets from machine learning methods. *STAR
+  Protocols*, 2025. <https://doi.org/10.1016/j.xpro.2025.103681>
+
+- Ellrott *et al.* Classification of non-TCGA cancer samples to TCGA
+  molecular subtypes using compact feature sets. *Cancer Cell*, 2025.
+  <https://doi.org/10.1016/j.ccell.2024.12.002>
+
+### Licenses
+
+The *PathwaySpace* package is distributed under
+[Artistic-2.0](https://www.r-project.org/Licenses/Artistic-2.0)
+
+# Package index
+
+## All functions
+
+- [`CGC_20211118`](https://github.com/sysbiolab/PathwaySpace/reference/CGC_20211118.md)
+  : COSMIC-CGC genes mapped to PathwaySpace images
+- [`Hallmarks_v2023_1_Hs_symbols`](https://github.com/sysbiolab/PathwaySpace/reference/Hallmarks_v2023_1_Hs_symbols.md)
+  : A list with Hallmark gene sets (v2023.1)
+- [`PCv12_pruned_igraph`](https://github.com/sysbiolab/PathwaySpace/reference/PCv12_pruned_igraph.md)
+  : A pruned and laid out igraph object from Pathway Commons V12
+- [`` `gs_vertex_attr<-`( ``*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/PathwaySpace-accessors.md)
+  [`` `gs_edge_attr<-`( ``*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/PathwaySpace-accessors.md)
+  : Accessor Functions for PathwaySpace Objects
+- [`PathwaySpace-class`](https://github.com/sysbiolab/PathwaySpace/reference/PathwaySpace-class.md)
+  : PathwaySpace: An S4 class for signal propagation on image spaces
+- [`buildPathwaySpace()`](https://github.com/sysbiolab/PathwaySpace/reference/buildPathwaySpace.md)
+  : Constructor of PathwaySpace-class Objects
+- [`circularProjection(`*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/circularProjection-methods.md)
+  : Circular Projection of Graph-Associated Signals
+- [`expDecay()`](https://github.com/sysbiolab/PathwaySpace/reference/expDecay.md)
+  : Constructor of exponential decay functions
+- [`getNearestNode()`](https://github.com/sysbiolab/PathwaySpace/reference/getNearestNode.md)
+  : getNearestNode
+- [`getPathwaySpace(`*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/getPathwaySpace-methods.md)
+  : Accessors for Fetching Slots from a PathwaySpace Object
+- [`gimage`](https://github.com/sysbiolab/PathwaySpace/reference/gimage.md)
+  : An image matrix
+- [`linearDecay()`](https://github.com/sysbiolab/PathwaySpace/reference/linearDecay.md)
+  : Constructor of linear decay functions
+- [`pathDistances()`](https://github.com/sysbiolab/PathwaySpace/reference/pathDistances.md)
+  : Calculate a pathway space distance between two vectors
+- [`plotPathDistances()`](https://github.com/sysbiolab/PathwaySpace/reference/plotPathDistances.md)
+  : Accessory function to plot pathway space distances
+- [`plotPathwaySpace(`*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/plotPathwaySpace-methods.md)
+  : Plotting 2D-landscape images for the PathwaySpace package
+- [`polarDecay()`](https://github.com/sysbiolab/PathwaySpace/reference/polarDecay.md)
+  : Polar transformation functions
+- [`polarProjection(`*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/polarProjection-methods.md)
+  : Polar Projection of Graph-Associated Signals
+- [`pspace.cols()`](https://github.com/sysbiolab/PathwaySpace/reference/pspace.cols.md)
+  : A simple vector of colors for PathwaySpace images
+- [`pspace.pals()`](https://github.com/sysbiolab/PathwaySpace/reference/pspace.pals.md)
+  : Create interpolated color palettes for PathwaySpace images
+- [`signalAggregation()`](https://github.com/sysbiolab/PathwaySpace/reference/signalAggregation.md)
+  : Signal aggregation functions
+- [`signalDecay()`](https://github.com/sysbiolab/PathwaySpace/reference/signalDecay.md)
+  : Deprecated function
+- [`silhouetteMapping(`*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/silhouetteMapping-methods.md)
+  : Decorating PathwaySpace Images with Graph Silhouettes
+- [`summitMapping(`*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/summitMapping-methods.md)
+  : Mapping Summits on PathwaySpace Images
+- [`summitWatershed()`](https://github.com/sysbiolab/PathwaySpace/reference/summitWatershed.md)
+  : Variation of the watershed algorithm for summit detection
+- [`vertexSignal(`*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md)
+  [`` `vertexSignal<-`( ``*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md)
+  [`vertexDecay(`*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md)
+  [`` `vertexDecay<-`( ``*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md)
+  : Accessor Functions for PathwaySpace Objects
+- [`weibullDecay()`](https://github.com/sysbiolab/PathwaySpace/reference/weibullDecay.md)
+  : Constructor of Weibull decay functions
+
+# Articles
+
+### All vignettes
+
+- [Getting started with
+  PathwaySpace](https://github.com/sysbiolab/PathwaySpace/articles/get-started.md):
+- [Installation
+  Instructions](https://github.com/sysbiolab/PathwaySpace/articles/install.md):
+- [Modeling signal decay
+  functions](https://github.com/sysbiolab/PathwaySpace/articles/modeling-signal-decay.md):
+- [PathwaySpace
+  Overview](https://github.com/sysbiolab/PathwaySpace/articles/overview.md):
+- [Network signal
+  projections](https://github.com/sysbiolab/PathwaySpace/articles/projection-methods.md):
+- [Creating signal aggregation
+  rules](https://github.com/sysbiolab/PathwaySpace/articles/signal-aggregation-rules.md):
+- [Visualizing sparse feature sets on large
+  graphs](https://github.com/sysbiolab/PathwaySpace/articles/sparse-feature-sets.md):
+- [Visualizing spatial
+  transcriptomics](https://github.com/sysbiolab/PathwaySpace/articles/spatial-transcriptomics.md):

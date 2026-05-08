@@ -31,7 +31,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">PathwaySpace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@
                         <h4 data-toc-skip class="author">Sysbiolab
 Team</h4>
             
-            <h4 data-toc-skip class="date">2026-04-27</h4>
+            <h4 data-toc-skip class="date">2026-05-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sysbiolab/PathwaySpace/blob/HEAD/vignettes/projection-methods.Rmd"><code>vignettes/projection-methods.Rmd</code></a></small>
       <div class="d-none name"><code>projection-methods.Rmd</code></div>
@@ -88,7 +88,7 @@ Team</h4>
 
     
     
-<p><strong>Package</strong>: PathwaySpace 1.2.0 <br></p>
+<p><strong>Package</strong>: PathwaySpace 1.2.1 <br></p>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
@@ -114,11 +114,11 @@ real-world datasets.</p>
 <span><span class="op">}</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check versions</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"RGraphSpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.1.4"</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"RGraphSpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.2.0"</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Need to update 'RGraphSpace' for this vignette"</span><span class="op">)</span></span>
 <span>  <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"sysbiolab/RGraphSpace"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"PathwaySpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.1.4"</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"PathwaySpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.2.0"</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Need to update 'PathwaySpace' for this vignette"</span><span class="op">)</span></span>
 <span>  <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"sysbiolab/PathwaySpace"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
@@ -156,22 +156,22 @@ require that all vertices have <code>x</code>, <code>y</code>, and
 <h3 id="checking-graph-validity">Checking graph validity<a class="anchor" aria-label="anchor" href="#checking-graph-validity"></a>
 </h3>
 <p>Next, we will create a <em>GraphSpace-class</em> object using the
-<code><a href="https://rdrr.io/pkg/RGraphSpace/man/GraphSpace-methods.html" class="external-link">GraphSpace()</a></code> constructor, followed by a call to
-<code><a href="https://rdrr.io/pkg/RGraphSpace/man/normalizeGraphSpace-methods.html" class="external-link">normalizeGraphSpace()</a></code>. The constructor ensures the validity
+<code><a href="https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-methods.html" class="external-link">GraphSpace()</a></code> constructor, followed by a call to
+<code><a href="https://sysbiolab.github.io/RGraphSpace/reference/normalizeGraphSpace-methods.html" class="external-link">normalizeGraphSpace()</a></code>. The constructor ensures the validity
 of the input <em>igraph</em> object, while
-<code><a href="https://rdrr.io/pkg/RGraphSpace/man/normalizeGraphSpace-methods.html" class="external-link">normalizeGraphSpace()</a></code> scales the network coordinates. In
+<code><a href="https://sysbiolab.github.io/RGraphSpace/reference/normalizeGraphSpace-methods.html" class="external-link">normalizeGraphSpace()</a></code> scales the network coordinates. In
 this example, we set <code>mar = 0.2</code> to define the graph’s outer
 margins.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check graph validity</span></span>
-<span><span class="va">gs1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/RGraphSpace/man/GraphSpace-methods.html" class="external-link">GraphSpace</a></span><span class="op">(</span><span class="va">gtoy1</span><span class="op">)</span></span>
-<span><span class="va">gs1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/RGraphSpace/man/normalizeGraphSpace-methods.html" class="external-link">normalizeGraphSpace</a></span><span class="op">(</span><span class="va">gs1</span>, mar <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">gs1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-methods.html" class="external-link">GraphSpace</a></span><span class="op">(</span><span class="va">gtoy1</span><span class="op">)</span></span>
+<span><span class="va">gs1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/normalizeGraphSpace-methods.html" class="external-link">normalizeGraphSpace</a></span><span class="op">(</span><span class="va">gs1</span>, mar <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span></code></pre></div>
 <p>Our graph is now ready for the <em>PathwaySpace</em> package. We can
-check its layout using the <code><a href="https://rdrr.io/pkg/RGraphSpace/man/plotGraphSpace-methods.html" class="external-link">plotGraphSpace()</a></code> function.</p>
+check its layout using the <code><a href="https://sysbiolab.github.io/RGraphSpace/reference/plotGraphSpace-methods.html" class="external-link">plotGraphSpace()</a></code> function.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check the graph layout</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/RGraphSpace/man/plotGraphSpace-methods.html" class="external-link">plotGraphSpace</a></span><span class="op">(</span><span class="va">gs1</span>, add.labels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figs_intro/fig2.png" alt="" width="100%"></p>
+<span><span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/plotGraphSpace-methods.html" class="external-link">plotGraphSpace</a></span><span class="op">(</span><span class="va">gs1</span>, add.labels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="figs_intro/fig2.png" class="r-plt" alt="" width="100%"></p>
 </div>
 <div class="section level3">
 <h3 id="creating-a-pathwayspace-object">Creating a <em>PathwaySpace</em> object<a class="anchor" aria-label="anchor" href="#creating-a-pathwayspace-object"></a>
@@ -190,7 +190,7 @@ signals in a <em>PathwaySpace</em> object; for example, in order to get
 vertex names and signal values:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check the number of vertices in a PathwaySpace object</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/RGraphSpace/man/GraphSpace-accessors.html" class="external-link">gs_vcount</a></span><span class="op">(</span><span class="va">p_space1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-accessors.html" class="external-link">gs_vcount</a></span><span class="op">(</span><span class="va">p_space1</span><span class="op">)</span></span>
 <span><span class="co">## [1] 5</span></span>
 <span></span>
 <span><span class="co"># Check vertex names</span></span>
@@ -242,7 +242,7 @@ convolution.</p>
 <span></span>
 <span><span class="co"># Plot a PathwaySpace image</span></span>
 <span><span class="fu"><a href="../reference/plotPathwaySpace-methods.html">plotPathwaySpace</a></span><span class="op">(</span><span class="va">p_space1</span>, add.marks <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figs_intro/fig3.png" alt="" width="100%"></p>
+<p><img src="figs_intro/fig3.png" class="r-plt" alt="" width="100%"></p>
 <p>Next, we reassess the same <em>PathwaySpace</em> object, using
 <code>pdist = 0.2</code>, <code>k = 2</code> and adjusting the
 <code>shape</code> of the decay function (for further details, see the
@@ -255,7 +255,7 @@ decay</strong></a> tutorial).</p>
 <span></span>
 <span><span class="co"># Plot PathwaySpace</span></span>
 <span><span class="fu"><a href="../reference/plotPathwaySpace-methods.html">plotPathwaySpace</a></span><span class="op">(</span><span class="va">p_space1</span>, marks <span class="op">=</span> <span class="st">"n1"</span>, theme <span class="op">=</span> <span class="st">"th2"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figs_intro/fig4.png" alt="" width="100%"></p>
+<p><img src="figs_intro/fig4.png" class="r-plt" alt="" width="100%"></p>
 <p>The <code>shape</code> parameter allows a projection to take a
 variety of shapes. When <code>shape = 1</code> the projection follows an
 exponential decay, and when <code>shape &gt; 1</code> the projection is
@@ -276,13 +276,13 @@ directed graph, available in the <em>RGraphSpace</em> package.</p>
 <code class="sourceCode R"><span><span class="co"># Load a pre-processed directed igraph object</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"gtoy2"</span>, package <span class="op">=</span> <span class="st">"RGraphSpace"</span><span class="op">)</span></span>
 <span><span class="co"># Check graph validity</span></span>
-<span><span class="va">gs2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/RGraphSpace/man/GraphSpace-methods.html" class="external-link">GraphSpace</a></span><span class="op">(</span><span class="va">gtoy2</span><span class="op">)</span></span>
+<span><span class="va">gs2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-methods.html" class="external-link">GraphSpace</a></span><span class="op">(</span><span class="va">gtoy2</span><span class="op">)</span></span>
 <span><span class="co"># Normalize node coordinates</span></span>
-<span><span class="va">gs2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/RGraphSpace/man/normalizeGraphSpace-methods.html" class="external-link">normalizeGraphSpace</a></span><span class="op">(</span><span class="va">gs2</span>, mar <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">gs2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/normalizeGraphSpace-methods.html" class="external-link">normalizeGraphSpace</a></span><span class="op">(</span><span class="va">gs2</span>, mar <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check the graph layout</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/RGraphSpace/man/plotGraphSpace-methods.html" class="external-link">plotGraphSpace</a></span><span class="op">(</span><span class="va">gs2</span>, add.labels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figs_intro/fig5.png" alt="" width="100%"></p>
+<span><span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/plotGraphSpace-methods.html" class="external-link">plotGraphSpace</a></span><span class="op">(</span><span class="va">gs2</span>, add.labels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="figs_intro/fig5.png" class="r-plt" alt="" width="100%"></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Build a PathwaySpace for the 'gs2'</span></span>
 <span><span class="va">p_space2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/buildPathwaySpace.html">buildPathwaySpace</a></span><span class="op">(</span><span class="va">gs2</span><span class="op">)</span></span>
@@ -312,7 +312,7 @@ narrow the projection along the edge axis.</p>
 <span></span>
 <span><span class="co"># Plot PathwaySpace</span></span>
 <span><span class="fu"><a href="../reference/plotPathwaySpace-methods.html">plotPathwaySpace</a></span><span class="op">(</span><span class="va">p_space2</span>, theme <span class="op">=</span> <span class="st">"th2"</span>, add.marks <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figs_intro/fig6.png" alt="" width="100%"></p>
+<p><img src="figs_intro/fig6.png" class="r-plt" alt="" width="100%"></p>
 <p>Note that this projection distributes signals on the edges regardless
 of direction. To incorporate edge orientation, we set
 <code>directional = TRUE</code>, which channels the projection along the
@@ -325,7 +325,7 @@ paths:</p>
 <span><span class="co"># Plot PathwaySpace</span></span>
 <span><span class="fu"><a href="../reference/plotPathwaySpace-methods.html">plotPathwaySpace</a></span><span class="op">(</span><span class="va">p_space2</span>, theme <span class="op">=</span> <span class="st">"th2"</span>, </span>
 <span>  marks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n1"</span>,<span class="st">"n3"</span>,<span class="st">"n4"</span>,<span class="st">"n5"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figs_intro/fig7.png" alt="" width="100%"></p>
+<p><img src="figs_intro/fig7.png" class="r-plt" alt="" width="100%"></p>
 <p>This <em>PathwaySpace</em> polar projection emphasizes the signal
 flow along the directional pattern of a directed graph (see the
 <em>igraph</em> plot above). When interpreting, users should note that
@@ -361,7 +361,7 @@ the <code>p_space1</code> object created previously.</p>
 <span><span class="fu"><a href="../reference/plotPathwaySpace-methods.html">plotPathwaySpace</a></span><span class="op">(</span><span class="va">p_space1</span>, bg.color <span class="op">=</span> <span class="st">"white"</span>, </span>
 <span>  font.color <span class="op">=</span> <span class="st">"grey20"</span>, add.marks <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  mark.color <span class="op">=</span> <span class="st">"magenta"</span>, theme <span class="op">=</span> <span class="st">"th3"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figs_intro/fig8.png" alt="" width="100%"></p>
+<p><img src="figs_intro/fig8.png" class="r-plt" alt="" width="100%"></p>
 <p>Note that the original signal vector was rescale to
 <code>[-1, +1]</code>. If the signal vector is <code>&gt;=0</code>, then
 it will be rescaled to <code>[0, 1]</code>; if the signal vector is
@@ -386,7 +386,7 @@ molecular subtypes using compact feature sets. <em>Cancer Cell</em>
 <div class="section level2">
 <h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<pre><code><span><span class="co">## R version 4.5.3 (2026-03-11)</span></span>
+<pre><code><span><span class="co">## R version 4.6.0 (2026-04-24)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
 <span><span class="co">## Running under: Ubuntu 24.04.4 LTS</span></span>
 <span><span class="co">## </span></span>
@@ -409,24 +409,24 @@ molecular subtypes using compact feature sets. <em>Cancer Cell</em>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] igraph_2.3.0       PathwaySpace_1.2.0 RGraphSpace_1.2.0  ggplot2_4.0.2.9000</span></span>
+<span><span class="co">## [1] igraph_2.3.1       PathwaySpace_1.2.1 RGraphSpace_1.2.1  ggplot2_4.0.3     </span></span>
 <span><span class="co">## [5] remotes_2.5.0     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] sass_0.4.10        generics_0.1.4     digest_0.6.39      magrittr_2.0.5    </span></span>
-<span><span class="co">##  [5] evaluate_1.0.5     grid_4.5.3         RColorBrewer_1.1-3 fastmap_1.2.0     </span></span>
-<span><span class="co">##  [9] jsonlite_2.0.0     ggrepel_0.9.8      ggrastr_1.0.2      scales_1.4.0      </span></span>
-<span><span class="co">## [13] textshaping_1.0.5  jquerylib_0.1.4    cli_3.6.6          rlang_1.2.0       </span></span>
-<span><span class="co">## [17] withr_3.0.2        RANN_2.6.2         cachem_1.1.0       yaml_2.3.12       </span></span>
-<span><span class="co">## [21] otel_0.2.0         ggbeeswarm_0.7.3   tools_4.5.3        dplyr_1.2.1       </span></span>
-<span><span class="co">## [25] colorspace_2.1-2   vctrs_0.7.3        R6_2.6.1           lifecycle_1.0.5   </span></span>
-<span><span class="co">## [29] fs_2.0.1           htmlwidgets_1.6.4  vipor_0.4.7        ragg_1.5.2        </span></span>
-<span><span class="co">## [33] pkgconfig_2.0.3    beeswarm_0.4.0     desc_1.4.3         pkgdown_2.1.3     </span></span>
-<span><span class="co">## [37] pillar_1.11.1      bslib_0.10.0       gtable_0.3.6       glue_1.8.1        </span></span>
-<span><span class="co">## [41] Rcpp_1.1.1-1       systemfonts_1.3.2  xfun_0.57          tibble_3.3.1      </span></span>
-<span><span class="co">## [45] tidyselect_1.2.1   rstudioapi_0.17.1  knitr_1.51         dichromat_2.0-0.1 </span></span>
-<span><span class="co">## [49] farver_2.1.2       patchwork_1.3.2    htmltools_0.5.9    rmarkdown_2.31    </span></span>
-<span><span class="co">## [53] compiler_4.5.3     S7_0.2.1-1</span></span></code></pre>
+<span><span class="co">##  [1] sass_0.4.10        generics_0.1.4     tidyr_1.3.2        digest_0.6.39     </span></span>
+<span><span class="co">##  [5] magrittr_2.0.5     evaluate_1.0.5     grid_4.6.0         RColorBrewer_1.1-3</span></span>
+<span><span class="co">##  [9] fastmap_1.2.0      jsonlite_2.0.0     ggrepel_0.9.8      ggrastr_1.0.2     </span></span>
+<span><span class="co">## [13] purrr_1.2.2        scales_1.4.0       textshaping_1.0.5  jquerylib_0.1.4   </span></span>
+<span><span class="co">## [17] cli_3.6.6          rlang_1.2.0        tidygraph_1.3.1    withr_3.0.2       </span></span>
+<span><span class="co">## [21] RANN_2.6.2         cachem_1.1.0       yaml_2.3.12        otel_0.2.0        </span></span>
+<span><span class="co">## [25] ggbeeswarm_0.7.3   tools_4.6.0        dplyr_1.2.1        colorspace_2.1-2  </span></span>
+<span><span class="co">## [29] vctrs_0.7.3        R6_2.6.1           lifecycle_1.0.5    fs_2.1.0          </span></span>
+<span><span class="co">## [33] htmlwidgets_1.6.4  vipor_0.4.7        ragg_1.5.2         pkgconfig_2.0.3   </span></span>
+<span><span class="co">## [37] beeswarm_0.4.0     desc_1.4.3         pkgdown_2.2.0      pillar_1.11.1     </span></span>
+<span><span class="co">## [41] bslib_0.10.0       gtable_0.3.6       Rcpp_1.1.1-1.1     glue_1.8.1        </span></span>
+<span><span class="co">## [45] systemfonts_1.3.2  xfun_0.57          tibble_3.3.1       tidyselect_1.2.1  </span></span>
+<span><span class="co">## [49] rstudioapi_0.18.0  knitr_1.51         farver_2.1.2       patchwork_1.3.2   </span></span>
+<span><span class="co">## [53] htmltools_0.5.9    rmarkdown_2.31     compiler_4.6.0     S7_0.2.2</span></span></code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
@@ -439,7 +439,7 @@ molecular subtypes using compact feature sets. <em>Cancer Cell</em>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

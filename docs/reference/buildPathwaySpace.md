@@ -1,0 +1,70 @@
+# Constructor of PathwaySpace-class Objects
+
+`buildPathwaySpace` is a constructor of PathwaySpace-class objects.
+
+## Usage
+
+``` r
+buildPathwaySpace(gs, nrc = 500, verbose = TRUE, g = deprecated())
+```
+
+## Arguments
+
+- gs:
+
+  A
+  [`GraphSpace`](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-methods.html)
+  object. Alternatively, an
+  [`igraph`](https://r.igraph.org/reference/aaa-igraph-package.html)
+  object with node coordinates assigned to `x` and `y` vertex
+  attributes, and node labels assigned to `name` vertex attribute.
+
+- nrc:
+
+  A single positive integer indicating the number of rows and columns
+  (in pixels) for a square image matrix. This argument will affect the
+  resulting image size and resolution.
+
+- verbose:
+
+  A logical value specifying to display detailed messages (when
+  `verbose=TRUE`) or not (when `verbose=FALSE`).
+
+- g:
+
+  Deprecated from PathwaySpace 1.0.1; use 'gs' instead.
+
+## Value
+
+A pre-processed
+[PathwaySpace](https://github.com/sysbiolab/PathwaySpace/reference/PathwaySpace-class.md)
+class object.
+
+## See also
+
+[`undirected_graph`](https://r.igraph.org/reference/make_graph.html)
+
+## Author
+
+Sysbiolab Team
+
+## Examples
+
+``` r
+# Load a demo igraph
+data('gtoy1', package = 'RGraphSpace')
+
+# Check graph validity
+gs <- GraphSpace(gtoy1)
+#> Validating the 'igraph' object...
+#> Creating a 'GraphSpace' object...
+
+gs <- normalizeGraphSpace(gs)
+#> Normalizing node coordinates to graph space...
+
+# Create a new PathwaySpace object
+ps <- buildPathwaySpace(gs, nrc = 100)
+#> Validating arguments...
+#> Creating a 'PathwaySpace' object...
+# note: adjust 'nrc' to increase image resolution
+```

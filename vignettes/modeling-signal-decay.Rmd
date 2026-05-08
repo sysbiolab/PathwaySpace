@@ -1,0 +1,186 @@
+---
+title: "Modeling signal decay functions"
+author: "Sysbiolab Team"
+date: "`r Sys.Date()`"
+bibliography: bibliography.bib
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**Package**: PathwaySpace `r packageVersion('PathwaySpace')`
+<br/>
+
+# Overview
+
+In this tutorial, we demonstrate how to model signal decay functions targeted at specific nodes. Using a simple lattice graph, we describe the steps to create and apply different decay functions for *PathwaySpace* projections. Nodes in this example represent spots, providing an intuitive starting point for understanding how these functions can be used to capture behaviors in larger or more complex graphs, such as from [**spatial transcriptomics**](spatial-transcriptomics.html) data.
+
+# Required packages
+
+```{r Check required packages, eval=TRUE, message=FALSE}
+# Check required packages for this vignette
+if (!require("remotes", quietly = TRUE)){
+  install.packages("remotes")
+}
+if (!require("RGraphSpace", quietly = TRUE)){
+  remotes::install_github("sysbiolab/RGraphSpace")
+}
+if (!require("PathwaySpace", quietly = TRUE)){
+  remotes::install_github("sysbiolab/PathwaySpace")
+}
+```
+
+```{r Check required versions, eval=TRUE, message=FALSE}
+# Check versions
+if (packageVersion("RGraphSpace") < "1.2.0"){
+  message("Need to update 'RGraphSpace' for this vignette")
+  remotes::install_github("sysbiolab/RGraphSpace")
+}
+if (packageVersion("PathwaySpace") < "1.2.0"){
+  message("Need to update 'PathwaySpace' for this vignette")
+  remotes::install_github("sysbiolab/PathwaySpace")
+}
+```
+
+```{r Load packages - quick start, eval=TRUE, message=FALSE}
+# Load packages
+library(igraph)
+library(ggplot2)
+library(RGraphSpace)
+library(PathwaySpace)
+library(patchwork)
+```
+
+# Setting basic input data
+
+```{r Setting basic input data - 1, eval=TRUE, message=FALSE}
+# Create a lattice graph with igraph
+g <- make_lattice(c(9, 9), directed = FALSE)
+V(g)$name <- paste0("n",1:vcount(g))
+gs <- GraphSpace(g, layout = layout_on_grid(g))
+gs <- normalizeGraphSpace(gs)
+plotGraphSpace(gs, add.labels = TRUE)
+```
+
+```{r Setting basic input data - 2, eval=TRUE, message=FALSE}
+# Build a PathwaySpace object
+ps <- buildPathwaySpace(gs)
+```
+
+# Creating a decay function
+
+In the context of *PathwaySpace*, a decay function describes how a signal decreases as a function of distance, modeling the gradual loss of intensity. These functions are used to attenuate signals over graph-based domains, so contributions from distant vertices are weighted less than those nearby. *PathwaySpace* provides three built-in decay function constructors, `weibullDecay()`, `expDecay()`, and `linearDecay()`, all sharing a consistent argument structure for practical use and comparison:
+
+$$
+y = signal \times \text{decay}^{\left(\frac{x}{\text{pdist}}\right)^{\text{shape}}} \quad \text{(Weibull)}
+$$
+
+$$
+y = signal \times \text{decay}^{\left(\frac{x}{\text{pdist}}\right)} \quad \text{(Exponential)}
+$$
+
+$$
+y = signal \times \left(1 - (1 - \text{decay}) \times \frac{x}{\text{pdist}}\right) \quad \text{(Linear*)}
+$$
+
+$$
+\text{*output clipped to prevent flipping sign}
+$$
+
+where $\textbf{signal}$ represents the initial intensity, $\textbf{decay}$ controls the rate of attenuation, $\textbf{x}$ is a vector of normalized distances, $\textbf{shape}$ adjusts the curvature of the decay, $\textbf{pdist}$ is a normalization term, and $\textbf{y}$ is the resulting signal decay values. Next, the main arguments are illustrated using the `weibullDecay()` constructor, which returns a decay function with customized parameters.
+
+
+```{r Creating a decay function - 4.1, eval=TRUE, message=FALSE}
+weibullDecay(decay = 0.25, shape = 2, pdist = 0.75)
+```
+
+</br>
+
+... and to visualize how different parameters affect the signal attenuation, rerun the `weibullDecay()` constructor with `plot = TRUE`.
+
+
+```{r Creating a decay function - 4.2, eval=TRUE, message=FALSE, out.width="100%", fig.width= 12, fig.height= 4}
+# Run Weibull constructor with decay = 0.5, shape = 1, and pdist = 0.25
+p1 <- weibullDecay(decay = 0.4, shape = 1, pdist = 0.2, plot = TRUE)
+
+# Run Weibull constructor with decay = 0.5, shape = 2, and pdist = 0.50
+p2 <- weibullDecay(decay = 0.4, shape = 2, pdist = 0.4, plot = TRUE)
+
+# Run Weibull constructor with decay = 0.25, shape = 3, and pdist = 0.75
+p3 <- weibullDecay(decay = 0.2, shape = 4, pdist = 0.8, plot = TRUE)
+
+p1 + p2 + p3
+```
+
+Note that the normalization term $\textbf{pdist}$ anchors the decay to a reference distance where the initial signal $S_0$ decreases to $S_0 * \textbf{decay}$, controlling the extent over which the signal is projected along the x-axis. The $\textbf{shape}$ parameter, on the other hand, controls the curvature of the decay function: When $\textbf{shape} = 1$, the function follows an exponential decay; and for $\textbf{shape} > 1$, the curve transitions from convex to concave, increasingly sigmoidal. 
+
+Next, we demonstrate the `expDecay()` and `linearDecay()` constructors:
+
+```{r Creating a decay function - 4.3, eval=TRUE, message=FALSE, out.width="100%", fig.width= 8, fig.height= 4}
+# Run the exp expDecay constructor with decay = 0.4 and pdist = 0.2
+p1 <- expDecay(decay = 0.4, pdist = 0.2, plot = TRUE)
+
+# Run the linearDecay constructor with decay = 0.5,and pdist = 0.25
+p2 <- linearDecay(decay = 0.4, pdist = 0.3, plot = TRUE)
+
+p1 + p2
+```
+
+The exponential model follows an asymptotic decay, while the linear model decreases proportionally with distance and is clipped at zero to prevent flipping sign. Together, these decay models produce distinct geometric profiles when projecting signals onto the 2D coordinate space, ranging from cone-like projections in the linear model (see the conceptual representation in [**Figure 1A**](overview.html)) to radially symmetric peaks in the exponential model, with the Weibull model transitioning between them to form dome-like surfaces depending on its $\textbf{shape}$ parameter.
+
+# Assigning a decay model
+
+Returning to our lattice example, next we assign a linear decay model to the *PathwaySpace* object, setting $\textbf{pdist}$ as the average center-to-center distance between vertices. For more details, refer to the documentation of the `vertexDecay()` accessor.
+
+```{r Setting a distance unit, eval=TRUE, message=FALSE}
+# Get distance to the nearest vertex
+near_df <- getNearestNode(ps)
+pdist <- mean(near_df$dist)
+# 'pdist' set as the average center-to-center distance between vertices
+pdist
+```
+
+```{r Setting a decay model, eval=TRUE, message=FALSE}
+# Setting a linear decay model for all vertices
+vertexDecay(ps) <- linearDecay(pdist = pdist)
+```
+
+# Running *PathwaySpace*
+
+Now we project a random binary signal using the `circularProjection()` function.
+
+```{r Running PathwaySpace - 1, eval=TRUE, message=FALSE}
+# Add a random binary signal
+set.seed(10)
+vertexSignal(ps) <- sample(c(0,1), gs_vcount(ps), replace = TRUE)
+```
+
+```{r Running PathwaySpace - 2, eval=TRUE, message=FALSE}
+# Running and plotting projections
+ps <- circularProjection(ps, k = 1)
+plotPathwaySpace(ps, marks = "n34")
+```
+
+By assigning a new decay model to specific vertices, we can explore how signals propagate across the network under different rules. To illustrate, we assign a Weibull decay function to vertex `n34`.
+
+```{r Running PathwaySpace - 3, eval=TRUE, message=FALSE}
+# Changing decay model of vertex 'n34'
+vertexDecay(ps)[["n34"]] <- weibullDecay(shape = 2, pdist = pdist*10)
+```
+
+```{r Running PathwaySpace - 4, eval=TRUE, message=FALSE}
+# Running and plotting projections
+ps <- circularProjection(ps, k = 1)
+plotPathwaySpace(ps, marks = "n34")
+```
+
+# Session information
+```{r label='Session information', eval=TRUE, echo=FALSE}
+sessionInfo()
+```
