@@ -21,8 +21,8 @@ projection that decreases with distance, reflecting both the local
 strength of the signal and its spatial influence. Because a graph may
 have multiple vertices, the resulting projections can be aggregated in
 different ways (see [**Figure
-1**](https://github.com/sysbiolab/PathwaySpace/articles/index.md) for a
-conceptual overview of signal processing in *PathwaySpace*).
+1**](https://github.com/sysbiolab/PathwaySpace/articles/overview.md) for
+a conceptual overview of signal processing in *PathwaySpace*).
 
 In what follows, this tutorial demonstrates how to create different
 signal aggregation functions for *PathwaySpace* projections. A toy graph

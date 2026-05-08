@@ -19,7 +19,7 @@ that considers the graph's topology to project the signal on a 2D space.
 [Figure1](https://sysbiolab.github.io/PathwaySpace/) illustrates the 
 convolution operation problem addressed by the *PathwaySpace* package. 
 For detailed documentation and usage examples, see the [package's vignettes 
-and workflows](https://sysbiolab.github.io/PathwaySpace/get-started.html).
+and workflows](https://sysbiolab.github.io/PathwaySpace/articles/get-started.html).
 
 *PathwaySpace* could have various applications, such as highlighting 
 relationships and signal strengths between network vertices, visualizing 

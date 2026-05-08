@@ -123,7 +123,7 @@ weibullDecay(decay = 0.25, shape = 2, pdist = 0.75)
     ##     y <- signal * 0.25^((x/0.75)^2)
     ##     return(y)
     ## }
-    ## <environment: 0x5ae9c14f6de8>
+    ## <environment: 0x5f22af60fbe0>
     ## attr(,"name")
     ## [1] "weibullDecay"
 
