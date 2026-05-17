@@ -10,14 +10,14 @@ downloads](https://cranlogs.r-pkg.org/badges/PathwaySpace)](https://cranlogs.r-p
 Artistic-2.0](https://img.shields.io/badge/license-Artistic--2.0-blue.svg)](https://cran.r-project.org/web/licenses/Artistic-2.0)
 [![DOI](https://img.shields.io/badge/doi-10.32614/CRAN.package.PathwaySpace-blue.svg)](https://doi.org/10.32614/CRAN.package.PathwaySpace)
 
-## Highlights
+### Highlights
 
 - Produces landscape images representing graphs by geodesic paths.
 - Projects signals using a decay function to model signal attenuation.
 - Applies a convolution algorithm to combine signals from neighboring
   vertices.
 
-## Overview
+### Overview
 
 For a given *igraph* object containing vertices, edges, and a signal
 associated with the vertices, *PathwaySpace* performs a convolution
