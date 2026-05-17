@@ -14,13 +14,13 @@ pspace.pals(
 \arguments{
 \item{colors}{A vector of five base colors used to construct the custom
 diverging palette. These colors are interpolated according to the
-`trim.colors` values.}
+\code{trim.colors} values.}
 
 \item{trim.colors}{A vector of five positive integers that control the
 relative weight of each hue in the five-color diverging palette.}
 
 \item{offset}{Adjusts brightness by shifting hues toward the center,
-either brighter (`offset > 0`) or darker (` offset < 0`).}
+either brighter (\code{offset > 0}) or darker (\code{ offset < 0}).}
 
 \item{n}{The number of colors to generate in the output palette.}
 }

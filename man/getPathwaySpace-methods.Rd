@@ -11,10 +11,10 @@
 \arguments{
 \item{ps}{A preprocessed \linkS4class{PathwaySpace} class object}
 
-\item{what}{A character value specifying which information should 
+\item{what}{A character value specifying which information should
 be retrieved from the slots.
-Options: "nodes", "edges", "graph", "image", "pars", "misc", 
-"signal","projections", "status", "silhouette", "summits", 
+Options: "nodes", "edges", "graph", "image", "pars", "misc",
+"signal","projections", "status", "silhouette", "summits",
 "summit_mask", "summit_contour"}
 }
 \value{

@@ -13,7 +13,7 @@ signalDecay(...)
 Stop unconditionally
 }
 \description{
-Use \code{\link{weibullDecay}}, \code{\link{expDecay}}, 
+Use \code{\link{weibullDecay}}, \code{\link{expDecay}},
 and \code{\link{linearDecay}}.
 }
 \examples{

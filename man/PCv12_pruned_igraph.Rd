@@ -18,14 +18,14 @@ data(PCv12_pruned_igraph)
 An igraph object.
 }
 \description{
-This igraph object was created from a 'sif' file available from 
-the Pathway Commons V12 (Rodchenkov et al., 2020), which was filtered to 
-keep interactions from the following sources: CTD, Recon, HumanCyc, 
-DrugBank, MSigDB, DIP, BioGRID, IntAct, BIND, and PhosphoSite. The igraph 
-was additionally pruned and laid out by a force-directed algorithm aiming 
-signal projection on PathwaySpace's images. Edges with the smallest 
+This igraph object was created from a 'sif' file available from
+the Pathway Commons V12 (Rodchenkov et al., 2020), which was filtered to
+keep interactions from the following sources: CTD, Recon, HumanCyc,
+DrugBank, MSigDB, DIP, BioGRID, IntAct, BIND, and PhosphoSite. The igraph
+was additionally pruned and laid out by a force-directed algorithm aiming
+signal projection on PathwaySpace's images. Edges with the smallest
 betweenness centrality were pruned using 'backward elimination' and
-'forward selection' strategies. The resulting graph represents the 
+'forward selection' strategies. The resulting graph represents the
 main connected component with the minimum number of edges.
 }
 \examples{

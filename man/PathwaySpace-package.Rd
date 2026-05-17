@@ -6,38 +6,26 @@
 \alias{PathwaySpace-package}
 \title{PathwaySpace: Spatial Projection of Network Signals along Geodesic Paths}
 \description{
-For a given graph containing vertices, edges, and a signal associated with
-the vertices, the PathwaySpace package performs a convolution operation,
-which involves a weighted combination of neighboring vertices and their
-associated signals. The package then uses a decay function to propagate
-these signals, creating geodesic paths on a 2D-image space.
-}
-\details{
-\tabular{ll}{
-Package: \tab PathwaySpace\cr
-Type: \tab Software\cr
-License: \tab Artistic-2.0\cr
-Maintainer: \tab Mauro Castro \email{mauro.a.castro@gmail.com}\cr
-}
+For a given graph containing vertices, edges, and a signal associated with the vertices, the 'PathwaySpace' package performs a convolution operation, which involves a weighted combination of neighboring vertices and their associated signals. The package uses a decay function to project these signals, creating geodesic paths on a 2D-image space. 'PathwaySpace' has various applications, such as visualizing network data in a graphical format that highlights the relationships and signal strengths between vertices. By combining graph theory, signal processing, and visualization, 'PathwaySpace' provides a way of representing graph data on a continuous projection space. Based on methods introduced in Tercan et al. (2025) \doi{10.1016/j.xpro.2025.103681} and Ellrott et al. (2025) \doi{10.1016/j.ccell.2024.12.002}.
 }
 \section{Index}{
 
 \tabular{ll}{
-\link{PathwaySpace-class}: 
+\link{PathwaySpace-class}:
 \tab An S4 class for signal propagation on pathway spaces.\cr
-\link{buildPathwaySpace}: 
+\link{buildPathwaySpace}:
 \tab Constructor of PathwaySpace-class objects.\cr
-\link{circularProjection}: 
+\link{circularProjection}:
 \tab Creating 2D-landscape images from graph objects.\cr
-\link{polarProjection}: 
+\link{polarProjection}:
 \tab Creating 2D-landscape images from graph objects.\cr
-\link{silhouetteMapping}: 
+\link{silhouetteMapping}:
 \tab Mapping graph silhouettes on PathwaySpace images.\cr
-\link{summitMapping}: 
+\link{summitMapping}:
 \tab Mapping summits on a 2D-landscape image.\cr
-\link{getPathwaySpace}: 
+\link{getPathwaySpace}:
 \tab Accessory method for fetching slots from a PathwaySpace object.\cr
-\link{plotPathwaySpace}: 
+\link{plotPathwaySpace}:
 \tab Plotting 2D-landscape images for the PathwaySpace package.\cr
 }
 Further information is available in the vignettes by typing
@@ -47,8 +35,10 @@ from the menu.
 }
 
 \references{
-The Cancer Genome Atlas Analysis Network (2023). PathwaySpace: Spatial propagation 
-of network signals along geodesic paths. R package version 0.99.
+Sysbiolab Team (2026). \emph{RGraphSpace: A lightweight interface between
+'igraph' and 'ggplot2' graphics}. R package version 1.2.3 (Doi:
+10.32614/CRAN.package.RGraphSpace),
+\url{https://CRAN.R-project.org/package=RGraphSpace}.
 }
 \seealso{
 Useful links:
@@ -60,6 +50,21 @@ Useful links:
 
 }
 \author{
-The Cancer Genome Atlas Analysis Network
+\strong{Maintainer}: Mauro Castro \email{mauro.a.castro@gmail.com} (\href{https://orcid.org/0000-0003-4942-8131}{ORCID})
+
+Authors:
+\itemize{
+  \item Sysbiolab Team
+}
+
+Other contributors:
+\itemize{
+  \item Victor Apolonio [contributor]
+  \item Jonathan Back [contributor]
+  \item Lana Querne [contributor]
+  \item Vinicius Chagas [contributor]
+  \item Bahar Tercan [contributor]
+}
+
 }
 \keyword{internal}

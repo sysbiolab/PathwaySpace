@@ -1,19 +1,20 @@
 # PathwaySpace: Spatial Projection of Network Signals along Geodesic Paths
 
 For a given graph containing vertices, edges, and a signal associated
-with the vertices, the PathwaySpace package performs a convolution
+with the vertices, the 'PathwaySpace' package performs a convolution
 operation, which involves a weighted combination of neighboring vertices
-and their associated signals. The package then uses a decay function to
-propagate these signals, creating geodesic paths on a 2D-image space.
-
-## Details
-
-|             |                                         |
-|-------------|-----------------------------------------|
-| Package:    | PathwaySpace                            |
-| Type:       | Software                                |
-| License:    | Artistic-2.0                            |
-| Maintainer: | Mauro Castro <mauro.a.castro@gmail.com> |
+and their associated signals. The package uses a decay function to
+project these signals, creating geodesic paths on a 2D-image space.
+'PathwaySpace' has various applications, such as visualizing network
+data in a graphical format that highlights the relationships and signal
+strengths between vertices. By combining graph theory, signal
+processing, and visualization, 'PathwaySpace' provides a way of
+representing graph data on a continuous projection space. Based on
+methods introduced in Tercan et al. (2025)
+[doi:10.1016/j.xpro.2025.103681](https://doi.org/10.1016/j.xpro.2025.103681)
+and Ellrott et al. (2025)
+[doi:10.1016/j.ccell.2024.12.002](https://doi.org/10.1016/j.ccell.2024.12.002)
+.
 
 ## Index
 
@@ -35,9 +36,10 @@ selecting the PathwaySpace package from the menu.
 
 ## References
 
-The Cancer Genome Atlas Analysis Network (2023). PathwaySpace: Spatial
-propagation of network signals along geodesic paths. R package version
-0.99.
+Sysbiolab Team (2026). *RGraphSpace: A lightweight interface between
+'igraph' and 'ggplot2' graphics*. R package version 1.2.3 (Doi:
+10.32614/CRAN.package.RGraphSpace),
+<https://CRAN.R-project.org/package=RGraphSpace>.
 
 ## See also
 
@@ -51,4 +53,21 @@ Useful links:
 
 ## Author
 
-The Cancer Genome Atlas Analysis Network
+**Maintainer**: Mauro Castro <mauro.a.castro@gmail.com>
+([ORCID](https://orcid.org/0000-0003-4942-8131))
+
+Authors:
+
+- Sysbiolab Team
+
+Other contributors:
+
+- Victor Apolonio \[contributor\]
+
+- Jonathan Back \[contributor\]
+
+- Lana Querne \[contributor\]
+
+- Vinicius Chagas \[contributor\]
+
+- Bahar Tercan \[contributor\]

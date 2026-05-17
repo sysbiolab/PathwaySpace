@@ -7,50 +7,50 @@
 expDecay(decay = 0.001, pdist = 0.15, plot = FALSE, demo.signal = 1)
 }
 \arguments{
-\item{decay}{A decay factor (in [0,1]). This term indicates how much a
-\code{signal} decreases as a function of distance in pathway space. 
-For example, at a specific distance defined by the \code{pdist} parameter, 
+\item{decay}{A decay factor (in \verb{[0,1]}). This term indicates how much a
+\code{signal} decreases as a function of distance in pathway space.
+For example, at a specific distance defined by the \code{pdist} parameter,
 the signal intensity will be the initial signal multiplied by \code{decay}.}
 
-\item{pdist}{A distance normalization term (in (0, 1]) at which the signal 
-reaches `signal * decay`. This parameter is used to anchor the decay to 
-a meaningful distance (see `details`). Also, when \code{pdist = 1}, it will
+\item{pdist}{A distance normalization term (in (0, 1]) at which the signal
+reaches \code{signal * decay}. This parameter is used to anchor the decay to
+a meaningful distance (see \code{details}). Also, when \code{pdist = 1}, it will
 represent the diameter of the inscribed circle within the coordinate space
-of a `PathwaySpace` object.}
+of a \code{PathwaySpace} object.}
 
-\item{plot}{A logical value indicating whether to return a `ggplot` object.}
+\item{plot}{A logical value indicating whether to return a \code{ggplot} object.}
 
-\item{demo.signal}{A numeric value in `[-Inf, Inf]`, only passed when 
-\code{plot = TRUE} to visualize the decay curve with a specific signal 
-intensity. The value is ignored by the function constructor, as the decay 
+\item{demo.signal}{A numeric value in \verb{[-Inf, Inf]}, only passed when
+\code{plot = TRUE} to visualize the decay curve with a specific signal
+intensity. The value is ignored by the function constructor, as the decay
 function itself is returned without using an initial signal.}
 }
 \value{
-Returns either a function of the form 
-\code{function(x, signal) \{ ... \}} or, if \code{plot = TRUE}, a `ggplot`
+Returns either a function of the form
+\code{function(x, signal) \{ ... \}} or, if \code{plot = TRUE}, a \code{ggplot}
 object illustrating the decay model.
 }
 \description{
-The `expDecay()` constructor either creates a decay function or 
-returns a `ggplot` object for visualizing the decay model. It is a utility 
-function used internally by \code{\link{circularProjection}} and 
+The \code{expDecay()} constructor either creates a decay function or
+returns a \code{ggplot} object for visualizing the decay model. It is a utility
+function used internally by \code{\link{circularProjection}} and
 \code{\link{polarProjection}}.
 }
 \details{
-The `expDecay()` constructor creates an exponential decay model. It describes 
-how a signal decreases as a function of distance, controlled by a decay 
+The \code{expDecay()} constructor creates an exponential decay model. It describes
+how a signal decreases as a function of distance, controlled by a decay
 rate parameter.
 
 The decay function is defined as:
 
 \deqn{y = signal \times decay^{\left(\frac{x}{pdist}\right)}}
 
-where \eqn{signal} represents the initial intensity, \eqn{decay} controls 
+where \eqn{signal} represents the initial intensity, \eqn{decay} controls
 the rate of attenuation, and \eqn{x} is a vector of normalized distances.
 The \eqn{pdist} parameter anchors the model such that:
 \itemize{
-  \item \eqn{y = signal} when \eqn{x = 0}
-  \item \eqn{y = signal \times decay} when \eqn{x = pdist}
+\item \eqn{y = signal} when \eqn{x = 0}
+\item \eqn{y = signal \times decay} when \eqn{x = pdist}
 }
 }
 \examples{

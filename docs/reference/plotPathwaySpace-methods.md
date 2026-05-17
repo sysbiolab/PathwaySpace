@@ -61,7 +61,7 @@ plotPathwaySpace(
 
 - si.alpha:
 
-  A transparency level in \[0, 1\], used to adjust the opacity of the
+  A transparency level in `[0, 1]`, used to adjust the opacity of the
   silhouette. This parameter is useful for improving the perception of a
   background image, when one is available.
 

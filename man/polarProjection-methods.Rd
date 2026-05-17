@@ -24,50 +24,50 @@
 \arguments{
 \item{ps}{A \linkS4class{PathwaySpace} class object.}
 
-\item{k}{A single positive integer determining the k-top signals for the 
+\item{k}{A single positive integer determining the k-top signals for the
 convolution operation.}
 
-\item{beta}{An exponent (in \code{[0, +Inf)}) used in the polar 
-projection functions (see \code{\link{polarDecay}}). It controls the  
+\item{beta}{An exponent (in \code{[0, +Inf)}) used in the polar
+projection functions (see \code{\link{polarDecay}}). It controls the
 shape of the polar projection by modulating the angular span.
-For example, \eqn{beta = 0} yields a circular projection, \eqn{beta = 1} 
-produces a cardioid-like shape, and \code{beta > 1} progressively narrows 
+For example, \eqn{beta = 0} yields a circular projection, \eqn{beta = 1}
+produces a cardioid-like shape, and \code{beta > 1} progressively narrows
 the projection along a reference edge axis.}
 
-\item{decay.fun}{A signal decay function. Available options include 
+\item{decay.fun}{A signal decay function. Available options include
 'Weibull', 'exponential', and 'linear' (see \code{\link{weibullDecay}}).
-Users may also define a custom decay model with at least two arguments, 
-e.g., \code{function(x, signal) \{ ... \}}, which should returns a vector of  
-projected signals of the same length as \code{x}. Additional arguments may  
+Users may also define a custom decay model with at least two arguments,
+e.g., \code{function(x, signal) \{ ... \}}, which should returns a vector of
+projected signals of the same length as \code{x}. Additional arguments may
 include any variable available as a graph vertex attribute.}
 
-\item{aggregate.fun}{A function used to aggregate the projected signals. 
-It must be provided as a unary function, e.g., \code{function(x) { ... }}, 
-which should aggregate a vector of signals to a scalar value. 
-Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean' 
+\item{aggregate.fun}{A function used to aggregate the projected signals.
+It must be provided as a unary function, e.g., \code{function(x) { ... }},
+which should aggregate a vector of signals to a scalar value.
+Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean'
 (See \code{\link{signalAggregation}}).}
 
 \item{polar.fun}{A polar decay function (see \code{\link{polarDecay}}).}
 
-\item{directional}{If directional edges are available, this argument can 
+\item{directional}{If directional edges are available, this argument can
 be used to orientate the signal projection on directed graphs.}
 
-\item{edge.norm}{Scale distances based on edge lengths 
-(when \code{edge.norm=TRUE}) or based on full coordinate space 
+\item{edge.norm}{Scale distances based on edge lengths
+(when \code{edge.norm=TRUE}) or based on full coordinate space
 (when \code{edge.norm=FALSE}).}
 
-\item{rescale}{A logical value indicating whether to rescale 
-the signal. If the signal \code{>=0}, then it will be rescaled to 
-\code{[0, 1]}; if the signal \code{<=0}, then it will be rescaled to 
-\code{[-1, 0]}; and if the signal in \code{(-Inf, +Inf)}, then it will be 
+\item{rescale}{A logical value indicating whether to rescale
+the signal. If the signal \code{>=0}, then it will be rescaled to
+\code{[0, 1]}; if the signal \code{<=0}, then it will be rescaled to
+\code{[-1, 0]}; and if the signal in \code{(-Inf, +Inf)}, then it will be
 rescaled to \code{[-1, 1]}.}
 
-\item{verbose}{A logical value specifying to display detailed 
+\item{verbose}{A logical value specifying to display detailed
 messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
 
 \item{theta}{Deprecated as of PathwaySpace 1.0.2; use 'beta' instead.}
 
-\item{pdist}{Deprecated as of PathwaySpace 1.0.2; this parameter is now 
+\item{pdist}{Deprecated as of PathwaySpace 1.0.2; this parameter is now
 passed internally through \code{decay.fun}.}
 }
 \value{

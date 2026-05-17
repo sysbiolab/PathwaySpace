@@ -46,12 +46,12 @@
 \item{si.color}{A single color for silhouette.
 (see \code{\link{silhouetteMapping}}).}
 
-\item{si.alpha}{A transparency level in [0, 1], used to adjust the 
-opacity of the silhouette. This parameter is useful for improving the 
+\item{si.alpha}{A transparency level in \verb{[0, 1]}, used to adjust the
+opacity of the silhouette. This parameter is useful for improving the
 perception of a background image, when one is available.}
 
-\item{theme}{Name of a custom PathwaySpace theme. These themes 
-(from 'th0' to 'th3') consist mainly of preconfigured ggplot settings, 
+\item{theme}{Name of a custom PathwaySpace theme. These themes
+(from 'th0' to 'th3') consist mainly of preconfigured ggplot settings,
 which the user can subsequently refine using \code{\link[ggplot2]{ggplot2}}.}
 
 \item{title}{A string for the title.}
@@ -69,17 +69,17 @@ which the user can subsequently refine using \code{\link[ggplot2]{ggplot2}}.}
 \item{zlim}{The 'z' limits of the plot (a numeric vector with two numbers).
 If NULL, limits are determined from the range of the input values.}
 
-\item{slices}{A single positive integer value used to split 
+\item{slices}{A single positive integer value used to split
 the image signal into equally-spaced intervals.}
 
-\item{add.grid}{A logical value indicating whether to add gridlines to 
-the image space. However, gridlines will only appear when the image 
+\item{add.grid}{A logical value indicating whether to add gridlines to
+the image space. However, gridlines will only appear when the image
 is decorated with graph silhouettes (see \code{\link{silhouetteMapping}}).}
 
 \item{grid.color}{A color passed to \code{\link[ggplot2]{geom_point}}.}
 
-\item{add.summits}{A logical value indicating whether to add contour 
-lines to 'summits' (when summits are available; 
+\item{add.summits}{A logical value indicating whether to add contour
+lines to 'summits' (when summits are available;
 see \code{\link{summitMapping}}).}
 
 \item{label.summits}{A logical value indicating whether to label summits.}
@@ -88,30 +88,30 @@ see \code{\link{summitMapping}}).}
 
 \item{add.marks}{A logical value indicating whether to plot vertex labels.}
 
-\item{marks}{A vector of vertex names to be highlighted in the 
+\item{marks}{A vector of vertex names to be highlighted in the
 image space. This argument overrides 'add.labels'.}
 
 \item{mark.size}{A size argument passed to \code{\link[ggplot2]{geom_text}}.}
 
 \item{mark.color}{A color passed to \code{\link[ggplot2]{geom_text}}.}
 
-\item{mark.padding}{A box padding argument passed to 
+\item{mark.padding}{A box padding argument passed to
 \code{\link[ggrepel]{geom_text_repel}}.}
 
-\item{mark.line.width}{A line width argument passed to 
+\item{mark.line.width}{A line width argument passed to
 \code{\link[ggrepel]{geom_text_repel}}.}
 
-\item{use.dotmark}{A logical value indicating whether "marks" should be 
+\item{use.dotmark}{A logical value indicating whether "marks" should be
 represented as dots.}
 
-\item{add.image}{A logical value indicating whether to add a background 
+\item{add.image}{A logical value indicating whether to add a background
 image, when one is available (see \code{\link[RGraphSpace]{GraphSpace}}).}
 }
 \value{
 A ggplot-class object.
 }
 \description{
-\code{plotPathwaySpace} is a wrapper function to 
+\code{plotPathwaySpace} is a wrapper function to
 create dedicated ggplot graphics for PathwaySpace-class objects.
 }
 \examples{

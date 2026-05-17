@@ -19,8 +19,8 @@ pspace.pals(
 - colors:
 
   A vector of five base colors used to construct the custom diverging
-  palette. These colors are interpolated according to the
-  \`trim.colors\` values.
+  palette. These colors are interpolated according to the `trim.colors`
+  values.
 
 - trim.colors:
 
@@ -30,7 +30,7 @@ pspace.pals(
 - offset:
 
   Adjusts brightness by shifting hues toward the center, either brighter
-  (\`offset \> 0\`) or darker (\` offset \< 0\`).
+  (`offset > 0`) or darker (` offset < 0`).
 
 - n:
 

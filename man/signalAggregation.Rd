@@ -8,7 +8,7 @@ signalAggregation(method = c("mean", "wmean", "log.wmean", "exp.wmean"))
 }
 \arguments{
 \item{method}{A character string specifying the method for
-signal aggregation, returning either a customized \code{\link{mean}} or 
+signal aggregation, returning either a customized \code{\link{mean}} or
 \code{\link{weighted.mean}} function.}
 }
 \value{
@@ -16,8 +16,8 @@ Returns a function of the form: \code{function(x) { ... }}
 }
 \description{
 Signal aggregation functions for \code{\link{circularProjection}}
-and \code{\link{polarProjection}} internal calls. The aggregation should be 
-symmetric with respect to signal polarity, ensuring that opposite signals 
+and \code{\link{polarProjection}} internal calls. The aggregation should be
+symmetric with respect to signal polarity, ensuring that opposite signals
 produce corresponding outputs.
 }
 \examples{
@@ -25,7 +25,7 @@ aggregate.fun <- signalAggregation()
 
 }
 \seealso{
-\code{\link{circularProjection}}, \code{\link{polarProjection}}, 
+\code{\link{circularProjection}}, \code{\link{polarProjection}},
 \code{\link{weighted.mean}}
 }
 \author{

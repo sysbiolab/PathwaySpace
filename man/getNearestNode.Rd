@@ -7,11 +7,11 @@
 getNearestNode(ps)
 }
 \arguments{
-\item{ps}{Either a \linkS4class{PathwaySpace} or 
+\item{ps}{Either a \linkS4class{PathwaySpace} or
 \link[RGraphSpace]{GraphSpace} object.}
 }
 \description{
-Retrieves the nearest neighbor for each node from a 
+Retrieves the nearest neighbor for each node from a
 \linkS4class{PathwaySpace} object using Euclidean distance.
 }
 \examples{

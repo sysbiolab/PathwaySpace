@@ -7,16 +7,16 @@
 buildPathwaySpace(gs, nrc = 500, verbose = TRUE, g = deprecated())
 }
 \arguments{
-\item{gs}{A \code{\link[RGraphSpace]{GraphSpace}} object. Alternatively, 
-an \code{\link[igraph]{igraph}} object with node coordinates assigned 
-to \code{x} and \code{y} vertex attributes, and node labels assigned 
+\item{gs}{A \code{\link[RGraphSpace]{GraphSpace}} object. Alternatively,
+an \code{\link[igraph]{igraph}} object with node coordinates assigned
+to \code{x} and \code{y} vertex attributes, and node labels assigned
 to \code{name} vertex attribute.}
 
-\item{nrc}{A single positive integer indicating the number of rows and 
-columns (in pixels) for a square image matrix. This argument will 
+\item{nrc}{A single positive integer indicating the number of rows and
+columns (in pixels) for a square image matrix. This argument will
 affect the resulting image size and resolution.}
 
-\item{verbose}{A logical value specifying to display detailed 
+\item{verbose}{A logical value specifying to display detailed
 messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
 
 \item{g}{Deprecated from PathwaySpace 1.0.1; use 'gs' instead.}

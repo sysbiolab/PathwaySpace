@@ -27,7 +27,7 @@ summitWatershed(x, tolerance = 0.1, ext = 1)
 
 - tolerance:
 
-  The minimum signal intensity of a summit (in \[0,1\]), representing a
+  The minimum signal intensity of a summit (in `[0,1]`), representing a
   fraction of the maximum signal intensity.
 
 - ext:

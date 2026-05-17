@@ -7,7 +7,7 @@
 #' function used internally by \code{\link{circularProjection}} and 
 #' \code{\link{polarProjection}}.
 #' 
-#' @param decay A decay factor (in [0,1]). This term indicates how much a
+#' @param decay A decay factor (in `[0,1]`). This term indicates how much a
 #' \code{signal} decreases as a function of distance in pathway space. 
 #' For example, at a specific distance defined by the \code{pdist} parameter, 
 #' the signal intensity will be the initial signal multiplied by \code{decay}.
@@ -111,7 +111,7 @@ weibullDecay <- function(decay = 0.001, pdist = 0.15, shape = 1.05,
 #' function used internally by \code{\link{circularProjection}} and 
 #' \code{\link{polarProjection}}.
 #' 
-#' @param decay A decay factor (in [0,1]). This term indicates how much a
+#' @param decay A decay factor (in `[0,1]`). This term indicates how much a
 #' \code{signal} decreases as a function of distance in pathway space. 
 #' For example, at a specific distance defined by the \code{pdist} parameter, 
 #' the signal intensity will be the initial signal multiplied by \code{decay}.
@@ -203,7 +203,7 @@ expDecay <- function(decay = 0.001, pdist = 0.15, plot = FALSE, demo.signal = 1)
 #' function used internally by \code{\link{circularProjection}} and 
 #' \code{\link{polarProjection}}.
 #' 
-#' @param decay A decay factor (in [0,1]). This term indicates how much a
+#' @param decay A decay factor (in `[0,1]`). This term indicates how much a
 #' \code{signal} decreases as a function of distance in pathway space. 
 #' For example, at a specific distance defined by the \code{pdist} parameter, 
 #' the signal intensity will be the initial signal multiplied by \code{decay}.

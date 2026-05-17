@@ -19,7 +19,7 @@ A data.frame object.
 \description{
 A data frame listing 'GeneSymbol' and 'Entrez' IDs from the
 COSMIC-CGC database (Sondka et al., 2020). These genes are used to
-demonstrate the PathwaySpace's summit mapping pipeline, which assigns 
+demonstrate the PathwaySpace's summit mapping pipeline, which assigns
 summits to an image space.
 }
 \examples{

@@ -18,16 +18,16 @@ data(Hallmarks_v2023_1_Hs_symbols)
 A list object.
 }
 \description{
-A list with Human gene symbols from the MSigDB's Hallmark gene set 
+A list with Human gene symbols from the MSigDB's Hallmark gene set
 collection (Liberzon et al., 2015). These gene sets are used to
-demonstrate the PathwaySpace's summit mapping pipeline, which assigns 
+demonstrate the PathwaySpace's summit mapping pipeline, which assigns
 summits to an image space.
 }
 \examples{
 data(Hallmarks_v2023_1_Hs_symbols)
 }
 \references{
-Liberzon et al. The Molecular Signatures Database (MSigDB) hallmark 
+Liberzon et al. The Molecular Signatures Database (MSigDB) hallmark
 gene set collection. Cell Systems 1(5):417-425, 2015
 Doi: 10.1016/j.cels.2015.12.004
 }

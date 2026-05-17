@@ -19,16 +19,16 @@
 \arguments{
 \item{ps}{A \linkS4class{PathwaySpace} class object.}
 
-\item{maxset}{A single positive integer indicating the maximum number 
+\item{maxset}{A single positive integer indicating the maximum number
 of summits to be returned by the segmentation function.}
 
-\item{minsize}{A single positive integer indicating the minimum size 
+\item{minsize}{A single positive integer indicating the minimum size
 of the summits.}
 
 \item{threshold}{A threshold provided as a fraction (in \code{[0,1]}) of the
 max signal intensity.}
 
-\item{verbose}{A logical value specifying to display detailed 
+\item{verbose}{A logical value specifying to display detailed
 messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
 
 \item{segm_fun}{A segmentation function used to detect summits
@@ -41,7 +41,7 @@ A preprocessed \linkS4class{PathwaySpace} class object.
 }
 \description{
 The \code{summitMapping} method implements a segmentation
-strategy to identify summits on a 2D-landscape image 
+strategy to identify summits on a 2D-landscape image
 (see \code{\link{summitWatershed}}).
 }
 \examples{

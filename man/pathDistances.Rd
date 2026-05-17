@@ -7,7 +7,7 @@
 pathDistances(gdist, from, to, nperm = 1000, verbose = TRUE)
 }
 \arguments{
-\item{gdist}{A distance matrix computed by the igraph's \code{distances} 
+\item{gdist}{A distance matrix computed by the igraph's \code{distances}
 function. Rows and columns must be named with vertex labels as listed in
 the 'igraph' object.}
 
@@ -17,7 +17,7 @@ the 'igraph' object.}
 
 \item{nperm}{Number of permutations.}
 
-\item{verbose}{A single logical value specifying to display detailed 
+\item{verbose}{A single logical value specifying to display detailed
 messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
 }
 \value{

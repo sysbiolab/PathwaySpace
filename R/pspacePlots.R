@@ -8,7 +8,7 @@
 #' @param bg.color A single color for background.
 #' @param si.color A single color for silhouette.
 #' (see \code{\link{silhouetteMapping}}).
-#' @param si.alpha A transparency level in [0, 1], used to adjust the 
+#' @param si.alpha A transparency level in `[0, 1]`, used to adjust the 
 #' opacity of the silhouette. This parameter is useful for improving the 
 #' perception of a background image, when one is available.
 #' @param theme Name of a custom PathwaySpace theme. These themes 

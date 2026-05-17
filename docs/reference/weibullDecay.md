@@ -1,7 +1,7 @@
 # Constructor of Weibull decay functions
 
-The \`weibullDecay()\` constructor either creates a decay function or
-returns a \`ggplot\` object for visualizing the decay model. It is a
+The `weibullDecay()` constructor either creates a decay function or
+returns a `ggplot` object for visualizing the decay model. It is a
 utility function used internally by
 [`circularProjection`](https://github.com/sysbiolab/PathwaySpace/reference/circularProjection-methods.md)
 and
@@ -23,7 +23,7 @@ weibullDecay(
 
 - decay:
 
-  A decay factor (in \[0,1\]). This term indicates how much a `signal`
+  A decay factor (in `[0,1]`). This term indicates how much a `signal`
   decreases as a function of distance in pathway space. For example, at
   a specific distance defined by the `pdist` parameter, the signal
   intensity will be the initial signal multiplied by `decay`.
@@ -31,10 +31,10 @@ weibullDecay(
 - pdist:
 
   A distance normalization term (in (0, 1\]) at which the signal reaches
-  \`signal \* decay\`. This parameter is used to anchor the decay to a
-  meaningful distance (see \`details\`). Also, when `pdist = 1`, it will
+  `signal * decay`. This parameter is used to anchor the decay to a
+  meaningful distance (see `details`). Also, when `pdist = 1`, it will
   represent the diameter of the inscribed circle within the coordinate
-  space of a \`PathwaySpace\` object.
+  space of a `PathwaySpace` object.
 
 - shape:
 
@@ -44,23 +44,23 @@ weibullDecay(
 
 - plot:
 
-  A logical value indicating whether to return a \`ggplot\` object.
+  A logical value indicating whether to return a `ggplot` object.
 
 - demo.signal:
 
-  A numeric value in \`\[-Inf, Inf\]\`, only passed when `plot = TRUE`
-  to visualize the decay curve with a specific signal intensity. The
-  value is ignored by the function constructor, as the decay function
-  itself is returned without using an initial signal.
+  A numeric value in `[-Inf, Inf]`, only passed when `plot = TRUE` to
+  visualize the decay curve with a specific signal intensity. The value
+  is ignored by the function constructor, as the decay function itself
+  is returned without using an initial signal.
 
 ## Value
 
 Returns either a function of the form `function(x, signal) { ... }` or,
-if `plot = TRUE`, a \`ggplot\` object illustrating the decay model.
+if `plot = TRUE`, a `ggplot` object illustrating the decay model.
 
 ## Details
 
-The \`weibullDecay()\` constructor creates a decay model based on the
+The `weibullDecay()` constructor creates a decay model based on the
 Weibull distribution. It describes how a signal decreases as a function
 of distance, controlled by both a decay rate and a shape parameter.
 

@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="index.html">PathwaySpace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,10 +90,10 @@
 </h2>
 <p>For a given <em>igraph</em> object containing vertices, edges, and a signal associated with the vertices, <em>PathwaySpace</em> performs a convolution operation, which involves a weighted combination of neighboring signals on a graph. <strong>Figure 1A</strong> illustrates the convolution operation problem. Each vertex’s signal is positioned on a grid at specific <code>x</code> and <code>y</code> coordinates, represented by cones (for available signals) or question marks (for null or missing values).</p>
 <p align="center">
-<a> <img src="articles/figs_intro/fig1.png" width="80%" alt="fig1.png"></a>
+<a> <img src="articles/figs_intro/fig1.png" width="100%" alt="fig1.png"></a>
 </p>
 <blockquote>
-<p>“<strong>Figure 1.</strong> Signal processing addressed by the <em>PathwaySpace</em> package. <strong>A</strong>) Graph overlaid on a 2D coordinate system. Each projection cone represents the signal associated with a graph vertex (referred to as <em>vertex-signal positions</em>), while question marks indicate positions with no signal information (referred to as <em>null-signal positions</em>). <strong>Inset</strong>: Graph layout of the toy example used in the <em>quick start</em> section of this vignette. <strong>B</strong>) Illustration of signal projection from two neighboring vertices, simplified to one dimension. <strong>Right</strong>: Signal profiles from aggregation and decay functions.”</p>
+<p><strong>Figure 1.</strong> Signal processing addressed by the <em>PathwaySpace</em> package. <strong>A</strong>) Graph overlaid on a 2D coordinate system. Each projection cone represents the signal associated with a graph vertex (referred to as <em>vertex-signal positions</em>), while question marks indicate positions with no signal information (referred to as <em>null-signal positions</em>). <strong>Inset</strong>: Graph layout of the toy example used in the introductory vignettes. <strong>B</strong>) Illustration of signal projection from two neighboring vertices, simplified to one dimension. <strong>Right</strong>: Signal profiles from aggregation and decay functions.</p>
 </blockquote>
 <p>The projection model considers the vertex-signal positions as source points (or transmitters) and the null-signal positions as end points (or receivers). The signal values from vertex-signal positions are then projected to the null-signal positions according to a decay function, which will control how the signal values attenuate as they propagate across the 2D space. For a given null-signal position, the k-top signals are used to define the contributing vertices for the convolution operation, which will aggregate the signals from these contributing vertices considering their intensities reaching the end points. Users can adjust both the aggregation and decay functions; the aggregation function can be any arithmetic rule that reduces a numeric vector into a single scalar value (<em>e.g.</em>, mean, weighted mean), while available decay functions include linear, exponential, and Weibull models (<strong>Fig.1B</strong>). Additionally, users can assign vertex-specific decay functions to model signal projections for subsets of vertices that may exhibit distinct behaviors. The resulting image forms geodesic paths in which the signal has been projected from vertex- to null-signal positions, using a density metric to measure the signal intensity along these paths.</p>
 <div class="section level3">

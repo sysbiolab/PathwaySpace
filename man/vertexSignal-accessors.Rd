@@ -29,7 +29,7 @@
 Updated \linkS4class{PathwaySpace} object.
 }
 \description{
-Get or set 'signal' and 'decay' functions in a 
+Get or set 'signal' and 'decay' functions in a
 \linkS4class{PathwaySpace} class object.
 }
 \examples{

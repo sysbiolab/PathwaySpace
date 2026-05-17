@@ -1,7 +1,7 @@
 Package: PathwaySpace
 Type: Package
 Title: Spatial Projection of Network Signals along Geodesic Paths
-Version: 1.2.1
+Version: 1.2.4
 Authors@R: 
     c(person("Sysbiolab Team", role = "aut"),
       person("Victor", "Apolonio", role = "ctb"),
@@ -43,4 +43,5 @@ Collate:
     pspaceMethods.R
     pspacePlots.R
 Encoding: UTF-8
-RoxygenNote: 7.3.2
+Roxygen: list(markdown = TRUE)
+Config/roxygen2/version: 8.0.0

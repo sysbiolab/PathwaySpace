@@ -10,7 +10,7 @@ summitWatershed(x, tolerance = 0.1, ext = 1)
 \item{x}{A 2D-numeric array in which each point represents the coordinates
 of a signal in a landscape image.}
 
-\item{tolerance}{The minimum signal intensity of a summit (in [0,1]),
+\item{tolerance}{The minimum signal intensity of a summit (in \verb{[0,1]}),
 representing a fraction of the maximum signal intensity.}
 
 \item{ext}{Radius (in pixels) for detecting neighboring objects.}

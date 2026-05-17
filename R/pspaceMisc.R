@@ -1,25 +1,7 @@
 ################################################################################
 ### Package documentation
 ################################################################################
-#' @keywords internal
-#' @author
-#' The Cancer Genome Atlas Analysis Network
-#'
-#' @description
-#' For a given graph containing vertices, edges, and a signal associated with
-#' the vertices, the PathwaySpace package performs a convolution operation,
-#' which involves a weighted combination of neighboring vertices and their
-#' associated signals. The package then uses a decay function to propagate
-#' these signals, creating geodesic paths on a 2D-image space.
-#'
-#' @details
-#'
-#' \tabular{ll}{
-#' Package: \tab PathwaySpace\cr
-#' Type: \tab Software\cr
-#' License: \tab Artistic-2.0\cr
-#' Maintainer: \tab Mauro Castro \email{mauro.a.castro@@gmail.com}\cr
-#' }
+#' @aliases PathwaySpace-package
 #'
 #' @section Index:
 #' \tabular{ll}{
@@ -46,11 +28,11 @@
 #' from the menu.
 #'
 #' @references
-#' The Cancer Genome Atlas Analysis Network (2023). PathwaySpace: Spatial propagation 
-#' of network signals along geodesic paths. R package version 0.99.
-#'
+#' `r paste(format(citation("RGraphSpace"), style = "text"), collapse = "\n\n")`
+#' 
+#' @keywords internal
 "_PACKAGE"
-#> [1] '_PACKAGE'
+
 
 ################################################################################
 ### Documentation for the 'gimage' dataset
@@ -182,7 +164,7 @@ NULL
 
 
 ################################################################################
-### Wrapper around 
+### Wrapper around nn2
 ################################################################################
 #' @title getNearestNode
 #' 
