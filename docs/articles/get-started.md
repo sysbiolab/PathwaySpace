@@ -1,5 +1,8 @@
 # Getting started with PathwaySpace
 
+  
+**Package**: PathwaySpace 1.2.4
+
 ## Introductory vignettes
 
 These tutorials introduce *PathwaySpace* using simple toy examples:
