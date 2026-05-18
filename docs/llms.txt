@@ -12,10 +12,10 @@ Artistic-2.0](https://img.shields.io/badge/license-Artistic--2.0-blue.svg)](http
 
 ### Highlights
 
-- Produces landscape images representing graphs by geodesic paths.
-- Projects signals using a decay function to model signal attenuation.
+- Produces landscape images representing graphs by geodesic paths
+- Projects signals using a decay function to model signal attenuation
 - Applies a convolution algorithm to combine signals from neighboring
-  vertices.
+  vertices
 
 ### Overview
 
@@ -146,6 +146,8 @@ The *PathwaySpace* package is distributed under
   functions](https://github.com/sysbiolab/PathwaySpace/articles/modeling-signal-decay.md):
 - [PathwaySpace
   Overview](https://github.com/sysbiolab/PathwaySpace/articles/overview.md):
+- [Getting started with \*PathwaySpace\* projection
+  methods](https://github.com/sysbiolab/PathwaySpace/articles/PathwaySpace.md):
 - [Network signal
   projections](https://github.com/sysbiolab/PathwaySpace/articles/projection-methods.md):
 - [Creating signal aggregation

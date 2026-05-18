@@ -116,16 +116,15 @@ constructor, which returns a decay function with customized parameters.
 ``` r
 
 weibullDecay(decay = 0.25, shape = 2, pdist = 0.75)
+#> function (x, signal) 
+#> {
+#>     y <- signal * 0.25^((x/0.75)^2)
+#>     return(y)
+#> }
+#> <environment: 0x60ba13a51328>
+#> attr(,"name")
+#> [1] "weibullDecay"
 ```
-
-    ## function (x, signal) 
-    ## {
-    ##     y <- signal * 0.25^((x/0.75)^2)
-    ##     return(y)
-    ## }
-    ## <environment: 0x5766771251f0>
-    ## attr(,"name")
-    ## [1] "weibullDecay"
 
 … and to visualize how different parameters affect the signal
 attenuation, rerun the
@@ -203,9 +202,8 @@ near_df <- getNearestNode(ps)
 pdist <- mean(near_df$dist)
 # 'pdist' set as the average center-to-center distance between vertices
 pdist
+#> [1] 0.1
 ```
-
-    ## [1] 0.1
 
 ``` r
 
@@ -256,44 +254,44 @@ plotPathwaySpace(ps, marks = "n34")
 
 ## Session information
 
-    ## R version 4.6.0 (2026-04-24)
-    ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 24.04.4 LTS
-    ## 
-    ## Matrix products: default
-    ## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
-    ## LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0
-    ## 
-    ## locale:
-    ##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-    ##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
-    ##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
-    ##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
-    ##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-    ## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
-    ## 
-    ## time zone: America/Sao_Paulo
-    ## tzcode source: system (glibc)
-    ## 
-    ## attached base packages:
-    ## [1] stats     graphics  grDevices utils     datasets  methods   base     
-    ## 
-    ## other attached packages:
-    ## [1] patchwork_1.3.2    igraph_2.3.1       PathwaySpace_1.2.4 RGraphSpace_1.2.4 
-    ## [5] ggplot2_4.0.3      remotes_2.5.0     
-    ## 
-    ## loaded via a namespace (and not attached):
-    ##  [1] sass_0.4.10        generics_0.1.4     tidyr_1.3.2        digest_0.6.39     
-    ##  [5] magrittr_2.0.5     evaluate_1.0.5     grid_4.6.0         RColorBrewer_1.1-3
-    ##  [9] fastmap_1.2.0      jsonlite_2.0.0     ggrepel_0.9.8      ggrastr_1.0.2     
-    ## [13] purrr_1.2.2        scales_1.4.0       textshaping_1.0.5  jquerylib_0.1.4   
-    ## [17] cli_3.6.6          rlang_1.2.0        tidygraph_1.3.1    withr_3.0.2       
-    ## [21] RANN_2.6.2         cachem_1.1.0       yaml_2.3.12        otel_0.2.0        
-    ## [25] ggbeeswarm_0.7.3   tools_4.6.0        dplyr_1.2.1        colorspace_2.1-2  
-    ## [29] vctrs_0.7.3        R6_2.6.1           lifecycle_1.0.5    fs_2.1.0          
-    ## [33] htmlwidgets_1.6.4  vipor_0.4.7        ragg_1.5.2         pkgconfig_2.0.3   
-    ## [37] beeswarm_0.4.0     desc_1.4.3         pkgdown_2.2.0      pillar_1.11.1     
-    ## [41] bslib_0.10.0       gtable_0.3.6       Rcpp_1.1.1-1.1     glue_1.8.1        
-    ## [45] systemfonts_1.3.2  xfun_0.57          tibble_3.3.1       tidyselect_1.2.1  
-    ## [49] rstudioapi_0.18.0  knitr_1.51         farver_2.1.2       htmltools_0.5.9   
-    ## [53] rmarkdown_2.31     compiler_4.6.0     S7_0.2.2
+    #> R version 4.6.0 (2026-04-24)
+    #> Platform: x86_64-pc-linux-gnu
+    #> Running under: Ubuntu 24.04.4 LTS
+    #> 
+    #> Matrix products: default
+    #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
+    #> LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0
+    #> 
+    #> locale:
+    #>  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+    #>  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+    #>  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+    #>  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+    #>  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+    #> [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+    #> 
+    #> time zone: America/Sao_Paulo
+    #> tzcode source: system (glibc)
+    #> 
+    #> attached base packages:
+    #> [1] stats     graphics  grDevices utils     datasets  methods   base     
+    #> 
+    #> other attached packages:
+    #> [1] patchwork_1.3.2    igraph_2.3.1       PathwaySpace_1.2.4 RGraphSpace_1.2.4 
+    #> [5] ggplot2_4.0.3      remotes_2.5.0     
+    #> 
+    #> loaded via a namespace (and not attached):
+    #>  [1] sass_0.4.10        generics_0.1.4     tidyr_1.3.2        digest_0.6.39     
+    #>  [5] magrittr_2.0.5     evaluate_1.0.5     grid_4.6.0         RColorBrewer_1.1-3
+    #>  [9] fastmap_1.2.0      jsonlite_2.0.0     ggrepel_0.9.8      ggrastr_1.0.2     
+    #> [13] purrr_1.2.2        scales_1.4.0       textshaping_1.0.5  jquerylib_0.1.4   
+    #> [17] cli_3.6.6          rlang_1.2.0        tidygraph_1.3.1    withr_3.0.2       
+    #> [21] RANN_2.6.2         cachem_1.1.0       yaml_2.3.12        otel_0.2.0        
+    #> [25] ggbeeswarm_0.7.3   tools_4.6.0        dplyr_1.2.1        colorspace_2.1-2  
+    #> [29] vctrs_0.7.3        R6_2.6.1           lifecycle_1.0.5    fs_2.1.0          
+    #> [33] htmlwidgets_1.6.4  vipor_0.4.7        ragg_1.5.2         pkgconfig_2.0.3   
+    #> [37] beeswarm_0.4.0     desc_1.4.3         pkgdown_2.2.0      pillar_1.11.1     
+    #> [41] bslib_0.10.0       gtable_0.3.6       Rcpp_1.1.1-1.1     glue_1.8.1        
+    #> [45] systemfonts_1.3.2  xfun_0.57          tibble_3.3.1       tidyselect_1.2.1  
+    #> [49] rstudioapi_0.18.0  knitr_1.51         farver_2.1.2       htmltools_0.5.9   
+    #> [53] rmarkdown_2.31     compiler_4.6.0     S7_0.2.2

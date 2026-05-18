@@ -10,6 +10,8 @@
   functions](https://github.com/sysbiolab/PathwaySpace/articles/modeling-signal-decay.md):
 - [PathwaySpace
   Overview](https://github.com/sysbiolab/PathwaySpace/articles/overview.md):
+- [Getting started with \*PathwaySpace\* projection
+  methods](https://github.com/sysbiolab/PathwaySpace/articles/PathwaySpace.md):
 - [Network signal
   projections](https://github.com/sysbiolab/PathwaySpace/articles/projection-methods.md):
 - [Creating signal aggregation

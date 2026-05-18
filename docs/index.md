@@ -12,10 +12,10 @@ Artistic-2.0](https://img.shields.io/badge/license-Artistic--2.0-blue.svg)](http
 
 ### Highlights
 
-- Produces landscape images representing graphs by geodesic paths.
-- Projects signals using a decay function to model signal attenuation.
+- Produces landscape images representing graphs by geodesic paths
+- Projects signals using a decay function to model signal attenuation
 - Applies a convolution algorithm to combine signals from neighboring
-  vertices.
+  vertices
 
 ### Overview
 

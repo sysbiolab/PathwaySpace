@@ -73,7 +73,7 @@ Next, we will create a *GraphSpace-class* object using the `GraphSpace()` constr
 # Check graph validity
 gs1 <- GraphSpace(gtoy1)
 # Normalize node coordinates 
-gs1 <- normalizeGraphSpace(gs1)
+gs1 <- normalizeGraphSpace(gs1, mar = 0.2)
 ```
 
 Our graph is now ready for the *PathwaySpace* package. We can check its layout using the `plotGraphSpace()` function. 

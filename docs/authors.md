@@ -19,6 +19,9 @@
 
 ## Citation
 
+Source:
+[`inst/CITATION`](https://github.com/sysbiolab/PathwaySpace/blob/HEAD/inst/CITATION)
+
 Tercan B, Apolonio VH, Chagas VS, Wong CK, Lee JA, et al. Protocol for
 assessing distances in pathway space for classifier feature sets from
 machine learning methods. STAR Protocols 6(2):103681, 2025. doi:

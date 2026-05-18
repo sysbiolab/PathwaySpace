@@ -30,9 +30,10 @@ and Ellrott et al. (2025)
 | [plotPathwaySpace](https://github.com/sysbiolab/PathwaySpace/reference/plotPathwaySpace-methods.md): | Plotting 2D-landscape images for the PathwaySpace package. |
 
 Further information is available in the vignettes by typing
-`vignette('PathwaySpace')`. Documented topics are also available in HTML
-by typing [`help.start()`](https://rdrr.io/r/utils/help.start.html) and
-selecting the PathwaySpace package from the menu.
+[`vignette('PathwaySpace')`](https://github.com/sysbiolab/PathwaySpace/articles/PathwaySpace.md).
+Documented topics are also available in HTML by typing
+[`help.start()`](https://rdrr.io/r/utils/help.start.html) and selecting
+the PathwaySpace package from the menu.
 
 ## References
 
