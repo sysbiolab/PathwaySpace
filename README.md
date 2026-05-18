@@ -12,6 +12,13 @@
   </a>
 </p>
 
+### Highlights
+* Produces landscape images representing graphs by geodesic paths
+* Projects signals using a decay function to model signal attenuation
+* Applies a convolution algorithm to combine signals from neighboring vertices
+
+### Overview
+
 *PathwaySpace* is an R package that creates landscape images from graphs 
 containing vertices (nodes), edges (lines), and a signal associated with 
 the vertices. The package processes the signal using a convolution algorithm 
@@ -26,29 +33,23 @@ relationships and signal strengths between network vertices, visualizing
 sparse feature sets on large graphs, and exploring signal patterns in 
 spatial transcriptomics.
 
-
 ### Installation in R (>=4.5)
 
 ##### Dependencies to build the vignettes
-
 ```r
 install.packages("knitr")
 install.packages("rmarkdown")
 install.packages("remotes")
 ```
-
 ##### Development version
-
 ```r
 remotes::install_github("sysbiolab/RGraphSpace", build_vignettes=TRUE)
 remotes::install_github("sysbiolab/PathwaySpace", build_vignettes=TRUE)
 ```
 
-
 ### Tutorials
 
 * https://sysbiolab.github.io/PathwaySpace
-
 
 ### Citation
 
@@ -58,13 +59,11 @@ If you use *PathwaySpace*, please cite:
 
 * Ellrott *et al.* Classification of non-TCGA cancer samples to TCGA molecular subtypes using compact feature sets. *Cancer Cell*, 2025. https://doi.org/10.1016/j.ccell.2024.12.002
 
-
 #### Supporting Material for Tercan *et al.* (2025)
 
 Download and uncompress *Tercan_et_al_20250112.zip*, then follow the instructions in the *pspace_perturbation.R* script. This R script has been developed to reproduce the results presented in *Figure S1* of Tercan *et al.* (2025).
 
 * [Tercan_et_al_20250112.zip](https://github.com/sysbiolab/PathwaySpace/blob/main/Tercan_et_al_20250112.zip)
-
 
 ### Licenses 
 
