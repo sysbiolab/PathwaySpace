@@ -76,12 +76,12 @@ if (packageVersion("Seurat") < "5.4.0.9009"){
 ``` r
 
 # Load packages
-library(RGraphSpace)
-library(PathwaySpace)
-library(Seurat)
-library(SeuratObject)
-library(SeuratData)
-library(patchwork)
+library("RGraphSpace")
+library("PathwaySpace")
+library("Seurat")
+library("SeuratObject")
+library("SeuratData")
+library("patchwork")
 ```
 
 ## Visium v1 dataset

@@ -63,11 +63,11 @@ if (packageVersion("PathwaySpace") < "1.2.0"){
 ``` r
 
 # Load packages
-library(igraph)
-library(ggplot2)
-library(RGraphSpace)
-library(PathwaySpace)
-library(patchwork)
+library("igraph")
+library("ggplot2")
+library("RGraphSpace")
+library("PathwaySpace")
+library("patchwork")
 ```
 
 ## Setting basic input data

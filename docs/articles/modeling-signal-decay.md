@@ -46,11 +46,11 @@ if (packageVersion("PathwaySpace") < "1.2.0"){
 ``` r
 
 # Load packages
-library(igraph)
-library(ggplot2)
-library(RGraphSpace)
-library(PathwaySpace)
-library(patchwork)
+library("igraph")
+library("ggplot2")
+library("RGraphSpace")
+library("PathwaySpace")
+library("patchwork")
 ```
 
 ## Setting basic input data
@@ -121,7 +121,7 @@ weibullDecay(decay = 0.25, shape = 2, pdist = 0.75)
 #>     y <- signal * 0.25^((x/0.75)^2)
 #>     return(y)
 #> }
-#> <environment: 0x60ba13a51328>
+#> <environment: 0x55fde749b6c0>
 #> attr(,"name")
 #> [1] "weibullDecay"
 ```

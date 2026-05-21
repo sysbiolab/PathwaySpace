@@ -50,10 +50,10 @@ if (packageVersion("PathwaySpace") < "1.2.0"){
 ``` r
 
 # Load packages
-library(PathwaySpace)
-library(RGraphSpace)
-library(igraph)
-library(ggplot2)
+library("PathwaySpace")
+library("RGraphSpace")
+library("igraph")
+library("ggplot2")
 ```
 
 ## Setting input data
