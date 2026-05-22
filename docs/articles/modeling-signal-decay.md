@@ -121,7 +121,7 @@ weibullDecay(decay = 0.25, shape = 2, pdist = 0.75)
 #>     y <- signal * 0.25^((x/0.75)^2)
 #>     return(y)
 #> }
-#> <environment: 0x55fde749b6c0>
+#> <environment: 0x602f3e205628>
 #> attr(,"name")
 #> [1] "weibullDecay"
 ```
@@ -277,7 +277,7 @@ plotPathwaySpace(ps, marks = "n34")
     #> [1] stats     graphics  grDevices utils     datasets  methods   base     
     #> 
     #> other attached packages:
-    #> [1] patchwork_1.3.2    igraph_2.3.1       PathwaySpace_1.2.4 RGraphSpace_1.2.4 
+    #> [1] patchwork_1.3.2    igraph_2.3.1       PathwaySpace_1.2.4 RGraphSpace_1.3.0 
     #> [5] ggplot2_4.0.3      remotes_2.5.0     
     #> 
     #> loaded via a namespace (and not attached):

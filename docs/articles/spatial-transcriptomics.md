@@ -598,7 +598,7 @@ If you use *PathwaySpace*, please cite:
     #>  [5] arrow_24.0.0              hdf5r_1.3.12             
     #>  [7] stxBrain.SeuratData_0.1.2 ssHippo.SeuratData_3.1.4 
     #>  [9] SeuratData_0.2.2.9002     PathwaySpace_1.2.4       
-    #> [11] RGraphSpace_1.2.4         ggplot2_4.0.3            
+    #> [11] RGraphSpace_1.3.0         ggplot2_4.0.3            
     #> [13] remotes_2.5.0            
     #> 
     #> loaded via a namespace (and not attached):

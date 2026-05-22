@@ -348,7 +348,7 @@ compatible sign-symmetric aggregation strategies.
     #> [1] stats     graphics  grDevices utils     datasets  methods   base     
     #> 
     #> other attached packages:
-    #> [1] patchwork_1.3.2    igraph_2.3.1       PathwaySpace_1.2.4 RGraphSpace_1.2.4 
+    #> [1] patchwork_1.3.2    igraph_2.3.1       PathwaySpace_1.2.4 RGraphSpace_1.3.0 
     #> [5] ggplot2_4.0.3      remotes_2.5.0     
     #> 
     #> loaded via a namespace (and not attached):
