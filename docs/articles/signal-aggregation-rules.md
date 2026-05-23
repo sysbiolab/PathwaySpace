@@ -1,6 +1,6 @@
 # Creating signal aggregation rules
 
-**Package**: PathwaySpace 1.2.4  
+**Package**: PathwaySpace 1.3.0  
 
 ## Overview
 
@@ -348,7 +348,7 @@ compatible sign-symmetric aggregation strategies.
     #> [1] stats     graphics  grDevices utils     datasets  methods   base     
     #> 
     #> other attached packages:
-    #> [1] patchwork_1.3.2    igraph_2.3.1       PathwaySpace_1.2.4 RGraphSpace_1.3.0 
+    #> [1] patchwork_1.3.2    igraph_2.3.1       PathwaySpace_1.3.0 RGraphSpace_1.3.0 
     #> [5] ggplot2_4.0.3      remotes_2.5.0     
     #> 
     #> loaded via a namespace (and not attached):

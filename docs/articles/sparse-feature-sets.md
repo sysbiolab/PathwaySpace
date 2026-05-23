@@ -1,6 +1,6 @@
 # Visualizing sparse feature sets on large graphs
 
-**Package**: PathwaySpace 1.2.4  
+**Package**: PathwaySpace 1.3.0  
 
 ## Overview
 
@@ -243,7 +243,7 @@ If you use *PathwaySpace*, please cite:
     #> [1] stats     graphics  grDevices utils     datasets  methods   base     
     #> 
     #> other attached packages:
-    #> [1] igraph_2.3.1       PathwaySpace_1.2.4 RGraphSpace_1.3.0  ggplot2_4.0.3     
+    #> [1] igraph_2.3.1       PathwaySpace_1.3.0 RGraphSpace_1.3.0  ggplot2_4.0.3     
     #> [5] remotes_2.5.0     
     #> 
     #> loaded via a namespace (and not attached):
