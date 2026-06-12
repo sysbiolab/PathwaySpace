@@ -1,8 +1,18 @@
 # Accessor Functions for PathwaySpace Objects
 
-Get or set 'signal' and 'decay' functions in a
+Get or set vertex signals, decay functions, and the active feature in a
 [PathwaySpace](https://github.com/sysbiolab/PathwaySpace/reference/PathwaySpace-class.md)
-class object.
+object.
+
+`vertexSignal()` gets or sets the numeric signal assigned to each
+vertex, used as input for spatial projection.
+
+`vertexDecay()` gets or sets the decay function assigned to each vertex,
+controlling how the signal attenuates with distance.
+
+`activeFeature()` gets or sets the active feature name, which
+automatically extracts the corresponding signal from the `fdata` slot or
+node attributes and assigns it to `vertexSignal()`.
 
 ## Usage
 
@@ -18,6 +28,12 @@ vertexDecay(x)
 
 # S4 method for class 'PathwaySpace'
 vertexDecay(x) <- value
+
+# S4 method for class 'PathwaySpace'
+activeFeature(x)
+
+# S4 method for class 'PathwaySpace'
+activeFeature(x) <- value
 ```
 
 ## Arguments
@@ -30,17 +46,30 @@ vertexDecay(x) <- value
 
 - value:
 
-  The new value of the attribute.
+  The new value to assign:
+
+  - For `vertexSignal()`: a numeric vector or scalar.
+
+  - For `vertexDecay()`: a decay function or list of decay functions
+    (see
+    [`linearDecay`](https://github.com/sysbiolab/PathwaySpace/reference/linearDecay.md),
+    [`weibullDecay`](https://github.com/sysbiolab/PathwaySpace/reference/weibullDecay.md)).
+
+  - For `activeFeature()`: a single string matching a feature name (see
+    [`gs_features`](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-accessors.html))
+    or a node attribute (see
+    [`gs_names`](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-accessors.html)).
 
 ## Value
 
-Updated
+The updated
 [PathwaySpace](https://github.com/sysbiolab/PathwaySpace/reference/PathwaySpace-class.md)
 object.
 
 ## Examples
 
 ``` r
+library(RGraphSpace)
 data('gtoy1', package = 'RGraphSpace')
 ps <- buildPathwaySpace(gtoy1, nrc = 100)
 #> Validating arguments...
@@ -51,6 +80,9 @@ ps <- buildPathwaySpace(gtoy1, nrc = 100)
 # Check vertex names
 names(ps)
 #> [1] "n1" "n2" "n3" "n4" "n5"
+
+##--------------------------------------
+## 'vertexSignal' accessor
 
 # Access signal values from all vertices
 vertexSignal(ps)
@@ -66,7 +98,23 @@ vertexSignal(ps)[c("n2","n3")] <- 1
 # Set '1s' to all vertices
 vertexSignal(ps) <- 1
 
-#----
+##--------------------------------------
+## 'activeFeature' accessor
+
+# Assign a signal feature matrix
+signal_mtx <- matrix(
+  rep(rnorm(gs_vcount(ps)), 2),
+  ncol = 2,
+  dimnames = list(names(ps), c("feature1", "feature2"))
+)
+gs_fdata(ps) <- signal_mtx
+
+# Set the active feature — automatically updates vertexSignal()
+activeFeature(ps) <- "feature1"
+#> Setting active feature 'feature1' from feature matrix...
+
+##--------------------------------------
+## 'vertexDecay' accessor
 
 # Access decay function of a specific vertex
 vertexDecay(ps)[["n3"]]
@@ -75,7 +123,7 @@ vertexDecay(ps)[["n3"]]
 #>     y <- signal * 0.001^((x/0.15)^1.05)
 #>     return(y)
 #> }
-#> <environment: 0x579d8485c8e8>
+#> <environment: 0x651a3c894558>
 #> attr(,"name")
 #> [1] "weibullDecay"
 

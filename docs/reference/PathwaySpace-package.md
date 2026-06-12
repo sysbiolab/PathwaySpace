@@ -38,7 +38,7 @@ the PathwaySpace package from the menu.
 ## References
 
 Sysbiolab Team (2026). *RGraphSpace: A lightweight interface between
-'igraph' and 'ggplot2' graphics*. R package version 1.3.0 (Doi:
+'igraph' and 'ggplot2' graphics*. R package version 1.3.1 (Doi:
 10.32614/CRAN.package.RGraphSpace),
 <https://CRAN.R-project.org/package=RGraphSpace>.
 

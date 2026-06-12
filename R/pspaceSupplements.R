@@ -2,9 +2,6 @@
 ### Main constructor of PathwaySpace-class objects
 ################################################################################
 .buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE) {
-  
-    #--- update pars
-    gs@pars$ps$nrc <- nrc
     
     #--- initialize vertex signal
     att <- names(gs_vertex_attr(gs))
@@ -27,7 +24,9 @@
     #--- create a PathwaySpace object
     if(verbose) message("Creating a 'PathwaySpace' object...")
     ps <- as(gs, "PathwaySpace")
-        
+    
+    ps@pars_ps$nrc <- nrc
+    
     #--- initialize status
     pnames <- c("Preprocess", "CircularProjection", "PolarProjection",
       "Silhouette", "Summits")
@@ -46,44 +45,44 @@
 .circularProjection <- function(ps, verbose = TRUE) {
   
   if(verbose) message("Using circular projection...")
-  pars <- getPathwaySpace(ps, "pars")
+  pars_ps <- getPathwaySpace(ps, "pars")
   nodes <- getPathwaySpace(ps, "nodes")
-  pars$ps$zscale <- .get_signal_scale(nodes$signal)
+  pars_ps$zscale <- .get_signal_scale(nodes$signal)
   # baseline will put a stop to signal decay (in [0,1])
   # ...used in the .get_near_points() function
-  pars$ps$baseline <- 0.01
+  pars_ps$baseline <- 0.01
   
   if(verbose) message("Mapping 'x' and 'y' coordinates...")
-  gxy <- .rescale_coord(nodes, pars$ps$nrc)
-  lpts <- .get_points_in_matrix(pars$ps$nrc)
-  nnpg <- .get_near_points(lpts, gxy, nodes, pars)
+  gxy <- .rescale_coord(nodes, pars_ps$nrc)
+  lpts <- .get_points_in_matrix(pars_ps$nrc)
+  nnpg <- .get_near_points(lpts, gxy, nodes, pars_ps)
   
   # project signal
   if(verbose) message("Running signal convolution...")
-  xsig <- array(0, c(pars$ps$nrc, pars$ps$nrc))
+  xsig <- array(0, c(pars_ps$nrc, pars_ps$nrc))
   if (nrow(nodes) > 0) {
-    xsig[lpts[, c("Y", "X")]] <- .get_ldsig(nodes, pars, nnpg, lpts)
+    xsig[lpts[, c("Y", "X")]] <- .get_ldsig(nodes, pars_ps, nnpg, lpts)
   }
   # image(.transpose_and_flip(xsig))
   
   # add projections
   ps@projections$gxy <- gxy
   ps@projections$xsig <- xsig
-  ps <- .update_projections(ps, pars)
+  ps <- .update_projections(ps, pars_ps)
   return(ps)
 }
 
 #-------------------------------------------------------------------------------
-.get_ldsig <- function(nodes, pars, nnpg, lpts) {
-  if (pars$ps$zscale$maxsig == 0) {
+.get_ldsig <- function(nodes, pars_ps, nnpg, lpts) {
+  if (pars_ps$zscale$maxsig == 0) {
     return(0)
   }
   nsig <- list()
-  if(pars$ps$decay$is_default_args){
+  if(pars_ps$decay$is_default_args){
     for(i in seq_len(nrow(nodes))){
       decay_fun <- nodes$decayFunction[[i]]
-      signal <- nodes$signal[i] / pars$ps$zscale$maxsig
-      x <- nnpg$dist[[i]] / pars$ps$nrc
+      signal <- nodes$signal[i] / pars_ps$zscale$maxsig
+      x <- nnpg$dist[[i]] / pars_ps$nrc
       nsig[[i]] <- decay_fun(x=x, signal=signal)
     }
   } else {
@@ -92,8 +91,8 @@
       decay_fun <- nodes$decayFunction[[i]]
       decay_args <- formalArgs(decay_fun)
       args_list <- as.list(nodes[i, decay_args, drop=FALSE])
-      args_list$x <- nnpg$dist[[i]] / pars$ps$nrc
-      args_list$signal <- args_list$signal / pars$ps$zscale$maxsig
+      args_list$x <- nnpg$dist[[i]] / pars_ps$nrc
+      args_list$signal <- args_list$signal / pars_ps$zscale$maxsig
       nsig[[i]] <- do.call(decay_fun, args_list)
     }
   }
@@ -111,15 +110,15 @@
     dsig_lt[[nnu[i]]] <- nsig[nnl[[i]]]
   }
   # aggregate
-  Z <- .summ_dsig_lt(dsig_lt, pars)
+  Z <- .summ_dsig_lt(dsig_lt, pars_ps)
   return(Z)
 }
 
 #-------------------------------------------------------------------------------
 #--- aggregate projected signals
-.summ_dsig_lt <- function(dsig_lt, pars) {
+.summ_dsig_lt <- function(dsig_lt, pars_ps) {
   m <- max(unlist(lapply(dsig_lt, length)))
-  k <- min(pars$ps$k, m)
+  k <- min(pars_ps$k, m)
   Z <- sapply(dsig_lt, function(lt){
     n <- length(lt)
     if(n < k){
@@ -127,7 +126,7 @@
     } else {
       lt <- lt[seq_len(k)]
     }
-    z <- pars$ps$aggregate.fun(lt)
+    z <- pars_ps$aggregate.fun(lt)
     return(z)
   })
   # Note: NaNs may result from user's customized functions when signal 
@@ -138,11 +137,11 @@
 
 #-------------------------------------------------------------------------------
 #--- aggregate projected signals
-.summ_dsig_mt <- function(dsig_mt, pars) {
-  if (pars$ps$k > 1) {
-    k <- min(pars$ps$k, ncol(dsig_mt))
+.summ_dsig_mt <- function(dsig_mt, pars_ps) {
+  if (pars_ps$k > 1) {
+    k <- min(pars_ps$k, ncol(dsig_mt))
     dsig_mt <- dsig_mt[, seq_len(k), drop = FALSE]
-    Z <- apply(dsig_mt, 1, pars$ps$aggregate.fun)
+    Z <- apply(dsig_mt, 1, pars_ps$aggregate.fun)
   } else {
     Z <- dsig_mt[, 1]
   }
@@ -183,9 +182,9 @@
 
 #-------------------------------------------------------------------------------
 #--- get vertex-to-point distances for circular and polar projections
-.get_near_points <- function(lpts, gxy, nodes, pars){
-  eradius <- .estimate_radius(nodes, pars$ps$baseline)
-  eradius <- pars$ps$nrc * eradius
+.get_near_points <- function(lpts, gxy, nodes, pars_ps){
+  eradius <- .estimate_radius(nodes, pars_ps$baseline)
+  eradius <- pars_ps$nrc * eradius
   nnpg <- list(nn = list(), dist = list())
   lpts <- as.data.frame(lpts)
   blocks <- unique(lpts$X)
@@ -204,7 +203,7 @@
       if(length(within_radius)>0){
         nn_dists <- sqrt(d2[within_radius])
         nearby_idx <- lpts_filt[within_radius, ]
-        nn_idx <- with(nearby_idx, (X - 1) * pars$ps$nrc + Y)
+        nn_idx <- with(nearby_idx, (X - 1) * pars_ps$nrc + Y)
       } else {
         nn_idx <- numeric()
         nn_dists <- numeric()
@@ -253,15 +252,16 @@
             "at least one edge for projection.")
         stop(msg)
     }
-    pars <- getPathwaySpace(ps, "pars")
+    pars_ps <- getPathwaySpace(ps, "pars")
+    pars_gs <- getGraphSpace(ps, "pars")
     signal <- .get_edge_signal(nodes, edges)
-    pars$ps$zscale <- .get_signal_scale(signal)
+    pars_ps$zscale <- .get_signal_scale(signal)
     # baseline will put a stop to signal decay (in [0,1])
     # ...used in the .get_near_points() function
-    pars$ps$baseline <- 0.01
+    pars_ps$baseline <- 0.01
     
-    if(pars$ps$directional){
-        if(pars$is.directed){
+    if(pars_ps$directional){
+        if(pars_gs$is.directed){
             message("Using polar projection on directed graph...")
         } else {
             stop("'directional' used with undirected graph.")
@@ -271,37 +271,38 @@
     }
     
     if(verbose) message("Mapping 'x' and 'y' coordinates...")
-    gxy <- .rescale_coord(nodes, pars$ps$nrc)
+    gxy <- .rescale_coord(nodes, pars_ps$nrc)
     
     # 'weight' will adjust signals when variable or different from default
     if (.is_variable(edges$weight) || any(edges$weight != 1)) {
       if(verbose) message("Scaling projection to edge weight...")
-      pars$eweight <- TRUE
+      pars_ps$eweight <- TRUE
     } else {
-      pars$eweight <- FALSE
+      pars_ps$eweight <- FALSE
     }
     
     if(verbose) message("Computing linear and angular distances...")
     # for polar, 'dist' is scaled to edge dist and polar coordinates
     edges$edist <- .get_edge_dist(edges, gxy)
     edges$emode <- .get_emode(edges$arrowType)
-    lpts <- .get_points_in_matrix(pars$ps$nrc)
-    nnpg <- .get_near_points(lpts, gxy, nodes, pars)
-    nnpg <- .get_angular_dist(nnpg, lpts, gxy, edges, pars)
-    nnpg <- .scale_dist_polar(nnpg, pars)
+    lpts <- .get_points_in_matrix(pars_ps$nrc)
+    nnpg <- .get_near_points(lpts, gxy, nodes, pars_ps)
+    nnpg <- .get_angular_dist(nnpg, lpts, gxy, edges, pars_ps)
+    nnpg <- .scale_dist_polar(nnpg, pars_ps)
     
     # project signal
     if(verbose) message("Running signal convolution...")
-    xsig <- array(0, c(pars$ps$nrc, pars$ps$nrc))
+    xsig <- array(0, c(pars_ps$nrc, pars_ps$nrc))
     if (nrow(gxy) > 0) {
-      xsig[lpts[, c("Y", "X")]] <- .get_ldsig_polar(nodes, pars, nnpg, lpts)
+      xsig[lpts[, c("Y", "X")]] <- .get_ldsig_polar(nodes, 
+        pars_ps, nnpg, lpts)
     }
     # image(.transpose_and_flip(xsig))
     
     # add projections
     ps@projections$gxy <- gxy
     ps@projections$xsig <- xsig
-    ps <- .update_projections(ps, pars)
+    ps <- .update_projections(ps, pars_ps)
     return(ps)
 }
 .get_edge_signal <- function(nodes, edges){
@@ -317,18 +318,18 @@
 }
 
 #-------------------------------------------------------------------------------
-.get_ldsig_polar <- function(nodes, pars, nnpg, lpts) {
-  if (pars$ps$zscale$maxsig == 0) {
+.get_ldsig_polar <- function(nodes, pars_ps, nnpg, lpts) {
+  if (pars_ps$zscale$maxsig == 0) {
     return(0)
   }
   nsig <- list()
-  if(pars$ps$decay$is_default_args){
+  if(pars_ps$decay$is_default_args){
     for(i in seq_len(nrow(nodes))){
       decay_fun <- nodes$decayFunction[[i]]
       signal <- nodes$signal[i]
-      x <- nnpg$dist[[i]] / (nnpg$dist_dth[[i]] * pars$ps$nrc)
-      signal <- signal / pars$ps$zscale$maxsig
-      if(pars$eweight) signal <- signal * nnpg$edwght[[i]]
+      x <- nnpg$dist[[i]] / (nnpg$dist_dth[[i]] * pars_ps$nrc)
+      signal <- signal / pars_ps$zscale$maxsig
+      if(pars_ps$eweight) signal <- signal * nnpg$edwght[[i]]
       nsig[[i]] <- decay_fun(x=x, signal=signal)
     }
   } else {
@@ -337,9 +338,9 @@
       decay_fun <- nodes$decayFunction[[i]]
       decay_args <- formalArgs(decay_fun)
       args_list <- as.list(nodes[i, decay_args, drop=FALSE])
-      args_list$x <- nnpg$dist[[i]] / (nnpg$dist_dth[[i]] * pars$ps$nrc)
-      args_list$signal <- args_list$signal / pars$ps$zscale$maxsig
-      if(pars$eweight) args_list$signal <- args_list$signal * nnpg$edwght[[i]]
+      args_list$x <- nnpg$dist[[i]] / (nnpg$dist_dth[[i]] * pars_ps$nrc)
+      args_list$signal <- args_list$signal / pars_ps$zscale$maxsig
+      if(pars_ps$eweight) args_list$signal <- args_list$signal * nnpg$edwght[[i]]
       nsig[[i]] <- do.call(decay_fun, args_list)
     }
   }
@@ -359,18 +360,18 @@
     dsig_mt[nnu[i], seq_along(s) ] <- s
   }
   # aggregate
-  Z <- .summ_dsig_mt(dsig_mt, pars)
+  Z <- .summ_dsig_mt(dsig_mt, pars_ps)
   return(Z)
 }
 
 #-------------------------------------------------------------------------------
-.get_angular_dist <- function(nnpg, lpts, gxy, edges, pars){
+.get_angular_dist <- function(nnpg, lpts, gxy, edges, pars_ps){
   # get polar coords
   edlist <- .edge_list(edges, gxy)
   etheta <- .edge_list_theta(edlist, gxy)
   edleng <- .edge_attr(edges, gxy, "edist")
   edwght <- .edge_attr(edges, gxy, "weight")
-  if(pars$ps$directional){
+  if(pars_ps$directional){
     emode <- .edge_mode(edges, gxy)
     for(i in seq_along(emode)){
       idx <- emode[[i]] == 1
@@ -397,13 +398,13 @@
     if(length(p_et)>0){
       # p_theta <- ifelse(p_theta < 0, p_theta + 2*pi, p_theta)
       # p_et <- ifelse(p_et < 0, p_et + 2*pi, p_et)
-      mdr <- .get_delta_theta(p_theta, p_et, p_el, p_wt, pars)
+      mdr <- .get_delta_theta(p_theta, p_et, p_el, p_wt, pars_ps)
       dth <- mdr[, 1]
       eln <- mdr[, 2]
       ewt <- mdr[, 3]
     } else {
       ## Estimate dth for isolated nodes
-      if(pars$ps$directional){
+      if(pars_ps$directional){
         dth_iso <- 0
       } else {
         ## For isolated nodes, 'dth_iso' will aim the area of a cardioid,
@@ -414,7 +415,7 @@
         ## 2) dth_iso: rescaled 'dth'; here the effect of 'beta' is removed
         ## from 'cf', proportional to 'cf', so when later raised to beta
         ## (i.e. dth_iso^beta) the moderation is applied only once.
-        dth_iso <- cf^(1 / (pars$ps$beta^cf) )
+        dth_iso <- cf^(1 / (pars_ps$beta^cf) )
       }
       dth <- rep(dth_iso, length(p_dst))
       eln <- rep(minlen, length(p_dst))
@@ -426,7 +427,7 @@
   }
   return(nnpg)
 }
-.get_delta_theta <- function(p_theta, p_et, p_el, p_wt, pars) {
+.get_delta_theta <- function(p_theta, p_et, p_el, p_wt, pars_ps) {
   if (length(p_et) > 1){
     C <- ( 1 + ( 1 - .angular_evenness(p_et) ) ) ^ 2
   } else {
@@ -439,14 +440,14 @@
       #-- Note1: 'p' skews mean toward larger or smaller weights
       #-- Note2: 'C' adjusts 'p' to account for angular variability
       # Aggregate edge length weighted by angular distances
-      eln <- .weighted_mean(p_el, dth, p = pars$ps$beta * C)
+      eln <- .weighted_mean(p_el, dth, p = pars_ps$beta * C)
       # Aggregate edge weight weighted by angular distances
-      ewt <- .weighted_mean(p_wt, dth, p = pars$ps$beta * C)
+      ewt <- .weighted_mean(p_wt, dth, p = pars_ps$beta * C)
       # Aggregate angular distances weighted by itself
-      dth <- .lehmer_mean(dth, p = pars$ps$beta * C)
+      dth <- .lehmer_mean(dth, p = pars_ps$beta * C)
       ##-- Old1 aggregations
       # eln <- sum(p_el * (dth / sum(dth)))
-      # dth2 <- dth ^ (pars$ps$beta * C)
+      # dth2 <- dth ^ (pars_ps$beta * C)
       # ewt <- sum(p_wt * (dth2 / sum(dth2)))
       # dth <- sum(dth * (dth2 / sum(dth2)))
       ##-- Old2 aggregations
@@ -480,15 +481,15 @@
 }
 
 #-------------------------------------------------------------------------------
-.scale_dist_polar <- function(nnpg, pars) {
-  pfun <- pars$ps$polar.fun
+.scale_dist_polar <- function(nnpg, pars_ps) {
+  pfun <- pars_ps$polar.fun
   for(i in seq_len(length(nnpg$nn))){
-    if(pars$ps$edge.norm){
-      edleng <- (nnpg$edleng[[i]] / pars$ps$nrc)
+    if(pars_ps$edge.norm){
+      edleng <- (nnpg$edleng[[i]] / pars_ps$nrc)
     } else {
       edleng <- 1
     }
-    nnpg$dist_dth[[i]] <- edleng * pfun(nnpg$dtheta[[i]], pars$ps$beta)
+    nnpg$dist_dth[[i]] <- edleng * pfun(nnpg$dtheta[[i]], pars_ps$beta)
   }
   return(nnpg)
 }
@@ -575,30 +576,30 @@
 ### Rescale projections
 ################################################################################
 # If 'rescale = F', it will rescale 'xsig' to the original range
-.update_projections <- function(ps, pars, update.config=TRUE) {
+.update_projections <- function(ps, pars_ps, update.config=TRUE) {
   xfloor <- ps@projections$xfloor
   xsig <- ps@projections$xsig
-  if(is.null(pars$ps$rescale)) pars$ps$rescale <- TRUE
+  if(is.null(pars_ps$rescale)) pars_ps$rescale <- TRUE
   if (!is.null(xfloor)) xsig[xfloor == 0] <- NA
   bl <- all(range(xsig, na.rm = TRUE) == 0)
   if(bl){
     gxyz <- xsig
   } else {
-    if (!pars$ps$rescale) {
-      gxyz <- scales::rescale(xsig, to = pars$ps$zscale$range)
-    } else if (pars$ps$zscale$signal.type == "binary") {
-      gxyz <- scales::rescale(xsig, to = pars$ps$zscale$scaling)
+    if (!pars_ps$rescale) {
+      gxyz <- scales::rescale(xsig, to = pars_ps$zscale$range)
+    } else if (pars_ps$zscale$signal.type == "binary") {
+      gxyz <- scales::rescale(xsig, to = pars_ps$zscale$scaling)
     } else {
       endpoints <- c(0.01, 1e-04)
-      if (pars$ps$zscale$scale.type == "negpos") {
-        to <- pars$ps$zscale$range/pars$ps$zscale$maxsig
-        gxyz <- .rescale_negpos(xsig, pars, to, endpoints = endpoints)
-      } else if (pars$ps$zscale$scale.type == "pos") {
-        to <- pars$ps$zscale$scaling
-        gxyz <- .rescale_pos(xsig, pars, to, endpoints = endpoints)
-      } else if (pars$ps$zscale$scale.type == "neg") {
-        to <- pars$ps$zscale$scaling
-        gxyz <- .rescale_neg(xsig, pars, to, endpoints = endpoints)
+      if (pars_ps$zscale$scale.type == "negpos") {
+        to <- pars_ps$zscale$range/pars_ps$zscale$maxsig
+        gxyz <- .rescale_negpos(xsig, to, endpoints = endpoints)
+      } else if (pars_ps$zscale$scale.type == "pos") {
+        to <- pars_ps$zscale$scaling
+        gxyz <- .rescale_pos(xsig, to, endpoints = endpoints)
+      } else if (pars_ps$zscale$scale.type == "neg") {
+        to <- pars_ps$zscale$scaling
+        gxyz <- .rescale_neg(xsig, to, endpoints = endpoints)
       }
       #- export 'endpoints' in future versions;
       #- it will cut noise and outliers at the endpoints;
@@ -606,37 +607,28 @@
       #- noise are set to background (i.e. zero).
     }
   }
-  if(update.config || is.null(pars$ps$configs)){
-    pars$ps$configs <- .get_configs(pars)
+  if(update.config || is.null(pars_ps$configs)){
+    pars_ps$configs <- .get_configs(pars_ps)
   }
-  ps@projections$pars <- pars
+  ps@projections$pars_ps <- pars_ps
   ps@projections$gxyz <- gxyz
   return(ps)
 }
-.get_configs <- function(pars){
-  zconfig <- pars$ps$zscale
-  if(is.null(pars$ps$rescale)){
-    zconfig$rescaled <- TRUE
+.get_configs <- function(pars_ps){
+  configs <- pars_ps$zscale
+  if(is.null(pars_ps$rescale)){
+    configs$rescaled <- TRUE
   } else {
-    zconfig$rescaled <- pars$ps$rescale
+    configs$rescaled <- pars_ps$rescale
   }
-  if(zconfig$rescaled){
-    zconfig$zlim <- zconfig$scaling
+  if(configs$rescaled){
+    configs$zlim <- configs$scaling
   } else {
-    # mx <- zconfig$maxsig
-    # if(mx==0) mx <- 1
-    # if(zconfig$scale.type=="negpos"){
-    #   zlim <- c(-mx, mx)
-    # } else if(zconfig$scale.type=="neg"){
-    #   zlim <- c(-mx, 0)
-    # } else {
-    #   zlim <- c(0, mx)
-    # }
-    zconfig$zlim <- zconfig$range
+    configs$zlim <- configs$range
   }
-  return(zconfig)
+  return(configs)
 }
-.rescale_negpos <- function(xsig, pars, to, endpoints) {
+.rescale_negpos <- function(xsig, to, endpoints) {
   pr <- c(endpoints[1], 1 - endpoints[2])
   # pos
   xp <- xsig
@@ -662,7 +654,7 @@
   xsig[!is.na(xp)] <- xp[!is.na(xp)]
   return(xsig)
 }
-.rescale_pos <- function(xsig, pars, to, endpoints) {
+.rescale_pos <- function(xsig, to, endpoints) {
   pr <- c(endpoints[1], 1 - endpoints[2])
   xp <- xsig
   xp[xp <= 0] <- NA
@@ -673,7 +665,7 @@
   xsig[!is.na(xp)] <- xp[!is.na(xp)]
   return(xsig)
 }
-.rescale_neg <- function(xsig, pars, to, endpoints) {
+.rescale_neg <- function(xsig, to, endpoints) {
   pr <- c(endpoints[2], 1 - endpoints[1])
   xn <- xsig
   xn[xn >= 0] <- NA
@@ -691,23 +683,23 @@
 .silhouetteCircular <- function(ps, verbose = TRUE) {
   
     nodes <- getPathwaySpace(ps, "nodes")
-    pars <- getPathwaySpace(ps, "pars")
-    pars$ps$zscale <- .get_signal_scale(nodes$signal)
+    pars_ps <- getPathwaySpace(ps, "pars")
+    pars_ps$zscale <- .get_signal_scale(nodes$signal)
     
     if(verbose) message("Mapping 'x' and 'y' coordinates...")
-    gxy <- .rescale_coord(nodes, pars$ps$nrc)
-    lpts <- .get_points_in_matrix(pars$ps$nrc)
+    gxy <- .rescale_coord(nodes, pars_ps$nrc)
+    lpts <- .get_points_in_matrix(pars_ps$nrc)
     
     #--- get point-to-vertex distances for silhouettes
-    nnbg <- .get_silhouette_dists(lpts, gxy, pars$ps$silh$k)
+    nnbg <- .get_silhouette_dists(lpts, gxy, pars_ps$silh$k)
     
     #--- project floor
-    xfloor <- array(0, c(pars$ps$nrc, pars$ps$nrc))
-    if (nrow(nodes)>0 & pars$ps$silh$pdist > 0) {
-        xfloor[lpts[, c("Y", "X")]] <- .get_ldfloor(pars, nnbg)
+    xfloor <- array(0, c(pars_ps$nrc, pars_ps$nrc))
+    if (nrow(nodes)>0 & pars_ps$silh$pdist > 0) {
+        xfloor[lpts[, c("Y", "X")]] <- .get_ldfloor(pars_ps, nnbg)
     }
     # image(.transpose_and_flip(xfloor))
-    xfloor <- .cutfloor(xfloor, pars)
+    xfloor <- .cutfloor(xfloor, pars_ps)
     xfloor[gxy[, c("Yint", "Xint")]] <- 1
     
     #---return silhouette
@@ -719,9 +711,9 @@
     ps@projections$gxy <- gxy
     ps@projections$xfloor <- xfloor
     if (!.checkStatus(ps, "Projection")){
-      ps@projections$xsig <- array(0, c(pars$ps$nrc, pars$ps$nrc))
+      ps@projections$xsig <- array(0, c(pars_ps$nrc, pars_ps$nrc))
     }
-    ps <- .update_projections(ps, pars, update.config=FALSE)
+    ps <- .update_projections(ps, pars_ps, update.config=FALSE)
     return(ps)
 }
 
@@ -736,37 +728,37 @@
 }
 
 #-------------------------------------------------------------------------------
-.get_ldfloor <- function(pars, nnbg) {
-    decay_fun <- pars$ps$silh$decay.fun
+.get_ldfloor <- function(pars_ps, nnbg) {
+    decay_fun <- pars_ps$silh$decay.fun
     nn <- ncol(nnbg$nn)
     sfloor <- vapply(seq_len(nrow(nnbg$nn)), function(ii) {
         p_dst <- nnbg$dist[ii, ]
         #--- scaling projection on pdist
-        pdist <- pars$ps$silh$pdist
+        pdist <- pars_ps$silh$pdist
         #--- get floor of an ideal (max) signal
-        x <- p_dst / (pars$ps$nrc * pdist)
+        x <- p_dst / (pars_ps$nrc * pdist)
         sfloor <- decay_fun(x=x, signal=1)
         return(sfloor)
     }, numeric(nn))
     sfloor <- t(sfloor)
     sfloor <- matrix(sfloor[order(row(sfloor), -sfloor)],
         nrow = nrow(sfloor), byrow = TRUE)
-    sfloor <- sfloor[, seq_len(pars$ps$silh$k), drop = FALSE]
+    sfloor <- sfloor[, seq_len(pars_ps$silh$k), drop = FALSE]
     Z <- apply(sfloor, 1, mean)
     return(Z)
 }
 
 #-------------------------------------------------------------------------------
-.cutfloor <- function(xfloor, pars) {
-    size <- pi * (pars$ps$silh$pdist * 2 * pars$ps$nrc)^2
+.cutfloor <- function(xfloor, pars_ps) {
+    size <- pi * (pars_ps$silh$pdist * 2 * pars_ps$nrc)^2
     rg <- range(xfloor, na.rm = TRUE)
     if (rg[1] != rg[2]) {
         xfloor <- xfloor - rg[1]
         xfloor <- xfloor / max(xfloor, na.rm = TRUE)
         mask <- xfloor
-        mask[mask < pars$ps$silh$baseline] <- 0
+        mask[mask < pars_ps$silh$baseline] <- 0
         mask[mask > 0] <- 1
-        if(pars$ps$silh$fill.cavity){
+        if(pars_ps$silh$fill.cavity){
           mask <- .fillCavity(mask)
         } else {
           mask <- .fillSpots(mask, spot.size = size)
@@ -787,16 +779,16 @@
 ### Map summits for enrichment analysis
 ################################################################################
 .summitMapping <- function(ps, verbose = TRUE, ...) {
-    pars <- getPathwaySpace(ps, "pars")
-    gxy <- ps@projections$gxy
-    gxyz <- ps@projections$gxyz
-    ps@projections$summits <- .find_summits(
-        gxy = gxy, gxyz = gxyz, 
-        maxset = pars$ps$summit$maxset, 
-        minsize = pars$ps$summit$minsize,
-        threshold = pars$ps$summit$summit_threshold,
-        segm_fun = pars$ps$summit$segm_fun, ...=...)
-    return(ps)
+  pars_ps <- getPathwaySpace(ps, "pars")
+  gxy <- ps@projections$gxy
+  gxyz <- ps@projections$gxyz
+  ps@projections$summits <- .find_summits(
+    gxy = gxy, gxyz = gxyz, 
+    maxset = pars_ps$summit$maxset, 
+    minsize = pars_ps$summit$minsize,
+    threshold = pars_ps$summit$summit_threshold,
+    segm_fun = pars_ps$summit$segm_fun, ...=...)
+  return(ps)
 }
 
 #-------------------------------------------------------------------------------
@@ -811,7 +803,7 @@
     smt[smt < threshold] <- 0
     #-- run watershed
     # smt <- summitWatershed(smt, tolerance=tolerance, ext=1)
-    # smt <- base::do.call(segm_fun, c(list(x = smt), pars$ps$summit$segm_arg))
+    # smt <- base::do.call(segm_fun, c(list(x = smt), pars_ps$summit$segm_arg))
     smt <- segm_fun(smt, ...=...)
     xx <- .openPxEdges(smt > 0)
     smt[xx == 0] <- 0

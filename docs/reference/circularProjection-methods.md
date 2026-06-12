@@ -12,6 +12,7 @@ circularProjection(
   k = 8,
   decay.fun = weibullDecay(),
   aggregate.fun = signalAggregation(),
+  feature = activeFeature(ps),
   rescale = TRUE,
   verbose = TRUE,
   pdist = deprecated()
@@ -49,6 +50,20 @@ circularProjection(
   should aggregate a vector of signals to a scalar value. Available
   options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean' (See
   [`signalAggregation`](https://github.com/sysbiolab/PathwaySpace/reference/signalAggregation.md)).
+
+- feature:
+
+  A single string specifying the feature to project as a signal. Must
+  match either a feature name (see
+  [`gs_features()`](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-accessors.html))
+  or node attribute (see
+  [`gs_names()`](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-accessors.html)).
+  If a node attribute, make sure it is of numeric type. If no features
+  are available, assign them first using the
+  [`gs_fdata()`](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-accessors.html)
+  or
+  [`vertexSignal()`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md)
+  accessors.
 
 - rescale:
 

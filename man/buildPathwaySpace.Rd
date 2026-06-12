@@ -4,7 +4,7 @@
 \alias{buildPathwaySpace}
 \title{Constructor of PathwaySpace-class Objects}
 \usage{
-buildPathwaySpace(gs, nrc = 500, verbose = TRUE, g = deprecated())
+buildPathwaySpace(gs, nrc = 500, verbose = TRUE)
 }
 \arguments{
 \item{gs}{A \code{\link[RGraphSpace]{GraphSpace}} object. Alternatively,
@@ -18,8 +18,6 @@ affect the resulting image size and resolution.}
 
 \item{verbose}{A logical value specifying to display detailed
 messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
-
-\item{g}{Deprecated from PathwaySpace 1.0.1; use 'gs' instead.}
 }
 \value{
 A pre-processed \linkS4class{PathwaySpace} class object.

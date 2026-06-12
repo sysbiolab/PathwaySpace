@@ -47,11 +47,11 @@ if (!require("PathwaySpace", quietly = TRUE)){
 
 ```{r Check required versions, eval=TRUE, message=FALSE}
 # Check versions
-if (packageVersion("RGraphSpace") < "1.2.0"){
+if (packageVersion("RGraphSpace") < "1.3.0"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.2.0"){
+if (packageVersion("PathwaySpace") < "1.3.0"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -102,10 +102,10 @@ plotGraphSpace(g_space_PCv12,
 ```
 
 ```{r fig1.png, eval=TRUE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-gg <- plotGraphSpace(g_space_PCv12, node.labels = top10hubs,
-label.color = "blue",  theme = "th3", label.size = 2)
-ggsave(filename = "./figs_fsets/fig1.png", height=3.5, width=4.5,
-  units="in", device="png", dpi=300, plot=gg)
+# gg <- plotGraphSpace(g_space_PCv12, node.labels = top10hubs,
+# label.color = "blue",  theme = "th3", label.size = 2)
+# ggsave(filename = "./figs_fsets/fig1.png", height=3.5, width=4.5,
+#   units="in", device="png", dpi=300, plot=gg)
 ```
 
 ```{r fig1, echo=FALSE, out.width = '90%', purl=FALSE}
@@ -134,7 +134,7 @@ We now follow the *PathwaySpace* pipeline as explained in the [introductory vign
 
 ```{r PathwaySpace decoration - 5, eval=FALSE, message=FALSE}
 # Run the PathwaySpace constructor
-p_space_PCv12 <- buildPathwaySpace(gs=g_space_PCv12, nrc=500)
+p_space_PCv12 <- buildPathwaySpace(gs = g_space_PCv12, nrc = 500)
 # Note: 'nrc' sets the number of rows and columns of the
 # image space, which will affect the image resolution (in pixels)
 ```
@@ -168,21 +168,24 @@ Next, we decorate the *PathwaySpace* image with graph silhouettes and plot the r
 p_space_PCv12 <- silhouetteMapping(p_space_PCv12)
 # Plot the results
 plotPathwaySpace(p_space_PCv12, 
-  title="HALLMARK_P53_PATHWAY", 
+  title = "HALLMARK_P53_PATHWAY", 
   marks = top10hubs, 
+  xlab = "Pathway coordinates 1",
+  ylab = "Pathway coordinates 2",
   mark.size = 2, theme = "th3")
 ```
 
 ```{r fig2.png, eval=FALSE, message=FALSE, echo=FALSE, purl=FALSE}
-gg <- plotPathwaySpace(p_space_PCv12, theme = "th3",
-  title="HALLMARK_P53_PATHWAY", marks = top10hubs,
-  mark.size = 2, font.size = 0.8)
-
-ggsave(filename = "./figs_fsets/fig2.png", plot=gg, height=4,
-  width=5, units="in", device="png", dpi=300)
-
-ggsave(filename = "./figs_fsets/card1.png", plot=gg, height=4,
-  width=4, units="in", device="png", dpi=200)
+# gg <- plotPathwaySpace(p_space_PCv12, theme = "th3",
+#   xlab = "Pathway coordinates 1", ylab = "Pathway coordinates 2",
+#   title="HALLMARK_P53_PATHWAY", marks = top10hubs,
+#   mark.size = 2, font.size = 0.8)
+# 
+# ggsave(filename = "./figs_fsets/fig2.png", plot=gg, height=4,
+#   width=5, units="in", device="png", dpi=300)
+# 
+# ggsave(filename = "./figs_fsets/card1.png", plot=gg, height=4,
+#   width=4, units="in", device="png", dpi=200)
 ```
 
 ```{r fig2, echo=FALSE, out.width = '100%', purl=FALSE}
@@ -197,14 +200,19 @@ The summits represent regions within the graph that exhibit signal values that a
 ```{r Mapping summits - 1, eval=FALSE, message=FALSE}
 # Mapping summits
 p_space_PCv12 <- summitMapping(p_space_PCv12, minsize = 50)
-plotPathwaySpace(p_space_PCv12, title="Summit regions", theme = "th3")
+plotPathwaySpace(p_space_PCv12, 
+  title="Summit regions", 
+  xlab = "Pathway coordinates 1",
+  ylab = "Pathway coordinates 2",
+  theme = "th3")
 ```
 
 ```{r fig3.png, eval=FALSE, message=FALSE, echo=FALSE, purl=FALSE}
-gg <- plotPathwaySpace(p_space_PCv12, title="Summit regions",
-  theme = "th3", font.size = 0.8,)
-ggsave(filename = "./figs_fsets/fig3.png", plot=gg, height=4,
-  width=5, units="in", device="png", dpi=300)
+# gg <- plotPathwaySpace(p_space_PCv12, title="Summit regions",
+#   xlab = "Pathway coordinates 1", ylab = "Pathway coordinates 2",
+#   theme = "th3", font.size = 0.8,)
+# ggsave(filename = "./figs_fsets/fig3.png", plot=gg, height=4,
+#   width=5, units="in", device="png", dpi=300)
 ```
 
 ```{r fig3, echo=FALSE, out.width = '100%', purl=FALSE}

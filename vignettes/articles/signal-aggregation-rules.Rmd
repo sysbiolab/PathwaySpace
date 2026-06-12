@@ -49,11 +49,11 @@ if (!require("PathwaySpace", quietly = TRUE)){
 
 ```{r Check required versions, eval=TRUE, message=FALSE}
 # Check versions
-if (packageVersion("RGraphSpace") < "1.2.0"){
+if (packageVersion("RGraphSpace") < "1.3.0"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.2.0"){
+if (packageVersion("PathwaySpace") < "1.3.0"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -206,19 +206,19 @@ plotPathwaySpace(ps, theme = "th3")
 ```
 
 ```{r , eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-ggps <- list()
-ps <- circularProjection(ps, k = 2, aggregate.fun = goedel.tnorm)
-ggps$p1 <- plotPathwaySpace(ps, theme = "th3", title = "goedel.tnorm()", font.size=1.3)
-ps <- circularProjection(ps, k = 2, aggregate.fun = goguen.tnorm)
-ggps$p2 <- plotPathwaySpace(ps, theme = "th3", title = "goguen.tnorm()", font.size=1.3)
-ps <- circularProjection(ps, k = 2, aggregate.fun = fuzzy.hamacher.tnorm)
-ggps$p3 <- plotPathwaySpace(ps, theme = "th3", title = "fuzzy.hamacher.tnorm()", font.size=1.3)
-ps <- circularProjection(ps, k = 2, aggregate.fun = fuzzy.einstein.tnorm)
-ggps$p4 <- plotPathwaySpace(ps, theme = "th3", title = "fuzzy.einstein.tnorm()", font.size=1.3)
-ggsave(filename = "./figs_intro/fig_b1.png", 
-  height=9, width=9, units="in", 
-  device="png", dpi=300, 
-  plot = wrap_plots(ggps$p1, ggps$p2, ggps$p3, ggps$p4))
+# ggps <- list()
+# ps <- circularProjection(ps, k = 2, aggregate.fun = goedel.tnorm)
+# ggps$p1 <- plotPathwaySpace(ps, theme = "th3", title = "goedel.tnorm()", font.size=1.3)
+# ps <- circularProjection(ps, k = 2, aggregate.fun = goguen.tnorm)
+# ggps$p2 <- plotPathwaySpace(ps, theme = "th3", title = "goguen.tnorm()", font.size=1.3)
+# ps <- circularProjection(ps, k = 2, aggregate.fun = fuzzy.hamacher.tnorm)
+# ggps$p3 <- plotPathwaySpace(ps, theme = "th3", title = "fuzzy.hamacher.tnorm()", font.size=1.3)
+# ps <- circularProjection(ps, k = 2, aggregate.fun = fuzzy.einstein.tnorm)
+# ggps$p4 <- plotPathwaySpace(ps, theme = "th3", title = "fuzzy.einstein.tnorm()", font.size=1.3)
+# ggsave(filename = "./figs_intro/fig_b1.png", 
+#   height=9, width=9, units="in", 
+#   device="png", dpi=300, 
+#   plot = wrap_plots(ggps$p1, ggps$p2, ggps$p3, ggps$p4))
 ```
 
 ```{r , echo=FALSE, out.width = '100%', purl=FALSE}
@@ -272,21 +272,21 @@ plotPathwaySpace(ps, theme = "th3")
 
 
 ```{r , eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-ggps <- list()
-ps <- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = goedel.tconorm)
-ggps$p1 <- plotPathwaySpace(ps, theme = "th3", title = "goedel.tconorm()", font.size=1.3)
-ps <- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = goguen.tconorm)
-ggps$p2 <- plotPathwaySpace(ps, theme = "th3", title = "goguen.tconorm()", font.size=1.3)
-ps <- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = lukas.tconorm)
-ggps$p3 <- plotPathwaySpace(ps, theme = "th3", title = "lukas.tconorm()", font.size=1.3)
-ps <- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = fuzzy.hamacher.tconorm)
-ggps$p4 <- plotPathwaySpace(ps, theme = "th3", title = "fuzzy.hamacher.tconorm()", font.size=1.3)
-ps <- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = fuzzy.einstein.tconorm)
-ggps$p5 <- plotPathwaySpace(ps, theme = "th3", title = "fuzzy.einstein.tconorm()", font.size=1.3)
-
-ggsave(filename = "./figs_intro/fig_b2.png", height=9, 
-  width=12, units="in", device="png", dpi=300, 
-  plot = wrap_plots(ggps$p1, ggps$p2, ggps$p3, ggps$p4, ggps$p5))
+# ggps <- list()
+# ps <- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = goedel.tconorm)
+# ggps$p1 <- plotPathwaySpace(ps, theme = "th3", title = "goedel.tconorm()", font.size=1.3)
+# ps <- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = goguen.tconorm)
+# ggps$p2 <- plotPathwaySpace(ps, theme = "th3", title = "goguen.tconorm()", font.size=1.3)
+# ps <- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = lukas.tconorm)
+# ggps$p3 <- plotPathwaySpace(ps, theme = "th3", title = "lukas.tconorm()", font.size=1.3)
+# ps <- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = fuzzy.hamacher.tconorm)
+# ggps$p4 <- plotPathwaySpace(ps, theme = "th3", title = "fuzzy.hamacher.tconorm()", font.size=1.3)
+# ps <- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = fuzzy.einstein.tconorm)
+# ggps$p5 <- plotPathwaySpace(ps, theme = "th3", title = "fuzzy.einstein.tconorm()", font.size=1.3)
+# 
+# ggsave(filename = "./figs_intro/fig_b2.png", height=9, 
+#   width=12, units="in", device="png", dpi=300, 
+#   plot = wrap_plots(ggps$p1, ggps$p2, ggps$p3, ggps$p4, ggps$p5))
 ```
 
 ```{r , echo=FALSE, out.width = '100%', purl=FALSE}

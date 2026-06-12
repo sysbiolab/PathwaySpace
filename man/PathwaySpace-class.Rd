@@ -21,11 +21,13 @@ PathwaySpace: An S4 class for signal propagation on image spaces
 
 \item{\code{image}}{A raster background image matrix.}
 
-\item{\code{pars}}{A list with parameters.}
+\item{\code{pars}}{A list inherited GraphSpace parameters.}
 
 \item{\code{misc}}{A list with intermediate objects for downstream methods.}
 
 \item{\code{projections}}{A list with processed objects for downstream methods.}
+
+\item{\code{pars_ps}}{A list with PathwaySpace parameters.}
 
 \item{\code{status}}{A vector containing the processing status of the
 PathwaySpace object.}

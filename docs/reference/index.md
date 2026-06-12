@@ -13,6 +13,8 @@
   : Accessor Functions for PathwaySpace Objects
 - [`PathwaySpace-class`](https://github.com/sysbiolab/PathwaySpace/reference/PathwaySpace-class.md)
   : PathwaySpace: An S4 class for signal propagation on image spaces
+- [`annotation_pspace_signal()`](https://github.com/sysbiolab/PathwaySpace/reference/annotation_pspace.md)
+  : Annotation Functions for PathwaySpace Plots
 - [`buildPathwaySpace()`](https://github.com/sysbiolab/PathwaySpace/reference/buildPathwaySpace.md)
   : Constructor of PathwaySpace-class Objects
 - [`circularProjection(`*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/circularProjection-methods.md)
@@ -55,6 +57,8 @@
   [`` `vertexSignal<-`( ``*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md)
   [`vertexDecay(`*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md)
   [`` `vertexDecay<-`( ``*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md)
+  [`activeFeature(`*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md)
+  [`` `activeFeature<-`( ``*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md)
   : Accessor Functions for PathwaySpace Objects
 - [`weibullDecay()`](https://github.com/sysbiolab/PathwaySpace/reference/weibullDecay.md)
   : Constructor of Weibull decay functions

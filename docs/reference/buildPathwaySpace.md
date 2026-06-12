@@ -5,7 +5,7 @@
 ## Usage
 
 ``` r
-buildPathwaySpace(gs, nrc = 500, verbose = TRUE, g = deprecated())
+buildPathwaySpace(gs, nrc = 500, verbose = TRUE)
 ```
 
 ## Arguments
@@ -29,10 +29,6 @@ buildPathwaySpace(gs, nrc = 500, verbose = TRUE, g = deprecated())
 
   A logical value specifying to display detailed messages (when
   `verbose=TRUE`) or not (when `verbose=FALSE`).
-
-- g:
-
-  Deprecated from PathwaySpace 1.0.1; use 'gs' instead.
 
 ## Value
 

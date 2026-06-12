@@ -1,6 +1,6 @@
 # Visualizing sparse feature sets on large graphs
 
-**Package**: PathwaySpace 1.3.0  
+**Package**: PathwaySpace 1.3.1  
 
 ## Overview
 
@@ -37,11 +37,11 @@ if (!require("PathwaySpace", quietly = TRUE)){
 ``` r
 
 # Check versions
-if (packageVersion("RGraphSpace") < "1.2.0"){
+if (packageVersion("RGraphSpace") < "1.3.0"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.2.0"){
+if (packageVersion("PathwaySpace") < "1.3.0"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -128,7 +128,7 @@ Commons* interactions.
 ``` r
 
 # Run the PathwaySpace constructor
-p_space_PCv12 <- buildPathwaySpace(gs=g_space_PCv12, nrc=500)
+p_space_PCv12 <- buildPathwaySpace(gs = g_space_PCv12, nrc = 500)
 # Note: 'nrc' sets the number of rows and columns of the
 # image space, which will affect the image resolution (in pixels)
 ```
@@ -168,8 +168,10 @@ plot the results.
 p_space_PCv12 <- silhouetteMapping(p_space_PCv12)
 # Plot the results
 plotPathwaySpace(p_space_PCv12, 
-  title="HALLMARK_P53_PATHWAY", 
+  title = "HALLMARK_P53_PATHWAY", 
   marks = top10hubs, 
+  xlab = "Pathway coordinates 1",
+  ylab = "Pathway coordinates 2",
   mark.size = 2, theme = "th3")
 ```
 
@@ -192,7 +194,11 @@ function, which also decorates summits with contour lines.
 
 # Mapping summits
 p_space_PCv12 <- summitMapping(p_space_PCv12, minsize = 50)
-plotPathwaySpace(p_space_PCv12, title="Summit regions", theme = "th3")
+plotPathwaySpace(p_space_PCv12, 
+  title="Summit regions", 
+  xlab = "Pathway coordinates 1",
+  ylab = "Pathway coordinates 2",
+  theme = "th3")
 ```
 
 ![](figs_fsets/fig3.png)
@@ -243,24 +249,25 @@ If you use *PathwaySpace*, please cite:
     #> [1] stats     graphics  grDevices utils     datasets  methods   base     
     #> 
     #> other attached packages:
-    #> [1] igraph_2.3.1       PathwaySpace_1.3.0 RGraphSpace_1.3.0  ggplot2_4.0.3     
+    #> [1] igraph_2.3.2       PathwaySpace_1.3.1 RGraphSpace_1.3.1  ggplot2_4.0.3     
     #> [5] remotes_2.5.0     
     #> 
     #> loaded via a namespace (and not attached):
-    #>  [1] sass_0.4.10        generics_0.1.4     tidyr_1.3.2        digest_0.6.39     
-    #>  [5] magrittr_2.0.5     evaluate_1.0.5     grid_4.6.0         RColorBrewer_1.1-3
-    #>  [9] fastmap_1.2.0      jsonlite_2.0.0     ggrepel_0.9.8      ggrastr_1.0.2     
-    #> [13] purrr_1.2.2        scales_1.4.0       textshaping_1.0.5  jquerylib_0.1.4   
-    #> [17] cli_3.6.6          rlang_1.2.0        tidygraph_1.3.1    withr_3.0.2       
-    #> [21] RANN_2.6.2         cachem_1.1.0       yaml_2.3.12        otel_0.2.0        
-    #> [25] ggbeeswarm_0.7.3   tools_4.6.0        dplyr_1.2.1        colorspace_2.1-2  
-    #> [29] vctrs_0.7.3        R6_2.6.1           lifecycle_1.0.5    fs_2.1.0          
-    #> [33] htmlwidgets_1.6.4  vipor_0.4.7        ragg_1.5.2         pkgconfig_2.0.3   
-    #> [37] beeswarm_0.4.0     desc_1.4.3         pkgdown_2.2.0      pillar_1.11.1     
-    #> [41] bslib_0.10.0       gtable_0.3.6       Rcpp_1.1.1-1.1     glue_1.8.1        
-    #> [45] systemfonts_1.3.2  xfun_0.57          tibble_3.3.1       tidyselect_1.2.1  
-    #> [49] rstudioapi_0.18.0  knitr_1.51         farver_2.1.2       patchwork_1.3.2   
-    #> [53] htmltools_0.5.9    rmarkdown_2.31     compiler_4.6.0     S7_0.2.2
+    #>  [1] sass_0.4.10        generics_0.1.4     tidyr_1.3.2        lattice_0.22-9    
+    #>  [5] digest_0.6.39      magrittr_2.0.5     evaluate_1.0.5     grid_4.6.0        
+    #>  [9] RColorBrewer_1.1-3 fastmap_1.2.0      jsonlite_2.0.0     Matrix_1.7-5      
+    #> [13] ggrepel_0.9.8      ggnewscale_0.5.2   ggrastr_1.0.2      purrr_1.2.2       
+    #> [17] scales_1.4.0       textshaping_1.0.5  jquerylib_0.1.4    cli_3.6.6         
+    #> [21] rlang_1.2.0        tidygraph_1.3.1    withr_3.0.2        RANN_2.6.2        
+    #> [25] cachem_1.1.0       yaml_2.3.12        otel_0.2.0         ggbeeswarm_0.7.3  
+    #> [29] tools_4.6.0        dplyr_1.2.1        colorspace_2.1-2   vctrs_0.7.3       
+    #> [33] R6_2.6.1           lifecycle_1.0.5    fs_2.1.0           htmlwidgets_1.6.4 
+    #> [37] vipor_0.4.7        ragg_1.5.2         pkgconfig_2.0.3    beeswarm_0.4.0    
+    #> [41] desc_1.4.3         pkgdown_2.2.0      pillar_1.11.1      bslib_0.11.0      
+    #> [45] gtable_0.3.6       Rcpp_1.1.1-1.1     glue_1.8.1         systemfonts_1.3.2 
+    #> [49] xfun_0.58          tibble_3.3.1       tidyselect_1.2.1   rstudioapi_0.18.0 
+    #> [53] knitr_1.51         farver_2.1.2       patchwork_1.3.2    htmltools_0.5.9   
+    #> [57] rmarkdown_2.31     compiler_4.6.0     S7_0.2.2
 
 ## References
 

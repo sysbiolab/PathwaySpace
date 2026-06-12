@@ -11,6 +11,7 @@
   k = 8,
   decay.fun = weibullDecay(),
   aggregate.fun = signalAggregation(),
+  feature = activeFeature(ps),
   rescale = TRUE,
   verbose = TRUE,
   pdist = deprecated()
@@ -34,6 +35,12 @@ It must be provided as a unary function, e.g., \code{function(x) { ... }},
 which should aggregate a vector of signals to a scalar value.
 Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean'
 (See \code{\link{signalAggregation}}).}
+
+\item{feature}{A single string specifying the feature to project as a
+signal. Must match either a feature name (see \code{gs_features()}) or
+node attribute (see \code{gs_names()}). If a node attribute, make sure
+it is of numeric type. If no features are available, assign them first
+using the \code{gs_fdata()} or \code{vertexSignal()} accessors.}
 
 \item{rescale}{A logical value indicating whether to rescale
 the signal. If the signal \code{>=0}, then it will be rescaled to

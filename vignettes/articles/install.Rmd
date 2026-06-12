@@ -23,10 +23,21 @@ install.packages("remotes")
 # Package source
 remotes::install_github("sysbiolab/RGraphSpace", build_vignettes=TRUE)
 remotes::install_github("sysbiolab/PathwaySpace", build_vignettes=TRUE)
+```
 
-# Dependencies used in the spatial transcriptomics tutorial
+#### Other packages used in the tutorials
+
+```r
+install.packages("Seurat")
+install.packages("hdf5r")
+install.packages("arrow")
+install.packages("lfl")
+
 remotes::install_github("satijalab/Seurat")
 remotes::install_github("satijalab/seurat-data")
+
+install.packages("BiocManager")
+BiocManager::install("glmGamPoi")
 ```
 
 ## Citation

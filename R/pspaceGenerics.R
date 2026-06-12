@@ -42,4 +42,7 @@ setGeneric("vertexSignal<-", function(x, value) standardGeneric("vertexSignal<-"
 setGeneric("vertexDecay", function(x, value) standardGeneric("vertexDecay"))
 setGeneric("vertexDecay<-", function(x, value) standardGeneric("vertexDecay<-"))
 
+setGeneric("activeFeature", function(x) standardGeneric("activeFeature"))
+setGeneric("activeFeature<-", function(x, value) standardGeneric("activeFeature<-"))
+
 

@@ -13,11 +13,11 @@
   decay.fun = weibullDecay(pdist = 1),
   aggregate.fun = signalAggregation(),
   polar.fun = polarDecay(),
+  feature = activeFeature(ps),
   directional = FALSE,
   edge.norm = TRUE,
   rescale = TRUE,
   verbose = TRUE,
-  theta = deprecated(),
   pdist = deprecated()
 )
 }
@@ -49,6 +49,12 @@ Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean'
 
 \item{polar.fun}{A polar decay function (see \code{\link{polarDecay}}).}
 
+\item{feature}{A single string specifying the feature to project as a
+signal. Must match either a feature name (see \code{gs_features()}) or
+node attribute (see \code{gs_names()}). If a node attribute, make sure
+it is of numeric type. If no features are available, assign them first
+using the \code{gs_fdata()} or \code{vertexSignal()} accessors.}
+
 \item{directional}{If directional edges are available, this argument can
 be used to orientate the signal projection on directed graphs.}
 
@@ -64,8 +70,6 @@ rescaled to \code{[-1, 1]}.}
 
 \item{verbose}{A logical value specifying to display detailed
 messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
-
-\item{theta}{Deprecated as of PathwaySpace 1.0.2; use 'beta' instead.}
 
 \item{pdist}{Deprecated as of PathwaySpace 1.0.2; this parameter is now
 passed internally through \code{decay.fun}.}
@@ -92,7 +96,7 @@ vertexSignal(ps) <- 1
 # gs_edge_attr(ps, "weight") <- c(-1, 1, 1, 1, 1, 1)
 
 # Create a 2D-landscape image
-ps <- polarProjection(ps, pdist=1)
+ps <- polarProjection(ps)
 
 }
 \seealso{

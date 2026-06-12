@@ -7,9 +7,13 @@
 \alias{vertexSignal<-}
 \alias{vertexDecay}
 \alias{vertexDecay<-}
+\alias{activeFeature}
+\alias{activeFeature<-}
 \alias{vertexSignal<-,PathwaySpace-method}
 \alias{vertexDecay,PathwaySpace-method}
 \alias{vertexDecay<-,PathwaySpace-method}
+\alias{activeFeature,PathwaySpace-method}
+\alias{activeFeature<-,PathwaySpace-method}
 \title{Accessor Functions for PathwaySpace Objects}
 \usage{
 \S4method{vertexSignal}{PathwaySpace}(x)
@@ -19,25 +23,51 @@
 \S4method{vertexDecay}{PathwaySpace}(x)
 
 \S4method{vertexDecay}{PathwaySpace}(x) <- value
+
+\S4method{activeFeature}{PathwaySpace}(x)
+
+\S4method{activeFeature}{PathwaySpace}(x) <- value
 }
 \arguments{
 \item{x}{A \linkS4class{PathwaySpace} class object.}
 
-\item{value}{The new value of the attribute.}
+\item{value}{The new value to assign:
+\itemize{
+\item For \code{vertexSignal()}: a numeric vector or scalar.
+\item For \code{vertexDecay()}: a decay function or list of decay
+functions (see \code{\link{linearDecay}}, \code{\link{weibullDecay}}).
+\item For \code{activeFeature()}: a single string matching a feature
+name (see \code{\link[RGraphSpace]{gs_features}}) or a node attribute
+(see \code{\link[RGraphSpace]{gs_names}}).
+}}
 }
 \value{
-Updated \linkS4class{PathwaySpace} object.
+The updated \linkS4class{PathwaySpace} object.
 }
 \description{
-Get or set 'signal' and 'decay' functions in a
-\linkS4class{PathwaySpace} class object.
+Get or set vertex signals, decay functions, and the active feature in a
+\linkS4class{PathwaySpace} object.
+
+\code{vertexSignal()} gets or sets the numeric signal assigned to each
+vertex, used as input for spatial projection.
+
+\code{vertexDecay()} gets or sets the decay function assigned to each
+vertex, controlling how the signal attenuates with distance.
+
+\code{activeFeature()} gets or sets the active feature name, which
+automatically extracts the corresponding signal from the \code{fdata} slot
+or node attributes and assigns it to \code{vertexSignal()}.
 }
 \examples{
+library(RGraphSpace)
 data('gtoy1', package = 'RGraphSpace')
 ps <- buildPathwaySpace(gtoy1, nrc = 100)
 
 # Check vertex names
 names(ps)
+
+##--------------------------------------
+## 'vertexSignal' accessor
 
 # Access signal values from all vertices
 vertexSignal(ps)
@@ -51,7 +81,22 @@ vertexSignal(ps)[c("n2","n3")] <- 1
 # Set '1s' to all vertices
 vertexSignal(ps) <- 1
 
-#----
+##--------------------------------------
+## 'activeFeature' accessor
+
+# Assign a signal feature matrix
+signal_mtx <- matrix(
+  rep(rnorm(gs_vcount(ps)), 2),
+  ncol = 2,
+  dimnames = list(names(ps), c("feature1", "feature2"))
+)
+gs_fdata(ps) <- signal_mtx
+
+# Set the active feature — automatically updates vertexSignal()
+activeFeature(ps) <- "feature1"
+
+##--------------------------------------
+## 'vertexDecay' accessor
 
 # Access decay function of a specific vertex
 vertexDecay(ps)[["n3"]]

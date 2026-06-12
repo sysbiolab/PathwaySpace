@@ -46,11 +46,11 @@ if (!require("PathwaySpace", quietly = TRUE)){
 
 ```{r Check required versions, eval=TRUE, message=FALSE}
 # Check versions
-if (packageVersion("RGraphSpace") < "1.2.0"){
+if (packageVersion("RGraphSpace") < "1.3.0"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.2.0"){
+if (packageVersion("PathwaySpace") < "1.3.0"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -99,9 +99,9 @@ plotGraphSpace(gs1, add.labels = TRUE)
 ```
 
 ```{r fig2.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-gg <- plotGraphSpace(gs1, add.labels = TRUE)
-ggsave(filename = "./figs_intro/fig2.png", height=4, width=5,
-  units="in", device="png", dpi=250, plot=gg)
+# gg <- plotGraphSpace(gs1, add.labels = TRUE)
+# ggsave(filename = "./figs_intro/fig2.png", height=4, width=5,
+#   units="in", device="png", dpi=250, plot=gg)
 ```
 
 ```{r fig2, echo=FALSE, out.width = '100%', purl=FALSE}
@@ -219,9 +219,9 @@ plotGraphSpace(gs2, add.labels = TRUE)
 ```
 
 ```{r fig5.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-gg <- plotGraphSpace(gs2, add.labels = TRUE)
-ggsave(filename = "./figs_intro/fig5.png", height=4, width=5,
-  units="in", device="png", dpi=250, plot=gg)
+# gg <- plotGraphSpace(gs2, add.labels = TRUE)
+# ggsave(filename = "./figs_intro/fig5.png", height=4, width=5,
+#   units="in", device="png", dpi=250, plot=gg)
 ```
 
 ```{r fig5, echo=FALSE, out.width = '100%', purl=FALSE}
@@ -279,9 +279,9 @@ plotPathwaySpace(p_space2, theme = "th2",
 ```
 
 ```{r fig7.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-gg <- plotPathwaySpace(p_space2, theme = "th2", marks = c("n1","n3","n4","n5"))
-ggsave(filename = "./figs_intro/fig7.png", height=3.5, width=5,
-  units="in", device="png", dpi=350, plot=gg)
+# gg <- plotPathwaySpace(p_space2, theme = "th2", marks = c("n1","n3","n4","n5"))
+# ggsave(filename = "./figs_intro/fig7.png", height=3.5, width=5,
+#   units="in", device="png", dpi=350, plot=gg)
 ```
 
 ```{r fig7, echo=FALSE, out.width = '100%', purl=FALSE}
@@ -314,10 +314,10 @@ plotPathwaySpace(p_space1, bg.color = "white",
 ```
 
 ```{r fig8.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-gg <- plotPathwaySpace(p_space1, bg.color = "white", font.color = "grey20",
-  add.marks = TRUE, mark.color = "magenta", theme = "th3")
-ggsave(filename = "./figs_intro/fig8.png", height=3.5, width=4,
-  units="in", device="png", dpi=350, plot=gg)
+# gg <- plotPathwaySpace(p_space1, bg.color = "white", font.color = "grey20",
+#   add.marks = TRUE, mark.color = "magenta", theme = "th3")
+# ggsave(filename = "./figs_intro/fig8.png", height=3.5, width=4,
+#   units="in", device="png", dpi=350, plot=gg)
 ```
 
 ```{r fig8, echo=FALSE, out.width = '100%', purl=FALSE}

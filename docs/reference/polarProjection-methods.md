@@ -14,11 +14,11 @@ polarProjection(
   decay.fun = weibullDecay(pdist = 1),
   aggregate.fun = signalAggregation(),
   polar.fun = polarDecay(),
+  feature = activeFeature(ps),
   directional = FALSE,
   edge.norm = TRUE,
   rescale = TRUE,
   verbose = TRUE,
-  theta = deprecated(),
   pdist = deprecated()
 )
 ```
@@ -70,6 +70,20 @@ polarProjection(
   A polar decay function (see
   [`polarDecay`](https://github.com/sysbiolab/PathwaySpace/reference/polarDecay.md)).
 
+- feature:
+
+  A single string specifying the feature to project as a signal. Must
+  match either a feature name (see
+  [`gs_features()`](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-accessors.html))
+  or node attribute (see
+  [`gs_names()`](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-accessors.html)).
+  If a node attribute, make sure it is of numeric type. If no features
+  are available, assign them first using the
+  [`gs_fdata()`](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-accessors.html)
+  or
+  [`vertexSignal()`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md)
+  accessors.
+
 - directional:
 
   If directional edges are available, this argument can be used to
@@ -91,10 +105,6 @@ polarProjection(
 
   A logical value specifying to display detailed messages (when
   `verbose=TRUE`) or not (when `verbose=FALSE`).
-
-- theta:
-
-  Deprecated as of PathwaySpace 1.0.2; use 'beta' instead.
 
 - pdist:
 
@@ -136,7 +146,7 @@ vertexSignal(ps) <- 1
 # gs_edge_attr(ps, "weight") <- c(-1, 1, 1, 1, 1, 1)
 
 # Create a 2D-landscape image
-ps <- polarProjection(ps, pdist=1)
+ps <- polarProjection(ps)
 #> Validating arguments...
 #> Using polar projection on undirected graph...
 #> Mapping 'x' and 'y' coordinates...

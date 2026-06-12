@@ -1,6 +1,6 @@
 # Visualizing spatial transcriptomics
 
-**Package**: PathwaySpace 1.3.0  
+**Package**: PathwaySpace 1.3.1  
 
 ## Overview
 
@@ -45,6 +45,9 @@ if (!require("RGraphSpace", quietly = TRUE)){
 if (!require("PathwaySpace", quietly = TRUE)){
   remotes::install_github("sysbiolab/PathwaySpace")
 }
+if (!require("Seurat", quietly = TRUE)){
+  remotes::install_github("satijalab/seurat-data")
+}
 if (!require("SeuratData", quietly = TRUE)){
   remotes::install_github("satijalab/seurat-data")
 }
@@ -54,20 +57,26 @@ if (!require("hdf5r", quietly = TRUE)){
 if (!require("arrow", quietly = TRUE)){
   install.packages("arrow")
 }
+if (!require("BiocManager", quietly = TRUE)){
+  install.packages("BiocManager")
+}
+if (!require("glmGamPoi", quietly = TRUE)){
+  BiocManager::install("glmGamPoi")
+}
 ```
 
 ``` r
 
-# Check versions
-if (packageVersion("RGraphSpace") < "1.2.0"){
+# Check required versions
+if (packageVersion("RGraphSpace") < "1.3.1"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.2.0"){
+if (packageVersion("PathwaySpace") < "1.3.1"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
-if (packageVersion("Seurat") < "5.4.0.9009"){
+if (packageVersion("Seurat") < "5.5.0"){
   message("Need to update 'Seurat' for this vignette")
   remotes::install_github("satijalab/Seurat")
 }
@@ -110,65 +119,72 @@ SeuratData::InstallData("stxBrain")
 seurat_obj <- LoadData("stxBrain", type = "anterior1")
 ```
 
-The `stxBrain` dataset is normalized as suggested in *Seurat*’s
-[spatial_vignette](https://satijalab.org/seurat/articles/spatial_vignette.html),
-either using the
-[`SCTransform()`](https://satijalab.org/seurat/reference/SCTransform.html)
-and
-[`NormalizeData()`](https://satijalab.org/seurat/reference/NormalizeData.html)
-functions.
+The `stxBrain` dataset is preprocessed following *Seurat*’s [spatial
+analysis
+workflow](https://satijalab.org/seurat/articles/spatial_vignette),
+including variance-stabilizing normalization and cluster annotation.
 
 ``` r
 
-# Run vst normalization on counts
-# seurat_obj <- SCTransform(seurat_obj, assay = "Spatial", verbose = FALSE)
-
-# NOTE: Seurat recommends using SCTransform() for processing this 
-# spatial dataset, which may require more computation time. Here,
-# we use log-normalization for demonstration purposes.
-seurat_obj <- NormalizeData(seurat_obj)
+# Normalize, reduce dimensions, and annotate clusters
+seurat_obj <- SCTransform(seurat_obj, assay = "Spatial", verbose = FALSE)
+seurat_obj <- RunPCA(seurat_obj, assay = "SCT", verbose = FALSE)
+seurat_obj <- FindNeighbors(seurat_obj, reduction = "pca", dims = 1:30)
+seurat_obj <- FindClusters(seurat_obj, verbose = FALSE)
 ```
 
-… and then we extract spot coordinates, tissue image, and vst-normalized
-data.
+… and then
+[`as.GraphSpace()`](https://sysbiolab.github.io/RGraphSpace/reference/as.GraphSpace.html)
+converts the *Seurat* object into a `GraphSpace`, exposing its spatial
+coordinates and feature data to the *ggplot2* grammar. We then attach
+the tissue image and normalize node coordinates to the image space.
 
 ``` r
 
-# Get spot coordinates
-spot_coord <- GetTissueCoordinates(seurat_obj, scale = "lowres")
+# Create a GraphSpace from 'seurat_obj'
+gs <- as.GraphSpace(seurat_obj, space = "spatial", scale = "lowres")
 
-# Get raster image
-raster_image <- GetImage(seurat_obj, "raster")
+# If available, add tissue image 
+gs_image(gs) <- SeuratObject::GetImage(seurat_obj, mode = "raster")
 
-# Get vst-normalized gene expression
-vst_gexp <- GetAssayData(seurat_obj, layer="data")
-
-# If needed, remove seurat_obj to free memory
-rm(seurat_obj)
+# Normalize node coordinates to the image space
+# By default, this attempts to align the graph's bottom-up
+# coordinates with the image's top-down matrix layout.
+gs <- normalizeGraphSpace(gs, use_image = TRUE)
 ```
 
-Next, we create a *PathwaySpace* object from the spot coordinates and
-plot the resulting graph overlaid on the tissue image.
+In this tutorial we use the low-level *ggplot2* interface for
+fine-grained control; the following tutorials demonstrate the
+higher-level
+[`plotPathwaySpace()`](https://github.com/sysbiolab/PathwaySpace/reference/plotPathwaySpace-methods.md)
+wrapper for convenience.
 
 ``` r
 
-# Create a GraphSpace from 'spot_coord', mapped to the 'raster_image'
-# Note: 'spot_coord' must contain 'x' and 'y' columns.
-spot_coord$nodeSize <- 1 #making spots smaller for better visual inspection
-gs <- GraphSpace(spot_coord)
+# Set a reusable theme for spatial plots
+spatial_theme <- theme_gspace_coords(theme = "th3", is_norm = TRUE,
+  xlab = "Spot coordinates 1", ylab = "Spot coordinates 2")
 
-# Normalization: by default, this attempts to align the graph's 
-# bottom-up coordinates with the image's top-down matrix layout.
-gs <- normalizeGraphSpace(gs, image = raster_image)
-```
+# Left: 'seurat_clusters' annotation overlaid on tissue image
+cpal <- DiscretePalette(nlevels(gs$seurat_clusters), "polychrome")
+p1 <- ggplot(gs) + 
+  annotation_gspace(gs, opacity = 0.5) +
+  geom_nodespace(mapping = aes(fill = seurat_clusters),
+    size = 1.2, color = "grey90", stroke = 0.3) +
+  scale_fill_manual(values = cpal) +
+  theme_gspace_legend(discrete_fill = TRUE) +
+  spatial_theme
 
-``` r
+# Right: Camk2n1 gene expression overlaid on tissue image
+cpal <- hcl.colors(100, palette = "Spectral", rev = TRUE)
+p2 <- ggplot(gs) + 
+  annotation_gspace(gs, opacity = 0.5) +
+  geom_nodespace(mapping = aes(colour = Camk2n1), 
+    size = 0.8, pch = 19) +
+  scale_colour_continuous(palette = cpal) +
+  spatial_theme
 
-# Check the overlay:
-# In case of any misalignment, consider using 'flip.y = TRUE'  
-# in the normalizeGraphSpace() call above.
-xy_labs <- labs(x="Spot coordinates 1", y="Spot coordinates 2")
-plotGraphSpace(gs, add.image = TRUE) + xy_labs
+p1 + p2
 ```
 
 ![](figs_spatl/fig1.png)
@@ -184,13 +200,25 @@ provides orientation controls through the `flip.*` and `rotate.*`
 arguments. If the spots appear misaligned with the input image, try
 alternative combinations of these parameters to correct the alignment.
 
+### Running *PathwaySpace*
+
+Next, we create a *PathwaySpace* object from the spot coordinates.
+
 ``` r
 
 # Create a PathwaySpace object
 pspace_obj <- buildPathwaySpace(gs)
-```
 
-### Running *PathwaySpace*
+pspace_obj
+# A PathwaySpace-class object for:
+# IGRAPH ba090b7 UNW- 2696 0 -- 
+# + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c), nodeSize (v/n), cell (v/c), orig.ident (v/x),
+# | nCount_Spatial (v/n), nFeature_Spatial (v/n), slice (v/n), region (v/c), nCount_SCT (v/n),
+# | nFeature_SCT (v/n), SCT_snn_res.0.8 (v/x), seurat_clusters (v/x), signal (v/n), decayFunction
+# | (v/x), arrowType (e/n), weight (e/n)
+# + features: 17668 (Xkr4, Sox17, Mrpl15, Lypla1, ...)
+# + status: Preprocess[x]  Projection[ ]  Silhouette[ ]  Summits[ ]
+```
 
 Before projection, we need to specify a distance unit for the signal
 decay function. This distance unit will affect the extent over which the
@@ -220,24 +248,27 @@ detailed, granular silhouette.
 
 # Add a graph silhouette to the PathwaySpace object
 pspace_obj <- silhouetteMapping(pspace_obj, baseline = 0.1)
-plotPathwaySpace(ps=pspace_obj, theme = "th3", 
-  add.image = TRUE, si.alpha = 0.5) + xy_labs
+
+# Check the silhouette plot
+ggplot(pspace_obj) + 
+  annotation_gspace_image(pspace_obj) + 
+  annotation_pspace_signal(pspace_obj, si.alpha = 0.5) +
+  spatial_theme
 ```
 
 ![](figs_spatl/fig2.png)
 
 Next, we specify the signal to be projected; for this demonstration, we
 will use expression data from the **Camk2n1** gene. The
-[`vertexSignal()`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md)
+[`activeFeature()`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md)
 accessor function is then used to assign the gene expression values to
 graph vertices.
 
 ``` r
 
-# Select a gene of interest (e.g., Camk2n1) and assign its 
-# expression values to graph vertices
-gene <- "Camk2n1"
-vertexSignal(pspace_obj)[colnames(vst_gexp)] <- vst_gexp[gene,]
+# Set a 'feature' of interest for signal 
+# projection (e.g., Camk2n1 genes)
+activeFeature(pspace_obj) <- "Camk2n1"
 ```
 
 We then perform the signal projection, setting `decay = 0.5`. The decay
@@ -252,7 +283,7 @@ tutorial).
 
 # Project gene signal
 pspace_obj <- circularProjection(pspace_obj, k = gs_vcount(pspace_obj), 
-  decay.fun = weibullDecay(decay=0.5, pdist = pdist),
+  decay.fun = weibullDecay(decay=0.5, pdist = pdist), 
   aggregate.fun = signalAggregation("wmean"))
 ```
 
@@ -264,30 +295,41 @@ aggregation
 rules*](https://github.com/sysbiolab/PathwaySpace/articles/signal-aggregation-rules.md)
 tutorial).
 
-Next, we show the results with minor variations to demonstrate some of
-the available plot settings.
+Next, we demonstrate the plotting interface with a few variations to
+highlight key settings.
 
 ``` r
 
-# Plot tissue image and projection separated 
-p1 <- plotPathwaySpace(ps=pspace_obj, theme = "th3", title = gene)
-p1$image <- p1$image + xy_labs
-p1$graph <- p1$graph + xy_labs
+# Left: tissue image only, no signal overlay
+p1 <- ggplot(pspace_obj) + 
+  annotation_gspace_image(pspace_obj) +
+  spatial_theme
 
-p1$image + p1$graph
+# Right: signal overlaid on tissue image with low opacity
+p2 <- ggplot(pspace_obj) + 
+  annotation_gspace_image(pspace_obj) + 
+  annotation_pspace_signal(pspace_obj, si.alpha = 0.5) + 
+  spatial_theme
+
+p1 + p2
 ```
 
 ![](figs_spatl/fig3.png)
 
 ``` r
 
-# Plot projections overlaid on the tissue image, with alpha = 0.25
-p2 <- plotPathwaySpace(ps=pspace_obj, theme = "th3", title = gene, 
-  add.image = TRUE, si.alpha = 0.25) + xy_labs
+# Left: signal overlaid on tissue image with low opacity
+p2 <- ggplot(pspace_obj) + 
+  annotation_gspace_image(pspace_obj) + 
+  annotation_pspace_signal(pspace_obj, si.alpha = 0.25) + 
+  spatial_theme
 
-# Plot projections overlaid on the tissue image, with zlim truncated at >=0.5
-p3 <- plotPathwaySpace(ps=pspace_obj, theme = "th3", title = gene, 
-  add.image = TRUE, si.alpha = 0.25, zlim = c(0.5, 1)) + xy_labs
+# Right: same, with signal truncated to the upper range (zlim >= 0.5)
+p3 <- ggplot(pspace_obj) + 
+  annotation_gspace_image(pspace_obj) + 
+  annotation_pspace_signal(pspace_obj, si.alpha = 0.25, 
+    zlim = c(0.5, 1)) + 
+  spatial_theme
 
 p2 + p3
 ```
@@ -335,25 +377,22 @@ seurat_obj <- NormalizeData(seurat_obj)
 
 ``` r
 
-# Extract spot coordinates and vst-normalized data
-# Get spot coordinates
-spot_coord <- GetTissueCoordinates(seurat_obj)
+# Create a GraphSpace from 'seurat_obj'
+gs <- as.GraphSpace(seurat_obj, space = "spatial")
 
 #Note: the `ssHippo` dataset does not include a tissue image
 
-# Get vst-normalized gene expression
-vst_gexp <- GetAssayData(seurat_obj, layer="data")
+# Normalize node coordinates; 'flip.y' and 'rotate.xy' to 
+# follow image orientation in Seurat's vignette
+gs <- normalizeGraphSpace(gs, flip.y = TRUE, rotate.xy = TRUE)
 
 # If needed, remove seurat_obj to free memory
-rm(seurat_obj)
+# rm(seurat_obj)
 ```
 
 ``` r
 
-# Create a PathwaySpace object from 'spot_coord'
-# 'flip.y' and 'rotate.xy' to follow image orientation in Seurat's vignette
-gs <- GraphSpace(spot_coord)
-gs <- normalizeGraphSpace(gs, flip.y = TRUE, rotate.xy = TRUE)
+# Create a PathwaySpace from the 'gs' object
 pspace_obj <- buildPathwaySpace(gs)
 ```
 
@@ -376,44 +415,41 @@ pspace_obj <- silhouetteMapping(pspace_obj, fill.cavity = FALSE,
   pdist = max(nspot$dist))
 
 # Check silhouette plot
-xy_labs <- labs(x="Spot coordinates 1", y="Spot coordinates 2")
-plotPathwaySpace(ps=pspace_obj, theme = "th3", 
-  si.alpha = 0.5) + xy_labs
+plotPathwaySpace(ps=pspace_obj, theme = "th3", si.alpha = 0.5)
 ```
 
 ![](figs_spatl/fig5.png)
 
 ``` r
 
-# Choose a gene of interest (e.g., DDN) and assign its 
-# expression values to graph vertices
-gene <- "DDN"
-vertexSignal(pspace_obj)[colnames(vst_gexp)] <- vst_gexp[gene,]
+# Set a 'feature' of interest for signal 
+# projection (e.g., DDN gene)
+activeFeature(pspace_obj) <- "DDN"
 
 # Project gene signal
-pspace_obj <- circularProjection(pspace_obj, k = gs_vcount(pspace_obj), 
+pspace_obj <- circularProjection(pspace_obj, 
+  k = gs_vcount(pspace_obj), 
   decay.fun = weibullDecay(decay=0.5, pdist = pdist))
 
 # Plot projections
 #-- as a suggestion, truncate zlim at the upper limit 
 #-- to enhance certain patters
-p1 <- plotPathwaySpace(ps=pspace_obj, theme = "th3", 
-  title = gene, zlim = c(0, 1)) + xy_labs
+p1 <- plotPathwaySpace(ps = pspace_obj, theme = "th3")
 ```
 
 ``` r
 
-# ...another gene (e.g. PCP4)
-gene <- "PCP4"
-vertexSignal(pspace_obj)[colnames(vst_gexp)] <- vst_gexp[gene,]
+# Set a 'feature' of interest for signal 
+# projection (e.g., PCP4 gene)
+activeFeature(pspace_obj) <- "PCP4"
 
 # Project gene signal
-pspace_obj <- circularProjection(pspace_obj, k = gs_vcount(pspace_obj), 
+pspace_obj <- circularProjection(pspace_obj,
+  k = gs_vcount(pspace_obj), 
   decay.fun = weibullDecay(decay=0.5, pdist = pdist))
 
 # Plot projections
-p2 <- plotPathwaySpace(ps=pspace_obj, theme = "th3", 
-  title = gene, zlim = c(0, 1)) + xy_labs
+p2 <- plotPathwaySpace(ps = pspace_obj, theme = "th3")
 ```
 
 ``` r
@@ -470,14 +506,14 @@ seurat_obj <- NormalizeData(seurat_obj)
 
 ``` r
 
-# Get spot coordinates
-spot_coord <- GetTissueCoordinates(seurat_obj, scale = "lowres")
+# Create a GraphSpace from 'seurat_obj'
+gs <- as.GraphSpace(seurat_obj, space = "spatial", scale = "lowres")
 
-# Get raster image
-raster_image <- GetImage(seurat_obj, "raster")
+# If available, add tissue image 
+gs_image(gs) <- SeuratObject::GetImage(seurat_obj, mode = "raster")
 
-# Get normalized gene expression data
-norm_gexp <- GetAssayData(seurat_obj, layer="data")
+# Normalize node coordinates to the image space
+gs <- normalizeGraphSpace(gs, use_image = TRUE)
 
 # If needed, remove seurat_obj to free memory
 rm(seurat_obj)
@@ -485,9 +521,7 @@ rm(seurat_obj)
 
 ``` r
 
-# Create a PathwaySpace object from 'spot_coord', mapped to the 'raster_image'
-gs <- GraphSpace(spot_coord)
-gs <- normalizeGraphSpace(gs, image = raster_image)
+# Create a PathwaySpace object from 'gs' mapped to the 'raster'
 pspace_obj <- buildPathwaySpace(gs, nrc = 700)
 ```
 
@@ -506,46 +540,42 @@ pdist
 ``` r
 
 # Add a graph silhouette to the PathwaySpace object
-pspace_obj <- silhouetteMapping(pspace_obj, fill.cavity = FALSE, 
+pspace_obj <- silhouetteMapping(pspace_obj, 
+  fill.cavity = FALSE, 
   pdist = max(nspot$dist))
 
 # Check silhouette plot
-xy_labs <- labs(x="Spot coordinates 1", y="Spot coordinates 2")
-plotPathwaySpace(ps=pspace_obj, theme = "th3", 
-  add.image = TRUE, si.alpha = 0.5) + xy_labs
+plotPathwaySpace(ps = pspace_obj, theme = "th3", 
+  add.image = TRUE, si.alpha = 0.5)
 ```
 
 ![](figs_spatl/fig7.png)
 
 ``` r
 
-# Choose a gene of interest (e.g., Rorb) and assign its 
-# expression values to graph vertices
-gene <- "Rorb"
-vertexSignal(pspace_obj)[colnames(norm_gexp)] <- norm_gexp[gene,]
+# Set a 'feature' of interest for signal 
+# projection (e.g., Rorb genes)
+activeFeature(pspace_obj) <- "Rorb"
 
 # Project gene signal
 pspace_obj <- circularProjection(pspace_obj, k = gs_vcount(pspace_obj), 
   decay.fun = weibullDecay(decay=0.5, pdist = pdist))
 
 # Plot projections
-p1 <- plotPathwaySpace(ps=pspace_obj, theme = "th3", 
-  title = gene, add.image = TRUE, zlim = c(0, 1)) + xy_labs
+p1 <- plotPathwaySpace(pspace_obj, theme = "th3", add.image = TRUE)
 ```
 
 ``` r
 
-# ...another gene (e.g. Hpca)
-gene <- "Hpca"
-vertexSignal(pspace_obj)[colnames(norm_gexp)] <- norm_gexp[gene,]
+# ...another 'feature' (e.g. Hpca genes)
+activeFeature(pspace_obj) <- "Hpca"
 
 # Project gene signal
 pspace_obj <- circularProjection(pspace_obj, k = gs_vcount(pspace_obj), 
   decay.fun = weibullDecay(decay=0.5, pdist = pdist))
 
 # Plot projections
-p2 <- plotPathwaySpace(ps=pspace_obj, theme = "th3", 
-  title = gene, add.image = TRUE, zlim = c(0, 1)) + xy_labs
+p2 <- plotPathwaySpace(pspace_obj, theme = "th3", add.image = TRUE)
 ```
 
 ``` r
@@ -593,58 +623,88 @@ If you use *PathwaySpace*, please cite:
     #> [1] stats     graphics  grDevices utils     datasets  methods   base     
     #> 
     #> other attached packages:
-    #>  [1] patchwork_1.3.2           Seurat_5.5.0             
-    #>  [3] SeuratObject_5.4.0        sp_2.2-1                 
-    #>  [5] arrow_24.0.0              hdf5r_1.3.12             
-    #>  [7] stxBrain.SeuratData_0.1.2 ssHippo.SeuratData_3.1.4 
-    #>  [9] SeuratData_0.2.2.9002     PathwaySpace_1.3.0       
-    #> [11] RGraphSpace_1.3.0         ggplot2_4.0.3            
-    #> [13] remotes_2.5.0            
+    #>  [1] patchwork_1.3.2           glmGamPoi_1.24.0         
+    #>  [3] BiocManager_1.30.27       arrow_24.0.0             
+    #>  [5] hdf5r_1.3.12              stxBrain.SeuratData_0.1.2
+    #>  [7] ssHippo.SeuratData_3.1.4  pbmc3k.SeuratData_3.1.4  
+    #>  [9] SeuratData_0.2.2.9002     Seurat_5.5.0             
+    #> [11] SeuratObject_5.4.0        sp_2.2-1                 
+    #> [13] PathwaySpace_1.3.1        RGraphSpace_1.3.1        
+    #> [15] ggplot2_4.0.3             remotes_2.5.0            
     #> 
     #> loaded via a namespace (and not attached):
-    #>   [1] RColorBrewer_1.1-3     rstudioapi_0.18.0      jsonlite_2.0.0        
-    #>   [4] magrittr_2.0.5         spatstat.utils_3.2-2   ggbeeswarm_0.7.3      
-    #>   [7] farver_2.1.2           rmarkdown_2.31         fs_2.1.0              
-    #>  [10] ragg_1.5.2             vctrs_0.7.3            ROCR_1.0-12           
-    #>  [13] spatstat.explore_3.8-0 htmltools_0.5.9        sass_0.4.10           
-    #>  [16] sctransform_0.4.3      parallelly_1.47.0      KernSmooth_2.23-26    
-    #>  [19] bslib_0.10.0           htmlwidgets_1.6.4      desc_1.4.3            
-    #>  [22] ica_1.0-3              fontawesome_0.5.3      plyr_1.8.9            
-    #>  [25] plotly_4.12.0          zoo_1.8-15             cachem_1.1.0          
-    #>  [28] igraph_2.3.1           mime_0.13              lifecycle_1.0.5       
-    #>  [31] pkgconfig_2.0.3        Matrix_1.7-5           R6_2.6.1              
-    #>  [34] fastmap_1.2.0          fitdistrplus_1.2-6     future_1.70.0         
-    #>  [37] shiny_1.13.0           digest_0.6.39          colorspace_2.1-2      
-    #>  [40] tensor_1.5.1           RSpectra_0.16-2        irlba_2.3.7           
-    #>  [43] textshaping_1.0.5      progressr_0.19.0       spatstat.sparse_3.1-0 
-    #>  [46] httr_1.4.8             polyclip_1.10-7        abind_1.4-8           
-    #>  [49] compiler_4.6.0         bit64_4.8.0            withr_3.0.2           
-    #>  [52] S7_0.2.2               fastDummies_1.7.6      MASS_7.3-65           
-    #>  [55] rappdirs_0.3.4         tools_4.6.0            vipor_0.4.7           
-    #>  [58] lmtest_0.9-40          otel_0.2.0             beeswarm_0.4.0        
-    #>  [61] httpuv_1.6.17          future.apply_1.20.2    goftest_1.2-3         
-    #>  [64] glue_1.8.1             nlme_3.1-169           promises_1.5.0        
-    #>  [67] grid_4.6.0             Rtsne_0.17             cluster_2.1.8.2       
-    #>  [70] reshape2_1.4.5         generics_0.1.4         gtable_0.3.6          
-    #>  [73] spatstat.data_3.1-9    tidyr_1.3.2            data.table_1.18.4     
-    #>  [76] tidygraph_1.3.1        spatstat.geom_3.7-3    RcppAnnoy_0.0.23      
-    #>  [79] ggrepel_0.9.8          RANN_2.6.2             pillar_1.11.1         
-    #>  [82] stringr_1.6.0          spam_2.11-3            RcppHNSW_0.6.0        
-    #>  [85] later_1.4.8            splines_4.6.0          dplyr_1.2.1           
-    #>  [88] lattice_0.22-9         bit_4.6.0              survival_3.8-6        
-    #>  [91] deldir_2.0-4           tidyselect_1.2.1       miniUI_0.1.2          
-    #>  [94] pbapply_1.7-4          knitr_1.51             gridExtra_2.3         
-    #>  [97] scattermore_1.2        xfun_0.57              matrixStats_1.5.0     
-    #> [100] stringi_1.8.7          lazyeval_0.2.3         yaml_2.3.12           
-    #> [103] evaluate_1.0.5         codetools_0.2-20       tibble_3.3.1          
-    #> [106] cli_3.6.6              uwot_0.2.4             xtable_1.8-8          
-    #> [109] reticulate_1.46.0      systemfonts_1.3.2      jquerylib_0.1.4       
-    #> [112] Rcpp_1.1.1-1.1         globals_0.19.1         spatstat.random_3.4-5 
-    #> [115] png_0.1-9              ggrastr_1.0.2          spatstat.univar_3.1-7 
-    #> [118] parallel_4.6.0         assertthat_0.2.1       pkgdown_2.2.0         
-    #> [121] dotCall64_1.2          listenv_0.10.1         viridisLite_0.4.3     
-    #> [124] scales_1.4.0           ggridges_0.5.7         crayon_1.5.3          
-    #> [127] purrr_1.2.2            rlang_1.2.0            cowplot_1.2.0
+    #>   [1] RcppAnnoy_0.0.23            splines_4.6.0              
+    #>   [3] later_1.4.8                 tibble_3.3.1               
+    #>   [5] polyclip_1.10-7             fastDummies_1.7.6          
+    #>   [7] lifecycle_1.0.5             globals_0.19.1             
+    #>   [9] lattice_0.22-9              MASS_7.3-65                
+    #>  [11] magrittr_2.0.5              plotly_4.12.0              
+    #>  [13] sass_0.4.10                 rmarkdown_2.31             
+    #>  [15] jquerylib_0.1.4             yaml_2.3.12                
+    #>  [17] httpuv_1.6.17               otel_0.2.0                 
+    #>  [19] sctransform_0.4.3           spam_2.11-4                
+    #>  [21] spatstat.sparse_3.2-0       reticulate_1.46.0          
+    #>  [23] cowplot_1.2.0               pbapply_1.7-4              
+    #>  [25] RColorBrewer_1.1-3          abind_1.4-8                
+    #>  [27] Rtsne_0.17                  GenomicRanges_1.64.0       
+    #>  [29] purrr_1.2.2                 BiocGenerics_0.58.1        
+    #>  [31] rappdirs_0.3.4              IRanges_2.46.0             
+    #>  [33] S4Vectors_0.50.1            ggrepel_0.9.8              
+    #>  [35] irlba_2.3.7                 listenv_0.10.1             
+    #>  [37] spatstat.utils_3.2-3        goftest_1.2-3              
+    #>  [39] RSpectra_0.16-2             spatstat.random_3.5-0      
+    #>  [41] fitdistrplus_1.2-6          parallelly_1.47.0          
+    #>  [43] pkgdown_2.2.0               codetools_0.2-20           
+    #>  [45] DelayedArray_0.38.2         tidyselect_1.2.1           
+    #>  [47] farver_2.1.2                matrixStats_1.5.0          
+    #>  [49] stats4_4.6.0                spatstat.explore_3.8-1     
+    #>  [51] Seqinfo_1.2.0               jsonlite_2.0.0             
+    #>  [53] tidygraph_1.3.1             progressr_0.19.0           
+    #>  [55] ggridges_0.5.7              survival_3.8-6             
+    #>  [57] systemfonts_1.3.2           tools_4.6.0                
+    #>  [59] ggnewscale_0.5.2            ragg_1.5.2                 
+    #>  [61] ica_1.0-3                   Rcpp_1.1.1-1.1             
+    #>  [63] glue_1.8.1                  gridExtra_2.3              
+    #>  [65] SparseArray_1.12.2          xfun_0.58                  
+    #>  [67] MatrixGenerics_1.24.0       dplyr_1.2.1                
+    #>  [69] withr_3.0.2                 fastmap_1.2.0              
+    #>  [71] digest_0.6.39               R6_2.6.1                   
+    #>  [73] mime_0.13                   textshaping_1.0.5          
+    #>  [75] colorspace_2.1-2            scattermore_1.2            
+    #>  [77] tensor_1.5.1                spatstat.data_3.1-9        
+    #>  [79] tidyr_1.3.2                 generics_0.1.4             
+    #>  [81] data.table_1.18.4           httr_1.4.8                 
+    #>  [83] htmlwidgets_1.6.4           S4Arrays_1.12.0            
+    #>  [85] uwot_0.2.4                  pkgconfig_2.0.3            
+    #>  [87] gtable_0.3.6                lmtest_0.9-40              
+    #>  [89] S7_0.2.2                    XVector_0.52.0             
+    #>  [91] htmltools_0.5.9             dotCall64_1.2              
+    #>  [93] scales_1.4.0                Biobase_2.72.0             
+    #>  [95] png_0.1-9                   spatstat.univar_3.2-0      
+    #>  [97] knitr_1.51                  rstudioapi_0.18.0          
+    #>  [99] reshape2_1.4.5              nlme_3.1-169               
+    #> [101] cachem_1.1.0                zoo_1.8-15                 
+    #> [103] stringr_1.6.0               KernSmooth_2.23-26         
+    #> [105] parallel_4.6.0              miniUI_0.1.2               
+    #> [107] vipor_0.4.7                 ggrastr_1.0.2              
+    #> [109] desc_1.4.3                  pillar_1.11.1              
+    #> [111] grid_4.6.0                  vctrs_0.7.3                
+    #> [113] RANN_2.6.2                  promises_1.5.0             
+    #> [115] beachmat_2.28.0             xtable_1.8-8               
+    #> [117] cluster_2.1.8.2             beeswarm_0.4.0             
+    #> [119] evaluate_1.0.5              cli_3.6.6                  
+    #> [121] compiler_4.6.0              rlang_1.2.0                
+    #> [123] crayon_1.5.3                future.apply_1.20.2        
+    #> [125] plyr_1.8.9                  fs_2.1.0                   
+    #> [127] ggbeeswarm_0.7.3            stringi_1.8.7              
+    #> [129] viridisLite_0.4.3           deldir_2.0-4               
+    #> [131] assertthat_0.2.1            lazyeval_0.2.3             
+    #> [133] spatstat.geom_3.8-1         Matrix_1.7-5               
+    #> [135] RcppHNSW_0.7.0              bit64_4.8.2                
+    #> [137] future_1.70.0               shiny_1.13.0               
+    #> [139] SummarizedExperiment_1.42.0 ROCR_1.0-12                
+    #> [141] fontawesome_0.5.3           igraph_2.3.2               
+    #> [143] bslib_0.11.0                bit_4.6.0
 
 ## References
 

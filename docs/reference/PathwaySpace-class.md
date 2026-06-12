@@ -26,7 +26,7 @@ An S4 class object.
 
 - `pars`:
 
-  A list with parameters.
+  A list inherited GraphSpace parameters.
 
 - `misc`:
 
@@ -35,6 +35,10 @@ An S4 class object.
 - `projections`:
 
   A list with processed objects for downstream methods.
+
+- `pars_ps`:
+
+  A list with PathwaySpace parameters.
 
 - `status`:
 
