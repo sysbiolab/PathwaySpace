@@ -80,7 +80,7 @@ projections on spot coordinates</h3>
                         <h4 data-toc-skip class="author">Sysbiolab
 Team</h4>
             
-            <h4 data-toc-skip class="date">2026-06-12</h4>
+            <h4 data-toc-skip class="date">2026-06-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sysbiolab/PathwaySpace/blob/HEAD/vignettes/articles/spatial-transcriptomics.Rmd"><code>vignettes/articles/spatial-transcriptomics.Rmd</code></a></small>
       <div class="d-none name"><code>spatial-transcriptomics.Rmd</code></div>
@@ -229,7 +229,7 @@ convenience.</p>
 <span><span class="co"># Left: 'seurat_clusters' annotation overlaid on tissue image</span></span>
 <span><span class="va">cpal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DiscretePalette.html" class="external-link">DiscretePalette</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nlevels.html" class="external-link">nlevels</a></span><span class="op">(</span><span class="va">gs</span><span class="op">$</span><span class="va">seurat_clusters</span><span class="op">)</span>, <span class="st">"polychrome"</span><span class="op">)</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace.html" class="external-link">annotation_gspace</a></span><span class="op">(</span><span class="va">gs</span>, opacity <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace.html" class="external-link">annotation_gspace_image</a></span><span class="op">(</span><span class="va">gs</span>, opacity <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/geom_nodespace.html" class="external-link">geom_nodespace</a></span><span class="op">(</span>mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">seurat_clusters</span><span class="op">)</span>,</span>
 <span>    size <span class="op">=</span> <span class="fl">1.2</span>, color <span class="op">=</span> <span class="st">"grey90"</span>, stroke <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">cpal</span><span class="op">)</span> <span class="op">+</span></span>
@@ -239,7 +239,7 @@ convenience.</p>
 <span><span class="co"># Right: Camk2n1 gene expression overlaid on tissue image</span></span>
 <span><span class="va">cpal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">hcl.colors</a></span><span class="op">(</span><span class="fl">100</span>, palette <span class="op">=</span> <span class="st">"Spectral"</span>, rev <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace.html" class="external-link">annotation_gspace</a></span><span class="op">(</span><span class="va">gs</span>, opacity <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace.html" class="external-link">annotation_gspace_image</a></span><span class="op">(</span><span class="va">gs</span>, opacity <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/geom_nodespace.html" class="external-link">geom_nodespace</a></span><span class="op">(</span>mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="va">Camk2n1</span><span class="op">)</span>, </span>
 <span>    size <span class="op">=</span> <span class="fl">0.8</span>, pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_continuous.html" class="external-link">scale_colour_continuous</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="va">cpal</span><span class="op">)</span> <span class="op">+</span></span>
@@ -610,7 +610,7 @@ molecular subtypes using compact feature sets. <em>Cancer Cell</em>
 <span><span class="co">#&gt;  [7] ssHippo.SeuratData_3.1.4  pbmc3k.SeuratData_3.1.4  </span></span>
 <span><span class="co">#&gt;  [9] SeuratData_0.2.2.9002     Seurat_5.5.0             </span></span>
 <span><span class="co">#&gt; [11] SeuratObject_5.4.0        sp_2.2-1                 </span></span>
-<span><span class="co">#&gt; [13] PathwaySpace_1.3.1        RGraphSpace_1.3.1        </span></span>
+<span><span class="co">#&gt; [13] PathwaySpace_1.3.1        RGraphSpace_1.4.0        </span></span>
 <span><span class="co">#&gt; [15] ggplot2_4.0.3             remotes_2.5.0            </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>

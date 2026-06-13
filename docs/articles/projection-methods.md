@@ -384,7 +384,7 @@ If you use *PathwaySpace*, please cite:
     #> [1] stats     graphics  grDevices utils     datasets  methods   base     
     #> 
     #> other attached packages:
-    #> [1] igraph_2.3.2       PathwaySpace_1.3.1 RGraphSpace_1.3.1  ggplot2_4.0.3     
+    #> [1] igraph_2.3.2       PathwaySpace_1.3.1 RGraphSpace_1.4.0  ggplot2_4.0.3     
     #> [5] remotes_2.5.0     
     #> 
     #> loaded via a namespace (and not attached):

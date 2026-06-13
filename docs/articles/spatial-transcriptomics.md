@@ -168,7 +168,7 @@ spatial_theme <- theme_gspace_coords(theme = "th3", is_norm = TRUE,
 # Left: 'seurat_clusters' annotation overlaid on tissue image
 cpal <- DiscretePalette(nlevels(gs$seurat_clusters), "polychrome")
 p1 <- ggplot(gs) + 
-  annotation_gspace(gs, opacity = 0.5) +
+  annotation_gspace_image(gs, opacity = 0.5) +
   geom_nodespace(mapping = aes(fill = seurat_clusters),
     size = 1.2, color = "grey90", stroke = 0.3) +
   scale_fill_manual(values = cpal) +
@@ -178,7 +178,7 @@ p1 <- ggplot(gs) +
 # Right: Camk2n1 gene expression overlaid on tissue image
 cpal <- hcl.colors(100, palette = "Spectral", rev = TRUE)
 p2 <- ggplot(gs) + 
-  annotation_gspace(gs, opacity = 0.5) +
+  annotation_gspace_image(gs, opacity = 0.5) +
   geom_nodespace(mapping = aes(colour = Camk2n1), 
     size = 0.8, pch = 19) +
   scale_colour_continuous(palette = cpal) +
@@ -629,7 +629,7 @@ If you use *PathwaySpace*, please cite:
     #>  [7] ssHippo.SeuratData_3.1.4  pbmc3k.SeuratData_3.1.4  
     #>  [9] SeuratData_0.2.2.9002     Seurat_5.5.0             
     #> [11] SeuratObject_5.4.0        sp_2.2-1                 
-    #> [13] PathwaySpace_1.3.1        RGraphSpace_1.3.1        
+    #> [13] PathwaySpace_1.3.1        RGraphSpace_1.4.0        
     #> [15] ggplot2_4.0.3             remotes_2.5.0            
     #> 
     #> loaded via a namespace (and not attached):
