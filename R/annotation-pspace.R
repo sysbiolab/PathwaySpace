@@ -10,8 +10,10 @@
 #' @param ps A \linkS4class{PathwaySpace} object containing a valid signal
 #'   projection. Run \code{\link{circularProjection}} before calling this
 #'   function.
+#' @param title A string used as the plot title. Defaults to the active
+#'   feature name returned by \code{\link{activeFeature}}.
 #' @param colors A character vector of colors used to build the signal
-#'   palette. Defaults to \code{\link{pspace.cols}()}.
+#'   palette. Defaults to \code{\link{pspace.cols}}.
 #' @param bg.color A string specifying the background color, used for
 #'   zero-signal or masked regions. Defaults to \code{"grey95"}.
 #' @param si.color A single color for silhouette.
@@ -27,7 +29,8 @@
 #'   rounded up to the nearest even number.
 #' @param interpolate A logical value indicating whether to apply linear
 #'   interpolation when rendering the raster at a different resolution than
-#'   its native size. Defaults to \code{FALSE}.
+#' @param ... Additional parameters passed to the title annotation; 
+#' see \code{\link[ggplot2]{geom_text}}.
 #'
 #' @return A list of \code{ggplot2} layer objects that can be added to a
 #'   \code{ggplot()} call with \code{+}.
@@ -47,12 +50,13 @@
 #'   theme_gspace_coords(is_norm = TRUE)
 #' }
 #'
-#' @importFrom ggplot2 geom_raster geom_point scale_fill_gradientn
+#' @importFrom ggplot2 geom_raster geom_point scale_fill_gradientn annotate
 #' @importFrom grDevices as.raster colorRampPalette
 #' @importFrom ggnewscale new_scale_fill
 #' @rdname annotation_pspace
 #' @export
-annotation_pspace_signal <- function(ps,
+annotation_pspace_signal <- function(ps, 
+  title = activeFeature(ps),
   colors = pspace.cols(), 
   bg.color = "grey95", 
   si.color = "grey85",
@@ -60,11 +64,12 @@ annotation_pspace_signal <- function(ps,
   zlab = "Density", 
   zlim = NULL, 
   slices = 25,
-  interpolate = FALSE) {
+  interpolate = FALSE, ...) {
   
   if (missing(ps) || !inherits(ps, "PathwaySpace")) {
     rlang::abort("'ps' must be a PathwaySpace object.")
   }
+  .check.oldclass(ps)
   .validate.colors("allColors","colors", colors)
   .validate.colors("singleColor", "si.color", si.color)
   .validate.ps.args("singleNumber", "si.alpha", si.alpha)
@@ -79,10 +84,16 @@ annotation_pspace_signal <- function(ps,
     if(length(zlim)!=2) 
       stop("'zlim' should be a numeric vector of lenght 2.", call. = FALSE)
   }
-  
+  if(!is.null(title)){
+    .validate.ps.args("singleString", "title", title)
+    feature_title <- .add_title(title, ...)
+  } else {
+    feature_title <- NULL
+  }
   #--- get slots from ps
-  gxyz <- getPathwaySpace(ps, "projections")$gxyz
-  pars_ps <- getPathwaySpace(ps, "projections")$pars_ps
+  projection <- getPathwaySpace(ps, "projection")
+  gxyz <- projection@result
+  pars_ps <- getPathwaySpace(ps, "pars")
   
   if (is.null(gxyz)) {
     rlang::abort(c(
@@ -92,14 +103,14 @@ annotation_pspace_signal <- function(ps,
   }
   
   #--- set colors
-  if(pars_ps$configs$scale.type=="negpos"){
+  if(pars_ps$configs$scale.type == "negpos"){
     slices <- ceiling(slices/2) * 2
   }
   colors <- colorRampPalette(colors)(slices)
   
   # set zlim
   if(is.null(zlim)){
-    zlim <- pars_ps$configs$zlim
+    zlim <- pars_ps$configs$zlim %||% pars_ps$configs$scaling
   } else {
     gxyz[gxyz < zlim[1]] <- zlim[1]
     gxyz[gxyz > zlim[2]] <- zlim[2]
@@ -141,9 +152,32 @@ annotation_pspace_signal <- function(ps,
   ggplot2::scale_fill_gradientn(name = zlab, limits = cl$zlim,
     breaks = cl$breaks, labels = names(cl$breaks), colours = cl$pal, 
     aesthetics = "fill", na.value = si.color),
-    ggnewscale::new_scale_fill()
+    ggnewscale::new_scale_fill(),
+    feature_title
   )
   
+}
+
+#-------------------------------------------------------------------------------
+.check.oldclass <- function(ps){
+  if( !.hasSlot(ps, "projection") || !is(ps@projection, "SpaceProjection") ){
+    rlang::abort(c("The 'ps' object contains an outdated projection slot.",
+      "i" = "Please re-run a projection method before plotting."
+    ))
+  }
+}
+
+#-------------------------------------------------------------------------------
+.add_title <- function(title, ...){
+  if (is.null(title)) return(NULL)
+  dots <- list(...)
+  defaults <- list(x = 0, y = 0.99, hjust = 0, vjust = 1, size = 3.5)
+  args <- c(
+    list(geom = "text", label = title),
+    defaults[!names(defaults) %in% names(dots)], 
+    dots
+  )
+  do.call(ggplot2::annotate, args)
 }
 
 #-------------------------------------------------------------------------------

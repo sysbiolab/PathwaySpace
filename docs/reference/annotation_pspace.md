@@ -9,6 +9,7 @@ bounded to the normalized unit space `[0, 1]`.
 ``` r
 annotation_pspace_signal(
   ps,
+  title = activeFeature(ps),
   colors = pspace.cols(),
   bg.color = "grey95",
   si.color = "grey85",
@@ -16,7 +17,8 @@ annotation_pspace_signal(
   zlab = "Density",
   zlim = NULL,
   slices = 25,
-  interpolate = FALSE
+  interpolate = FALSE,
+  ...
 )
 ```
 
@@ -30,11 +32,17 @@ annotation_pspace_signal(
   [`circularProjection`](https://github.com/sysbiolab/PathwaySpace/reference/circularProjection-methods.md)
   before calling this function.
 
+- title:
+
+  A string used as the plot title. Defaults to the active feature name
+  returned by
+  [`activeFeature`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md).
+
 - colors:
 
   A character vector of colors used to build the signal palette.
   Defaults to
-  [`pspace.cols()`](https://github.com/sysbiolab/PathwaySpace/reference/pspace.cols.md).
+  [`pspace.cols`](https://github.com/sysbiolab/PathwaySpace/reference/pspace.cols.md).
 
 - bg.color:
 
@@ -70,8 +78,12 @@ annotation_pspace_signal(
 - interpolate:
 
   A logical value indicating whether to apply linear interpolation when
-  rendering the raster at a different resolution than its native size.
-  Defaults to `FALSE`.
+  rendering the raster at a different resolution than
+
+- ...:
+
+  Additional parameters passed to the title annotation; see
+  [`geom_text`](https://ggplot2.tidyverse.org/reference/geom_text.html).
 
 ## Value
 

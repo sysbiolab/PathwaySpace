@@ -91,12 +91,13 @@
 #' @export
 #'
 setMethod("plotPathwaySpace", "PathwaySpace", 
-  function(ps, colors = pspace.cols(), bg.color = "grey95", 
+  function(ps, 
+    title = activeFeature(ps), 
+    colors = pspace.cols(), bg.color = "grey95", 
     si.color = "grey85", si.alpha = 1,
-    theme = c("th0", "th1", "th2", "th3"),
-    title = "PathwaySpace", 
-    xlab = "Pathway coordinates 1", 
-    ylab = "Pathway coordinates 2", 
+    theme = "th0",
+    xlab = "Graph coordinates 1", 
+    ylab = "Graph coordinates 2", 
     zlab = "Density", 
     font.size = 1, font.color = "white",
     zlim = NULL, slices = 25, 
@@ -107,12 +108,12 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     add.image = FALSE) {
     
     #--- validate the ps object and args
+    .check.oldclass(ps)
     if (!.checkStatus(ps, "Projection") && !.checkStatus(ps, "Silhouette")) {
       stop("NOTE: 'ps' needs to be evaluated by a 'projection' method!",
         call. = FALSE)
     }
     .validate.ps.args("singleNumber", "si.alpha", si.alpha)
-    .validate.ps.args("singleString", "title", title)
     .validate.ps.args("singleString", "xlab", xlab)
     .validate.ps.args("singleString", "ylab", ylab)
     .validate.ps.args("singleString", "zlab", zlab)
@@ -137,7 +138,10 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     if(!is.na(bg.color) ){
       .validate.colors("singleColor", "bg.color", bg.color)
     }
-    theme <- match.arg(theme)
+    if(!is.null(title)){
+      .validate.ps.args("singleString", "title", title)
+    }
+    theme <- match.arg(theme, choices = c("th0", "th1", "th2", "th3"))
     if(!is.null(zlim)) {
       .validate.ps.args("numeric_vec", "zlim", zlim)
       if(length(zlim)!=2) 
@@ -146,15 +150,17 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     if (si.alpha < 0 || si.alpha > 1) {
       stop("'si.alpha' should be in [0,1]", call. = FALSE)
     }
+    
     #--- get slots from ps
+    silstatus <- .checkStatus(ps, "Silhouette")
     summits <- getPathwaySpace(ps, "summits")
     cset <- getPathwaySpace(ps, "summit_contour")
-    silstatus <- .checkStatus(ps, "Silhouette")
-    gxy <- getPathwaySpace(ps, "projections")$gxy
-    gxyz <- getPathwaySpace(ps, "projections")$gxyz
-    pars_ps <- getPathwaySpace(ps, "projections")$pars_ps
+    projection <- getPathwaySpace(ps, "projection")
     pars_gs <- getGraphSpace(ps, "pars")
-    
+    pars_ps <- getPathwaySpace(ps, "pars")
+    gxy <- projection@coordinates
+    gxyz <- projection@result
+
     #--- set colors
     if(pars_ps$configs$scale.type=="negpos"){
       slices <- ceiling(slices/2) * 2
@@ -163,7 +169,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     
     # set scales
     if(is.null(zlim)){
-      zlim <- pars_ps$configs$zlim
+      zlim <- pars_ps$configs$zlim %||% pars_ps$configs$scaling
     } else {
       gxyz[gxyz < zlim[1]] <- zlim[1]
       gxyz[gxyz > zlim[2]] <- zlim[2]
@@ -205,22 +211,12 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     #--- set a bg color effect, scaling alpha to z
     if(si.alpha < 1){
       si.color <- adjustcolor(si.color, si.alpha)
-      gz.alpha <- .scale_alpha(si.alpha, gxyz, zlim, pars_ps)
-    } else {
-      gz.alpha <- 1
+      si.alpha <- .scale_alpha(si.alpha, gxyz, zlim, pars_ps)
     }
     
     #--- initialize ggplot
-    ggp <- .set_pspace(gxyz, zlab, cl, si.color)
+    ggp <- .set_pspace(gxyz, zlab, cl, si.color) + gs_theme
     
-    #--- adjust gs_theme
-    ggp <- ggp + gs_theme
-    if(theme == "th2"){
-      ggp <- ggp + ggplot2::theme(panel.grid = element_blank())
-    } else if(theme == "th3"){
-      ggp <- ggp + ggplot2::theme(panel.grid = element_blank(),
-        legend.position = "bottom")
-    }
     #--- add image
     if(pars_gs$image.layer){
       img <- getPathwaySpace(ps, "image")
@@ -235,7 +231,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
       
     #--- add main projection
     ggp <- ggp + ggplot2::geom_raster(interpolate = FALSE, 
-      na.rm=TRUE, alpha = gz.alpha)
+      na.rm=TRUE, alpha = si.alpha)
     
     #--- add a grid
     if(add.grid) ggp <- .add_grid(ggp, gxyz, grid.color)
@@ -252,7 +248,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
       ggp <- .add_marks(ggp, gxy, pars_ps, marks, mark.size,
         mark.color, mark.padding, mark.line.width, use.dotmark)
     } else if(add.marks){
-      ggp <- .add_marks(ggp, gxy, pars_ps, marks=rownames(gxy), 
+      ggp <- .add_marks(ggp, gxy, pars_ps, marks = rownames(gxy), 
         mark.size, mark.color, mark.padding, mark.line.width, use.dotmark)
     }
     
@@ -262,12 +258,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
         font.color, silstatus, si.color)
     }
     
-    if(pars_gs$image.layer && !add.image){
-      ggl <- list(graph = ggp, image = ggi)
-      return(ggl)
-    } else {
-      return(ggp)
-    }
+    return(ggp)
     
   }
 )
@@ -290,9 +281,11 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     xlab <- 0.99
     hjust <- 1
   }
-  ggp <- ggp + ggplot2::annotate("text", label = title,
-    colour = fcol, size = font.size*4, x = 0, y = 0.99, 
-    hjust = 0, vjust = 1)
+  if(!is.null(title)){
+    ggp <- ggp + ggplot2::annotate("text", label = title,
+      colour = fcol, size = font.size*4, x = 0, y = 0.99, 
+      hjust = 0, vjust = 1)
+  }
   dfun <- pars_ps$decay$fun
   if(!is.null(dfun)){
     if(dfun == "weibullDecay"){
@@ -438,7 +431,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
   nudgey <- pmin(nudgey, 0.1)
   
   ggp <- ggp + ggrepel::geom_text_repel(
-    mapping = aes(label = ID,segment.size = mark.line.width), 
+    mapping = aes(label = ID, segment.size = mark.line.width), 
     xlim = c(0.1, 0.9), ylim = c(0.1, 0.9),
     data = gxy_df, min.segment.length = 0.1,
     fontface = "bold", force = 3, segment.linetype = "2121", 

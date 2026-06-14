@@ -19,7 +19,7 @@ create dedicated ggplot graphics for PathwaySpace-class objects."><style>
 
     <a class="navbar-brand me-2" href="../index.html">PathwaySpace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +52,7 @@ create dedicated ggplot graphics for PathwaySpace-class objects."><style>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Plotting 2D-landscape images for the PathwaySpace package</h1>
-      <small class="dont-index">Source: <a href="https://github.com/sysbiolab/PathwaySpace/blob/HEAD/R/pspacePlots.R"><code>R/pspacePlots.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/sysbiolab/PathwaySpace/blob/HEAD/R/pspace-plots.R"><code>R/pspace-plots.R</code></a></small>
       <div class="d-none name"><code>plotPathwaySpace-methods.Rd</code></div>
     </div>
 
@@ -66,14 +66,14 @@ create dedicated ggplot graphics for PathwaySpace-class objects.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'PathwaySpace'</span></span>
 <span><span class="fu">plotPathwaySpace</span><span class="op">(</span></span>
 <span>  <span class="va">ps</span>,</span>
+<span>  title <span class="op">=</span> <span class="fu"><a href="vertexSignal-accessors.html">activeFeature</a></span><span class="op">(</span><span class="va">ps</span><span class="op">)</span>,</span>
 <span>  colors <span class="op">=</span> <span class="fu"><a href="pspace.cols.html">pspace.cols</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  bg.color <span class="op">=</span> <span class="st">"grey95"</span>,</span>
 <span>  si.color <span class="op">=</span> <span class="st">"grey85"</span>,</span>
 <span>  si.alpha <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  theme <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"th0"</span>, <span class="st">"th1"</span>, <span class="st">"th2"</span>, <span class="st">"th3"</span><span class="op">)</span>,</span>
-<span>  title <span class="op">=</span> <span class="st">"PathwaySpace"</span>,</span>
-<span>  xlab <span class="op">=</span> <span class="st">"Pathway coordinates 1"</span>,</span>
-<span>  ylab <span class="op">=</span> <span class="st">"Pathway coordinates 2"</span>,</span>
+<span>  theme <span class="op">=</span> <span class="st">"th0"</span>,</span>
+<span>  xlab <span class="op">=</span> <span class="st">"Graph coordinates 1"</span>,</span>
+<span>  ylab <span class="op">=</span> <span class="st">"Graph coordinates 2"</span>,</span>
 <span>  zlab <span class="op">=</span> <span class="st">"Density"</span>,</span>
 <span>  font.size <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  font.color <span class="op">=</span> <span class="st">"white"</span>,</span>
@@ -103,6 +103,10 @@ create dedicated ggplot graphics for PathwaySpace-class objects.</p>
 <dd><p>A <a href="PathwaySpace-class.html">PathwaySpace</a> class object.</p></dd>
 
 
+<dt id="arg-title">title<a class="anchor" aria-label="anchor" href="#arg-title"></a></dt>
+<dd><p>A string for the title.</p></dd>
+
+
 <dt id="arg-colors">colors<a class="anchor" aria-label="anchor" href="#arg-colors"></a></dt>
 <dd><p>A vector of colors.</p></dd>
 
@@ -126,10 +130,6 @@ perception of a background image, when one is available.</p></dd>
 <dd><p>Name of a custom PathwaySpace theme. These themes
 (from 'th0' to 'th3') consist mainly of preconfigured ggplot settings,
 which the user can subsequently refine using <code><a href="https://ggplot2.tidyverse.org/reference/ggplot2-package.html" class="external-link">ggplot2</a></code>.</p></dd>
-
-
-<dt id="arg-title">title<a class="anchor" aria-label="anchor" href="#arg-title"></a></dt>
-<dd><p>A string for the title.</p></dd>
 
 
 <dt id="arg-xlab">xlab<a class="anchor" aria-label="anchor" href="#arg-xlab"></a></dt>

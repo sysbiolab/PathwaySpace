@@ -6,6 +6,7 @@
 \usage{
 annotation_pspace_signal(
   ps,
+  title = activeFeature(ps),
   colors = pspace.cols(),
   bg.color = "grey95",
   si.color = "grey85",
@@ -13,7 +14,8 @@ annotation_pspace_signal(
   zlab = "Density",
   zlim = NULL,
   slices = 25,
-  interpolate = FALSE
+  interpolate = FALSE,
+  ...
 )
 }
 \arguments{
@@ -21,8 +23,11 @@ annotation_pspace_signal(
 projection. Run \code{\link{circularProjection}} before calling this
 function.}
 
+\item{title}{A string used as the plot title. Defaults to the active
+feature name returned by \code{\link{activeFeature}}.}
+
 \item{colors}{A character vector of colors used to build the signal
-palette. Defaults to \code{\link{pspace.cols}()}.}
+palette. Defaults to \code{\link{pspace.cols}}.}
 
 \item{bg.color}{A string specifying the background color, used for
 zero-signal or masked regions. Defaults to \code{"grey95"}.}
@@ -44,8 +49,10 @@ used to quantize the signal. For \code{"negpos"} scale types, this is
 rounded up to the nearest even number.}
 
 \item{interpolate}{A logical value indicating whether to apply linear
-interpolation when rendering the raster at a different resolution than
-its native size. Defaults to \code{FALSE}.}
+interpolation when rendering the raster at a different resolution than}
+
+\item{...}{Additional parameters passed to the title annotation;
+see \code{\link[ggplot2]{geom_text}}.}
 }
 \value{
 A list of \code{ggplot2} layer objects that can be added to a

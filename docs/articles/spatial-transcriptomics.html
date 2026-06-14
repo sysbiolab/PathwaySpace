@@ -31,7 +31,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">PathwaySpace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@ projections on spot coordinates</h3>
                         <h4 data-toc-skip class="author">Sysbiolab
 Team</h4>
             
-            <h4 data-toc-skip class="date">2026-06-13</h4>
+            <h4 data-toc-skip class="date">2026-06-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sysbiolab/PathwaySpace/blob/HEAD/vignettes/articles/spatial-transcriptomics.Rmd"><code>vignettes/articles/spatial-transcriptomics.Rmd</code></a></small>
       <div class="d-none name"><code>spatial-transcriptomics.Rmd</code></div>
@@ -88,7 +88,7 @@ Team</h4>
 
     
     
-<p><strong>Package</strong>: PathwaySpace 1.3.1 <br></p>
+<p><strong>Package</strong>: PathwaySpace 1.3.9 <br></p>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
@@ -150,11 +150,11 @@ continuing.</p>
 <span><span class="op">}</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check required versions</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"RGraphSpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.3.1"</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"RGraphSpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.4.0"</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Need to update 'RGraphSpace' for this vignette"</span><span class="op">)</span></span>
 <span>  <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"sysbiolab/RGraphSpace"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"PathwaySpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.3.1"</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"PathwaySpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.3.9"</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Need to update 'PathwaySpace' for this vignette"</span><span class="op">)</span></span>
 <span>  <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"sysbiolab/PathwaySpace"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -246,7 +246,7 @@ convenience.</p>
 <span>  <span class="va">spatial_theme</span></span>
 <span></span>
 <span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code></pre></div>
-<p><img src="figs_spatl/fig1.png" class="r-plt" alt="" width="90%" style="display: block; margin: auto;"></p>
+<p><img src="figs_spatl/fig1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <p><strong>Note on image alignment</strong>: Proper spatial alignment
 between spot coordinates and the background image requires consistent
 coordinate conventions. Spatial misalignment may occur when the input
@@ -261,19 +261,19 @@ combinations of these parameters to correct the alignment.</p>
 <div class="section level3">
 <h3 id="running-pathwayspace">Running <em>PathwaySpace</em><a class="anchor" aria-label="anchor" href="#running-pathwayspace"></a>
 </h3>
-<p>Next, we create a <em>PathwaySpace</em> object from the spot
-coordinates.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a PathwaySpace object</span></span>
 <span><span class="va">pspace_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/buildPathwaySpace.html">buildPathwaySpace</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">pspace_obj</span></span>
 <span><span class="co"># A PathwaySpace-class object for:</span></span>
-<span><span class="co"># IGRAPH ba090b7 UNW- 2696 0 -- </span></span>
-<span><span class="co"># + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c), nodeSize (v/n), cell (v/c), orig.ident (v/x),</span></span>
-<span><span class="co"># | nCount_Spatial (v/n), nFeature_Spatial (v/n), slice (v/n), region (v/c), nCount_SCT (v/n),</span></span>
-<span><span class="co"># | nFeature_SCT (v/n), SCT_snn_res.0.8 (v/x), seurat_clusters (v/x), signal (v/n), decayFunction</span></span>
-<span><span class="co"># | (v/x), arrowType (e/n), weight (e/n)</span></span>
+<span><span class="co"># IGRAPH dc238bc UNW- 2696 0 -- </span></span>
+<span><span class="co"># + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c),</span></span>
+<span><span class="co"># | nodeSize (v/n), cell (v/c), orig.ident (v/x), nCount_Spatial</span></span>
+<span><span class="co"># | (v/n), nFeature_Spatial (v/n), slice (v/n), region (v/c),</span></span>
+<span><span class="co"># | nCount_SCT (v/n), nFeature_SCT (v/n), SCT_snn_res.0.8 (v/x),</span></span>
+<span><span class="co"># | seurat_clusters (v/x), signal (v/n), decayFunction (v/x),</span></span>
+<span><span class="co"># | arrowType (e/n), weight (e/n)</span></span>
 <span><span class="co"># + features: 17668 (Xkr4, Sox17, Mrpl15, Lypla1, ...)</span></span>
 <span><span class="co"># + status: Preprocess[x]  Projection[ ]  Silhouette[ ]  Summits[ ]</span></span></code></pre></div>
 <p>Before projection, we need to specify a distance unit for the signal
@@ -285,7 +285,7 @@ represents 100 µm in the Visium v1 technology.</p>
 <code class="sourceCode R"><span><span class="co"># Get distance to the nearest spot</span></span>
 <span><span class="va">nspot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getNearestNode.html">getNearestNode</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span></span>
 <span><span class="va">pdist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">nspot</span><span class="op">$</span><span class="va">dist</span><span class="op">)</span> <span class="co"># average distance</span></span>
-<span><span class="co"># 'pdist' set as the average center-to-center distance between spots</span></span>
+<span><span class="co"># 'pdist' is set as the average center-to-center distance between spots</span></span>
 <span><span class="va">pdist</span></span>
 <span><span class="co"># [1] 0.013</span></span></code></pre></div>
 <p>As an optional step, the <code><a href="../reference/silhouetteMapping-methods.html">silhouetteMapping()</a></code> function
@@ -310,7 +310,7 @@ we will use expression data from the <strong>Camk2n1</strong> gene. The
 the gene expression values to graph vertices.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set a 'feature' of interest for signal </span></span>
-<span><span class="co"># projection (e.g., Camk2n1 genes)</span></span>
+<span><span class="co"># projection (e.g., Camk2n1 gene)</span></span>
 <span><span class="fu"><a href="../reference/vertexSignal-accessors.html">activeFeature</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"Camk2n1"</span></span></code></pre></div>
 <p>We then perform the signal projection, setting
 <code>decay = 0.5</code>. The decay parameter controls how the signal
@@ -444,8 +444,7 @@ dataset, see <em>Seurat</em>’s <a href="https://satijalab.org/seurat/articles/
 <span><span class="co">#-- to enhance certain patters</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotPathwaySpace-methods.html">plotPathwaySpace</a></span><span class="op">(</span>ps <span class="op">=</span> <span class="va">pspace_obj</span>, theme <span class="op">=</span> <span class="st">"th3"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Set a 'feature' of interest for signal </span></span>
-<span><span class="co"># projection (e.g., PCP4 gene)</span></span>
+<code class="sourceCode R"><span><span class="co"># ...another 'feature' (e.g. PCP4 gene)</span></span>
 <span><span class="fu"><a href="../reference/vertexSignal-accessors.html">activeFeature</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"PCP4"</span></span>
 <span></span>
 <span><span class="co"># Project gene signal</span></span>
@@ -541,7 +540,7 @@ outputs (all bin levels)</a>
 <p><img src="figs_spatl/fig7.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set a 'feature' of interest for signal </span></span>
-<span><span class="co"># projection (e.g., Rorb genes)</span></span>
+<span><span class="co"># projection (e.g., Rorb gene)</span></span>
 <span><span class="fu"><a href="../reference/vertexSignal-accessors.html">activeFeature</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"Rorb"</span></span>
 <span></span>
 <span><span class="co"># Project gene signal</span></span>
@@ -551,7 +550,7 @@ outputs (all bin levels)</a>
 <span><span class="co"># Plot projections</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotPathwaySpace-methods.html">plotPathwaySpace</a></span><span class="op">(</span><span class="va">pspace_obj</span>, theme <span class="op">=</span> <span class="st">"th3"</span>, add.image <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># ...another 'feature' (e.g. Hpca genes)</span></span>
+<code class="sourceCode R"><span><span class="co"># ...another 'feature' (e.g. Hpca gene)</span></span>
 <span><span class="fu"><a href="../reference/vertexSignal-accessors.html">activeFeature</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"Hpca"</span></span>
 <span></span>
 <span><span class="co"># Project gene signal</span></span>
@@ -610,7 +609,7 @@ molecular subtypes using compact feature sets. <em>Cancer Cell</em>
 <span><span class="co">#&gt;  [7] ssHippo.SeuratData_3.1.4  pbmc3k.SeuratData_3.1.4  </span></span>
 <span><span class="co">#&gt;  [9] SeuratData_0.2.2.9002     Seurat_5.5.0             </span></span>
 <span><span class="co">#&gt; [11] SeuratObject_5.4.0        sp_2.2-1                 </span></span>
-<span><span class="co">#&gt; [13] PathwaySpace_1.3.1        RGraphSpace_1.4.0        </span></span>
+<span><span class="co">#&gt; [13] PathwaySpace_1.3.9        RGraphSpace_1.4.1        </span></span>
 <span><span class="co">#&gt; [15] ggplot2_4.0.3             remotes_2.5.0            </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>

@@ -22,7 +22,7 @@ getPathwaySpace(ps, what = "status")
 
   A character value specifying which information should be retrieved
   from the slots. Options: "nodes", "edges", "graph", "image", "pars",
-  "misc", "signal","projections", "status", "silhouette", "summits",
+  "misc", "signal","projection", "status", "silhouette", "summits",
   "summit_mask", "summit_contour"
 
 ## Value

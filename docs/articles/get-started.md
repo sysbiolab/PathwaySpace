@@ -1,7 +1,7 @@
 # Getting started with PathwaySpace
 
   
-**Package**: PathwaySpace 1.3.1
+**Package**: PathwaySpace 1.3.9
 
 ## Introductory vignettes
 

@@ -1,6 +1,6 @@
 # Modeling signal decay functions
 
-**Package**: PathwaySpace 1.3.1  
+**Package**: PathwaySpace 1.3.9  
 
 ## Overview
 
@@ -33,11 +33,11 @@ if (!require("PathwaySpace", quietly = TRUE)){
 ``` r
 
 # Check versions
-if (packageVersion("RGraphSpace") < "1.3.1"){
+if (packageVersion("RGraphSpace") < "1.3.2"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.3.1"){
+if (packageVersion("PathwaySpace") < "1.3.2"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -121,7 +121,7 @@ weibullDecay(decay = 0.25, shape = 2, pdist = 0.75)
 #>     y <- signal * 0.25^((x/0.75)^2)
 #>     return(y)
 #> }
-#> <environment: 0x5fef69c4b638>
+#> <environment: 0x5f6028becaf0>
 #> attr(,"name")
 #> [1] "weibullDecay"
 ```
@@ -277,7 +277,7 @@ plotPathwaySpace(ps, marks = "n34")
     #> [1] stats     graphics  grDevices utils     datasets  methods   base     
     #> 
     #> other attached packages:
-    #> [1] patchwork_1.3.2    igraph_2.3.2       PathwaySpace_1.3.1 RGraphSpace_1.4.0 
+    #> [1] patchwork_1.3.2    igraph_2.3.2       PathwaySpace_1.3.9 RGraphSpace_1.4.1 
     #> [5] ggplot2_4.0.3      remotes_2.5.0     
     #> 
     #> loaded via a namespace (and not attached):

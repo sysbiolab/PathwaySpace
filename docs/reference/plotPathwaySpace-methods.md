@@ -9,14 +9,14 @@ graphics for PathwaySpace-class objects.
 # S4 method for class 'PathwaySpace'
 plotPathwaySpace(
   ps,
+  title = activeFeature(ps),
   colors = pspace.cols(),
   bg.color = "grey95",
   si.color = "grey85",
   si.alpha = 1,
-  theme = c("th0", "th1", "th2", "th3"),
-  title = "PathwaySpace",
-  xlab = "Pathway coordinates 1",
-  ylab = "Pathway coordinates 2",
+  theme = "th0",
+  xlab = "Graph coordinates 1",
+  ylab = "Graph coordinates 2",
   zlab = "Density",
   font.size = 1,
   font.color = "white",
@@ -46,6 +46,10 @@ plotPathwaySpace(
   [PathwaySpace](https://github.com/sysbiolab/PathwaySpace/reference/PathwaySpace-class.md)
   class object.
 
+- title:
+
+  A string for the title.
+
 - colors:
 
   A vector of colors.
@@ -71,10 +75,6 @@ plotPathwaySpace(
   'th3') consist mainly of preconfigured ggplot settings, which the user
   can subsequently refine using
   [`ggplot2`](https://ggplot2.tidyverse.org/reference/ggplot2-package.html).
-
-- title:
-
-  A string for the title.
 
 - xlab:
 

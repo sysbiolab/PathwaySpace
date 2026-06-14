@@ -1,6 +1,6 @@
 # Visualizing spatial transcriptomics
 
-**Package**: PathwaySpace 1.3.1  
+**Package**: PathwaySpace 1.3.9  
 
 ## Overview
 
@@ -68,11 +68,11 @@ if (!require("glmGamPoi", quietly = TRUE)){
 ``` r
 
 # Check required versions
-if (packageVersion("RGraphSpace") < "1.3.1"){
+if (packageVersion("RGraphSpace") < "1.4.0"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.3.1"){
+if (packageVersion("PathwaySpace") < "1.3.9"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -202,8 +202,6 @@ alternative combinations of these parameters to correct the alignment.
 
 ### Running *PathwaySpace*
 
-Next, we create a *PathwaySpace* object from the spot coordinates.
-
 ``` r
 
 # Create a PathwaySpace object
@@ -211,11 +209,13 @@ pspace_obj <- buildPathwaySpace(gs)
 
 pspace_obj
 # A PathwaySpace-class object for:
-# IGRAPH ba090b7 UNW- 2696 0 -- 
-# + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c), nodeSize (v/n), cell (v/c), orig.ident (v/x),
-# | nCount_Spatial (v/n), nFeature_Spatial (v/n), slice (v/n), region (v/c), nCount_SCT (v/n),
-# | nFeature_SCT (v/n), SCT_snn_res.0.8 (v/x), seurat_clusters (v/x), signal (v/n), decayFunction
-# | (v/x), arrowType (e/n), weight (e/n)
+# IGRAPH dc238bc UNW- 2696 0 -- 
+# + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c),
+# | nodeSize (v/n), cell (v/c), orig.ident (v/x), nCount_Spatial
+# | (v/n), nFeature_Spatial (v/n), slice (v/n), region (v/c),
+# | nCount_SCT (v/n), nFeature_SCT (v/n), SCT_snn_res.0.8 (v/x),
+# | seurat_clusters (v/x), signal (v/n), decayFunction (v/x),
+# | arrowType (e/n), weight (e/n)
 # + features: 17668 (Xkr4, Sox17, Mrpl15, Lypla1, ...)
 # + status: Preprocess[x]  Projection[ ]  Silhouette[ ]  Summits[ ]
 ```
@@ -231,7 +231,7 @@ represents 100 µm in the Visium v1 technology.
 # Get distance to the nearest spot
 nspot <- getNearestNode(pspace_obj)
 pdist <- mean(nspot$dist) # average distance
-# 'pdist' set as the average center-to-center distance between spots
+# 'pdist' is set as the average center-to-center distance between spots
 pdist
 # [1] 0.013
 ```
@@ -267,7 +267,7 @@ graph vertices.
 ``` r
 
 # Set a 'feature' of interest for signal 
-# projection (e.g., Camk2n1 genes)
+# projection (e.g., Camk2n1 gene)
 activeFeature(pspace_obj) <- "Camk2n1"
 ```
 
@@ -439,8 +439,7 @@ p1 <- plotPathwaySpace(ps = pspace_obj, theme = "th3")
 
 ``` r
 
-# Set a 'feature' of interest for signal 
-# projection (e.g., PCP4 gene)
+# ...another 'feature' (e.g. PCP4 gene)
 activeFeature(pspace_obj) <- "PCP4"
 
 # Project gene signal
@@ -554,7 +553,7 @@ plotPathwaySpace(ps = pspace_obj, theme = "th3",
 ``` r
 
 # Set a 'feature' of interest for signal 
-# projection (e.g., Rorb genes)
+# projection (e.g., Rorb gene)
 activeFeature(pspace_obj) <- "Rorb"
 
 # Project gene signal
@@ -567,7 +566,7 @@ p1 <- plotPathwaySpace(pspace_obj, theme = "th3", add.image = TRUE)
 
 ``` r
 
-# ...another 'feature' (e.g. Hpca genes)
+# ...another 'feature' (e.g. Hpca gene)
 activeFeature(pspace_obj) <- "Hpca"
 
 # Project gene signal
@@ -629,7 +628,7 @@ If you use *PathwaySpace*, please cite:
     #>  [7] ssHippo.SeuratData_3.1.4  pbmc3k.SeuratData_3.1.4  
     #>  [9] SeuratData_0.2.2.9002     Seurat_5.5.0             
     #> [11] SeuratObject_5.4.0        sp_2.2-1                 
-    #> [13] PathwaySpace_1.3.1        RGraphSpace_1.4.0        
+    #> [13] PathwaySpace_1.3.9        RGraphSpace_1.4.1        
     #> [15] ggplot2_4.0.3             remotes_2.5.0            
     #> 
     #> loaded via a namespace (and not attached):

@@ -77,11 +77,11 @@ if (!require("glmGamPoi", quietly = TRUE)){
 
 ```{r Check required versions, eval=TRUE, message=FALSE}
 # Check required versions
-if (packageVersion("RGraphSpace") < "1.3.1"){
+if (packageVersion("RGraphSpace") < "1.4.0"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.3.1"){
+if (packageVersion("PathwaySpace") < "1.3.9"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -180,7 +180,7 @@ p1 + p2
 #   units="in", device="png", dpi=200, plot = p1 + p2)
 ```
 
-```{r fig1, echo=FALSE, out.width = '90%', purl=FALSE}
+```{r fig1, echo=FALSE, out.width = '100%', purl=FALSE}
 knitr::include_graphics("figs_spatl/fig1.png")
 ```
 
@@ -188,19 +188,19 @@ knitr::include_graphics("figs_spatl/fig1.png")
 
 ## Running *PathwaySpace*
 
-Next, we create a *PathwaySpace* object from the spot coordinates.
-
 ```{r Create a PathwaySpace, eval=FALSE, message=FALSE}
 # Create a PathwaySpace object
 pspace_obj <- buildPathwaySpace(gs)
 
 pspace_obj
 # A PathwaySpace-class object for:
-# IGRAPH ba090b7 UNW- 2696 0 -- 
-# + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c), nodeSize (v/n), cell (v/c), orig.ident (v/x),
-# | nCount_Spatial (v/n), nFeature_Spatial (v/n), slice (v/n), region (v/c), nCount_SCT (v/n),
-# | nFeature_SCT (v/n), SCT_snn_res.0.8 (v/x), seurat_clusters (v/x), signal (v/n), decayFunction
-# | (v/x), arrowType (e/n), weight (e/n)
+# IGRAPH dc238bc UNW- 2696 0 -- 
+# + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c),
+# | nodeSize (v/n), cell (v/c), orig.ident (v/x), nCount_Spatial
+# | (v/n), nFeature_Spatial (v/n), slice (v/n), region (v/c),
+# | nCount_SCT (v/n), nFeature_SCT (v/n), SCT_snn_res.0.8 (v/x),
+# | seurat_clusters (v/x), signal (v/n), decayFunction (v/x),
+# | arrowType (e/n), weight (e/n)
 # + features: 17668 (Xkr4, Sox17, Mrpl15, Lypla1, ...)
 # + status: Preprocess[x]  Projection[ ]  Silhouette[ ]  Summits[ ]
 ```
@@ -211,7 +211,7 @@ Before projection, we need to specify a distance unit for the signal decay funct
 # Get distance to the nearest spot
 nspot <- getNearestNode(pspace_obj)
 pdist <- mean(nspot$dist) # average distance
-# 'pdist' set as the average center-to-center distance between spots
+# 'pdist' is set as the average center-to-center distance between spots
 pdist
 # [1] 0.013
 ```
@@ -246,7 +246,7 @@ Next, we specify the signal to be projected; for this demonstration, we will use
 
 ```{r Add signal to PathwaySpace, eval=FALSE, message=FALSE}
 # Set a 'feature' of interest for signal 
-# projection (e.g., Camk2n1 genes)
+# projection (e.g., Camk2n1 gene)
 activeFeature(pspace_obj) <- "Camk2n1"
 ```
 
@@ -414,8 +414,7 @@ p1 <- plotPathwaySpace(ps = pspace_obj, theme = "th3")
 ```
 
 ```{r , eval=FALSE, message=FALSE}
-# Set a 'feature' of interest for signal 
-# projection (e.g., PCP4 gene)
+# ...another 'feature' (e.g. PCP4 gene)
 activeFeature(pspace_obj) <- "PCP4"
 
 # Project gene signal
@@ -527,7 +526,7 @@ knitr::include_graphics("figs_spatl/fig7.png")
 
 ```{r , eval=FALSE, message=FALSE}
 # Set a 'feature' of interest for signal 
-# projection (e.g., Rorb genes)
+# projection (e.g., Rorb gene)
 activeFeature(pspace_obj) <- "Rorb"
 
 # Project gene signal
@@ -539,7 +538,7 @@ p1 <- plotPathwaySpace(pspace_obj, theme = "th3", add.image = TRUE)
 ```
 
 ```{r , eval=FALSE, message=FALSE}
-# ...another 'feature' (e.g. Hpca genes)
+# ...another 'feature' (e.g. Hpca gene)
 activeFeature(pspace_obj) <- "Hpca"
 
 # Project gene signal

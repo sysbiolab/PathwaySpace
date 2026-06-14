@@ -1,7 +1,7 @@
 Package: PathwaySpace
 Type: Package
 Title: Spatial Projection of Network Signals along Geodesic Paths
-Version: 1.3.1
+Version: 1.3.9
 Authors@R: 
     c(person("Sysbiolab Team", role = "aut"),
       person("Victor", "Apolonio", role = "ctb"),
@@ -33,15 +33,15 @@ VignetteBuilder: knitr
 URL: https://sysbiolab.github.io/PathwaySpace/, https://github.com/sysbiolab/PathwaySpace
 BugReports: https://github.com/sysbiolab/PathwaySpace/issues
 Collate:
-    pspaceChecks.R
-    pspaceSupplements.R
-    pspaceMisc.R
-    pspaceWatershed.R
-    pspaceDecay.R
-    pspaceClasses.R
-    pspaceGenerics.R
-    pspaceMethods.R
-    pspacePlots.R
+    pspace-checks.R
+    pspace-supplements.R
+    pspace-misc.R
+    pspace-watershed.R
+    pspace-decay.R
+    pspace-classes.R
+    pspace-generics.R
+    pspace-methods.R
+    pspace-plots.R
     annotation-pspace.R
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

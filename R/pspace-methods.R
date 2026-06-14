@@ -132,8 +132,8 @@ setMethod("circularProjection", "PathwaySpace", function(ps,
   pdist = deprecated()) {
   ### deprecate
   if (lifecycle::is_present(pdist)) {
-    deprecate_soft("1.0.2", "polarProjection(pdist)", 
-      "polarProjection(decay.fun)")
+    deprecate_soft("1.0.2", "circularProjection(pdist)", 
+      "circularProjection(decay.fun)")
   }
   #--- validate the pipeline status
   if (!.checkStatus(ps, "Preprocess")) {
@@ -489,7 +489,7 @@ setMethod("summitMapping", "PathwaySpace", function(ps, maxset = 30,
 #' @param what A character value specifying which information should 
 #' be retrieved from the slots.
 #' Options: "nodes", "edges", "graph", "image", "pars", "misc", 
-#' "signal","projections", "status", "silhouette", "summits", 
+#' "signal","projection", "status", "silhouette", "summits", 
 #' "summit_mask", "summit_contour"
 #' @return Content from slots in the \linkS4class{PathwaySpace} object.
 #' @examples
@@ -510,7 +510,7 @@ setMethod("summitMapping", "PathwaySpace", function(ps, maxset = 30,
 #' @export
 setMethod("getPathwaySpace", "PathwaySpace", function(ps, what = "status") {
     opts <- c("nodes", "edges", "graph", "image", "pars", "misc", 
-      "projections", "status", "signal", "silhouette", "summits", 
+      "projection", "status", "signal", "silhouette", "summits", 
       "summit_mask", "summit_contour")
     if (!what %in% opts) {
         opts <- paste0(opts, collapse = ", ")
@@ -522,13 +522,13 @@ setMethod("getPathwaySpace", "PathwaySpace", function(ps, what = "status") {
     } else if (what == "edges") {
         obj <- ps@edges
     } else if (what == "graph") {
-      obj <- ps@graph   
+      obj <- ps@graph
     } else if (what == "image") {
-      obj <- ps@image   
+      obj <- ps@image
     } else if (what == "pars") {
       obj <- ps@pars_ps
-    } else if (what == "projections") {
-        obj <- ps@projections
+    } else if (what == "projection") {
+        obj <- ps@projection
     } else if (what == "misc") {
       obj <- ps@misc
     } else if (what == "status") {
@@ -536,13 +536,13 @@ setMethod("getPathwaySpace", "PathwaySpace", function(ps, what = "status") {
     } else if (what == "signal") {
       obj <- gs_vertex_attr(ps, "signal")
     } else if (what == "silhouette") {
-        obj <- ps@projections$xfloor
+        obj <- ps@projection@floor
     } else if (what == "summits") {
-        obj <- ps@projections$summits$lset
+        obj <- ps@misc$summits$lset
     } else if (what == "summit_mask") {
-        obj <- ps@projections$summits$mset
+        obj <- ps@misc$summits$mset
     } else if (what == "summit_contour") {
-        obj <- ps@projections$summits$cset
+        obj <- ps@misc$summits$cset
     }
     return(obj)
 })

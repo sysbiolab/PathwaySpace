@@ -1,40 +1,63 @@
-# PathwaySpace: An S4 class for signal propagation on image spaces
+# PathwaySpace: An S4 class for signal projection on image spaces
 
-PathwaySpace: An S4 class for signal propagation on image spaces
+`PathwaySpace` extends the
+[GraphSpace](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-class.html)
+class with signal projection slots. It stores projected signal matrices,
+projection parameters, and workflow status, and is the main object used
+by the PathwaySpace package.
 
 ## Value
 
-An S4 class object.
+A `PathwaySpace` object.
 
 ## Slots
 
 - `nodes`:
 
-  A data frame with xy-vertex coordinates.
+  Inherited from
+  [GraphSpace](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-class.html).
 
 - `edges`:
 
-  A data frame with edges.
+  Inherited from
+  [GraphSpace](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-class.html).
 
 - `graph`:
 
-  An igraph object.
+  Inherited from
+  [GraphSpace](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-class.html).
 
 - `image`:
 
-  A raster background image matrix.
+  Inherited from
+  [GraphSpace](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-class.html).
+
+- `fdata`:
+
+  Inherited from
+  [GraphSpace](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-class.html).
 
 - `pars`:
 
-  A list inherited GraphSpace parameters.
+  Inherited from
+  [GraphSpace](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-class.html).
 
 - `misc`:
 
-  A list with intermediate objects for downstream methods.
+  Inherited from
+  [GraphSpace](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-class.html).
 
-- `projections`:
+- `uuid`:
 
-  A list with processed objects for downstream methods.
+  Inherited from
+  [GraphSpace](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-class.html).
+
+- `projection`:
+
+  A
+  [SpaceProjection](https://github.com/sysbiolab/PathwaySpace/reference/SpaceProjection-class.md)
+  object storing the intermediate and final matrices produced by a
+  projection method.
 
 - `pars_ps`:
 
@@ -46,9 +69,15 @@ An S4 class object.
 
 ## Constructor
 
-see
-[`buildPathwaySpace`](https://github.com/sysbiolab/PathwaySpace/reference/buildPathwaySpace.md)
-constructor.
+See
+[`buildPathwaySpace`](https://github.com/sysbiolab/PathwaySpace/reference/buildPathwaySpace.md).
+
+## See also
+
+[GraphSpace](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-class.html),
+[SpaceProjection](https://github.com/sysbiolab/PathwaySpace/reference/SpaceProjection-class.md),
+[`buildPathwaySpace`](https://github.com/sysbiolab/PathwaySpace/reference/buildPathwaySpace.md),
+[`circularProjection`](https://github.com/sysbiolab/PathwaySpace/reference/circularProjection-methods.md)
 
 ## Author
 

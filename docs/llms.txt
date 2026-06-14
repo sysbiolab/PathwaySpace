@@ -88,7 +88,9 @@ The *PathwaySpace* package is distributed under
   [`` `gs_edge_attr<-`( ``*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/PathwaySpace-accessors.md)
   : Accessor Functions for PathwaySpace Objects
 - [`PathwaySpace-class`](https://github.com/sysbiolab/PathwaySpace/reference/PathwaySpace-class.md)
-  : PathwaySpace: An S4 class for signal propagation on image spaces
+  : PathwaySpace: An S4 class for signal projection on image spaces
+- [`SpaceProjection-class`](https://github.com/sysbiolab/PathwaySpace/reference/SpaceProjection-class.md)
+  : Projection Data Container for PathwaySpace Objects
 - [`annotation_pspace_signal()`](https://github.com/sysbiolab/PathwaySpace/reference/annotation_pspace.md)
   : Annotation Functions for PathwaySpace Plots
 - [`buildPathwaySpace()`](https://github.com/sysbiolab/PathwaySpace/reference/buildPathwaySpace.md)
