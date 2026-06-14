@@ -162,8 +162,8 @@ function.
 # Run signal projection
 p_space_PCv12 <- circularProjection(p_space_PCv12, k = 8)
 
-# Note: 'k' sets the number of contributing vertices to signal 
-# projection; reducing 'k' focuses the projection on the strongest 
+# Note: 'k' sets the number of vertices contributing to the 
+# projection; reducing 'k' will focus the projection on the strongest 
 # local signals, filtering out weaker contributions.
 ```
 

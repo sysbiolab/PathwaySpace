@@ -273,11 +273,11 @@ combinations of these parameters to correct the alignment.</p>
 <span><span class="co"># | arrowType (e/n), weight (e/n)</span></span>
 <span><span class="co"># + features: 17668 (Xkr4, Sox17, Mrpl15, Lypla1, ...)</span></span>
 <span><span class="co"># + status: Preprocess[x]  Projection[ ]  Silhouette[ ]  Summits[ ]</span></span></code></pre></div>
-<p>Before projection, we need to specify a distance unit for the signal
-decay function. This distance unit will affect the extent over which the
-convolution operation projects the signal, scaled to the coordinate
-space. We will use the center-to-center distance between spots, which
-represents 100 µm in the Visium v1 technology.</p>
+<p>Before running the projection, we need to specify a distance unit for
+the signal decay function. This unit will affect the extent over which
+the signal is projected on the coordinate space. We will use the
+center-to-center distance between spots, corresponding to 100 µm in
+Visium v1 technology.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get distance to the nearest spot</span></span>
 <span><span class="va">nspot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getNearestNode.html">getNearestNode</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span></span>
@@ -311,10 +311,9 @@ corresponding signal into the projection pipeline.</p>
 <span><span class="fu"><a href="../reference/vertexSignal-accessors.html">activeFeature</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"Camk2n1"</span></span></code></pre></div>
 <p>We then perform the signal projection, setting
 <code>decay = 0.5</code>. The decay parameter controls how the signal
-attenuates as a function of distance in pathway space. With
-<code>decay = 0.5</code>, the signal decreases to half of its initial
-value at a distance equal to <code>pdist</code> (for additional
-configuration details, see the <a href="modeling-signal-decay.html"><em>modeling signal decay</em></a>
+attenuates with distance; at <code>decay = 0.5</code>, the signal
+decreases to half of its initial value at a distance equal to
+<code>pdist</code> (for additional configuration details, see the <a href="modeling-signal-decay.html"><em>modeling signal decay</em></a>
 tutorial).</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Project gene signal</span></span>

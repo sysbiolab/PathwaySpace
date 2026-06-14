@@ -217,11 +217,11 @@ pspace_obj
 # + status: Preprocess[x]  Projection[ ]  Silhouette[ ]  Summits[ ]
 ```
 
-Before projection, we need to specify a distance unit for the signal
-decay function. This distance unit will affect the extent over which the
-convolution operation projects the signal, scaled to the coordinate
-space. We will use the center-to-center distance between spots, which
-represents 100 µm in the Visium v1 technology.
+Before running the projection, we need to specify a distance unit for
+the signal decay function. This unit will affect the extent over which
+the signal is projected on the coordinate space. We will use the
+center-to-center distance between spots, corresponding to 100 µm in
+Visium v1 technology.
 
 ``` r
 
@@ -269,10 +269,10 @@ activeFeature(pspace_obj) <- "Camk2n1"
 ```
 
 We then perform the signal projection, setting `decay = 0.5`. The decay
-parameter controls how the signal attenuates as a function of distance
-in pathway space. With `decay = 0.5`, the signal decreases to half of
-its initial value at a distance equal to `pdist` (for additional
-configuration details, see the [*modeling signal
+parameter controls how the signal attenuates with distance; at
+`decay = 0.5`, the signal decreases to half of its initial value at a
+distance equal to `pdist` (for additional configuration details, see the
+[*modeling signal
 decay*](https://github.com/sysbiolab/PathwaySpace/articles/modeling-signal-decay.md)
 tutorial).
 
