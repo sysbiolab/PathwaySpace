@@ -49,11 +49,11 @@ if (!require("PathwaySpace", quietly = TRUE)){
 
 ```{r Check required versions, eval=TRUE, message=FALSE}
 # Check versions
-if (packageVersion("RGraphSpace") < "1.3.2"){
+if (packageVersion("RGraphSpace") < "1.3.9"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.3.2"){
+if (packageVersion("PathwaySpace") < "1.3.9"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -153,8 +153,7 @@ p2 <- plotPathwaySpace(ps, theme = "th3", title = "min()")
 p1 + p2
 ```
 
-Note that the `k` parameter affects the aggregations, as it determines how many projected signals are considered at each point in space. In general, we recommend using `k = gs_vcount(ps)` to capture contributions from all vertices,
-except in special cases, such as the example above using the `min` function, where the aggregation aims to highlight minimal values between two neighbor vertices.
+Note that the `k` parameter affects the aggregations, as it determines how many projected signals are considered at each point in space. In general, we recommend using `k = gs_vcount(ps)` to capture contributions from all vertices, except in special cases, such as the example above using the `min` function, where the aggregation aims to highlight minimal values between two neighbor vertices.
 
 ## Fuzzy unions and intersections
 

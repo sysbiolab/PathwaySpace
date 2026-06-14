@@ -213,21 +213,21 @@ can use the <code><a href="../reference/vertexSignal-accessors.html">vertexSigna
 signals in a <em>PathwaySpace</em> object; for example, in order to get
 vertex names and signal values:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Check the number of vertices in the PathwaySpace object</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">p_space1</span><span class="op">)</span></span>
-<span><span class="co">## [1] 5</span></span>
-<span></span>
-<span><span class="co"># Check vertex names</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">p_space1</span><span class="op">)</span></span>
-<span><span class="co">## [1] "n1" "n2" "n3" "n4" "n5"</span></span>
-<span></span>
-<span><span class="co"># Check signal (initialized with '0')</span></span>
-<span><span class="fu"><a href="../reference/vertexSignal-accessors.html">vertexSignal</a></span><span class="op">(</span><span class="va">p_space1</span><span class="op">)</span></span>
-<span><span class="co">## n1 n2 n3 n4 n5 </span></span>
-<span><span class="co">##  0  0  0  0  0</span></span></code></pre></div>
-<p>…and for setting new signal values in <em>PathwaySpace</em>
-objects:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Check the number of vertices in a PathwaySpace object</span></span>
+<span><span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-accessors.html" class="external-link">gs_vcount</a></span><span class="op">(</span><span class="va">p_space1</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 5</span></span></code></pre>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Check vertex names</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">p_space1</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "n1" "n2" "n3" "n4" "n5"</span></span></code></pre>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Check signal (initialized with '0')</span></span>
+<span><span class="fu"><a href="../reference/vertexSignal-accessors.html">vertexSignal</a></span><span class="op">(</span><span class="va">p_space1</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## n1 n2 n3 n4 n5 </span></span>
+<span><span class="co">##  0  0  0  0  0</span></span></code></pre>
+<p>…and for setting new signal values in a <em>PathwaySpace</em>
+object:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set new signal to all vertices</span></span>
 <span><span class="fu"><a href="../reference/vertexSignal-accessors.html">vertexSignal</a></span><span class="op">(</span><span class="va">p_space1</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">3</span><span class="op">)</span></span>
 <span></span>
@@ -238,9 +238,9 @@ objects:</p>
 <span><span class="fu"><a href="../reference/vertexSignal-accessors.html">vertexSignal</a></span><span class="op">(</span><span class="va">p_space1</span><span class="op">)</span><span class="op">[</span><span class="st">"n1"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">6</span></span>
 <span></span>
 <span><span class="co"># Check updated signal values</span></span>
-<span><span class="fu"><a href="../reference/vertexSignal-accessors.html">vertexSignal</a></span><span class="op">(</span><span class="va">p_space1</span><span class="op">)</span></span>
-<span><span class="co">## n1 n2 n3 n4 n5 </span></span>
-<span><span class="co">##  6  4  2  4  3</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/vertexSignal-accessors.html">vertexSignal</a></span><span class="op">(</span><span class="va">p_space1</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## n1 n2 n3 n4 n5 </span></span>
+<span><span class="co">##  6  4  2  4  3</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="signal-projection">Signal projection<a class="anchor" aria-label="anchor" href="#signal-projection"></a>
@@ -258,7 +258,7 @@ example, when <code>pdist = 1</code>, it will represent the diameter of
 the inscribed circle within the coordinate space. We also set
 <code>k = 1</code>, which defines the contributing vertices for signal
 convolution.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run signal projection</span></span>
 <span><span class="va">p_space1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/circularProjection-methods.html">circularProjection</a></span><span class="op">(</span><span class="va">p_space1</span>, k <span class="op">=</span> <span class="fl">1</span>, </span>
 <span>  decay.fun <span class="op">=</span> <span class="fu"><a href="../reference/weibullDecay.html">weibullDecay</a></span><span class="op">(</span>pdist <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span><span class="op">)</span></span>
@@ -271,7 +271,7 @@ convolution.</p>
 <code>shape</code> of the decay function (for further details, see the
 <a href="https://sysbiolab.github.io/PathwaySpace/" class="external-link"><strong>online
 tutorials</strong></a>).</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Re-run signal projection, adjusting Weibull's shape</span></span>
 <span><span class="va">p_space1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/circularProjection-methods.html">circularProjection</a></span><span class="op">(</span><span class="va">p_space1</span>, k <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>  decay.fun <span class="op">=</span> <span class="fu"><a href="../reference/weibullDecay.html">weibullDecay</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">2</span>, pdist <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span></span>
@@ -295,17 +295,18 @@ of data, for example, to highlight patterns of signal propagation on
 directed graphs, especially to explore the orientation aspect of signal
 flow. To demonstrate this feature we will used the <code>gtoy2</code>
 directed graph, available in the <em>RGraphSpace</em> package.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load a pre-processed directed igraph object</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"gtoy2"</span>, package <span class="op">=</span> <span class="st">"RGraphSpace"</span><span class="op">)</span></span>
 <span><span class="co"># Check graph validity</span></span>
 <span><span class="va">gs2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-methods.html" class="external-link">GraphSpace</a></span><span class="op">(</span><span class="va">gtoy2</span><span class="op">)</span></span>
+<span><span class="co"># Normalize node coordinates</span></span>
 <span><span class="va">gs2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/normalizeGraphSpace-methods.html" class="external-link">normalizeGraphSpace</a></span><span class="op">(</span><span class="va">gs2</span>, mar <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check the graph layout</span></span>
 <span><span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/plotGraphSpace-methods.html" class="external-link">plotGraphSpace</a></span><span class="op">(</span><span class="va">gs2</span>, add.labels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures/fig5.png" class="r-plt" alt="" width="75%"></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<p><img src="figures/fig5.png" class="r-plt" alt="" width="70%"></p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Build a PathwaySpace for the 'gs2'</span></span>
 <span><span class="va">p_space2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/buildPathwaySpace.html">buildPathwaySpace</a></span><span class="op">(</span><span class="va">gs2</span><span class="op">)</span></span>
 <span></span>
@@ -315,7 +316,7 @@ directed graph, available in the <em>RGraphSpace</em> package.</p>
 <code><a href="../reference/vertexSignal-accessors.html">vertexDecay()</a></code> accessor allows assigning decay functions at
 the level of individual vertices. For example, adjusting Weibull’s
 <code>shape</code> argument for node <code>n6</code>:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Modify decay function</span></span>
 <span><span class="co"># ..for all vertices</span></span>
 <span><span class="fu"><a href="../reference/vertexSignal-accessors.html">vertexDecay</a></span><span class="op">(</span><span class="va">p_space2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/weibullDecay.html">weibullDecay</a></span><span class="op">(</span>shape<span class="op">=</span><span class="fl">2</span>, pdist <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
@@ -328,7 +329,7 @@ edge lengths. Next, we run the signal projection using polar
 coordinates. The <code>beta</code> exponent will control the angular
 span; for values greater than zero, <code>beta</code> will progressively
 narrow the projection along the edge axis.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run signal projection using polar coordinates</span></span>
 <span><span class="va">p_space2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/polarProjection-methods.html">polarProjection</a></span><span class="op">(</span><span class="va">p_space2</span>, beta <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span></span>
@@ -339,7 +340,7 @@ narrow the projection along the edge axis.</p>
 of direction. To incorporate edge orientation, we set
 <code>directional = TRUE</code>, which channels the projection along the
 paths:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Re-run signal projection using 'directional = TRUE'</span></span>
 <span><span class="va">p_space2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/polarProjection-methods.html">polarProjection</a></span><span class="op">(</span><span class="va">p_space2</span>, </span>
 <span>  beta <span class="op">=</span> <span class="fl">10</span>, directional <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -366,16 +367,16 @@ types, including <code>NAs</code>. If a vertex signal is assigned with
 Logical values are also allowed, but it will be treated as binary. Next,
 we show the projection of a signal that includes negative values, using
 the <code>p_space1</code> object created previously.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set a negative signal to vertices "n3" and "n4"</span></span>
 <span><span class="fu"><a href="../reference/vertexSignal-accessors.html">vertexSignal</a></span><span class="op">(</span><span class="va">p_space1</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n3"</span>,<span class="st">"n4"</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="op">-</span><span class="fl">4</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Check updated signal vector</span></span>
-<span><span class="fu"><a href="../reference/vertexSignal-accessors.html">vertexSignal</a></span><span class="op">(</span><span class="va">p_space1</span><span class="op">)</span></span>
-<span><span class="co"># n1 n2 n3 n4 n5 </span></span>
-<span><span class="co">#  6  4 -2 -4  3 </span></span>
-<span></span>
-<span><span class="co"># Re-run signal projection</span></span>
+<span><span class="fu"><a href="../reference/vertexSignal-accessors.html">vertexSignal</a></span><span class="op">(</span><span class="va">p_space1</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## n1 n2 n3 n4 n5 </span></span>
+<span><span class="co">##  6  4 -2 -4  3</span></span></code></pre>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Re-run signal projection</span></span>
 <span><span class="va">p_space1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/circularProjection-methods.html">circularProjection</a></span><span class="op">(</span><span class="va">p_space1</span>, </span>
 <span>  decay.fun <span class="op">=</span> <span class="fu"><a href="../reference/weibullDecay.html">weibullDecay</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>

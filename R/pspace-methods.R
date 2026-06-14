@@ -15,7 +15,7 @@
 #' messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).
 #' @return A pre-processed \linkS4class{PathwaySpace} class object.
 #' @author Sysbiolab Team
-#' @seealso \code{\link[igraph]{undirected_graph}}
+#' @seealso \code{\link{circularProjection}}, \code{\link{polarProjection}}
 #' @examples
 #' # Load a demo igraph
 #' data('gtoy1', package = 'RGraphSpace')
@@ -66,14 +66,20 @@ buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE) {
   return(ps)
 }
 
+#-------------------------------------------------------------------------------
 #' @title Circular Projection of Graph-Associated Signals
 #'
-#' @description \code{circularProjection} implements a convolution
-#' algorithm to project signals onto a 2D-coordinate system.
-#'
+#' @description
+#' \code{circularProjection()} implements a convolution algorithm to project
+#' vertex-associated signals onto a 2D image space using a circular decay
+#' function.
+#' 
 #' @param ps A \linkS4class{PathwaySpace} class object.
-#' @param k A single positive integer determining the k-top signals for the 
-#' convolution operation.
+#' @param feature A single string specifying the feature to project as a
+#' signal. Must match either a feature name (see \code{gs_features(ps)}) or 
+#' a node attribute (see \code{gs_names(ps)}). If a node attribute, make sure
+#' it is of numeric type. If the signal does not come from internal features, 
+#' assign it directly using the \code{\link{vertexSignal}} accessor.
 #' @param decay.fun A signal decay function. Available options include 
 #' 'Weibull', 'exponential', and 'linear' (see \code{\link{weibullDecay}}).
 #' Users may also define a custom decay model with at least two arguments, 
@@ -85,11 +91,12 @@ buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE) {
 #' which should aggregate a vector of signals to a scalar value. 
 #' Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean' 
 #' (See \code{\link{signalAggregation}}).
-#' @param feature A single string specifying the feature to project as a
-#' signal. Must match either a feature name (see \code{gs_features()}) or 
-#' node attribute (see \code{gs_names()}). If a node attribute, make sure
-#' it is of numeric type. If no features are available, assign them first
-#' using the \code{gs_fdata()} or \code{vertexSignal()} accessors.
+#' @param k A single positive integer specifying the maximum number of 
+#' vertices whose signals contribute to the projection. Defaults to 
+#' \code{gs_vcount(ps)}, i.e. all vertices are considered. Specifically, 
+#' at each point in space, the \emph{k}-top decayed signals are retained 
+#' prior to aggregation. Reducing \emph{k} focuses the projection on the 
+#' strongest local signals, filtering out weaker contributions.
 #' @param rescale A logical value indicating whether to rescale 
 #' the signal. If the signal \code{>=0}, then it will be rescaled to 
 #' \code{[0, 1]}; if the signal \code{<=0}, then it will be rescaled to 
@@ -101,8 +108,7 @@ buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE) {
 #' passed internally through \code{decay.fun}.
 #' @return A preprocessed \linkS4class{PathwaySpace} class object.
 #' @author Sysbiolab Team
-#' @seealso \code{\link{buildPathwaySpace}},  \code{\link{weibullDecay}},  
-#' \code{\link{expDecay}}, \code{\link{linearDecay}}
+#' @seealso \code{\link{buildPathwaySpace}}
 #' @examples
 #' # Load a demo igraph
 #' data('gtoy1', package = 'RGraphSpace')
@@ -119,15 +125,17 @@ buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE) {
 #' 
 #' @import methods
 #' @importFrom lifecycle deprecated deprecate_soft is_present deprecate_stop
+#' @importFrom RGraphSpace gs_vcount
 #' @docType methods
 #' @rdname circularProjection-methods
 #' @aliases circularProjection
 #' @export
 #'
 setMethod("circularProjection", "PathwaySpace", function(ps, 
-  k = 8, decay.fun = weibullDecay(), 
-  aggregate.fun = signalAggregation(),
   feature = activeFeature(ps), 
+  decay.fun = weibullDecay(), 
+  aggregate.fun = signalAggregation(), 
+  k = gs_vcount(ps), 
   rescale = TRUE, verbose = TRUE, 
   pdist = deprecated()) {
   ### deprecate
@@ -188,18 +196,17 @@ setMethod("circularProjection", "PathwaySpace", function(ps,
 #-------------------------------------------------------------------------------
 #' @title Polar Projection of Graph-Associated Signals
 #'
-#' @description \code{polarProjection} implements a convolution algorithm
-#' to project signals across a 2D-coordinate system.
+#' @description
+#' \code{polarProjection()} implements a convolution algorithm to project
+#' vertex-associated signals onto a 2D image space along graph edges, using
+#' a polar decay function.
 #'
 #' @param ps A \linkS4class{PathwaySpace} class object.
-#' @param k A single positive integer determining the k-top signals for the 
-#' convolution operation.
-#' @param beta An exponent (in \code{[0, +Inf)}) used in the polar 
-#' projection functions (see \code{\link{polarDecay}}). It controls the  
-#' shape of the polar projection by modulating the angular span.
-#' For example, \eqn{beta = 0} yields a circular projection, \eqn{beta = 1} 
-#' produces a cardioid-like shape, and \code{beta > 1} progressively narrows 
-#' the projection along a reference edge axis.
+#' @param feature A single string specifying the feature to project as a
+#' signal. Must match either a feature name (see \code{gs_features(ps)}) or 
+#' a node attribute (see \code{gs_names(ps)}). If a node attribute, make sure
+#' it is of numeric type. If the signal does not come from internal features, 
+#' assign it directly using the \code{\link{vertexSignal}} accessor.
 #' @param decay.fun A signal decay function. Available options include 
 #' 'Weibull', 'exponential', and 'linear' (see \code{\link{weibullDecay}}).
 #' Users may also define a custom decay model with at least two arguments, 
@@ -212,11 +219,18 @@ setMethod("circularProjection", "PathwaySpace", function(ps,
 #' Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean' 
 #' (See \code{\link{signalAggregation}}).
 #' @param polar.fun A polar decay function (see \code{\link{polarDecay}}).
-#' @param feature A single string specifying the feature to project as a
-#' signal. Must match either a feature name (see \code{gs_features()}) or 
-#' node attribute (see \code{gs_names()}). If a node attribute, make sure
-#' it is of numeric type. If no features are available, assign them first
-#' using the \code{gs_fdata()} or \code{vertexSignal()} accessors.
+#' @param k A single positive integer specifying the maximum number of 
+#' vertices whose signals contribute to the projection. Defaults to 
+#' \code{gs_vcount(ps)}, i.e. all vertices are considered. Specifically, 
+#' at each point in space, the \emph{k}-top decayed signals are retained 
+#' prior to aggregation. Reducing \emph{k} focuses the projection on the 
+#' strongest local signals, filtering out weaker contributions.
+#' @param beta An exponent (in \code{>=0)}) used in the polar projection 
+#' functions (see \code{\link{polarDecay}}). It controls the shape of the 
+#' polar projection by modulating the angular span. For example, 
+#' \eqn{beta = 0} yields a circular projection, \eqn{beta = 1} produces 
+#' a cardioid-like shape, and \code{beta > 1} progressively narrows 
+#' the projection along a reference edge axis.
 #' @param directional If directional edges are available, this argument can 
 #' be used to orientate the signal projection on directed graphs.
 #' @param edge.norm Scale distances based on edge lengths 
@@ -258,11 +272,12 @@ setMethod("circularProjection", "PathwaySpace", function(ps,
 #' @export
 #'
 setMethod("polarProjection", "PathwaySpace", function(ps, 
-  k = 2, beta = 10,
+  feature = activeFeature(ps), 
   decay.fun = weibullDecay(pdist = 1),
   aggregate.fun = signalAggregation(), 
   polar.fun = polarDecay(), 
-  feature = activeFeature(ps),
+  k = gs_vcount(ps), 
+  beta = 10,
   directional = FALSE,
   edge.norm = TRUE,
   rescale = TRUE, 

@@ -33,11 +33,11 @@ if (!require("PathwaySpace", quietly = TRUE)){
 ``` r
 
 # Check versions
-if (packageVersion("RGraphSpace") < "1.3.2"){
+if (packageVersion("RGraphSpace") < "1.3.9"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.3.2"){
+if (packageVersion("PathwaySpace") < "1.3.9"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -121,7 +121,7 @@ weibullDecay(decay = 0.25, shape = 2, pdist = 0.75)
 #>     y <- signal * 0.25^((x/0.75)^2)
 #>     return(y)
 #> }
-#> <environment: 0x5f6028becaf0>
+#> <environment: 0x64db7acf4738>
 #> attr(,"name")
 #> [1] "weibullDecay"
 ```

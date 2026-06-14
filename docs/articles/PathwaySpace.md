@@ -150,21 +150,30 @@ example, in order to get vertex names and signal values:
 
 ``` r
 
-# Check the number of vertices in the PathwaySpace object
-length(p_space1)
-## [1] 5
+# Check the number of vertices in a PathwaySpace object
+gs_vcount(p_space1)
+```
+
+    ## [1] 5
+
+``` r
 
 # Check vertex names
 names(p_space1)
-## [1] "n1" "n2" "n3" "n4" "n5"
+```
+
+    ## [1] "n1" "n2" "n3" "n4" "n5"
+
+``` r
 
 # Check signal (initialized with '0')
 vertexSignal(p_space1)
-## n1 n2 n3 n4 n5 
-##  0  0  0  0  0
 ```
 
-…and for setting new signal values in *PathwaySpace* objects:
+    ## n1 n2 n3 n4 n5 
+    ##  0  0  0  0  0
+
+…and for setting new signal values in a *PathwaySpace* object:
 
 ``` r
 
@@ -179,9 +188,10 @@ vertexSignal(p_space1)["n1"] <- 6
 
 # Check updated signal values
 vertexSignal(p_space1)
-## n1 n2 n3 n4 n5 
-##  6  4  2  4  3
 ```
+
+    ## n1 n2 n3 n4 n5 
+    ##  6  4  2  4  3
 
 ## Signal projection
 
@@ -251,6 +261,7 @@ available in the *RGraphSpace* package.
 data("gtoy2", package = "RGraphSpace")
 # Check graph validity
 gs2 <- GraphSpace(gtoy2)
+# Normalize node coordinates
 gs2 <- normalizeGraphSpace(gs2, mar = 0.2)
 ```
 
@@ -345,8 +356,12 @@ vertexSignal(p_space1)[c("n3","n4")] <- c(-2, -4)
 
 # Check updated signal vector
 vertexSignal(p_space1)
-# n1 n2 n3 n4 n5 
-#  6  4 -2 -4  3 
+```
+
+    ## n1 n2 n3 n4 n5 
+    ##  6  4 -2 -4  3
+
+``` r
 
 # Re-run signal projection
 p_space1 <- circularProjection(p_space1, 

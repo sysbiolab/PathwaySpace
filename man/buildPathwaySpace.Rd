@@ -41,7 +41,7 @@ ps <- buildPathwaySpace(gs, nrc = 100)
 
 }
 \seealso{
-\code{\link[igraph]{undirected_graph}}
+\code{\link{circularProjection}}, \code{\link{polarProjection}}
 }
 \author{
 Sysbiolab Team

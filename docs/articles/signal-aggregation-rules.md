@@ -50,11 +50,11 @@ if (!require("PathwaySpace", quietly = TRUE)){
 ``` r
 
 # Check versions
-if (packageVersion("RGraphSpace") < "1.3.2"){
+if (packageVersion("RGraphSpace") < "1.3.9"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.3.2"){
+if (packageVersion("PathwaySpace") < "1.3.9"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }

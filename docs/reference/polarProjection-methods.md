@@ -1,7 +1,8 @@
 # Polar Projection of Graph-Associated Signals
 
-`polarProjection` implements a convolution algorithm to project signals
-across a 2D-coordinate system.
+`polarProjection()` implements a convolution algorithm to project
+vertex-associated signals onto a 2D image space along graph edges, using
+a polar decay function.
 
 ## Usage
 
@@ -9,12 +10,12 @@ across a 2D-coordinate system.
 # S4 method for class 'PathwaySpace'
 polarProjection(
   ps,
-  k = 2,
-  beta = 10,
+  feature = activeFeature(ps),
   decay.fun = weibullDecay(pdist = 1),
   aggregate.fun = signalAggregation(),
   polar.fun = polarDecay(),
-  feature = activeFeature(ps),
+  k = gs_vcount(ps),
+  beta = 10,
   directional = FALSE,
   edge.norm = TRUE,
   rescale = TRUE,
@@ -31,20 +32,15 @@ polarProjection(
   [PathwaySpace](https://github.com/sysbiolab/PathwaySpace/reference/PathwaySpace-class.md)
   class object.
 
-- k:
+- feature:
 
-  A single positive integer determining the k-top signals for the
-  convolution operation.
-
-- beta:
-
-  An exponent (in `[0, +Inf)`) used in the polar projection functions
-  (see
-  [`polarDecay`](https://github.com/sysbiolab/PathwaySpace/reference/polarDecay.md)).
-  It controls the shape of the polar projection by modulating the
-  angular span. For example, \\beta = 0\\ yields a circular projection,
-  \\beta = 1\\ produces a cardioid-like shape, and `beta > 1`
-  progressively narrows the projection along a reference edge axis.
+  A single string specifying the feature to project as a signal. Must
+  match either a feature name (see `gs_features(ps)`) or a node
+  attribute (see `gs_names(ps)`). If a node attribute, make sure it is
+  of numeric type. If the signal does not come from internal features,
+  assign it directly using the
+  [`vertexSignal`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md)
+  accessor.
 
 - decay.fun:
 
@@ -70,19 +66,23 @@ polarProjection(
   A polar decay function (see
   [`polarDecay`](https://github.com/sysbiolab/PathwaySpace/reference/polarDecay.md)).
 
-- feature:
+- k:
 
-  A single string specifying the feature to project as a signal. Must
-  match either a feature name (see
-  [`gs_features()`](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-accessors.html))
-  or node attribute (see
-  [`gs_names()`](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-accessors.html)).
-  If a node attribute, make sure it is of numeric type. If no features
-  are available, assign them first using the
-  [`gs_fdata()`](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-accessors.html)
-  or
-  [`vertexSignal()`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md)
-  accessors.
+  A single positive integer specifying the maximum number of vertices
+  whose signals contribute to the projection. Defaults to
+  `gs_vcount(ps)`, i.e. all vertices are considered. Specifically, at
+  each point in space, the *k*-top decayed signals are retained prior to
+  aggregation. Reducing *k* focuses the projection on the strongest
+  local signals, filtering out weaker contributions.
+
+- beta:
+
+  An exponent (in `>=0)`) used in the polar projection functions (see
+  [`polarDecay`](https://github.com/sysbiolab/PathwaySpace/reference/polarDecay.md)).
+  It controls the shape of the polar projection by modulating the
+  angular span. For example, \\beta = 0\\ yields a circular projection,
+  \\beta = 1\\ produces a cardioid-like shape, and `beta > 1`
+  progressively narrows the projection along a reference edge axis.
 
 - directional:
 

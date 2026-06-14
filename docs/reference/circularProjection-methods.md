@@ -1,7 +1,8 @@
 # Circular Projection of Graph-Associated Signals
 
-`circularProjection` implements a convolution algorithm to project
-signals onto a 2D-coordinate system.
+`circularProjection()` implements a convolution algorithm to project
+vertex-associated signals onto a 2D image space using a circular decay
+function.
 
 ## Usage
 
@@ -9,10 +10,10 @@ signals onto a 2D-coordinate system.
 # S4 method for class 'PathwaySpace'
 circularProjection(
   ps,
-  k = 8,
+  feature = activeFeature(ps),
   decay.fun = weibullDecay(),
   aggregate.fun = signalAggregation(),
-  feature = activeFeature(ps),
+  k = gs_vcount(ps),
   rescale = TRUE,
   verbose = TRUE,
   pdist = deprecated()
@@ -27,10 +28,15 @@ circularProjection(
   [PathwaySpace](https://github.com/sysbiolab/PathwaySpace/reference/PathwaySpace-class.md)
   class object.
 
-- k:
+- feature:
 
-  A single positive integer determining the k-top signals for the
-  convolution operation.
+  A single string specifying the feature to project as a signal. Must
+  match either a feature name (see `gs_features(ps)`) or a node
+  attribute (see `gs_names(ps)`). If a node attribute, make sure it is
+  of numeric type. If the signal does not come from internal features,
+  assign it directly using the
+  [`vertexSignal`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md)
+  accessor.
 
 - decay.fun:
 
@@ -51,19 +57,14 @@ circularProjection(
   options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean' (See
   [`signalAggregation`](https://github.com/sysbiolab/PathwaySpace/reference/signalAggregation.md)).
 
-- feature:
+- k:
 
-  A single string specifying the feature to project as a signal. Must
-  match either a feature name (see
-  [`gs_features()`](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-accessors.html))
-  or node attribute (see
-  [`gs_names()`](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-accessors.html)).
-  If a node attribute, make sure it is of numeric type. If no features
-  are available, assign them first using the
-  [`gs_fdata()`](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-accessors.html)
-  or
-  [`vertexSignal()`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md)
-  accessors.
+  A single positive integer specifying the maximum number of vertices
+  whose signals contribute to the projection. Defaults to
+  `gs_vcount(ps)`, i.e. all vertices are considered. Specifically, at
+  each point in space, the *k*-top decayed signals are retained prior to
+  aggregation. Reducing *k* focuses the projection on the strongest
+  local signals, filtering out weaker contributions.
 
 - rescale:
 
@@ -90,10 +91,7 @@ class object.
 
 ## See also
 
-[`buildPathwaySpace`](https://github.com/sysbiolab/PathwaySpace/reference/buildPathwaySpace.md),
-[`weibullDecay`](https://github.com/sysbiolab/PathwaySpace/reference/weibullDecay.md),
-[`expDecay`](https://github.com/sysbiolab/PathwaySpace/reference/expDecay.md),
-[`linearDecay`](https://github.com/sysbiolab/PathwaySpace/reference/linearDecay.md)
+[`buildPathwaySpace`](https://github.com/sysbiolab/PathwaySpace/reference/buildPathwaySpace.md)
 
 ## Author
 

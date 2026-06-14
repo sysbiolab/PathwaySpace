@@ -38,7 +38,8 @@ class object.
 
 ## See also
 
-[`undirected_graph`](https://r.igraph.org/reference/make_graph.html)
+[`circularProjection`](https://github.com/sysbiolab/PathwaySpace/reference/circularProjection-methods.md),
+[`polarProjection`](https://github.com/sysbiolab/PathwaySpace/reference/polarProjection-methods.md)
 
 ## Author
 

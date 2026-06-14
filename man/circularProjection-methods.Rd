@@ -8,10 +8,10 @@
 \usage{
 \S4method{circularProjection}{PathwaySpace}(
   ps,
-  k = 8,
+  feature = activeFeature(ps),
   decay.fun = weibullDecay(),
   aggregate.fun = signalAggregation(),
-  feature = activeFeature(ps),
+  k = gs_vcount(ps),
   rescale = TRUE,
   verbose = TRUE,
   pdist = deprecated()
@@ -20,8 +20,11 @@
 \arguments{
 \item{ps}{A \linkS4class{PathwaySpace} class object.}
 
-\item{k}{A single positive integer determining the k-top signals for the
-convolution operation.}
+\item{feature}{A single string specifying the feature to project as a
+signal. Must match either a feature name (see \code{gs_features(ps)}) or
+a node attribute (see \code{gs_names(ps)}). If a node attribute, make sure
+it is of numeric type. If the signal does not come from internal features,
+assign it directly using the \code{\link{vertexSignal}} accessor.}
 
 \item{decay.fun}{A signal decay function. Available options include
 'Weibull', 'exponential', and 'linear' (see \code{\link{weibullDecay}}).
@@ -36,11 +39,12 @@ which should aggregate a vector of signals to a scalar value.
 Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean'
 (See \code{\link{signalAggregation}}).}
 
-\item{feature}{A single string specifying the feature to project as a
-signal. Must match either a feature name (see \code{gs_features()}) or
-node attribute (see \code{gs_names()}). If a node attribute, make sure
-it is of numeric type. If no features are available, assign them first
-using the \code{gs_fdata()} or \code{vertexSignal()} accessors.}
+\item{k}{A single positive integer specifying the maximum number of
+vertices whose signals contribute to the projection. Defaults to
+\code{gs_vcount(ps)}, i.e. all vertices are considered. Specifically,
+at each point in space, the \emph{k}-top decayed signals are retained
+prior to aggregation. Reducing \emph{k} focuses the projection on the
+strongest local signals, filtering out weaker contributions.}
 
 \item{rescale}{A logical value indicating whether to rescale
 the signal. If the signal \code{>=0}, then it will be rescaled to
@@ -58,8 +62,9 @@ passed internally through \code{decay.fun}.}
 A preprocessed \linkS4class{PathwaySpace} class object.
 }
 \description{
-\code{circularProjection} implements a convolution
-algorithm to project signals onto a 2D-coordinate system.
+\code{circularProjection()} implements a convolution algorithm to project
+vertex-associated signals onto a 2D image space using a circular decay
+function.
 }
 \examples{
 # Load a demo igraph
@@ -77,8 +82,7 @@ ps <- circularProjection(ps)
 
 }
 \seealso{
-\code{\link{buildPathwaySpace}},  \code{\link{weibullDecay}},
-\code{\link{expDecay}}, \code{\link{linearDecay}}
+\code{\link{buildPathwaySpace}}
 }
 \author{
 Sysbiolab Team

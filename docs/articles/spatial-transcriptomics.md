@@ -5,7 +5,7 @@
 ## Overview
 
 This vignette introduces *PathwaySpace* as an extension for the *Seurat*
-package (Hao et al. 2024), providing methods for signal propagation and
+package (Hao et al. 2024), providing methods for signal projection and
 visualization in spatial transcriptomics. It extends existing spatial
 analysis workflows to explore signal patterns in tissue
 microenvironments. In what follows, we present three step-by-step
@@ -68,7 +68,7 @@ if (!require("glmGamPoi", quietly = TRUE)){
 ``` r
 
 # Check required versions
-if (packageVersion("RGraphSpace") < "1.4.0"){
+if (packageVersion("RGraphSpace") < "1.3.9"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
@@ -154,8 +154,7 @@ gs <- normalizeGraphSpace(gs, use_image = TRUE)
 ```
 
 In this tutorial we use the low-level *ggplot2* interface for
-fine-grained control; the following tutorials demonstrate the
-higher-level
+fine-grained control; the subsequent tutorials use the higher-level
 [`plotPathwaySpace()`](https://github.com/sysbiolab/PathwaySpace/reference/plotPathwaySpace-methods.md)
 wrapper for convenience.
 
@@ -166,22 +165,20 @@ spatial_theme <- theme_gspace_coords(theme = "th3", is_norm = TRUE,
   xlab = "Spot coordinates 1", ylab = "Spot coordinates 2")
 
 # Left: 'seurat_clusters' annotation overlaid on tissue image
-cpal <- DiscretePalette(nlevels(gs$seurat_clusters), "polychrome")
+cpal1 <- DiscretePalette(nlevels(gs$seurat_clusters), "polychrome")
 p1 <- ggplot(gs) + 
   annotation_gspace_image(gs, opacity = 0.5) +
-  geom_nodespace(mapping = aes(fill = seurat_clusters),
-    size = 1.2, color = "grey90", stroke = 0.3) +
-  scale_fill_manual(values = cpal) +
-  theme_gspace_legend(discrete_fill = TRUE) +
+  geom_nodespace(mapping = aes(colour = seurat_clusters), size=0.8, pch=19) +
+  scale_colour_discrete(palette = cpal1) +
+  theme_gspace_legend(discrete_colour = TRUE) +
   spatial_theme
 
 # Right: Camk2n1 gene expression overlaid on tissue image
-cpal <- hcl.colors(100, palette = "Spectral", rev = TRUE)
+cpal2 <- hcl.colors(100, palette = "Spectral", rev = TRUE)
 p2 <- ggplot(gs) + 
   annotation_gspace_image(gs, opacity = 0.5) +
-  geom_nodespace(mapping = aes(colour = Camk2n1), 
-    size = 0.8, pch = 19) +
-  scale_colour_continuous(palette = cpal) +
+  geom_nodespace(mapping = aes(colour = Camk2n1), size=0.8, pch=19) +
+  scale_colour_continuous(palette = cpal2) +
   spatial_theme
 
 p1 + p2
@@ -258,11 +255,11 @@ ggplot(pspace_obj) +
 
 ![](figs_spatl/fig2.png)
 
-Next, we specify the signal to be projected; for this demonstration, we
-will use expression data from the **Camk2n1** gene. The
+Next, we specify the signal to be projected. Here we use expression data
+from the *Camk2n1* gene, set via the
 [`activeFeature()`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md)
-accessor function is then used to assign the gene expression values to
-graph vertices.
+accessor, which automatically loads the corresponding signal into the
+projection pipeline.
 
 ``` r
 
@@ -282,18 +279,20 @@ tutorial).
 ``` r
 
 # Project gene signal
-pspace_obj <- circularProjection(pspace_obj, k = gs_vcount(pspace_obj), 
+pspace_obj <- circularProjection(pspace_obj, 
+  k = gs_vcount(pspace_obj), 
   decay.fun = weibullDecay(decay=0.5, pdist = pdist), 
   aggregate.fun = signalAggregation("wmean"))
 ```
 
 Because each spot produces an independent projection, the resulting
 projections are aggregated into a unified landscape. Here we use a
-weighted arithmetic mean, with each projection weighted by its own
-magnitude (for additional configuration details, see the [*signal
-aggregation
+weighted arithmetic mean, where each projection is weighted by its own
+magnitude (for additional details, see the [*signal aggregation
 rules*](https://github.com/sysbiolab/PathwaySpace/articles/signal-aggregation-rules.md)
-tutorial).
+tutorial). The `k` parameter controls the aggregation by determining how
+many projected signals are considered at each point in space. The
+default `k = gs_vcount(ps)` retains contributions from all vertices.
 
 Next, we demonstrate the plotting interface with a few variations to
 highlight key settings.
@@ -327,8 +326,7 @@ p2 <- ggplot(pspace_obj) +
 # Right: same, with signal truncated to the upper range (zlim >= 0.5)
 p3 <- ggplot(pspace_obj) + 
   annotation_gspace_image(pspace_obj) + 
-  annotation_pspace_signal(pspace_obj, si.alpha = 0.25, 
-    zlim = c(0.5, 1)) + 
+  annotation_pspace_signal(pspace_obj, si.alpha = 0.25, zlim = c(0.5, 1)) + 
   spatial_theme
 
 p2 + p3
@@ -443,8 +441,7 @@ p1 <- plotPathwaySpace(ps = pspace_obj, theme = "th3")
 activeFeature(pspace_obj) <- "PCP4"
 
 # Project gene signal
-pspace_obj <- circularProjection(pspace_obj,
-  k = gs_vcount(pspace_obj), 
+pspace_obj <- circularProjection(pspace_obj, k = gs_vcount(pspace_obj), 
   decay.fun = weibullDecay(decay=0.5, pdist = pdist))
 
 # Plot projections

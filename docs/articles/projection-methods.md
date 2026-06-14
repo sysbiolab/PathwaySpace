@@ -29,11 +29,11 @@ if (!require("PathwaySpace", quietly = TRUE)){
 ``` r
 
 # Check versions
-if (packageVersion("RGraphSpace") < "1.3.2"){
+if (packageVersion("RGraphSpace") < "1.3.9"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.3.2"){
+if (packageVersion("PathwaySpace") < "1.3.9"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -74,7 +74,7 @@ V(gtoy1)$y <- c(0, 0,  2, -4,  0)
 V(gtoy1)$name <- paste0("n", 1:5)
 ```
 
-### Checking graph validity
+## Checking graph validity
 
 Next, we will create a *GraphSpace-class* object using the
 [`GraphSpace()`](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-methods.html)
@@ -89,6 +89,7 @@ define the graph’s outer margins.
 
 # Check graph validity
 gs1 <- GraphSpace(gtoy1)
+# Normalize node coordinates 
 gs1 <- normalizeGraphSpace(gs1, mar = 0.2)
 ```
 
@@ -103,9 +104,9 @@ function.
 plotGraphSpace(gs1, add.labels = TRUE)
 ```
 
-![](figs_intro/fig2.png)
+![](projection-methods_files/figure-html/GraphSpace%20constructor%20-%202-1.png)
 
-### Creating a *PathwaySpace* object
+## Creating a *PathwaySpace* object
 
 Next, we will create a *PathwaySpace-class* object using the
 [`buildPathwaySpace()`](https://github.com/sysbiolab/PathwaySpace/reference/buildPathwaySpace.md)
@@ -129,19 +130,19 @@ example, in order to get vertex names and signal values:
 
 # Check the number of vertices in a PathwaySpace object
 gs_vcount(p_space1)
-## [1] 5
+#> [1] 5
 
 # Check vertex names
 names(p_space1)
-## [1] "n1" "n2" "n3" "n4" "n5"
+#> [1] "n1" "n2" "n3" "n4" "n5"
 
 # Check signal (initialized with '0')
 vertexSignal(p_space1)
-## n1 n2 n3 n4 n5 
-##  0  0  0  0  0
+#> n1 n2 n3 n4 n5 
+#>  0  0  0  0  0
 ```
 
-…and for setting new signal values in the *PathwaySpace* object:
+…and for setting new signal values in a *PathwaySpace* object:
 
 ``` r
 
@@ -156,8 +157,8 @@ vertexSignal(p_space1)["n1"] <- 6
 
 # Check updated signal values
 vertexSignal(p_space1)
-## n1 n2 n3 n4 n5 
-##  6  4  2  4  3
+#> n1 n2 n3 n4 n5 
+#>  6  4  2  4  3
 ```
 
 ## Signal projection
@@ -186,7 +187,7 @@ p_space1 <- circularProjection(p_space1, k = 1,
 plotPathwaySpace(p_space1, add.marks = TRUE)
 ```
 
-![](figs_intro/fig3.png)
+![](projection-methods_files/figure-html/Circular%20projection%20-%201-1.png)
 
 Next, we reassess the same *PathwaySpace* object, using `pdist = 0.2`,
 `k = 2` and adjusting the `shape` of the decay function (for further
@@ -204,7 +205,7 @@ p_space1 <- circularProjection(p_space1, k = 2,
 plotPathwaySpace(p_space1, marks = "n1", theme = "th2")
 ```
 
-![](figs_intro/fig4.png)
+![](projection-methods_files/figure-html/Circular%20projection%20-%203-1.png)
 
 The `shape` parameter allows a projection to take a variety of shapes.
 When `shape = 1` the projection follows an exponential decay, and when
@@ -239,7 +240,7 @@ gs2 <- normalizeGraphSpace(gs2, mar = 0.2)
 plotGraphSpace(gs2, add.labels = TRUE)
 ```
 
-![](figs_intro/fig5.png)
+![](projection-methods_files/figure-html/Polar%20projection%20-%202-1.png)
 
 ``` r
 
@@ -281,7 +282,7 @@ p_space2 <- polarProjection(p_space2, beta = 10)
 plotPathwaySpace(p_space2, theme = "th2", add.marks = TRUE)
 ```
 
-![](figs_intro/fig6.png)
+![](projection-methods_files/figure-html/Polar%20projection%20-%205-1.png)
 
 Note that this projection distributes signals on the edges regardless of
 direction. To incorporate edge orientation, we set `directional = TRUE`,
@@ -298,7 +299,7 @@ plotPathwaySpace(p_space2, theme = "th2",
   marks = c("n1","n3","n4","n5"))
 ```
 
-![](figs_intro/fig7.png)
+![](projection-methods_files/figure-html/Polar%20projection%20-%206-1.png)
 
 This *PathwaySpace* polar projection emphasizes the signal flow along
 the directional pattern of a directed graph (see the *igraph* plot
@@ -324,8 +325,11 @@ vertexSignal(p_space1)[c("n3","n4")] <- c(-2, -4)
 
 # Check updated signal vector
 vertexSignal(p_space1)
-# n1 n2 n3 n4 n5 
-#  6  4 -2 -4  3 
+#> n1 n2 n3 n4 n5 
+#>  6  4 -2 -4  3
+```
+
+``` r
 
 # Re-run signal projection
 p_space1 <- circularProjection(p_space1, 
@@ -337,7 +341,7 @@ plotPathwaySpace(p_space1, bg.color = "white",
   mark.color = "magenta", theme = "th3")
 ```
 
-![](figs_intro/fig8.png)
+![](projection-methods_files/figure-html/Signal%20types%20-%202-1.png)
 
 Note that the original signal vector was rescale to `[-1, +1]`. If the
 signal vector is `>=0`, then it will be rescaled to `[0, 1]`; if the

@@ -37,11 +37,11 @@ if (!require("PathwaySpace", quietly = TRUE)){
 ``` r
 
 # Check versions
-if (packageVersion("RGraphSpace") < "1.3.2"){
+if (packageVersion("RGraphSpace") < "1.3.9"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.3.2"){
+if (packageVersion("PathwaySpace") < "1.3.9"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -63,25 +63,28 @@ library("ggplot2")
 # Load a large igraph object
 data("PCv12_pruned_igraph", package = "PathwaySpace")
 
-# Check number of vertices
-length(PCv12_pruned_igraph)
-# [1] 12990
+# Check number of vertices (n = 12990)
+vcount(PCv12_pruned_igraph)
+#> [1] 12990
 
-# Check vertex names
+# Check vertex names ("A1BG", "AKT1", "CRISP3", ...)
 head(V(PCv12_pruned_igraph)$name)
-# [1] "A1BG" "AKT1" "CRISP3" "GRB2" "PIK3CA" "PIK3R1"
+#> [1] "A1BG"   "AKT1"   "CRISP3" "GRB2"   "PIK3CA" "PIK3R1"
 
 # Get top-connected nodes for visualization
 top10hubs <- igraph::degree(PCv12_pruned_igraph)
 top10hubs <- names(sort(top10hubs, decreasing = TRUE)[1:10])
+
+# Check hubs ("GNB1", "TRIM28", "RPS27A", "CTNNB1", ...)
 head(top10hubs)
-# [1] "GNB1" "TRIM28" "RPS27A" "CTNNB1" "TP53" "ACTB"
+#> [1] "GNB1"   "TRIM28" "RPS27A" "CTNNB1" "TP53"   "ACTB"
 ```
 
 ``` r
 
 ## Check graph validity
 g_space_PCv12 <- GraphSpace(PCv12_pruned_igraph)
+
 # Normalize node coordinates
 g_space_PCv12 <- normalizeGraphSpace(g_space_PCv12)
 ```
@@ -95,7 +98,7 @@ plotGraphSpace(g_space_PCv12,
   theme = "th3")
 ```
 
-![](figs_fsets/fig1.png)
+![](sparse-feature-sets_files/figure-html/PathwaySpace%20decoration%20-%203-1.png)
 
 We now load gene sets from the *MSigDB* collection (Liberzon et al.
 2015), which are subsequently used to project a binary signal onto the
@@ -108,11 +111,11 @@ data("Hallmarks_v2023_1_Hs_symbols", package = "PathwaySpace")
 
 # There are 50 gene sets in "hallmarks"
 length(hallmarks)
-# [1] 50
+#> [1] 50
 
 # We will use the 'HALLMARK_P53_PATHWAY' (n=200 genes) for demonstration
 length(hallmarks$HALLMARK_P53_PATHWAY)
-# [1] 200
+#> [1] 200
 ```
 
 ## Running *PathwaySpace*
@@ -129,6 +132,7 @@ Commons* interactions.
 
 # Run the PathwaySpace constructor
 p_space_PCv12 <- buildPathwaySpace(gs = g_space_PCv12, nrc = 500)
+
 # Note: 'nrc' sets the number of rows and columns of the
 # image space, which will affect the image resolution (in pixels)
 ```
@@ -142,7 +146,7 @@ hallmarks <- lapply(hallmarks, intersect, y = names(p_space_PCv12) )
 
 # After intersection, the 'HALLMARK_P53_PATHWAY' dropped to n=173 genes
 length(hallmarks$HALLMARK_P53_PATHWAY)
-# [1] 173
+#> [1] 173
 
 # Set a binary signal (1s) to 'HALLMARK_P53_PATHWAY' genes
 vertexSignal(p_space_PCv12) <- 0
@@ -156,7 +160,11 @@ function.
 ``` r
 
 # Run signal projection
-p_space_PCv12 <- circularProjection(p_space_PCv12)
+p_space_PCv12 <- circularProjection(p_space_PCv12, k = 8)
+
+# Note: 'k' sets the number of contributing vertices to signal 
+# projection; reducing 'k' focuses the projection on the strongest 
+# local signals, filtering out weaker contributions.
 ```
 
 Next, we decorate the *PathwaySpace* image with graph silhouettes and
@@ -166,6 +174,7 @@ plot the results.
 
 # Add silhouettes
 p_space_PCv12 <- silhouetteMapping(p_space_PCv12)
+
 # Plot the results
 plotPathwaySpace(p_space_PCv12, 
   title = "HALLMARK_P53_PATHWAY", 
@@ -175,7 +184,7 @@ plotPathwaySpace(p_space_PCv12,
   mark.size = 2, theme = "th3")
 ```
 
-![](figs_fsets/fig2.png)
+![](sparse-feature-sets_files/figure-html/PathwaySpace%20decoration%20-%208-1.png)
 
 ## Mapping summits
 
@@ -201,14 +210,14 @@ plotPathwaySpace(p_space_PCv12,
   theme = "th3")
 ```
 
-![](figs_fsets/fig3.png)
+![](sparse-feature-sets_files/figure-html/Mapping%20summits%20-%201-1.png)
 
 ``` r
 
 # Extracting summits from a PathwaySpace
 summits <- getPathwaySpace(p_space_PCv12, "summits")
 class(summits)
-# [1] "list"
+#> [1] "list"
 ```
 
 ## Citation

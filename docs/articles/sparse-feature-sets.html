@@ -121,11 +121,11 @@ interaction data available from the <em>Pathway Commons</em> database
 <span><span class="op">}</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check versions</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"RGraphSpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.3.2"</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"RGraphSpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.3.9"</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Need to update 'RGraphSpace' for this vignette"</span><span class="op">)</span></span>
 <span>  <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"sysbiolab/RGraphSpace"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"PathwaySpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.3.2"</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"PathwaySpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.3.9"</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Need to update 'PathwaySpace' for this vignette"</span><span class="op">)</span></span>
 <span>  <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"sysbiolab/PathwaySpace"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
@@ -143,22 +143,25 @@ interaction data available from the <em>Pathway Commons</em> database
 <code class="sourceCode R"><span><span class="co"># Load a large igraph object</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"PCv12_pruned_igraph"</span>, package <span class="op">=</span> <span class="st">"PathwaySpace"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Check number of vertices</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">PCv12_pruned_igraph</span><span class="op">)</span></span>
-<span><span class="co"># [1] 12990</span></span>
+<span><span class="co"># Check number of vertices (n = 12990)</span></span>
+<span><span class="fu"><a href="https://r.igraph.org/reference/gorder.html" class="external-link">vcount</a></span><span class="op">(</span><span class="va">PCv12_pruned_igraph</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 12990</span></span>
 <span></span>
-<span><span class="co"># Check vertex names</span></span>
+<span><span class="co"># Check vertex names ("A1BG", "AKT1", "CRISP3", ...)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">PCv12_pruned_igraph</span><span class="op">)</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span>
-<span><span class="co"># [1] "A1BG" "AKT1" "CRISP3" "GRB2" "PIK3CA" "PIK3R1"</span></span>
+<span><span class="co">#&gt; [1] "A1BG"   "AKT1"   "CRISP3" "GRB2"   "PIK3CA" "PIK3R1"</span></span>
 <span></span>
 <span><span class="co"># Get top-connected nodes for visualization</span></span>
 <span><span class="va">top10hubs</span> <span class="op">&lt;-</span> <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/degree.html" class="external-link">degree</a></span><span class="op">(</span><span class="va">PCv12_pruned_igraph</span><span class="op">)</span></span>
 <span><span class="va">top10hubs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">top10hubs</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Check hubs ("GNB1", "TRIM28", "RPS27A", "CTNNB1", ...)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">top10hubs</span><span class="op">)</span></span>
-<span><span class="co"># [1] "GNB1" "TRIM28" "RPS27A" "CTNNB1" "TP53" "ACTB"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "GNB1"   "TRIM28" "RPS27A" "CTNNB1" "TP53"   "ACTB"</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Check graph validity</span></span>
 <span><span class="va">g_space_PCv12</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-methods.html" class="external-link">GraphSpace</a></span><span class="op">(</span><span class="va">PCv12_pruned_igraph</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># Normalize node coordinates</span></span>
 <span><span class="va">g_space_PCv12</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/normalizeGraphSpace-methods.html" class="external-link">normalizeGraphSpace</a></span><span class="op">(</span><span class="va">g_space_PCv12</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -167,7 +170,7 @@ interaction data available from the <em>Pathway Commons</em> database
 <span>  node.labels <span class="op">=</span> <span class="va">top10hubs</span>, </span>
 <span>  label.color <span class="op">=</span> <span class="st">"blue"</span>, </span>
 <span>  theme <span class="op">=</span> <span class="st">"th3"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figs_fsets/fig1.png" class="r-plt" alt="" width="90%" style="display: block; margin: auto;"></p>
+<p><img src="sparse-feature-sets_files/figure-html/PathwaySpace%20decoration%20-%203-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <p>We now load gene sets from the <em>MSigDB</em> collection <span class="citation">(Liberzon et al. 2015)</span>, which are subsequently
 used to project a binary signal onto the <em>PathwaySpace</em>
 image.</p>
@@ -177,11 +180,11 @@ image.</p>
 <span></span>
 <span><span class="co"># There are 50 gene sets in "hallmarks"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">hallmarks</span><span class="op">)</span></span>
-<span><span class="co"># [1] 50</span></span>
+<span><span class="co">#&gt; [1] 50</span></span>
 <span></span>
 <span><span class="co"># We will use the 'HALLMARK_P53_PATHWAY' (n=200 genes) for demonstration</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">hallmarks</span><span class="op">$</span><span class="va">HALLMARK_P53_PATHWAY</span><span class="op">)</span></span>
-<span><span class="co"># [1] 200</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 200</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="running-pathwayspace">Running <em>PathwaySpace</em><a class="anchor" aria-label="anchor" href="#running-pathwayspace"></a>
@@ -194,6 +197,7 @@ interactions.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run the PathwaySpace constructor</span></span>
 <span><span class="va">p_space_PCv12</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/buildPathwaySpace.html">buildPathwaySpace</a></span><span class="op">(</span>gs <span class="op">=</span> <span class="va">g_space_PCv12</span>, nrc <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># Note: 'nrc' sets the number of rows and columns of the</span></span>
 <span><span class="co"># image space, which will affect the image resolution (in pixels)</span></span></code></pre></div>
 <p>…and mark the <em>HALLMARK_P53_PATHWAY</em> genes in the
@@ -204,7 +208,7 @@ interactions.</p>
 <span></span>
 <span><span class="co"># After intersection, the 'HALLMARK_P53_PATHWAY' dropped to n=173 genes</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">hallmarks</span><span class="op">$</span><span class="va">HALLMARK_P53_PATHWAY</span><span class="op">)</span></span>
-<span><span class="co"># [1] 173</span></span>
+<span><span class="co">#&gt; [1] 173</span></span>
 <span></span>
 <span><span class="co"># Set a binary signal (1s) to 'HALLMARK_P53_PATHWAY' genes</span></span>
 <span><span class="fu"><a href="../reference/vertexSignal-accessors.html">vertexSignal</a></span><span class="op">(</span><span class="va">p_space_PCv12</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
@@ -212,12 +216,17 @@ interactions.</p>
 <p>…and run the <code><a href="../reference/circularProjection-methods.html">circularProjection()</a></code> function.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run signal projection</span></span>
-<span><span class="va">p_space_PCv12</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/circularProjection-methods.html">circularProjection</a></span><span class="op">(</span><span class="va">p_space_PCv12</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">p_space_PCv12</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/circularProjection-methods.html">circularProjection</a></span><span class="op">(</span><span class="va">p_space_PCv12</span>, k <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Note: 'k' sets the number of contributing vertices to signal </span></span>
+<span><span class="co"># projection; reducing 'k' focuses the projection on the strongest </span></span>
+<span><span class="co"># local signals, filtering out weaker contributions.</span></span></code></pre></div>
 <p>Next, we decorate the <em>PathwaySpace</em> image with graph
 silhouettes and plot the results.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add silhouettes</span></span>
 <span><span class="va">p_space_PCv12</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/silhouetteMapping-methods.html">silhouetteMapping</a></span><span class="op">(</span><span class="va">p_space_PCv12</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># Plot the results</span></span>
 <span><span class="fu"><a href="../reference/plotPathwaySpace-methods.html">plotPathwaySpace</a></span><span class="op">(</span><span class="va">p_space_PCv12</span>, </span>
 <span>  title <span class="op">=</span> <span class="st">"HALLMARK_P53_PATHWAY"</span>, </span>
@@ -225,7 +234,7 @@ silhouettes and plot the results.</p>
 <span>  xlab <span class="op">=</span> <span class="st">"Pathway coordinates 1"</span>,</span>
 <span>  ylab <span class="op">=</span> <span class="st">"Pathway coordinates 2"</span>,</span>
 <span>  mark.size <span class="op">=</span> <span class="fl">2</span>, theme <span class="op">=</span> <span class="st">"th3"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figs_fsets/fig2.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="sparse-feature-sets_files/figure-html/PathwaySpace%20decoration%20-%208-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
 <h2 id="mapping-summits">Mapping summits<a class="anchor" aria-label="anchor" href="#mapping-summits"></a>
@@ -248,12 +257,12 @@ contour lines.</p>
 <span>  xlab <span class="op">=</span> <span class="st">"Pathway coordinates 1"</span>,</span>
 <span>  ylab <span class="op">=</span> <span class="st">"Pathway coordinates 2"</span>,</span>
 <span>  theme <span class="op">=</span> <span class="st">"th3"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figs_fsets/fig3.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="sparse-feature-sets_files/figure-html/Mapping%20summits%20-%201-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extracting summits from a PathwaySpace</span></span>
 <span><span class="va">summits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getPathwaySpace-methods.html">getPathwaySpace</a></span><span class="op">(</span><span class="va">p_space_PCv12</span>, <span class="st">"summits"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">summits</span><span class="op">)</span></span>
-<span><span class="co"># [1] "list"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "list"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>

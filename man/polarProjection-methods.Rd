@@ -8,12 +8,12 @@
 \usage{
 \S4method{polarProjection}{PathwaySpace}(
   ps,
-  k = 2,
-  beta = 10,
+  feature = activeFeature(ps),
   decay.fun = weibullDecay(pdist = 1),
   aggregate.fun = signalAggregation(),
   polar.fun = polarDecay(),
-  feature = activeFeature(ps),
+  k = gs_vcount(ps),
+  beta = 10,
   directional = FALSE,
   edge.norm = TRUE,
   rescale = TRUE,
@@ -24,15 +24,11 @@
 \arguments{
 \item{ps}{A \linkS4class{PathwaySpace} class object.}
 
-\item{k}{A single positive integer determining the k-top signals for the
-convolution operation.}
-
-\item{beta}{An exponent (in \code{[0, +Inf)}) used in the polar
-projection functions (see \code{\link{polarDecay}}). It controls the
-shape of the polar projection by modulating the angular span.
-For example, \eqn{beta = 0} yields a circular projection, \eqn{beta = 1}
-produces a cardioid-like shape, and \code{beta > 1} progressively narrows
-the projection along a reference edge axis.}
+\item{feature}{A single string specifying the feature to project as a
+signal. Must match either a feature name (see \code{gs_features(ps)}) or
+a node attribute (see \code{gs_names(ps)}). If a node attribute, make sure
+it is of numeric type. If the signal does not come from internal features,
+assign it directly using the \code{\link{vertexSignal}} accessor.}
 
 \item{decay.fun}{A signal decay function. Available options include
 'Weibull', 'exponential', and 'linear' (see \code{\link{weibullDecay}}).
@@ -49,11 +45,19 @@ Available options include 'mean', 'wmean', 'log.wmean', and 'exp.wmean'
 
 \item{polar.fun}{A polar decay function (see \code{\link{polarDecay}}).}
 
-\item{feature}{A single string specifying the feature to project as a
-signal. Must match either a feature name (see \code{gs_features()}) or
-node attribute (see \code{gs_names()}). If a node attribute, make sure
-it is of numeric type. If no features are available, assign them first
-using the \code{gs_fdata()} or \code{vertexSignal()} accessors.}
+\item{k}{A single positive integer specifying the maximum number of
+vertices whose signals contribute to the projection. Defaults to
+\code{gs_vcount(ps)}, i.e. all vertices are considered. Specifically,
+at each point in space, the \emph{k}-top decayed signals are retained
+prior to aggregation. Reducing \emph{k} focuses the projection on the
+strongest local signals, filtering out weaker contributions.}
+
+\item{beta}{An exponent (in \code{>=0)}) used in the polar projection
+functions (see \code{\link{polarDecay}}). It controls the shape of the
+polar projection by modulating the angular span. For example,
+\eqn{beta = 0} yields a circular projection, \eqn{beta = 1} produces
+a cardioid-like shape, and \code{beta > 1} progressively narrows
+the projection along a reference edge axis.}
 
 \item{directional}{If directional edges are available, this argument can
 be used to orientate the signal projection on directed graphs.}
@@ -78,8 +82,9 @@ passed internally through \code{decay.fun}.}
 A preprocessed \linkS4class{PathwaySpace} class object.
 }
 \description{
-\code{polarProjection} implements a convolution algorithm
-to project signals across a 2D-coordinate system.
+\code{polarProjection()} implements a convolution algorithm to project
+vertex-associated signals onto a 2D image space along graph edges, using
+a polar decay function.
 }
 \examples{
 # Load a demo igraph
