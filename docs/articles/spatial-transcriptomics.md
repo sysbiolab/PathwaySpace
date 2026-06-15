@@ -1,6 +1,6 @@
 # Visualizing spatial transcriptomics
 
-**Package**: PathwaySpace 1.3.9  
+**Package**: PathwaySpace 1.4.0  
 
 ## Overview
 
@@ -34,19 +34,18 @@ before continuing.
 ## Required packages
 
 ![](data:image/svg+xml;base64,PHN2ZyBhcmlhLWhpZGRlbj0idHJ1ZSIgcm9sZT0iaW1nIiB2aWV3Ym94PSIwIDAgNTEyIDUxMiIgc3R5bGU9ImhlaWdodDoxZW07d2lkdGg6MWVtO3ZlcnRpY2FsLWFsaWduOi0wLjEyNWVtO21hcmdpbi1sZWZ0OmF1dG87bWFyZ2luLXJpZ2h0OmF1dG87Zm9udC1zaXplOmluaGVyaXQ7ZmlsbDpvcmFuZ2U7b3ZlcmZsb3c6dmlzaWJsZTtwb3NpdGlvbjpyZWxhdGl2ZTsiPjxwYXRoIGQ9Ik0yNTYgMzJjMTQuMiAwIDI3LjMgNy41IDM0LjUgMTkuOGwyMTYgMzY4YzcuMyAxMi40IDcuMyAyNy43IC4yIDQwLjFTNDg2LjMgNDgwIDQ3MiA0ODBINDBjLTE0LjMgMC0yNy42LTcuNy0zNC43LTIwLjFzLTctMjcuOCAuMi00MC4xbDIxNi0zNjhDMjI4LjcgMzkuNSAyNDEuOCAzMiAyNTYgMzJ6bTAgMTI4Yy0xMy4zIDAtMjQgMTAuNy0yNCAyNFYyOTZjMCAxMy4zIDEwLjcgMjQgMjQgMjRzMjQtMTAuNyAyNC0yNFYxODRjMC0xMy4zLTEwLjctMjQtMjQtMjR6bTMyIDIyNGEzMiAzMiAwIDEgMCAtNjQgMCAzMiAzMiAwIDEgMCA2NCAweiIgLz48L3N2Zz4=)
-Before proceeding, ensure that all packages described in the
-[*Installation
+Ensure that all packages described in the [*Installation
 Instructions*](https://github.com/sysbiolab/PathwaySpace/articles/install.md)
 are installed.
 
 ``` r
 
 # Check required versions
-if (packageVersion("RGraphSpace") < "1.3.9"){
+if (packageVersion("RGraphSpace") < "1.4.1"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.3.9"){
+if (packageVersion("PathwaySpace") < "1.4.0"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -124,7 +123,17 @@ gs_image(gs) <- SeuratObject::GetImage(seurat_obj, mode = "raster")
 # Normalize node coordinates to the image space
 # By default, this attempts to align the graph's bottom-up
 # coordinates with the image's top-down matrix layout.
-gs <- normalizeGraphSpace(gs, use_image = TRUE)
+gs <- normalizeGraphSpace(gs)
+
+gs
+# A GraphSpace-class object for:
+# IGRAPH 381ac9a UN-- 2696 0 -- 
+# + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c), nodeSize
+# | (v/n), cell (v/c), orig.ident (v/x), nCount_Spatial (v/n),
+# | nFeature_Spatial (v/n), slice (v/n), region (v/c), nCount_SCT
+# | (v/n), nFeature_SCT (v/n), SCT_snn_res.0.8 (v/x), seurat_clusters
+# | (v/x), arrowType (e/n)
+# + features: 17668 (Xkr4, Sox17, Mrpl15, Lypla1, ...)
 ```
 
 In this tutorial we use the low-level *ggplot2* interface for
@@ -177,18 +186,6 @@ alternative combinations of these parameters to correct the alignment.
 
 # Create a PathwaySpace object
 pspace_obj <- buildPathwaySpace(gs)
-
-pspace_obj
-# A PathwaySpace-class object for:
-# IGRAPH dc238bc UNW- 2696 0 -- 
-# + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c),
-# | nodeSize (v/n), cell (v/c), orig.ident (v/x), nCount_Spatial
-# | (v/n), nFeature_Spatial (v/n), slice (v/n), region (v/c),
-# | nCount_SCT (v/n), nFeature_SCT (v/n), SCT_snn_res.0.8 (v/x),
-# | seurat_clusters (v/x), signal (v/n), decayFunction (v/x),
-# | arrowType (e/n), weight (e/n)
-# + features: 17668 (Xkr4, Sox17, Mrpl15, Lypla1, ...)
-# + status: Preprocess[x]  Projection[ ]  Silhouette[ ]  Summits[ ]
 ```
 
 Before running the projection, we need to specify a distance unit for
@@ -354,7 +351,7 @@ gs <- as.GraphSpace(seurat_obj, space = "spatial")
 
 #Note: the `ssHippo` dataset does not include a tissue image
 
-# Normalize node coordinates; 'flip.y' and 'rotate.xy' to 
+# Normalize node coordinates; adjust 'flip.y' and 'rotate.xy' to 
 # follow image orientation in Seurat's vignette
 gs <- normalizeGraphSpace(gs, flip.y = TRUE, rotate.xy = TRUE)
 
@@ -483,7 +480,7 @@ gs <- as.GraphSpace(seurat_obj, space = "spatial", scale = "lowres")
 gs_image(gs) <- SeuratObject::GetImage(seurat_obj, mode = "raster")
 
 # Normalize node coordinates to the image space
-gs <- normalizeGraphSpace(gs, use_image = TRUE)
+gs <- normalizeGraphSpace(gs)
 
 # If needed, remove seurat_obj to free memory
 rm(seurat_obj)
@@ -597,7 +594,7 @@ If you use *PathwaySpace*, please cite:
     #>  [3] ssHippo.SeuratData_3.1.4  pbmc3k.SeuratData_3.1.4  
     #>  [5] SeuratData_0.2.2.9002     Seurat_5.5.0             
     #>  [7] SeuratObject_5.4.0        sp_2.2-1                 
-    #>  [9] PathwaySpace_1.3.9        RGraphSpace_1.4.1        
+    #>  [9] PathwaySpace_1.4.0        RGraphSpace_1.4.1        
     #> [11] ggplot2_4.0.3            
     #> 
     #> loaded via a namespace (and not attached):

@@ -42,15 +42,15 @@ This vignette assumes prior experience with [*Seurat*](https://satijalab.org/seu
 
 # Required packages
 
-`r fontawesome::fa("exclamation-triangle", fill = "orange")` Before proceeding, ensure that all packages described in the [*Installation Instructions*](install.html) are installed.
+`r fontawesome::fa("exclamation-triangle", fill = "orange")` Ensure that all packages described in the [*Installation Instructions*](install.html) are installed.
 
 ```{r Check required versions, eval=TRUE, message=FALSE}
 # Check required versions
-if (packageVersion("RGraphSpace") < "1.3.9"){
+if (packageVersion("RGraphSpace") < "1.4.1"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.3.9"){
+if (packageVersion("PathwaySpace") < "1.4.0"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -112,7 +112,17 @@ gs_image(gs) <- SeuratObject::GetImage(seurat_obj, mode = "raster")
 # Normalize node coordinates to the image space
 # By default, this attempts to align the graph's bottom-up
 # coordinates with the image's top-down matrix layout.
-gs <- normalizeGraphSpace(gs, use_image = TRUE)
+gs <- normalizeGraphSpace(gs)
+
+gs
+# A GraphSpace-class object for:
+# IGRAPH 381ac9a UN-- 2696 0 -- 
+# + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c), nodeSize
+# | (v/n), cell (v/c), orig.ident (v/x), nCount_Spatial (v/n),
+# | nFeature_Spatial (v/n), slice (v/n), region (v/c), nCount_SCT
+# | (v/n), nFeature_SCT (v/n), SCT_snn_res.0.8 (v/x), seurat_clusters
+# | (v/x), arrowType (e/n)
+# + features: 17668 (Xkr4, Sox17, Mrpl15, Lypla1, ...)
 ```
 
 In this tutorial we use the low-level *ggplot2* interface for fine-grained control; the subsequent tutorials use the higher-level `plotPathwaySpace()` wrapper for convenience.
@@ -158,18 +168,6 @@ knitr::include_graphics("figs_spatl/fig1.png")
 ```{r Create a PathwaySpace, eval=FALSE, message=FALSE}
 # Create a PathwaySpace object
 pspace_obj <- buildPathwaySpace(gs)
-
-pspace_obj
-# A PathwaySpace-class object for:
-# IGRAPH dc238bc UNW- 2696 0 -- 
-# + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c),
-# | nodeSize (v/n), cell (v/c), orig.ident (v/x), nCount_Spatial
-# | (v/n), nFeature_Spatial (v/n), slice (v/n), region (v/c),
-# | nCount_SCT (v/n), nFeature_SCT (v/n), SCT_snn_res.0.8 (v/x),
-# | seurat_clusters (v/x), signal (v/n), decayFunction (v/x),
-# | arrowType (e/n), weight (e/n)
-# + features: 17668 (Xkr4, Sox17, Mrpl15, Lypla1, ...)
-# + status: Preprocess[x]  Projection[ ]  Silhouette[ ]  Summits[ ]
 ```
 
 Before running the projection, we need to specify a distance unit for the signal decay function. This unit will affect the extent over which the signal is projected on the coordinate space. We will use the center-to-center distance between spots, corresponding to 100 µm in Visium v1 technology.
@@ -320,7 +318,7 @@ gs <- as.GraphSpace(seurat_obj, space = "spatial")
 
 #Note: the `ssHippo` dataset does not include a tissue image
 
-# Normalize node coordinates; 'flip.y' and 'rotate.xy' to 
+# Normalize node coordinates; adjust 'flip.y' and 'rotate.xy' to 
 # follow image orientation in Seurat's vignette
 gs <- normalizeGraphSpace(gs, flip.y = TRUE, rotate.xy = TRUE)
 
@@ -446,7 +444,7 @@ gs <- as.GraphSpace(seurat_obj, space = "spatial", scale = "lowres")
 gs_image(gs) <- SeuratObject::GetImage(seurat_obj, mode = "raster")
 
 # Normalize node coordinates to the image space
-gs <- normalizeGraphSpace(gs, use_image = TRUE)
+gs <- normalizeGraphSpace(gs)
 
 # If needed, remove seurat_obj to free memory
 rm(seurat_obj)
