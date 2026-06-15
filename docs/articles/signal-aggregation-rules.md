@@ -33,19 +33,11 @@ list of *fuzzy logic* operators that can be used to aggregate signals in
 
 ## Required packages
 
-``` r
-
-# Check required packages for this vignette
-if (!require("remotes", quietly = TRUE)){
-  install.packages("remotes")
-}
-if (!require("RGraphSpace", quietly = TRUE)){
-  remotes::install_github("sysbiolab/RGraphSpace")
-}
-if (!require("PathwaySpace", quietly = TRUE)){
-  remotes::install_github("sysbiolab/PathwaySpace")
-}
-```
+![](data:image/svg+xml;base64,PHN2ZyBhcmlhLWhpZGRlbj0idHJ1ZSIgcm9sZT0iaW1nIiB2aWV3Ym94PSIwIDAgNTEyIDUxMiIgc3R5bGU9ImhlaWdodDoxZW07d2lkdGg6MWVtO3ZlcnRpY2FsLWFsaWduOi0wLjEyNWVtO21hcmdpbi1sZWZ0OmF1dG87bWFyZ2luLXJpZ2h0OmF1dG87Zm9udC1zaXplOmluaGVyaXQ7ZmlsbDpvcmFuZ2U7b3ZlcmZsb3c6dmlzaWJsZTtwb3NpdGlvbjpyZWxhdGl2ZTsiPjxwYXRoIGQ9Ik0yNTYgMzJjMTQuMiAwIDI3LjMgNy41IDM0LjUgMTkuOGwyMTYgMzY4YzcuMyAxMi40IDcuMyAyNy43IC4yIDQwLjFTNDg2LjMgNDgwIDQ3MiA0ODBINDBjLTE0LjMgMC0yNy42LTcuNy0zNC43LTIwLjFzLTctMjcuOCAuMi00MC4xbDIxNi0zNjhDMjI4LjcgMzkuNSAyNDEuOCAzMiAyNTYgMzJ6bTAgMTI4Yy0xMy4zIDAtMjQgMTAuNy0yNCAyNFYyOTZjMCAxMy4zIDEwLjcgMjQgMjQgMjRzMjQtMTAuNyAyNC0yNFYxODRjMC0xMy4zLTEwLjctMjQtMjQtMjR6bTMyIDIyNGEzMiAzMiAwIDEgMCAtNjQgMCAzMiAzMiAwIDEgMCA2NCAweiIgLz48L3N2Zz4=)
+Before proceeding, ensure that all packages described in the
+[*Installation
+Instructions*](https://github.com/sysbiolab/PathwaySpace/articles/install.md)
+are installed.
 
 ``` r
 
@@ -348,8 +340,8 @@ compatible sign-symmetric aggregation strategies.
     #> [1] stats     graphics  grDevices utils     datasets  methods   base     
     #> 
     #> other attached packages:
-    #> [1] patchwork_1.3.2    igraph_2.3.2       PathwaySpace_1.3.9 RGraphSpace_1.4.1 
-    #> [5] ggplot2_4.0.3      remotes_2.5.0     
+    #> [1] patchwork_1.3.2    PathwaySpace_1.3.9 RGraphSpace_1.4.1  ggplot2_4.0.3     
+    #> [5] igraph_2.3.2      
     #> 
     #> loaded via a namespace (and not attached):
     #>  [1] sass_0.4.10        generics_0.1.4     tidyr_1.3.2        lattice_0.22-9    
@@ -357,16 +349,16 @@ compatible sign-symmetric aggregation strategies.
     #>  [9] RColorBrewer_1.1-3 fastmap_1.2.0      jsonlite_2.0.0     Matrix_1.7-5      
     #> [13] ggrepel_0.9.8      ggnewscale_0.5.2   ggrastr_1.0.2      purrr_1.2.2       
     #> [17] scales_1.4.0       textshaping_1.0.5  jquerylib_0.1.4    cli_3.6.6         
-    #> [21] rlang_1.2.0        tidygraph_1.3.1    withr_3.0.2        RANN_2.6.2        
+    #> [21] rlang_1.2.0        tidygraph_1.3.1    RANN_2.6.2         withr_3.0.2       
     #> [25] cachem_1.1.0       yaml_2.3.12        otel_0.2.0         ggbeeswarm_0.7.3  
     #> [29] tools_4.6.0        dplyr_1.2.1        colorspace_2.1-2   vctrs_0.7.3       
     #> [33] R6_2.6.1           lifecycle_1.0.5    fs_2.1.0           htmlwidgets_1.6.4 
-    #> [37] vipor_0.4.7        ragg_1.5.2         pkgconfig_2.0.3    beeswarm_0.4.0    
-    #> [41] desc_1.4.3         pkgdown_2.2.0      pillar_1.11.1      bslib_0.11.0      
-    #> [45] gtable_0.3.6       Rcpp_1.1.1-1.1     glue_1.8.1         systemfonts_1.3.2 
-    #> [49] xfun_0.58          tibble_3.3.1       tidyselect_1.2.1   rstudioapi_0.18.0 
-    #> [53] knitr_1.51         farver_2.1.2       htmltools_0.5.9    rmarkdown_2.31    
-    #> [57] compiler_4.6.0     S7_0.2.2
+    #> [37] vipor_0.4.7        ragg_1.5.2         fontawesome_0.5.3  pkgconfig_2.0.3   
+    #> [41] beeswarm_0.4.0     desc_1.4.3         pkgdown_2.2.0      pillar_1.11.1     
+    #> [45] bslib_0.11.0       gtable_0.3.6       Rcpp_1.1.1-1.1     glue_1.8.1        
+    #> [49] systemfonts_1.3.2  xfun_0.58          tibble_3.3.1       tidyselect_1.2.1  
+    #> [53] rstudioapi_0.18.0  knitr_1.51         farver_2.1.2       htmltools_0.5.9   
+    #> [57] rmarkdown_2.31     compiler_4.6.0     S7_0.2.2
 
 ## References
 

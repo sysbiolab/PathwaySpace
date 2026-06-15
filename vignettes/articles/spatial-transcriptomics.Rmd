@@ -42,36 +42,7 @@ This vignette assumes prior experience with [*Seurat*](https://satijalab.org/seu
 
 # Required packages
 
-```{r Check required packages, eval=TRUE, message=FALSE}
-# Check required packages for this vignette
-if (!require("remotes", quietly = TRUE)){
-  install.packages("remotes")
-}
-if (!require("RGraphSpace", quietly = TRUE)){
-  remotes::install_github("sysbiolab/RGraphSpace")
-}
-if (!require("PathwaySpace", quietly = TRUE)){
-  remotes::install_github("sysbiolab/PathwaySpace")
-}
-if (!require("Seurat", quietly = TRUE)){
-  remotes::install_github("satijalab/seurat-data")
-}
-if (!require("SeuratData", quietly = TRUE)){
-  remotes::install_github("satijalab/seurat-data")
-}
-if (!require("hdf5r", quietly = TRUE)){
-  install.packages("hdf5r")
-}
-if (!require("arrow", quietly = TRUE)){
-  install.packages("arrow")
-}
-if (!require("BiocManager", quietly = TRUE)){
-  install.packages("BiocManager")
-}
-if (!require("glmGamPoi", quietly = TRUE)){
-  BiocManager::install("glmGamPoi")
-}
-```
+`r fontawesome::fa("exclamation-triangle", fill = "orange")` Before proceeding, ensure that all packages described in the [*Installation Instructions*](install.html) are installed.
 
 ```{r Check required versions, eval=TRUE, message=FALSE}
 # Check required versions

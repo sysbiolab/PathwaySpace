@@ -33,18 +33,7 @@ This tutorial introduces the core *PathwaySpace* methods using simple toy exampl
 
 # Required packages
 
-```{r Check required packages, eval=TRUE, message=FALSE}
-# Check required packages for this vignette
-if (!require("remotes", quietly = TRUE)){
-  install.packages("remotes")
-}
-if (!require("RGraphSpace", quietly = TRUE)){
-  remotes::install_github("sysbiolab/RGraphSpace")
-}
-if (!require("PathwaySpace", quietly = TRUE)){
-  remotes::install_github("sysbiolab/PathwaySpace")
-}
-```
+`r fontawesome::fa("exclamation-triangle", fill = "orange")` Before proceeding, ensure that all packages described in the [*Installation Instructions*](install.html) are installed.
 
 ```{r Check required versions, eval=TRUE, message=FALSE}
 # Check versions

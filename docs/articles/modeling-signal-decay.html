@@ -78,7 +78,7 @@
                         <h4 data-toc-skip class="author">Sysbiolab
 Team</h4>
             
-            <h4 data-toc-skip class="date">2026-06-14</h4>
+            <h4 data-toc-skip class="date">2026-06-15</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sysbiolab/PathwaySpace/blob/HEAD/vignettes/articles/modeling-signal-decay.Rmd"><code>vignettes/articles/modeling-signal-decay.Rmd</code></a></small>
       <div class="d-none name"><code>modeling-signal-decay.Rmd</code></div>
@@ -102,18 +102,10 @@ transcriptomics</strong></a> data.</p>
 <div class="section level2">
 <h2 id="required-packages">Required packages<a class="anchor" aria-label="anchor" href="#required-packages"></a>
 </h2>
+<p><svg aria-hidden="true" role="img" viewbox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:orange;overflow:visible;position:relative;"><path d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7 .2 40.1S486.3 480 472 480H40c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8 .2-40.1l216-368C228.7 39.5 241.8 32 256 32zm0 128c-13.3 0-24 10.7-24 24V296c0 13.3 10.7 24 24 24s24-10.7 24-24V184c0-13.3-10.7-24-24-24zm32 224a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"></path></svg>
+Before proceeding, ensure that all packages described in the <a href="install.html"><em>Installation Instructions</em></a> are
+installed.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Check required packages for this vignette</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://remotes.r-lib.org" class="external-link">"remotes"</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://github.com/sysbiolab/RGraphSpace" class="external-link">"RGraphSpace"</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"sysbiolab/RGraphSpace"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://sysbiolab.github.io/PathwaySpace/" class="external-link">"PathwaySpace"</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"sysbiolab/PathwaySpace"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check versions</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"RGraphSpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.3.9"</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Need to update 'RGraphSpace' for this vignette"</span><span class="op">)</span></span>
@@ -123,7 +115,7 @@ transcriptomics</strong></a> data.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Need to update 'PathwaySpace' for this vignette"</span><span class="op">)</span></span>
 <span>  <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"sysbiolab/PathwaySpace"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load packages</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://r.igraph.org/" class="external-link">"igraph"</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://ggplot2.tidyverse.org" class="external-link">"ggplot2"</a></span><span class="op">)</span></span>
@@ -134,7 +126,7 @@ transcriptomics</strong></a> data.</p>
 <div class="section level2">
 <h2 id="setting-basic-input-data">Setting basic input data<a class="anchor" aria-label="anchor" href="#setting-basic-input-data"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a lattice graph with igraph</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/make_lattice.html" class="external-link">make_lattice</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">9</span>, <span class="fl">9</span><span class="op">)</span>, directed <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">$</span><span class="va">name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"n"</span>,<span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://r.igraph.org/reference/gorder.html" class="external-link">vcount</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">)</span></span>
@@ -142,7 +134,7 @@ transcriptomics</strong></a> data.</p>
 <span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/normalizeGraphSpace-methods.html" class="external-link">normalizeGraphSpace</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/plotGraphSpace-methods.html" class="external-link">plotGraphSpace</a></span><span class="op">(</span><span class="va">gs</span>, add.labels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="modeling-signal-decay_files/figure-html/Setting%20basic%20input%20data%20-%201-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Build a PathwaySpace object</span></span>
 <span><span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/buildPathwaySpace.html">buildPathwaySpace</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -184,21 +176,21 @@ is a normalization term, and
 is the resulting signal decay values. Next, the main arguments are
 illustrated using the <code><a href="../reference/weibullDecay.html">weibullDecay()</a></code> constructor, which
 returns a decay function with customized parameters.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/weibullDecay.html">weibullDecay</a></span><span class="op">(</span>decay <span class="op">=</span> <span class="fl">0.25</span>, shape <span class="op">=</span> <span class="fl">2</span>, pdist <span class="op">=</span> <span class="fl">0.75</span><span class="op">)</span></span>
 <span><span class="co">#&gt; function (x, signal) </span></span>
 <span><span class="co">#&gt; {</span></span>
 <span><span class="co">#&gt;     y &lt;- signal * 0.25^((x/0.75)^2)</span></span>
 <span><span class="co">#&gt;     return(y)</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x60f2ab86cd50&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x635c8797b9a8&gt;</span></span>
 <span><span class="co">#&gt; attr(,"name")</span></span>
 <span><span class="co">#&gt; [1] "weibullDecay"</span></span></code></pre></div>
 <p></p>
 <p>… and to visualize how different parameters affect the signal
 attenuation, rerun the <code><a href="../reference/weibullDecay.html">weibullDecay()</a></code> constructor with
 <code>plot = TRUE</code>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run Weibull constructor with decay = 0.5, shape = 1, and pdist = 0.25</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/weibullDecay.html">weibullDecay</a></span><span class="op">(</span>decay <span class="op">=</span> <span class="fl">0.4</span>, shape <span class="op">=</span> <span class="fl">1</span>, pdist <span class="op">=</span> <span class="fl">0.2</span>, plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
@@ -228,7 +220,7 @@ the curve transitions from convex to concave, increasingly
 sigmoidal.</p>
 <p>Next, we demonstrate the <code><a href="../reference/expDecay.html">expDecay()</a></code> and
 <code><a href="../reference/linearDecay.html">linearDecay()</a></code> constructors:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run the exp expDecay constructor with decay = 0.4 and pdist = 0.2</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expDecay.html">expDecay</a></span><span class="op">(</span>decay <span class="op">=</span> <span class="fl">0.4</span>, pdist <span class="op">=</span> <span class="fl">0.2</span>, plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
@@ -258,14 +250,14 @@ to the <em>PathwaySpace</em> object, setting
 as the average center-to-center distance between vertices. For more
 details, refer to the documentation of the <code><a href="../reference/vertexSignal-accessors.html">vertexDecay()</a></code>
 accessor.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get distance to the nearest vertex</span></span>
 <span><span class="va">near_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getNearestNode.html">getNearestNode</a></span><span class="op">(</span><span class="va">ps</span><span class="op">)</span></span>
 <span><span class="va">pdist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">near_df</span><span class="op">$</span><span class="va">dist</span><span class="op">)</span></span>
 <span><span class="co"># 'pdist' set as the average center-to-center distance between vertices</span></span>
 <span><span class="va">pdist</span></span>
 <span><span class="co">#&gt; [1] 0.1</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Setting a linear decay model for all vertices</span></span>
 <span><span class="fu"><a href="../reference/vertexSignal-accessors.html">vertexDecay</a></span><span class="op">(</span><span class="va">ps</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/linearDecay.html">linearDecay</a></span><span class="op">(</span>pdist <span class="op">=</span> <span class="va">pdist</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -274,11 +266,11 @@ accessor.</p>
 </h2>
 <p>Now we project a random binary signal using the
 <code><a href="../reference/circularProjection-methods.html">circularProjection()</a></code> function.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add a random binary signal</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/vertexSignal-accessors.html">vertexSignal</a></span><span class="op">(</span><span class="va">ps</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-accessors.html" class="external-link">gs_vcount</a></span><span class="op">(</span><span class="va">ps</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Running and plotting projections</span></span>
 <span><span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/circularProjection-methods.html">circularProjection</a></span><span class="op">(</span><span class="va">ps</span>, k <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plotPathwaySpace-methods.html">plotPathwaySpace</a></span><span class="op">(</span><span class="va">ps</span>, marks <span class="op">=</span> <span class="st">"n34"</span><span class="op">)</span></span></code></pre></div>
@@ -287,10 +279,10 @@ accessor.</p>
 how signals propagate across the network under different rules. To
 illustrate, we assign a Weibull decay function to vertex
 <code>n34</code>.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Changing decay model of vertex 'n34'</span></span>
 <span><span class="fu"><a href="../reference/vertexSignal-accessors.html">vertexDecay</a></span><span class="op">(</span><span class="va">ps</span><span class="op">)</span><span class="op">[[</span><span class="st">"n34"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/weibullDecay.html">weibullDecay</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">2</span>, pdist <span class="op">=</span> <span class="va">pdist</span><span class="op">*</span><span class="fl">10</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Running and plotting projections</span></span>
 <span><span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/circularProjection-methods.html">circularProjection</a></span><span class="op">(</span><span class="va">ps</span>, k <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plotPathwaySpace-methods.html">plotPathwaySpace</a></span><span class="op">(</span><span class="va">ps</span>, marks <span class="op">=</span> <span class="st">"n34"</span><span class="op">)</span></span></code></pre></div>
@@ -322,8 +314,8 @@ illustrate, we assign a Weibull decay function to vertex
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] patchwork_1.3.2    igraph_2.3.2       PathwaySpace_1.3.9 RGraphSpace_1.4.1 </span></span>
-<span><span class="co">#&gt; [5] ggplot2_4.0.3      remotes_2.5.0     </span></span>
+<span><span class="co">#&gt; [1] patchwork_1.3.2    PathwaySpace_1.3.9 RGraphSpace_1.4.1  ggplot2_4.0.3     </span></span>
+<span><span class="co">#&gt; [5] igraph_2.3.2      </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] sass_0.4.10        generics_0.1.4     tidyr_1.3.2        lattice_0.22-9    </span></span>
@@ -331,16 +323,16 @@ illustrate, we assign a Weibull decay function to vertex
 <span><span class="co">#&gt;  [9] RColorBrewer_1.1-3 fastmap_1.2.0      jsonlite_2.0.0     Matrix_1.7-5      </span></span>
 <span><span class="co">#&gt; [13] ggrepel_0.9.8      ggnewscale_0.5.2   ggrastr_1.0.2      purrr_1.2.2       </span></span>
 <span><span class="co">#&gt; [17] scales_1.4.0       textshaping_1.0.5  jquerylib_0.1.4    cli_3.6.6         </span></span>
-<span><span class="co">#&gt; [21] rlang_1.2.0        tidygraph_1.3.1    withr_3.0.2        RANN_2.6.2        </span></span>
+<span><span class="co">#&gt; [21] rlang_1.2.0        tidygraph_1.3.1    RANN_2.6.2         withr_3.0.2       </span></span>
 <span><span class="co">#&gt; [25] cachem_1.1.0       yaml_2.3.12        otel_0.2.0         ggbeeswarm_0.7.3  </span></span>
 <span><span class="co">#&gt; [29] tools_4.6.0        dplyr_1.2.1        colorspace_2.1-2   vctrs_0.7.3       </span></span>
 <span><span class="co">#&gt; [33] R6_2.6.1           lifecycle_1.0.5    fs_2.1.0           htmlwidgets_1.6.4 </span></span>
-<span><span class="co">#&gt; [37] vipor_0.4.7        ragg_1.5.2         pkgconfig_2.0.3    beeswarm_0.4.0    </span></span>
-<span><span class="co">#&gt; [41] desc_1.4.3         pkgdown_2.2.0      pillar_1.11.1      bslib_0.11.0      </span></span>
-<span><span class="co">#&gt; [45] gtable_0.3.6       Rcpp_1.1.1-1.1     glue_1.8.1         systemfonts_1.3.2 </span></span>
-<span><span class="co">#&gt; [49] xfun_0.58          tibble_3.3.1       tidyselect_1.2.1   rstudioapi_0.18.0 </span></span>
-<span><span class="co">#&gt; [53] knitr_1.51         farver_2.1.2       htmltools_0.5.9    rmarkdown_2.31    </span></span>
-<span><span class="co">#&gt; [57] compiler_4.6.0     S7_0.2.2</span></span></code></pre>
+<span><span class="co">#&gt; [37] vipor_0.4.7        ragg_1.5.2         fontawesome_0.5.3  pkgconfig_2.0.3   </span></span>
+<span><span class="co">#&gt; [41] beeswarm_0.4.0     desc_1.4.3         pkgdown_2.2.0      pillar_1.11.1     </span></span>
+<span><span class="co">#&gt; [45] bslib_0.11.0       gtable_0.3.6       Rcpp_1.1.1-1.1     glue_1.8.1        </span></span>
+<span><span class="co">#&gt; [49] systemfonts_1.3.2  xfun_0.58          tibble_3.3.1       tidyselect_1.2.1  </span></span>
+<span><span class="co">#&gt; [53] rstudioapi_0.18.0  knitr_1.51         farver_2.1.2       htmltools_0.5.9   </span></span>
+<span><span class="co">#&gt; [57] rmarkdown_2.31     compiler_4.6.0     S7_0.2.2</span></span></code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
