@@ -125,6 +125,7 @@ gs_image(gs) <- SeuratObject::GetImage(seurat_obj, mode = "raster")
 # coordinates with the image's top-down matrix layout.
 gs <- normalizeGraphSpace(gs)
 
+# Inspect the 'gs' object
 gs
 # A GraphSpace-class object for:
 # IGRAPH 381ac9a UN-- 2696 0 -- 
@@ -359,13 +360,13 @@ gs <- normalizeGraphSpace(gs, flip.y = TRUE, rotate.xy = TRUE)
 # rm(seurat_obj)
 ```
 
+### Running *PathwaySpace*
+
 ``` r
 
 # Create a PathwaySpace from the 'gs' object
 pspace_obj <- buildPathwaySpace(gs)
 ```
-
-### Running *PathwaySpace*
 
 ``` r
 

@@ -192,6 +192,7 @@ tissue image and normalize node coordinates to the image space.</p>
 <span><span class="co"># coordinates with the image's top-down matrix layout.</span></span>
 <span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/normalizeGraphSpace-methods.html" class="external-link">normalizeGraphSpace</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Inspect the 'gs' object</span></span>
 <span><span class="va">gs</span></span>
 <span><span class="co"># A GraphSpace-class object for:</span></span>
 <span><span class="co"># IGRAPH 381ac9a UN-- 2696 0 -- </span></span>
@@ -378,13 +379,13 @@ dataset, see <em>Seurat</em>’s <a href="https://satijalab.org/seurat/articles/
 <span></span>
 <span><span class="co"># If needed, remove seurat_obj to free memory</span></span>
 <span><span class="co"># rm(seurat_obj)</span></span></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Create a PathwaySpace from the 'gs' object</span></span>
-<span><span class="va">pspace_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/buildPathwaySpace.html">buildPathwaySpace</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="running-pathwayspace-1">Running <em>PathwaySpace</em><a class="anchor" aria-label="anchor" href="#running-pathwayspace-1"></a>
 </h3>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create a PathwaySpace from the 'gs' object</span></span>
+<span><span class="va">pspace_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/buildPathwaySpace.html">buildPathwaySpace</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get distance to the nearest spot</span></span>
 <span><span class="va">nspot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getNearestNode.html">getNearestNode</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span></span>
