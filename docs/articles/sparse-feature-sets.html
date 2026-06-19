@@ -31,7 +31,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">PathwaySpace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,7 +78,7 @@
                         <h4 data-toc-skip class="author">Sysbiolab
 Team</h4>
             
-            <h4 data-toc-skip class="date">2026-06-15</h4>
+            <h4 data-toc-skip class="date">2026-06-19</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sysbiolab/PathwaySpace/blob/HEAD/vignettes/articles/sparse-feature-sets.Rmd"><code>vignettes/articles/sparse-feature-sets.Rmd</code></a></small>
       <div class="d-none name"><code>sparse-feature-sets.Rmd</code></div>
@@ -86,7 +86,7 @@ Team</h4>
 
     
     
-<p><strong>Package</strong>: PathwaySpace 1.4.0 <br></p>
+<p><strong>Package</strong>: PathwaySpace 1.4.1 <br></p>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
@@ -117,7 +117,7 @@ installed.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Need to update 'RGraphSpace' for this vignette"</span><span class="op">)</span></span>
 <span>  <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"sysbiolab/RGraphSpace"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"PathwaySpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.4.0"</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"PathwaySpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.4.1"</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Need to update 'PathwaySpace' for this vignette"</span><span class="op">)</span></span>
 <span>  <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"sysbiolab/PathwaySpace"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
@@ -253,8 +253,9 @@ contour lines.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extracting summits from a PathwaySpace</span></span>
 <span><span class="va">summits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getPathwaySpace-methods.html">getPathwaySpace</a></span><span class="op">(</span><span class="va">p_space_PCv12</span>, <span class="st">"summits"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">summits</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "list"</span></span></code></pre></div>
+<span><span class="co"># View the first few summit genes ("KLK5", "MMP2", "SERPINA1", ...)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">summits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "KLK5"     "MMP2"     "SERPINA1" "SMN1"     "SMN2"     "PRKAA2"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
@@ -295,7 +296,7 @@ molecular subtypes using compact feature sets. <em>Cancer Cell</em>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] igraph_2.3.2       PathwaySpace_1.4.0 RGraphSpace_1.4.1  ggplot2_4.0.3     </span></span>
+<span><span class="co">#&gt; [1] igraph_2.3.2       PathwaySpace_1.4.1 RGraphSpace_1.4.1  ggplot2_4.0.3     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] sass_0.4.10        generics_0.1.4     tidyr_1.3.2        lattice_0.22-9    </span></span>

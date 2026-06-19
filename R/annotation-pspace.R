@@ -69,7 +69,11 @@ annotation_pspace_signal <- function(ps,
   if (missing(ps) || !inherits(ps, "PathwaySpace")) {
     rlang::abort("'ps' must be a PathwaySpace object.")
   }
-  .check.oldclass(ps)
+  .check_updated_ps(ps)
+  if (!.checkStatus(ps, "Projection") && !.checkStatus(ps, "Silhouette")) {
+    stop("NOTE: 'ps' needs to be evaluated by a 'projection' method!",
+      call. = FALSE)
+  }
   .validate.colors("allColors","colors", colors)
   .validate.colors("singleColor", "si.color", si.color)
   .validate.ps.args("singleNumber", "si.alpha", si.alpha)
@@ -95,7 +99,7 @@ annotation_pspace_signal <- function(ps,
   gxyz <- projection@result
   pars_ps <- getPathwaySpace(ps, "pars")
   
-  if (is.null(gxyz)) {
+  if (length(gxyz) == 0) {
     rlang::abort(c(
       "x" = "No projections found in 'ps'.",
       "i" = "Run `circularProjection()` before plotting."
@@ -159,15 +163,6 @@ annotation_pspace_signal <- function(ps,
 }
 
 #-------------------------------------------------------------------------------
-.check.oldclass <- function(ps){
-  if( !.hasSlot(ps, "projection") || !is(ps@projection, "SpaceProjection") ){
-    rlang::abort(c("The 'ps' object contains an outdated projection slot.",
-      "i" = "Please re-run a projection method before plotting."
-    ))
-  }
-}
-
-#-------------------------------------------------------------------------------
 .add_title <- function(title, ...){
   if (is.null(title)) return(NULL)
   dots <- list(...)
@@ -185,16 +180,28 @@ annotation_pspace_signal <- function(ps,
   az <- gxyz$Z
   mxz <- max(abs(zlim))
   if(pars_ps$configs$scale.type == "negpos") {
+    # For bipolar signals: apply transparency symmetrically around zero.
+    # Values within [-slim, +slim] keep their magnitude as alpha weight;
+    # values outside the band are clamped to mxz (fully opaque).
     slim <- 0.5 * (1 - si.alpha)
     slim <- slim * mxz
     az[az < 0 & az < -slim] <- mxz
     az[az > 0 & az > slim] <- mxz
     az <- abs(az)
   } else if(pars_ps$configs$scale.type == "neg") {
+    # For negative signals: values below the upper limit keep their magnitude
+    # as alpha weight (low signal = low alpha); values at or above are clamped
+    # to zlim[1] (fully transparent).
     az[az < zlim[2]] <- zlim[1]
   } else {
+    # For positive signals: values above zlim[1] are clamped to zlim[2]
+    # (fully opaque); values below zlim[1] keep their magnitude as alpha
+    # weight, so low signal pixels receive scaled transparency via si.alpha.
     az[az > zlim[1]] <- zlim[2]
   }
+  # Normalize to [0,1], then apply a steep power curve so that the
+  # transition from transparent to opaque is sharp; si.alpha sets the
+  # minimum (baseline) alpha for all signal pixels.
   az <- az/mxz
   alpha <- az^10 + si.alpha
   return(alpha)

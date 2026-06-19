@@ -31,7 +31,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">PathwaySpace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@ projections on spot coordinates</h3>
                         <h4 data-toc-skip class="author">Sysbiolab
 Team</h4>
             
-            <h4 data-toc-skip class="date">2026-06-15</h4>
+            <h4 data-toc-skip class="date">2026-06-19</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sysbiolab/PathwaySpace/blob/HEAD/vignettes/articles/spatial-transcriptomics.Rmd"><code>vignettes/articles/spatial-transcriptomics.Rmd</code></a></small>
       <div class="d-none name"><code>spatial-transcriptomics.Rmd</code></div>
@@ -88,7 +88,7 @@ Team</h4>
 
     
     
-<p><strong>Package</strong>: PathwaySpace 1.4.0 <br></p>
+<p><strong>Package</strong>: PathwaySpace 1.4.1 <br></p>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
@@ -128,7 +128,7 @@ installed.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Need to update 'RGraphSpace' for this vignette"</span><span class="op">)</span></span>
 <span>  <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"sysbiolab/RGraphSpace"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"PathwaySpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.4.0"</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"PathwaySpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.4.1"</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Need to update 'PathwaySpace' for this vignette"</span><span class="op">)</span></span>
 <span>  <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"sysbiolab/PathwaySpace"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -166,6 +166,9 @@ data for <em>PathwaySpace</em> downstream analyses.</p>
 <span><span class="co"># SeuratData::InstalledData()</span></span>
 <span></span>
 <span><span class="co"># Load the 'stxBrain' dataset</span></span>
+<span><span class="co"># Note: LoadData() may print conversion warnings when loading pbmc3k.</span></span>
+<span><span class="co"># These are expected and come from SeuratData's internal v4-to-v5</span></span>
+<span><span class="co"># object migration — they can be safely ignored.</span></span>
 <span><span class="va">seurat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/LoadData.html" class="external-link">LoadData</a></span><span class="op">(</span><span class="st">"stxBrain"</span>, type <span class="op">=</span> <span class="st">"anterior1"</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>stxBrain</code> dataset is preprocessed following
 <em>Seurat</em>’s <a href="https://satijalab.org/seurat/articles/spatial_vignette" target="_blank" rel="noopener" class="external-link">spatial analysis workflow</a>, including
@@ -184,10 +187,20 @@ tissue image and normalize node coordinates to the image space.</p>
 <code class="sourceCode R"><span><span class="co"># Create a GraphSpace from 'seurat_obj'</span></span>
 <span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/as.GraphSpace.html" class="external-link">as.GraphSpace</a></span><span class="op">(</span><span class="va">seurat_obj</span>, space <span class="op">=</span> <span class="st">"spatial"</span>, scale <span class="op">=</span> <span class="st">"lowres"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># If available, add tissue image </span></span>
+<span><span class="co"># Seurat object converted to GraphSpace:</span></span>
+<span><span class="co"># ℹ space=spatial, layer=default, features=2696, cells=17668, scale="lowres"</span></span>
+<span><span class="co"># Node spatial boundaries:</span></span>
+<span><span class="co"># ℹ x: [76, 493] (cols)</span></span>
+<span><span class="co"># ℹ y: [138, 541] (rows)</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># If available, add tissue image </span></span>
 <span><span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-accessors.html" class="external-link">gs_image</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">SeuratObject</span><span class="fu">::</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/GetImage.html" class="external-link">GetImage</a></span><span class="op">(</span><span class="va">seurat_obj</span>, mode <span class="op">=</span> <span class="st">"raster"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Normalize node coordinates to the image space</span></span>
+<span><span class="co"># Image spatial boundaries:</span></span>
+<span><span class="co"># ℹ x: [1, 600] (cols)</span></span>
+<span><span class="co"># ℹ y: [1, 599] (rows)</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Normalize node coordinates to the image space</span></span>
 <span><span class="co"># By default, this attempts to align the graph's bottom-up</span></span>
 <span><span class="co"># coordinates with the image's top-down matrix layout.</span></span>
 <span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/normalizeGraphSpace-methods.html" class="external-link">normalizeGraphSpace</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span></span>
@@ -205,7 +218,7 @@ tissue image and normalize node coordinates to the image space.</p>
 <p>In this tutorial we use the low-level <em>ggplot2</em> interface for
 fine-grained control; the subsequent tutorials use the higher-level
 <code><a href="../reference/plotPathwaySpace-methods.html">plotPathwaySpace()</a></code> wrapper for convenience.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set a reusable theme for spatial plots</span></span>
 <span><span class="va">spatial_theme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/theme_gspace.html" class="external-link">theme_gspace_coords</a></span><span class="op">(</span>theme <span class="op">=</span> <span class="st">"th3"</span>, is_norm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  xlab <span class="op">=</span> <span class="st">"Spot coordinates 1"</span>, ylab <span class="op">=</span> <span class="st">"Spot coordinates 2"</span><span class="op">)</span></span>
@@ -243,7 +256,7 @@ combinations of these parameters to correct the alignment.</p>
 <div class="section level3">
 <h3 id="running-pathwayspace">Running <em>PathwaySpace</em><a class="anchor" aria-label="anchor" href="#running-pathwayspace"></a>
 </h3>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a PathwaySpace object</span></span>
 <span><span class="va">pspace_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/buildPathwaySpace.html">buildPathwaySpace</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span></span></code></pre></div>
 <p>Before running the projection, we need to specify a distance unit for
@@ -251,7 +264,7 @@ the signal decay function. This unit will affect the extent over which
 the signal is projected on the coordinate space. We will use the
 center-to-center distance between spots, corresponding to 100 µm in
 Visium v1 technology.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get distance to the nearest spot</span></span>
 <span><span class="va">nspot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getNearestNode.html">getNearestNode</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span></span>
 <span><span class="va">pdist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">nspot</span><span class="op">$</span><span class="va">dist</span><span class="op">)</span> <span class="co"># average distance</span></span>
@@ -264,7 +277,7 @@ subsequent methods will project a landscape image. The
 <code>baseline</code> argument controls the level at which a silhouette
 is sliced to form the mask. Increasing the baseline (in
 <code>[0,1]</code>) produces a more detailed, granular silhouette.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add a graph silhouette to the PathwaySpace object</span></span>
 <span><span class="va">pspace_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/silhouetteMapping-methods.html">silhouetteMapping</a></span><span class="op">(</span><span class="va">pspace_obj</span>, baseline <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
 <span></span>
@@ -278,7 +291,7 @@ is sliced to form the mask. Increasing the baseline (in
 data from the <em>Camk2n1</em> gene, set via the
 <code><a href="../reference/vertexSignal-accessors.html">activeFeature()</a></code> accessor, which automatically loads the
 corresponding signal into the projection pipeline.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set a 'feature' of interest for signal </span></span>
 <span><span class="co"># projection (e.g., Camk2n1 gene)</span></span>
 <span><span class="fu"><a href="../reference/vertexSignal-accessors.html">activeFeature</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"Camk2n1"</span></span></code></pre></div>
@@ -288,7 +301,7 @@ attenuates with distance; at <code>decay = 0.5</code>, the signal
 decreases to half of its initial value at a distance equal to
 <code>pdist</code> (for additional configuration details, see the <a href="modeling-signal-decay.html"><em>modeling signal decay</em></a>
 tutorial).</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Project gene signal</span></span>
 <span><span class="va">pspace_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/circularProjection-methods.html">circularProjection</a></span><span class="op">(</span><span class="va">pspace_obj</span>, </span>
 <span>  k <span class="op">=</span> <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-accessors.html" class="external-link">gs_vcount</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span>, </span>
@@ -304,7 +317,7 @@ each point in space. The default <code>k = gs_vcount(ps)</code> retains
 contributions from all vertices.</p>
 <p>Next, we demonstrate the plotting interface with a few variations to
 highlight key settings.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Left: tissue image only, no signal overlay</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace.html" class="external-link">annotation_gspace_image</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span></span>
@@ -318,7 +331,7 @@ highlight key settings.</p>
 <span></span>
 <span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code></pre></div>
 <p><img src="figs_spatl/fig3.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Left: signal overlaid on tissue image with low opacity</span></span>
 <span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace.html" class="external-link">annotation_gspace_image</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
@@ -350,26 +363,32 @@ general steps from our previous spatial tutorial, preprocessing with
 <em>Seurat</em> and then extracting the relevant data for
 <em>PathwaySpace</em> downstream analyses. For further details on this
 dataset, see <em>Seurat</em>’s <a href="https://satijalab.org/seurat/articles/spatial_vignette.html" target="_blank" rel="noopener" class="external-link">spatial_vignette</a>.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Install a Seurat dataset (this step is required only once)</span></span>
 <span><span class="fu">SeuratData</span><span class="fu">::</span><span class="fu"><a href="https://satijalab.org/seurat/reference/InstallData.html" class="external-link">InstallData</a></span><span class="op">(</span><span class="st">"ssHippo"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check manifest of installed datasets</span></span>
 <span><span class="co"># SeuratData::InstalledData()</span></span>
 <span></span>
 <span><span class="co"># Load the 'kidneyref' dataset</span></span>
 <span><span class="va">seurat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/LoadData.html" class="external-link">LoadData</a></span><span class="op">(</span><span class="st">"ssHippo"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run vst normalization on counts</span></span>
 <span><span class="co"># seurat_obj &lt;- SCTransform(seurat_obj, assay = "Spatial", verbose = FALSE)</span></span>
 <span></span>
 <span><span class="co"># NOTE: Seurat recommends using SCTransform() for processing this </span></span>
 <span><span class="co"># spatial dataset, which may require more computation time. Here,</span></span>
 <span><span class="co"># we use log-normalization for demonstration purposes.</span></span>
-<span><span class="va">seurat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/NormalizeData.html" class="external-link">NormalizeData</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<span><span class="va">seurat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/NormalizeData.html" class="external-link">NormalizeData</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span></span>
+<span><span class="va">seurat_obj</span></span>
+<span><span class="co"># An object of class Seurat </span></span>
+<span><span class="co"># 23264 features across 53173 samples within 1 assay </span></span>
+<span><span class="co"># Active assay: Spatial (23264 features, 0 variable features)</span></span>
+<span><span class="co">#  2 layers present: counts, data</span></span>
+<span><span class="co">#  1 image present: image</span></span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a GraphSpace from 'seurat_obj'</span></span>
-<span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/as.GraphSpace.html" class="external-link">as.GraphSpace</a></span><span class="op">(</span><span class="va">seurat_obj</span>, space <span class="op">=</span> <span class="st">"spatial"</span><span class="op">)</span></span>
+<span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/as.GraphSpace.html" class="external-link">as.GraphSpace</a></span><span class="op">(</span><span class="va">seurat_obj</span>, space <span class="op">=</span> <span class="st">"spatial"</span>, layer <span class="op">=</span> <span class="st">"data"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#Note: the `ssHippo` dataset does not include a tissue image</span></span>
 <span></span>
@@ -383,17 +402,17 @@ dataset, see <em>Seurat</em>’s <a href="https://satijalab.org/seurat/articles/
 <div class="section level3">
 <h3 id="running-pathwayspace-1">Running <em>PathwaySpace</em><a class="anchor" aria-label="anchor" href="#running-pathwayspace-1"></a>
 </h3>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a PathwaySpace from the 'gs' object</span></span>
 <span><span class="va">pspace_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/buildPathwaySpace.html">buildPathwaySpace</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get distance to the nearest spot</span></span>
 <span><span class="va">nspot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getNearestNode.html">getNearestNode</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span></span>
 <span><span class="va">pdist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">nspot</span><span class="op">$</span><span class="va">dist</span><span class="op">)</span> <span class="co"># average distance</span></span>
 <span><span class="co"># 'pdist' set as the average center-to-center distance between spots</span></span>
 <span><span class="va">pdist</span></span>
 <span><span class="co"># [1] 0.0024</span></span></code></pre></div>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add a graph silhouette to the PathwaySpace object</span></span>
 <span><span class="va">pspace_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/silhouetteMapping-methods.html">silhouetteMapping</a></span><span class="op">(</span><span class="va">pspace_obj</span>, fill.cavity <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>  pdist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">nspot</span><span class="op">$</span><span class="va">dist</span><span class="op">)</span><span class="op">)</span></span>
@@ -401,7 +420,7 @@ dataset, see <em>Seurat</em>’s <a href="https://satijalab.org/seurat/articles/
 <span><span class="co"># Check silhouette plot</span></span>
 <span><span class="fu"><a href="../reference/plotPathwaySpace-methods.html">plotPathwaySpace</a></span><span class="op">(</span>ps<span class="op">=</span><span class="va">pspace_obj</span>, theme <span class="op">=</span> <span class="st">"th3"</span>, si.alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
 <p><img src="figs_spatl/fig5.png" class="r-plt" alt="" width="90%" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set a 'feature' of interest for signal </span></span>
 <span><span class="co"># projection (e.g., DDN gene)</span></span>
 <span><span class="fu"><a href="../reference/vertexSignal-accessors.html">activeFeature</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"DDN"</span></span>
@@ -412,10 +431,8 @@ dataset, see <em>Seurat</em>’s <a href="https://satijalab.org/seurat/articles/
 <span>  decay.fun <span class="op">=</span> <span class="fu"><a href="../reference/weibullDecay.html">weibullDecay</a></span><span class="op">(</span>decay<span class="op">=</span><span class="fl">0.5</span>, pdist <span class="op">=</span> <span class="va">pdist</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Plot projections</span></span>
-<span><span class="co">#-- as a suggestion, truncate zlim at the upper limit </span></span>
-<span><span class="co">#-- to enhance certain patters</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotPathwaySpace-methods.html">plotPathwaySpace</a></span><span class="op">(</span>ps <span class="op">=</span> <span class="va">pspace_obj</span>, theme <span class="op">=</span> <span class="st">"th3"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ...another 'feature' (e.g. PCP4 gene)</span></span>
 <span><span class="fu"><a href="../reference/vertexSignal-accessors.html">activeFeature</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"PCP4"</span></span>
 <span></span>
@@ -425,7 +442,7 @@ dataset, see <em>Seurat</em>’s <a href="https://satijalab.org/seurat/articles/
 <span></span>
 <span><span class="co"># Plot projections</span></span>
 <span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotPathwaySpace-methods.html">plotPathwaySpace</a></span><span class="op">(</span>ps <span class="op">=</span> <span class="va">pspace_obj</span>, theme <span class="op">=</span> <span class="st">"th3"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code></pre></div>
 <p><img src="figs_spatl/fig6.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
@@ -461,7 +478,7 @@ outputs (all bin levels)</a>
 <li>MD5: 2e728d1c1bda99a36535ba45b4319a98</li>
 <li>Size: 4.62 GB</li>
 </ul>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extract the tar.gz and set 'localdir' to the dataset folder</span></span>
 <span><span class="co"># Use 'bin.size' to choose the data resolution to load (2, 8, or 16 µm)</span></span>
 <span><span class="va">localdir</span> <span class="op">&lt;-</span> <span class="st">"path/to/data/directory"</span></span>
@@ -470,10 +487,10 @@ outputs (all bin levels)</a>
 <span><span class="co"># Check default assay</span></span>
 <span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/ObjectAccess.html" class="external-link">Assays</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span></span>
 <span><span class="co"># [1] "Spatial.016um"</span></span></code></pre></div>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run log-normalization for spatial data</span></span>
 <span><span class="va">seurat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/NormalizeData.html" class="external-link">NormalizeData</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a GraphSpace from 'seurat_obj'</span></span>
 <span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/as.GraphSpace.html" class="external-link">as.GraphSpace</a></span><span class="op">(</span><span class="va">seurat_obj</span>, space <span class="op">=</span> <span class="st">"spatial"</span>, scale <span class="op">=</span> <span class="st">"lowres"</span><span class="op">)</span></span>
 <span></span>
@@ -485,21 +502,21 @@ outputs (all bin levels)</a>
 <span></span>
 <span><span class="co"># If needed, remove seurat_obj to free memory</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a PathwaySpace object from 'gs' mapped to the 'raster'</span></span>
 <span><span class="va">pspace_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/buildPathwaySpace.html">buildPathwaySpace</a></span><span class="op">(</span><span class="va">gs</span>, nrc <span class="op">=</span> <span class="fl">700</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="running-pathwayspace-2">Running <em>PathwaySpace</em><a class="anchor" aria-label="anchor" href="#running-pathwayspace-2"></a>
 </h3>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get distance to the nearest spot</span></span>
 <span><span class="va">nspot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getNearestNode.html">getNearestNode</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span></span>
 <span><span class="va">pdist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">nspot</span><span class="op">$</span><span class="va">dist</span><span class="op">)</span> <span class="co"># average distance</span></span>
 <span><span class="co"># 'pdist' set as the average center-to-center distance between spots</span></span>
 <span><span class="va">pdist</span></span>
 <span><span class="co"># [1] 0.0024</span></span></code></pre></div>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add a graph silhouette to the PathwaySpace object</span></span>
 <span><span class="va">pspace_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/silhouetteMapping-methods.html">silhouetteMapping</a></span><span class="op">(</span><span class="va">pspace_obj</span>, </span>
 <span>  fill.cavity <span class="op">=</span> <span class="cn">FALSE</span>, </span>
@@ -509,7 +526,7 @@ outputs (all bin levels)</a>
 <span><span class="fu"><a href="../reference/plotPathwaySpace-methods.html">plotPathwaySpace</a></span><span class="op">(</span>ps <span class="op">=</span> <span class="va">pspace_obj</span>, theme <span class="op">=</span> <span class="st">"th3"</span>, </span>
 <span>  add.image <span class="op">=</span> <span class="cn">TRUE</span>, si.alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
 <p><img src="figs_spatl/fig7.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set a 'feature' of interest for signal </span></span>
 <span><span class="co"># projection (e.g., Rorb gene)</span></span>
 <span><span class="fu"><a href="../reference/vertexSignal-accessors.html">activeFeature</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"Rorb"</span></span>
@@ -520,7 +537,7 @@ outputs (all bin levels)</a>
 <span></span>
 <span><span class="co"># Plot projections</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotPathwaySpace-methods.html">plotPathwaySpace</a></span><span class="op">(</span><span class="va">pspace_obj</span>, theme <span class="op">=</span> <span class="st">"th3"</span>, add.image <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ...another 'feature' (e.g. Hpca gene)</span></span>
 <span><span class="fu"><a href="../reference/vertexSignal-accessors.html">activeFeature</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"Hpca"</span></span>
 <span></span>
@@ -530,7 +547,7 @@ outputs (all bin levels)</a>
 <span></span>
 <span><span class="co"># Plot projections</span></span>
 <span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotPathwaySpace-methods.html">plotPathwaySpace</a></span><span class="op">(</span><span class="va">pspace_obj</span>, theme <span class="op">=</span> <span class="st">"th3"</span>, add.image <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code></pre></div>
 <p><img src="figs_spatl/fig8.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
@@ -578,7 +595,7 @@ molecular subtypes using compact feature sets. <em>Cancer Cell</em>
 <span><span class="co">#&gt;  [3] ssHippo.SeuratData_3.1.4  pbmc3k.SeuratData_3.1.4  </span></span>
 <span><span class="co">#&gt;  [5] SeuratData_0.2.2.9002     Seurat_5.5.0             </span></span>
 <span><span class="co">#&gt;  [7] SeuratObject_5.4.0        sp_2.2-1                 </span></span>
-<span><span class="co">#&gt;  [9] PathwaySpace_1.4.0        RGraphSpace_1.4.1        </span></span>
+<span><span class="co">#&gt;  [9] PathwaySpace_1.4.1        RGraphSpace_1.4.1        </span></span>
 <span><span class="co">#&gt; [11] ggplot2_4.0.3            </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>

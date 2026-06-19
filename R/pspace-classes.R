@@ -143,50 +143,49 @@ setValidity("PathwaySpace", function(object) {
 })
 
 #-------------------------------------------------------------------------------
-.migrate_ps_pars <- function(ps) {
-  if (!inherits(ps, "PathwaySpace")) {
-    rlang::abort("'ps' must be a PathwaySpace object.")
-  }
-  if( !.hasSlot(ps, "projection") || !is(ps@projection, "SpaceProjection") ){
-    rlang::warn("Outdated 'PathwaySpace' object: updating on the fly.")
-    nrc <- ps@pars$ps$nrc %||% 500
-    ps@pars$is.normalized <- FALSE
-    gs <- new("GraphSpace",
-      nodes = ps@nodes,
-      edges = ps@edges,
-      graph = ps@graph,
-      image = ps@image,
-      fdata = ps@fdata,
-      pars = ps@pars,
-      misc = ps@misc,
-      uuid = ps@uuid
-    )
-    ps <- buildPathwaySpace(gs, nrc = nrc, verbose = FALSE)
-  }
-  ps
-}
-
-#-------------------------------------------------------------------------------
 # Ensures all GraphSpace slots (including future additions) are
 # carried over correctly during as(gs, "PathwaySpace") coercion.
-setReplaceMethod("coerce", c("PathwaySpace", "GraphSpace"), 
-    function(from, to = "GraphSpace", value) {
-    for (what in slotNames("GraphSpace")) {
-        methods::slot(from, what) <- methods::slot(value, what)
+setMethod("coerce", c("PathwaySpace", "GraphSpace"),
+  function(from, to) {
+    gs <- new("GraphSpace")
+    shared <- intersect(slotNames("GraphSpace"), slotNames(from))
+    missing <- setdiff(slotNames("GraphSpace"), shared)
+    if (length(missing) > 0) {
+      rlang::warn(paste(
+        "Outdated 'PathwaySpace' object: the following slot(s) will use defaults:",
+        paste(missing, collapse = ", ")
+      ))
     }
-    from
-})
+    for (what in shared) {
+      methods::slot(gs, what) <- methods::slot(from, what)
+    }
+    gs
+  }
+)
 
 #-------------------------------------------------------------------------------
 # show summary information on screen
 setMethod("show", "PathwaySpace", function(object) {
-    message("A PathwaySpace-class object for:")
-    withCallingHandlers(
-        callNextMethod(),
-        message = function(m) invokeRestart("muffleMessage")
-    )
-    cat("+ status:", .summariseStatus(object))
+  cat("A PathwaySpace-class object for:\n")
+  summary(object@graph)
+  if (.hasSlot(object, "fdata")) {
+    nfeat <- ncol(object@fdata)
+    if (nfeat > 0) {
+      feat <- .ps_preview(colnames(object@fdata))
+      cat("+ features: ", nfeat, " (", paste(feat, collapse = ", "), ")\n", sep = "")
+    }
+  }
+  cat("+ status:", .summariseStatus(object), "\n")
+  invisible(object)
 })
+
+#' @importFrom utils head
+.ps_preview <- function(x, n = 4) {
+  if (length(x) == 0) return("<empty>")
+  out <- head(x, n)
+  if (length(x) > n) out <- c(out, "...")
+  paste(out, collapse = ", ")
+}
 
 #-------------------------------------------------------------------------------
 .summariseStatus <- function(ps){
@@ -199,3 +198,83 @@ setMethod("show", "PathwaySpace", function(object) {
   sts <- paste(names(sts), sts, collapse = "  ", sep="")
   sts
 }
+
+#-------------------------------------------------------------------------------
+#' @title Update a PathwaySpace object
+#' @description Updates outdated \code{PathwaySpace} objects serialized from
+#' previous package versions, adding any missing slots with default values.
+#' @param x A \code{PathwaySpace} object.
+#' @param verbose Logical; if \code{TRUE}, reports which slots were added.
+#' @return An updated \code{PathwaySpace} object.
+#' @importFrom RGraphSpace updateGraphSpace
+#' @aliases updateGraphSpace
+#' @rdname updateGraphSpace
+#' @exportMethod updateGraphSpace
+setMethod("updateGraphSpace", "PathwaySpace", function(x, verbose = FALSE) {
+  .update_ps(x, verbose = verbose)
+})
+.update_ps <- function(ps, verbose = FALSE) {
+  
+  new_slots <- c("projection", "pars_ps")
+  missing_slots <- new_slots[!sapply(new_slots, function(s) .hasSlot(ps, s))]
+  
+  if (length(missing_slots) == 0) {
+    if (verbose) rlang::inform("'PathwaySpace' object is up to date.")
+    return(ps)
+  }
+  
+  rlang::warn(c(
+    "Outdated 'PathwaySpace' object: updating on the fly.",
+    "i" = "Recently introduced feature slots may not be recoverable.",
+    "i" = "Rebuild the object from scratch to fully restore all components."
+  ))
+  
+  if (verbose) {
+    rlang::inform(paste0("Missing slot(s) added with defaults: ",
+      paste(missing_slots, collapse = ", ")))
+  }
+  
+  nrc <- NULL
+  if (.hasSlot(ps, "pars_ps")) nrc <- ps@pars_ps$nrc
+  if (is.null(nrc) && .hasSlot(ps, "pars")) nrc <- ps@pars$ps$nrc %||% ps@pars$nrc
+  if (is.null(nrc)) {
+    rlang::warn("Could not recover 'nrc' from outdated object; falling back to nrc=500.")
+    nrc <- 500L
+  }
+  proto <- new("GraphSpace")
+  gs <- new("GraphSpace",
+    nodes = ps@nodes,
+    edges = ps@edges,
+    graph = ps@graph,
+    pars = ps@pars,
+    misc = ps@misc,
+    image = if (.hasSlot(ps, "image")) ps@image else proto@image,
+    fdata = if (.hasSlot(ps, "fdata")) ps@fdata else proto@fdata,
+    uuid = if (.hasSlot(ps, "uuid")) ps@uuid else proto@uuid
+  )
+  ps <- buildPathwaySpace(gs, nrc = nrc, verbose = FALSE)
+  
+  ps
+  
+}
+
+#-------------------------------------------------------------------------------
+.check_updated_ps <- function(gs, slots = c("projection", "pars_ps")) {
+  
+  check <- vapply(slots, function(s) .hasSlot(gs, s), logical(1))
+  
+  if (!all(check)) {
+    rlang::abort(c(
+      "x" = paste0(
+        "Outdated 'PathwaySpace' object: missing slot(s): ",
+        paste(slots[!check], collapse = ", "),
+        "."
+      ),
+      "i" = "Run 'updateGraphSpace(x)' to migrate the object."
+    ))
+  }
+  
+  invisible(TRUE)
+  
+}
+

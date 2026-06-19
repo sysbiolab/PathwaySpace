@@ -128,6 +128,8 @@ Sysbiolab Team
 ## Examples
 
 ``` r
+library(PathwaySpace)
+
 # Load a demo igraph
 data('gtoy2', package = 'RGraphSpace')
 

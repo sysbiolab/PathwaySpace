@@ -72,6 +72,8 @@ Sysbiolab Team
 ## Examples
 
 ``` r
+library(PathwaySpace)
+
 # Load a large igraph
 data("PCv12_pruned_igraph", package = "PathwaySpace")
 

@@ -59,7 +59,9 @@ automatically extracts the corresponding signal from the \code{fdata} slot
 or node attributes and assigns it to \code{vertexSignal()}.
 }
 \examples{
-library(RGraphSpace)
+library(PathwaySpace)
+
+# Load a demo igraph
 data('gtoy1', package = 'RGraphSpace')
 ps <- buildPathwaySpace(gtoy1, nrc = 100)
 

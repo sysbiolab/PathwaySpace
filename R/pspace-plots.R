@@ -107,8 +107,9 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     mark.padding = 0.5, mark.line.width = 0.5, use.dotmark = FALSE, 
     add.image = FALSE) {
     
+    .check_updated_ps(ps)
+    
     #--- validate the ps object and args
-    .check.oldclass(ps)
     if (!.checkStatus(ps, "Projection") && !.checkStatus(ps, "Silhouette")) {
       stop("NOTE: 'ps' needs to be evaluated by a 'projection' method!",
         call. = FALSE)
@@ -348,7 +349,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
   mark.size, add.summits, label.summits) {
   setnames <- names(summits)
   if (is.null(setnames)) {
-    setnames <- seq_along(setnames)
+    setnames <- as.character(seq_along(summits))
   }
   cset <- data.frame(which(!is.na(cset) | is.na(cset), arr.ind = TRUE),
     as.numeric(cset))

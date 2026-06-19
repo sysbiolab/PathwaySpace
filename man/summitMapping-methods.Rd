@@ -45,6 +45,8 @@ strategy to identify summits on a 2D-landscape image
 (see \code{\link{summitWatershed}}).
 }
 \examples{
+library(PathwaySpace)
+
 # Load a large igraph
 data("PCv12_pruned_igraph", package = "PathwaySpace")
 

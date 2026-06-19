@@ -17,6 +17,8 @@
 #' @author Sysbiolab Team
 #' @seealso \code{\link{circularProjection}}, \code{\link{polarProjection}}
 #' @examples
+#' library(PathwaySpace)
+#' 
 #' # Load a demo igraph
 #' data('gtoy1', package = 'RGraphSpace')
 #' 
@@ -41,7 +43,7 @@
 #' @export
 #' 
 buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE) {
-  if(verbose) message("Validating arguments...")
+  if(verbose) rlang::inform("Validating arguments...")
   #--- validate argument types
   .validate.ps.args("singleInteger", "nrc", nrc)
   .validate.ps.args("singleLogical", "verbose", verbose)
@@ -51,7 +53,7 @@ buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE) {
   }
   #--- validate the graph object
   if(is_igraph(gs)){
-    if(verbose) message("Validating the 'igraph' object...")
+    if(verbose) rlang::inform("Validating the 'igraph' object...")
     gs <- GraphSpace(gs, verbose=FALSE)
     gs <- normalizeGraphSpace(gs)
   }
@@ -110,6 +112,8 @@ buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE) {
 #' @author Sysbiolab Team
 #' @seealso \code{\link{buildPathwaySpace}}
 #' @examples
+#' library(PathwaySpace)
+#' 
 #' # Load a demo igraph
 #' data('gtoy1', package = 'RGraphSpace')
 #'
@@ -138,6 +142,9 @@ setMethod("circularProjection", "PathwaySpace", function(ps,
   k = gs_vcount(ps), 
   rescale = TRUE, verbose = TRUE, 
   pdist = deprecated()) {
+  
+  ps <- updateGraphSpace(ps)
+  
   ### deprecate
   if (lifecycle::is_present(pdist)) {
     deprecate_soft("1.0.2", "circularProjection(pdist)", 
@@ -147,7 +154,7 @@ setMethod("circularProjection", "PathwaySpace", function(ps,
   if (!.checkStatus(ps, "Preprocess")) {
     stop("NOTE: the 'ps' object needs preprocessing!", call. = FALSE)
   }
-  if(verbose) message("Validating arguments...")
+  if(verbose) rlang::inform("Validating arguments...")
   #--- validate argument types
   .validate.ps.args("singleInteger", "k", k)
   .validate.ps.args("function", "aggregate.fun", aggregate.fun)
@@ -175,7 +182,6 @@ setMethod("circularProjection", "PathwaySpace", function(ps,
   }
   
   #--- pack args
-  ps <- .migrate_ps_pars(ps)
   pars <- list(k = k, rescale = rescale, 
     aggregate.fun = aggregate.fun, 
     feature = feature, 
@@ -187,7 +193,7 @@ setMethod("circularProjection", "PathwaySpace", function(ps,
   ps <- .circularProjection(ps, verbose)
   ps <- .updateStatus(ps, "CircularProjection")
   if (.checkStatus(ps, "PolarProjection")) {
-    if(verbose) message("-- polar projection replaced by circular.")
+    if(verbose) rlang::inform("-- polar projection replaced by circular.")
     ps <- .updateStatus(ps, "PolarProjection", FALSE)
   }
   return(ps)
@@ -249,6 +255,8 @@ setMethod("circularProjection", "PathwaySpace", function(ps,
 #' @author Sysbiolab Team
 #' @seealso \code{\link{buildPathwaySpace}}
 #' @examples
+#' library(PathwaySpace)
+#' 
 #' # Load a demo igraph
 #' data('gtoy2', package = 'RGraphSpace')
 #' 
@@ -283,6 +291,9 @@ setMethod("polarProjection", "PathwaySpace", function(ps,
   rescale = TRUE, 
   verbose = TRUE, 
   pdist = deprecated()) {
+  
+  ps <- updateGraphSpace(ps)
+  
   #--- validate the pipeline status
   if (!.checkStatus(ps, "Preprocess")) {
     stop("NOTE: the 'ps' object needs preprocessing!", call. = FALSE)
@@ -293,7 +304,7 @@ setMethod("polarProjection", "PathwaySpace", function(ps,
       "polarProjection(decay.fun)")
   }
   ###
-  if(verbose) message("Validating arguments...")
+  if(verbose) rlang::inform("Validating arguments...")
   .validate.ps.args("singleInteger", "k", k)
   .validate.ps.args("singleNumber", "beta", beta)
   .validate.ps.args("function", "decay.fun", decay.fun)
@@ -329,7 +340,6 @@ setMethod("polarProjection", "PathwaySpace", function(ps,
   }
   
   #--- pack args
-  ps <- .migrate_ps_pars(ps)
   pars <- list(k = k, beta = beta,
     edge.norm = edge.norm, rescale = rescale, directional = directional,
     polar.fun = polar.fun, aggregate.fun = aggregate.fun, 
@@ -340,7 +350,7 @@ setMethod("polarProjection", "PathwaySpace", function(ps,
   ps <- .polarProjection(ps, verbose)
   ps <- .updateStatus(ps, "PolarProjection")
   if (.checkStatus(ps, "CircularProjection")) {
-    if(verbose) message("-- circular projection replaced by polar.")
+    if(verbose) rlang::inform("-- circular projection replaced by polar.")
     ps <- .updateStatus(ps, "CircularProjection", FALSE)
   }
   return(ps)
@@ -368,6 +378,8 @@ setMethod("polarProjection", "PathwaySpace", function(ps,
 #' @author Sysbiolab Team
 #' @seealso \code{\link{circularProjection}}
 #' @examples
+#' library(PathwaySpace)
+#' 
 #' # Load a demo igraph
 #' data('gtoy1', package = 'RGraphSpace')
 #'
@@ -389,11 +401,15 @@ setMethod("polarProjection", "PathwaySpace", function(ps,
 #'
 setMethod("silhouetteMapping", "PathwaySpace", function(ps,
   pdist = 0.05, baseline = 0.01, fill.cavity = TRUE, verbose = TRUE) {
+  
   #--- validate the pipeline status
   if (!.checkStatus(ps, "Preprocess")) {
     stop("NOTE: the 'ps' object needs preprocessing!", call. = FALSE)
   }
-  if(verbose) message("Validating arguments...")
+  
+  ps <- updateGraphSpace(ps)
+  
+  if(verbose) rlang::inform("Validating arguments...")
   #--- validate argument types
   .validate.ps.args("singleNumber", "pdist", pdist)
   .validate.ps.args("singleNumber", "baseline", baseline)
@@ -406,8 +422,8 @@ setMethod("silhouetteMapping", "PathwaySpace", function(ps,
   if (pdist < 0 || pdist > 1) {
     stop("'pdist' should be in [0,1]", call. = FALSE)
   }
+  
   #--- pack args (for default projection)
-  ps <- .migrate_ps_pars(ps)
   k <- min(8, gs_vcount(ps))
   pars <- list(baseline = baseline, pdist = pdist, k = k, 
     fill.cavity = fill.cavity, 
@@ -416,7 +432,7 @@ setMethod("silhouetteMapping", "PathwaySpace", function(ps,
     ps@pars_ps$silh[[nm]] <- pars[[nm]]
   }
   #--- run ps pipeline
-  if(verbose) message("Mapping graph silhouette...")
+  if(verbose) rlang::inform("Mapping graph silhouette...")
   ps <- .silhouetteCircular(ps, verbose)
   ps <- .updateStatus(ps, "Silhouette")
   return(ps)
@@ -444,6 +460,8 @@ setMethod("silhouetteMapping", "PathwaySpace", function(ps,
 #' @author Sysbiolab Team
 #' @seealso \code{\link{circularProjection}}
 #' @examples
+#' library(PathwaySpace)
+#' 
 #' # Load a large igraph
 #' data("PCv12_pruned_igraph", package = "PathwaySpace")
 #' 
@@ -457,42 +475,47 @@ setMethod("silhouetteMapping", "PathwaySpace", function(ps,
 #' @export
 #'
 setMethod("summitMapping", "PathwaySpace", function(ps, maxset = 30, 
-    minsize = 30, threshold = 0.5, verbose = TRUE, 
-    segm_fun = summitWatershed, ...) {
-    #--- validate the pipeline status
-    if (!.checkStatus(ps, "Projection")) {
-        msg <- paste0("NOTE: the 'ps' object needs to be\n",
-            "evaluated by a 'projection' method!")
-        stop(msg, call. = FALSE)
-    }
-    #--- validate argument types
-    .validate.ps.args("singleInteger", "maxset", maxset)
-    .validate.ps.args("singleInteger", "minsize", minsize)
-    .validate.ps.args("singleNumber", "threshold", threshold)
-    .validate.ps.args("singleLogical", "verbose", verbose)
-    .validate.ps.args("function", "segm_fun", segm_fun)
-    #--- validate argument values
-    if (maxset < 1) {
-        stop("'maxset' should be >=1", call. = FALSE)
-    }
-    if (minsize < 1) {
-        stop("'minsize' should be >=1", call. = FALSE)
-    }
-    if (threshold < 0 || threshold > 1) {
-        stop("'threshold' should be in [0,1]", call. = FALSE)
-    }
-    #--- pack args
-    ps <- .migrate_ps_pars(ps)
-    pars <- list(maxset = maxset, minsize = minsize,
-        summit_threshold = threshold, segm_fun = segm_fun,
-        segm_arg = list(...=...))
-    for (nm in names(pars)) {
-        ps@pars_ps$summit[[nm]] <- pars[[nm]]
-    }
-    #--- run ps pipeline
-    ps <- .summitMapping(ps, verbose, ...=...)
-    ps <- .updateStatus(ps, "Summits")
-    return(ps)
+  minsize = 30, threshold = 0.5, verbose = TRUE, 
+  segm_fun = summitWatershed, ...) {
+  
+  #--- validate the pipeline status
+  if (!.checkStatus(ps, "Projection")) {
+    msg <- paste0("NOTE: the 'ps' object needs to be\n",
+      "evaluated by a 'projection' method!")
+    stop(msg, call. = FALSE)
+  }
+  
+  ps <- updateGraphSpace(ps)
+  
+  #--- validate argument types
+  .validate.ps.args("singleInteger", "maxset", maxset)
+  .validate.ps.args("singleInteger", "minsize", minsize)
+  .validate.ps.args("singleNumber", "threshold", threshold)
+  .validate.ps.args("singleLogical", "verbose", verbose)
+  .validate.ps.args("function", "segm_fun", segm_fun)
+  
+  #--- validate argument values
+  if (maxset < 1) {
+    stop("'maxset' should be >=1", call. = FALSE)
+  }
+  if (minsize < 1) {
+    stop("'minsize' should be >=1", call. = FALSE)
+  }
+  if (threshold < 0 || threshold > 1) {
+    stop("'threshold' should be in [0,1]", call. = FALSE)
+  }
+  
+  #--- pack args
+  pars <- list(maxset = maxset, minsize = minsize,
+    summit_threshold = threshold, segm_fun = segm_fun,
+    segm_arg = list(...=...))
+  for (nm in names(pars)) {
+    ps@pars_ps$summit[[nm]] <- pars[[nm]]
+  }
+  #--- run ps pipeline
+  ps <- .summitMapping(ps, verbose, ...=...)
+  ps <- .updateStatus(ps, "Summits")
+  return(ps)
 })
 
 #' @title Accessors for Fetching Slots from a PathwaySpace Object
@@ -508,6 +531,8 @@ setMethod("summitMapping", "PathwaySpace", function(ps, maxset = 30,
 #' "summit_mask", "summit_contour"
 #' @return Content from slots in the \linkS4class{PathwaySpace} object.
 #' @examples
+#' library(PathwaySpace)
+#' 
 #' # Load a demo igraph
 #' data('gtoy1', package = 'RGraphSpace')
 #'
@@ -524,42 +549,44 @@ setMethod("summitMapping", "PathwaySpace", function(ps, maxset = 30,
 #' @aliases getPathwaySpace
 #' @export
 setMethod("getPathwaySpace", "PathwaySpace", function(ps, what = "status") {
-    opts <- c("nodes", "edges", "graph", "image", "pars", "misc", 
-      "projection", "status", "signal", "silhouette", "summits", 
-      "summit_mask", "summit_contour")
-    if (!what %in% opts) {
-        opts <- paste0(opts, collapse = ", ")
-        stop("'what' must be one of:\n", opts, call. = FALSE)
-    }
-    ps <- .migrate_ps_pars(ps)
-    if (what == "nodes") {
-        obj <- ps@nodes
-    } else if (what == "edges") {
-        obj <- ps@edges
-    } else if (what == "graph") {
-      obj <- ps@graph
-    } else if (what == "image") {
-      obj <- ps@image
-    } else if (what == "pars") {
-      obj <- ps@pars_ps
-    } else if (what == "projection") {
-        obj <- ps@projection
-    } else if (what == "misc") {
-      obj <- ps@misc
-    } else if (what == "status") {
-        obj <- ps@status
-    } else if (what == "signal") {
-      obj <- gs_vertex_attr(ps, "signal")
-    } else if (what == "silhouette") {
-        obj <- ps@projection@floor
-    } else if (what == "summits") {
-        obj <- ps@misc$summits$lset
-    } else if (what == "summit_mask") {
-        obj <- ps@misc$summits$mset
-    } else if (what == "summit_contour") {
-        obj <- ps@misc$summits$cset
-    }
-    return(obj)
+  opts <- c("nodes", "edges", "graph", "image", "pars", "misc", 
+    "projection", "status", "signal", "silhouette", "summits", 
+    "summit_mask", "summit_contour")
+  if (!what %in% opts) {
+    opts <- paste0(opts, collapse = ", ")
+    stop("'what' must be one of:\n", opts, call. = FALSE)
+  }
+  
+  .check_updated_ps(ps)
+  
+  if (what == "nodes") {
+    obj <- ps@nodes
+  } else if (what == "edges") {
+    obj <- ps@edges
+  } else if (what == "graph") {
+    obj <- ps@graph
+  } else if (what == "image") {
+    obj <- ps@image
+  } else if (what == "pars") {
+    obj <- ps@pars_ps
+  } else if (what == "projection") {
+    obj <- ps@projection
+  } else if (what == "misc") {
+    obj <- ps@misc
+  } else if (what == "status") {
+    obj <- ps@status
+  } else if (what == "signal") {
+    obj <- gs_vertex_attr(ps, "signal")
+  } else if (what == "silhouette") {
+    obj <- ps@projection@floor
+  } else if (what == "summits") {
+    obj <- ps@misc$summits$lset
+  } else if (what == "summit_mask") {
+    obj <- ps@misc$summits$mset
+  } else if (what == "summit_contour") {
+    obj <- ps@misc$summits$cset
+  }
+  return(obj)
 })
 
 ################################################################################
@@ -596,7 +623,9 @@ setMethod("getPathwaySpace", "PathwaySpace", function(ps, what = "status") {
 #' @return The updated \linkS4class{PathwaySpace} object.
 #' 
 #' @examples
-#' library(RGraphSpace)
+#' library(PathwaySpace)
+#' 
+#' # Load a demo igraph
 #' data('gtoy1', package = 'RGraphSpace')
 #' ps <- buildPathwaySpace(gtoy1, nrc = 100)
 #' 
@@ -665,6 +694,9 @@ setMethod("vertexSignal", "PathwaySpace", function(x){
 #' @export
 setMethod("vertexSignal<-", "PathwaySpace",
   function(x, value) {
+    
+    .check_updated_ps(x)
+    
     if (!is.numeric(value) || !is.vector(value)){
       stop("'signal' must be a numeric vector or scalar.", call. = FALSE)
     }
@@ -683,25 +715,38 @@ setMethod("vertexDecay", "PathwaySpace", function(x){
 #' @export
 setMethod("vertexDecay<-", "PathwaySpace",
   function(x, value) {
+    
+    .check_updated_ps(x)
+    
     gs_vertex_attr(x, "decayFunction") <- value
+    
     return(x)
+    
   }
 )
 
 #' @rdname vertexSignal-accessors
 #' @export
 setMethod("activeFeature", "PathwaySpace", function(x) {
+  
+  .check_updated_ps(x)
+  
   feat <- x@pars_ps$active.feature
+  
   if (is.null(feat) || length(feat) == 0) {
     return(NULL)
   }
+  
   x@pars_ps$active.feature
+  
 })
 
 #' @importFrom RGraphSpace gs_features gs_names gs_fdata gs_nodes
 #' @rdname vertexSignal-accessors
 #' @export
 setReplaceMethod("activeFeature", "PathwaySpace", function(x, value) {
+  
+  .check_updated_ps(x)
   
   .validate.ps.args("singleString", "value", value)
   
@@ -712,14 +757,20 @@ setReplaceMethod("activeFeature", "PathwaySpace", function(x, value) {
     rlang::abort(c(
       "x" = sprintf("Feature '%s' not found.", value),
       "i" = paste("Use `gs_features()` to list available features",
-        "or `gs_names()` for node attributes.")
+        "or `gs_names()` for node attribute names.")
+    ))
+  }
+  if (b1 && b2) {
+    rlang::warn(sprintf(
+      "Feature '%s' found in both feature matrix and node attributes; using feature matrix.",
+      value
     ))
   }
   if(b1){
-    message(sprintf("Setting active feature '%s' from feature matrix...", value))
+    rlang::inform(sprintf("Setting active feature '%s' from feature matrix...", value))
     vertexSignal(x) <- gs_fdata(x)[, value]
   } else {
-    message(sprintf("Setting active feature '%s' from node attributes...", value))
+    rlang::inform(sprintf("Setting active feature '%s' from node attributes...", value))
     vertexSignal(x) <- gs_nodes(x)[, value]
   }
   x@pars_ps$active.feature <- value
@@ -738,6 +789,9 @@ setReplaceMethod("activeFeature", "PathwaySpace", function(x, value) {
 #' @param ... Additional arguments passed to igraph methods.
 #' @return Updated \linkS4class{PathwaySpace} object.
 #' @examples
+#' library(PathwaySpace)
+#' 
+#' # Load a demo igraph
 #' data('gtoy1', package = 'RGraphSpace')
 #' ps <- buildPathwaySpace(gtoy1, nrc = 100)
 #' 
@@ -771,6 +825,8 @@ setReplaceMethod("activeFeature", "PathwaySpace", function(x, value) {
 setReplaceMethod(
   "gs_vertex_attr","PathwaySpace", function(x, name, ..., value) {
     
+    .check_updated_ps(x)
+    
     # Call the GraphSpace method first
     x <- callNextMethod()
     
@@ -786,6 +842,8 @@ setReplaceMethod(
 setReplaceMethod(
   "gs_edge_attr","PathwaySpace", function(x, name, ..., value) {
     
+    .check_updated_ps(x)
+    
     # Call the GraphSpace method first
     x <- callNextMethod()
     
@@ -797,7 +855,6 @@ setReplaceMethod(
 
 #-------------------------------------------------------------------------------
 .validate_ps_containers <- function(ps) {
-  ps <- .migrate_ps_pars(ps)
   ps <- .validate_signal(ps)
   ps <- .validate_weights(ps)
   ps <- .validate_decayFunction(ps)
@@ -840,7 +897,8 @@ setReplaceMethod(
 }
 .revise_weights <- function(wt){
   if (all(is.na(wt))) wt[] <- 1
-  if (sd(wt, na.rm = TRUE) != 0) {
+  s <- sd(wt, na.rm = TRUE)
+  if (!is.na(s) && s != 0) {
     wt <- wt/max(abs(wt), na.rm = TRUE)
     wt[is.na(wt)] <- 0
   } else {

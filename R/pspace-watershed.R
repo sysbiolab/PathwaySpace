@@ -54,6 +54,9 @@ summitWatershed <- function(x, tolerance = 0.1, ext = 1) {
     .validate.ps.args("numeric_mtx", "x", x)
     .validate.ps.args("singleNumber", "tolerance", tolerance)
     .validate.ps.args("singleInteger", "ext", ext)
+    if (tolerance < 0 || tolerance > 1) {
+        stop("'tolerance' must be in [0,1]", call. = FALSE)
+    }
     xmask <- .summitWatershed(x = x, ext = ext)
     xmask <- .mergeSummits(x = x, xmask, tolerance)
     return(xmask)
@@ -149,6 +152,9 @@ summitWatershed <- function(x, tolerance = 0.1, ext = 1) {
         stop("'tolerance' should be in [0,1]", call. = FALSE)
     }
     rsignal <- range(x[x > 0], na.rm = TRUE)
+    if ( any(is.infinite(rsignal)) || rsignal[1] == rsignal[2]) {
+        return(xmask)
+    }
     ml <- .findOutlines(xmask)
     dams <- .findDams(x, ml, xmask)
     xmask <- .openDams(x, xmask, dams, ml, rsignal, tolerance)

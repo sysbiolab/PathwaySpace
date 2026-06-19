@@ -34,6 +34,8 @@ object.
 ## Examples
 
 ``` r
+library(PathwaySpace)
+
 # Load a demo igraph
 data('gtoy1', package = 'RGraphSpace')
 

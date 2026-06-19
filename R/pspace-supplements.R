@@ -22,7 +22,7 @@
     }
     
     #--- create a PathwaySpace object
-    if(verbose) message("Creating a 'PathwaySpace' object...")
+    if(verbose) rlang::inform("Creating a 'PathwaySpace' object...")
     ps <- as(gs, "PathwaySpace")
     
     ps@pars_ps$nrc <- nrc
@@ -44,18 +44,18 @@
 ################################################################################
 .circularProjection <- function(ps, verbose = TRUE) {
   
-  if(verbose) message("Using circular projection...")
+  if(verbose) rlang::inform("Using circular projection...")
   pars_ps <- getPathwaySpace(ps, "pars")
   nodes <- getPathwaySpace(ps, "nodes")
   pars_ps$configs <- .get_signal_scale(nodes$signal)
   
-  if(verbose) message("Mapping 'x' and 'y' coordinates...")
+  if(verbose) rlang::inform("Mapping 'x' and 'y' coordinates...")
   gxy <- .rescale_coord(nodes, pars_ps$nrc)
   lpts <- .get_points_in_matrix(pars_ps$nrc)
   nnpg <- .get_near_points(lpts, gxy, nodes, pars_ps)
   
   # project signal
-  if(verbose) message("Running signal convolution...")
+  if(verbose) rlang::inform("Running signal convolution...")
   xsig <- array(0, c(pars_ps$nrc, pars_ps$nrc))
   if (nrow(nodes) > 0) {
     xsig[lpts[, c("Y", "X")]] <- .get_ldsig(nodes, pars_ps, nnpg, lpts)
@@ -263,26 +263,26 @@
     
     if(pars_ps$directional){
         if(pars_gs$is.directed){
-            message("Using polar projection on directed graph...")
+            rlang::inform("Using polar projection on directed graph...")
         } else {
             stop("'directional' used with undirected graph.")
         }
     } else {
-        if(verbose) message("Using polar projection on undirected graph...")
+        if(verbose) rlang::inform("Using polar projection on undirected graph...")
     }
     
-    if(verbose) message("Mapping 'x' and 'y' coordinates...")
+    if(verbose) rlang::inform("Mapping 'x' and 'y' coordinates...")
     gxy <- .rescale_coord(nodes, pars_ps$nrc)
     
     # 'weight' will adjust signals when variable or different from default
     if (.is_variable(edges$weight) || any(edges$weight != 1)) {
-      if(verbose) message("Scaling projection to edge weight...")
+      if(verbose) rlang::inform("Scaling projection to edge weight...")
       pars_ps$eweight <- TRUE
     } else {
       pars_ps$eweight <- FALSE
     }
     
-    if(verbose) message("Computing linear and angular distances...")
+    if(verbose) rlang::inform("Computing linear and angular distances...")
     # for polar, 'dist' is scaled to edge dist and polar coordinates
     edges$edist <- .get_edge_dist(edges, gxy)
     edges$emode <- .get_emode(edges$arrowType)
@@ -292,7 +292,7 @@
     nnpg <- .scale_dist_polar(nnpg, pars_ps)
     
     # project signal
-    if(verbose) message("Running signal convolution...")
+    if(verbose) rlang::inform("Running signal convolution...")
     xsig <- array(0, c(pars_ps$nrc, pars_ps$nrc))
     if (nrow(gxy) > 0) {
       xsig[lpts[, c("Y", "X")]] <- .get_ldsig_polar(nodes, 
@@ -478,7 +478,7 @@
     } else {
       edleng <- 1
     }
-    nnpg$dist_dth[[i]] <- edleng * pfun(nnpg$dtheta[[i]], pars_ps$beta)
+    nnpg$dist_dth[[i]] <- edleng * pfun(x = nnpg$dtheta[[i]], beta = pars_ps$beta)
   }
   return(nnpg)
 }
@@ -569,7 +569,7 @@
   xfloor <- ps@projection@floor
   xsig <- ps@projection@signal
   if(is.null(pars_ps$rescale)) pars_ps$rescale <- TRUE
-  if (!is.null(xfloor)) xsig[xfloor == 0] <- NA
+  if (length(xfloor) > 0) xsig[xfloor == 0] <- NA
   bl <- all(range(xsig, na.rm = TRUE) == 0)
   if(bl){
     gxyz <- xsig
@@ -658,9 +658,8 @@
   
     nodes <- getPathwaySpace(ps, "nodes")
     pars_ps <- getPathwaySpace(ps, "pars")
-    pars_ps$configs <- .get_signal_scale(nodes$signal)
     
-    if(verbose) message("Mapping 'x' and 'y' coordinates...")
+    if(verbose) rlang::inform("Mapping 'x' and 'y' coordinates...")
     gxy <- .rescale_coord(nodes, pars_ps$nrc)
     lpts <- .get_points_in_matrix(pars_ps$nrc)
     
@@ -679,13 +678,17 @@
     #---return silhouette
     nbg <- sum(xfloor == 1)
     sz <- round(nbg / prod(dim(xfloor)) * 100, 2)
-    if(verbose) message("Silhouette: ", sz, "% of the landscape area!")
+    if(verbose) {
+      rlang::inform(message = paste0("Silhouette: ", 
+        sz, "% of the landscape area!"))
+    }
     
     #--- add projection
     ps@projection@coordinates <- gxy
     ps@projection@floor <- xfloor
     if (!.checkStatus(ps, "Projection")){
       ps@projection@signal <- array(0, c(pars_ps$nrc, pars_ps$nrc))
+      pars_ps$configs <- .get_signal_scale(0)
     }
     ps <- .update_projections(ps, pars_ps)
     return(ps)
@@ -724,29 +727,31 @@
 
 #-------------------------------------------------------------------------------
 .cutfloor <- function(xfloor, pars_ps) {
-    size <- pi * (pars_ps$silh$pdist * 2 * pars_ps$nrc)^2
-    rg <- range(xfloor, na.rm = TRUE)
-    if (rg[1] != rg[2]) {
-        xfloor <- xfloor - rg[1]
-        xfloor <- xfloor / max(xfloor, na.rm = TRUE)
-        mask <- xfloor
-        mask[mask < pars_ps$silh$baseline] <- 0
-        mask[mask > 0] <- 1
-        if(pars_ps$silh$fill.cavity){
-          mask <- .fillCavity(mask)
-        } else {
-          mask <- .fillSpots(mask, spot.size = size)
-        }
-        xfloor[mask == 0] <- 0
-        xfloor[mask > 0] <- 1
+  rg <- range(xfloor, na.rm = TRUE)
+  if (rg[1] != rg[2]) {
+    xfloor <- xfloor - rg[1]
+    xfloor <- xfloor / max(xfloor, na.rm = TRUE)
+    mask <- xfloor
+    mask[mask < pars_ps$silh$baseline] <- 0
+    mask[mask > 0] <- 1
+    if(pars_ps$silh$fill.cavity){
+      # fill cavities in the mask
+      mask <- .fillCavity(mask)
     } else {
-      xfloor[, ] <- 0
+      # fill gaps spanning up to two adjacent spots
+      spot.size <- pi * (2 * pars_ps$silh$pdist * pars_ps$nrc)^2
+      mask <- .fillSpots(mask, spot.size = spot.size)
     }
-    xfloor[1, ] <- 0
-    xfloor[, 1] <- 0
-    xfloor[, ncol(xfloor)] <- 0
-    xfloor[nrow(xfloor), ] <- 0
-    return(xfloor)
+    xfloor[mask == 0] <- 0
+    xfloor[mask > 0] <- 1
+  } else {
+    xfloor[, ] <- 0
+  }
+  xfloor[1, ] <- 0
+  xfloor[, 1] <- 0
+  xfloor[, ncol(xfloor)] <- 0
+  xfloor[nrow(xfloor), ] <- 0
+  return(xfloor)
 }
 
 ################################################################################
@@ -950,8 +955,7 @@
 #-------------------------------------------------------------------------------
 .validate_polar_fun <- function(polar.fun){
   fargs <- formalArgs(args(polar.fun))
-  fargs <- fargs[ !fargs %in% c("x", "beta")]
-  if(length(fargs)>1){
+  if (!all(c("x", "beta") %in% fargs)){
     stop("the 'polar.fun' must have the signature: function(x, beta) {...}",
       call. = FALSE)
   }

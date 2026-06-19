@@ -33,7 +33,7 @@ or node attributes and assigns it to vertexSignal()."><style>
 
     <a class="navbar-brand me-2" href="../index.html">PathwaySpace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -128,7 +128,9 @@ name (see <code><a href="https://sysbiolab.github.io/RGraphSpace/reference/Graph
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sysbiolab/RGraphSpace" class="external-link">RGraphSpace</a></span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sysbiolab.github.io/PathwaySpace/" class="external-link">PathwaySpace</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Load a demo igraph</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'gtoy1'</span>, package <span class="op">=</span> <span class="st">'RGraphSpace'</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu"><a href="buildPathwaySpace.html">buildPathwaySpace</a></span><span class="op">(</span><span class="va">gtoy1</span>, nrc <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Validating arguments...</span>
@@ -182,7 +184,7 @@ name (see <code><a href="https://sysbiolab.github.io/RGraphSpace/reference/Graph
 <span class="r-out co"><span class="r-pr">#&gt;</span>     y &lt;- signal * 0.001^((x/0.15)^1.05)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     return(y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x64a68adb3140&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5922fd185188&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"name")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "weibullDecay"</span>
 <span class="r-in"><span></span></span>

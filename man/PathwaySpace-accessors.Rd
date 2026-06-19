@@ -28,6 +28,9 @@ Get or set edge and vertex attributes in
 \linkS4class{PathwaySpace} class object.
 }
 \examples{
+library(PathwaySpace)
+
+# Load a demo igraph
 data('gtoy1', package = 'RGraphSpace')
 ps <- buildPathwaySpace(gtoy1, nrc = 100)
 

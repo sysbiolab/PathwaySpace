@@ -69,7 +69,9 @@ object.
 ## Examples
 
 ``` r
-library(RGraphSpace)
+library(PathwaySpace)
+
+# Load a demo igraph
 data('gtoy1', package = 'RGraphSpace')
 ps <- buildPathwaySpace(gtoy1, nrc = 100)
 #> Validating arguments...
@@ -123,7 +125,7 @@ vertexDecay(ps)[["n3"]]
 #>     y <- signal * 0.001^((x/0.15)^1.05)
 #>     return(y)
 #> }
-#> <environment: 0x64a68adb3140>
+#> <environment: 0x5922fd185188>
 #> attr(,"name")
 #> [1] "weibullDecay"
 

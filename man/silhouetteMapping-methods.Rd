@@ -41,6 +41,8 @@ A preprocessed \linkS4class{PathwaySpace} class object.
 to outline the graph layout in a PathwaySpace image.
 }
 \examples{
+library(PathwaySpace)
+
 # Load a demo igraph
 data('gtoy1', package = 'RGraphSpace')
 

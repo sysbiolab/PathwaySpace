@@ -66,6 +66,7 @@ weibullDecay <- function(decay = 0.001, pdist = 0.15, shape = 1.05,
   .validate.ps.args("singleNumber", "decay", decay)
   .validate.ps.args("singleNumber", "pdist", pdist)
   .validate.ps.args("singleNumber", "shape", shape)
+  .validate.ps.args("singleLogical", "plot", plot)
   .validate.ps.args("singleNumber", "demo.signal", demo.signal)
 
   if(decay < 0 || decay > 1){
@@ -78,8 +79,14 @@ weibullDecay <- function(decay = 0.001, pdist = 0.15, shape = 1.05,
     stop("'pdist' must be in (0,1]", call. = FALSE)
   }
   
-  if(decay==0) decay <- .Machine$double.xmin
-  if(decay==1) decay <- 1 - (1/.Machine$longdouble.max.exp)
+  # decay=0 would zero out the signal instantly; nudge above 0 to preserve 
+  # the shape while avoiding numerical issues with 0^0 == 1 and 0^anything == 0.
+  if(decay==0) decay <- .Machine$double.xmin # smallest positive double > 0
+
+  # decay=1 collapses to a flat signal (1^anything == 1); nudge below 1 to preserve 
+  # decay shape while avoiding numerical issues with 1^0 == 1 and 1^anything == 1.
+  if(decay==1) decay <- 1 - .Machine$double.eps  # largest double < 1
+
   f <- function(x, signal){
     y <- signal * decay^( (x/pdist)^shape )
     return(y)
@@ -389,8 +396,7 @@ linearDecay <- function(decay = 0.001, pdist = 0.15, plot = FALSE,
 #' @rdname signalAggregation
 #' @export
 #' 
-signalAggregation <- function(method = c("mean", "wmean", "log.wmean", 
-    "exp.wmean")){
+signalAggregation <- function(method = c("mean", "wmean", "log.wmean", "exp.wmean")){
     method <- match.arg(method)
     if(method=="mean"){
         f <- function(x){
@@ -401,14 +407,20 @@ signalAggregation <- function(method = c("mean", "wmean", "log.wmean",
         return(f)
     } else if(method=="wmean"){
         f <- function(x){
-            y <- weighted.mean(x, abs(x), na.rm = TRUE)
+            w <- abs(x)
+            s <- sum(w, na.rm = TRUE)
+            if (s == 0) return(mean(x, na.rm = TRUE))
+            y <- weighted.mean(x, w, na.rm = TRUE)
             return(y)
         }
         attributes(f)$name <- "weightedSignal"
         return(f)
     } else if(method=="log.wmean"){
         f <- function(x){
-            y <- weighted.mean(x, log1p(abs(x)), na.rm = TRUE)
+            w <- log1p(abs(x))
+            s <- sum(w, na.rm = TRUE)
+            if (s == 0) return(mean(x, na.rm = TRUE))
+            y <- weighted.mean(x, w, na.rm = TRUE)
             return(y)
         }
         attributes(f)$name <- "logWeightedSignal"
@@ -416,7 +428,9 @@ signalAggregation <- function(method = c("mean", "wmean", "log.wmean",
     } else if(method=="exp.wmean"){
         f <- function(x){
             w <- abs(x)
-            w <- (w / sum(w, na.rm = TRUE))^2
+            s <- sum(w, na.rm = TRUE)
+            if (s == 0) return(mean(x, na.rm = TRUE))
+            w <- (w / s)^2
             y <- weighted.mean(x, w, na.rm = TRUE)
             return(y)
         }
@@ -425,7 +439,6 @@ signalAggregation <- function(method = c("mean", "wmean", "log.wmean",
     }
 
 }
-attributes(signalAggregation)$name <- "signalAggregation"
 
 
 #-------------------------------------------------------------------------------
@@ -491,9 +504,9 @@ polarDecay <- function(method = c("power", "gaussian", "logistic"),
     .validate.ps.args("singleNumber", "m", m)
     method <- match.arg(method)
     
-    if(s < 0 || s>1)stop("'s' must be in [0,1]", call. = FALSE)
-    if(k < 1)stop("'k' must be >=1", call. = FALSE)
-    if(m < 0 || m>1)stop("'m' must be in [0,1]", call. = FALSE)
+    if (s < 0 || s > 1) stop("'s' must be in [0,1]", call. = FALSE)
+    if (k < 1) stop("'k' must be >=1", call. = FALSE)
+    if (m < 0 || m > 1) stop("'m' must be in [0,1]", call. = FALSE)
     
     if (method == "power") {
         if(!missing(s)){

@@ -1,6 +1,6 @@
 # Visualizing spatial transcriptomics
 
-**Package**: PathwaySpace 1.4.0  
+**Package**: PathwaySpace 1.4.1  
 
 ## Overview
 
@@ -45,7 +45,7 @@ if (packageVersion("RGraphSpace") < "1.4.1"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.4.0"){
+if (packageVersion("PathwaySpace") < "1.4.1"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -89,6 +89,9 @@ SeuratData::InstallData("stxBrain")
 # SeuratData::InstalledData()
 
 # Load the 'stxBrain' dataset
+# Note: LoadData() may print conversion warnings when loading pbmc3k.
+# These are expected and come from SeuratData's internal v4-to-v5
+# object migration — they can be safely ignored.
 seurat_obj <- LoadData("stxBrain", type = "anterior1")
 ```
 
@@ -117,8 +120,24 @@ the tissue image and normalize node coordinates to the image space.
 # Create a GraphSpace from 'seurat_obj'
 gs <- as.GraphSpace(seurat_obj, space = "spatial", scale = "lowres")
 
+# Seurat object converted to GraphSpace:
+# ℹ space=spatial, layer=default, features=2696, cells=17668, scale="lowres"
+# Node spatial boundaries:
+# ℹ x: [76, 493] (cols)
+# ℹ y: [138, 541] (rows)
+```
+
+``` r
+
 # If available, add tissue image 
 gs_image(gs) <- SeuratObject::GetImage(seurat_obj, mode = "raster")
+
+# Image spatial boundaries:
+# ℹ x: [1, 600] (cols)
+# ℹ y: [1, 599] (rows)
+```
+
+``` r
 
 # Normalize node coordinates to the image space
 # By default, this attempts to align the graph's bottom-up
@@ -343,12 +362,18 @@ seurat_obj <- LoadData("ssHippo")
 # spatial dataset, which may require more computation time. Here,
 # we use log-normalization for demonstration purposes.
 seurat_obj <- NormalizeData(seurat_obj)
+seurat_obj
+# An object of class Seurat 
+# 23264 features across 53173 samples within 1 assay 
+# Active assay: Spatial (23264 features, 0 variable features)
+#  2 layers present: counts, data
+#  1 image present: image
 ```
 
 ``` r
 
 # Create a GraphSpace from 'seurat_obj'
-gs <- as.GraphSpace(seurat_obj, space = "spatial")
+gs <- as.GraphSpace(seurat_obj, space = "spatial", layer = "data")
 
 #Note: the `ssHippo` dataset does not include a tissue image
 
@@ -402,8 +427,6 @@ pspace_obj <- circularProjection(pspace_obj,
   decay.fun = weibullDecay(decay=0.5, pdist = pdist))
 
 # Plot projections
-#-- as a suggestion, truncate zlim at the upper limit 
-#-- to enhance certain patters
 p1 <- plotPathwaySpace(ps = pspace_obj, theme = "th3")
 ```
 
@@ -595,7 +618,7 @@ If you use *PathwaySpace*, please cite:
     #>  [3] ssHippo.SeuratData_3.1.4  pbmc3k.SeuratData_3.1.4  
     #>  [5] SeuratData_0.2.2.9002     Seurat_5.5.0             
     #>  [7] SeuratObject_5.4.0        sp_2.2-1                 
-    #>  [9] PathwaySpace_1.4.0        RGraphSpace_1.4.1        
+    #>  [9] PathwaySpace_1.4.1        RGraphSpace_1.4.1        
     #> [11] ggplot2_4.0.3            
     #> 
     #> loaded via a namespace (and not attached):

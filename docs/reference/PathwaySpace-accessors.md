@@ -43,6 +43,9 @@ object.
 ## Examples
 
 ``` r
+library(PathwaySpace)
+
+# Load a demo igraph
 data('gtoy1', package = 'RGraphSpace')
 ps <- buildPathwaySpace(gtoy1, nrc = 100)
 #> Validating arguments...

@@ -25,6 +25,8 @@ Content from slots in the \linkS4class{PathwaySpace} object.
 individual slots available in a PathwaySpace object.
 }
 \examples{
+library(PathwaySpace)
+
 # Load a demo igraph
 data('gtoy1', package = 'RGraphSpace')
 

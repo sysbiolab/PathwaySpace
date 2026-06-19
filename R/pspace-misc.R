@@ -364,16 +364,16 @@ pathDistances <- function(gdist, from, to, nperm = 1000, verbose=TRUE){
   n.total <- ncol(gdist)
   n.from <- length(from)
   n.to <- length(to)
-  if(verbose) message("Computing pathway distance...")
-  obs <- gdist[from, to]
+  if(verbose) rlang::inform("Computing pathway distance...")
+  obs <- gdist[from, to, drop = FALSE]
   obs <- mean(apply(obs, 1, min, na.rm=T))
-  if(verbose) message("Running permutation analysis...")
+  if(verbose) rlang::inform("Running permutation analysis...")
   if (verbose) pb <- txtProgressBar(style = 3)
   null <- vapply(seq_len(nperm), function(i){
     if (verbose) setTxtProgressBar(pb, i / nperm)
     r.from <- sample(n.total, n.from)
     r.to <- sample(n.total, n.to)
-    res <- gdist[r.from, r.to]
+    res <- gdist[r.from, r.to, drop = FALSE]
     mean(apply(res, 1, min, na.rm=T))
   }, numeric(1))
   p_dist <- list(obs=obs, null=null)
@@ -679,17 +679,25 @@ plotPathDistances <- function(pdist, z.transform=FALSE){
     rc <- range(idx[, 2])
     rc <- rc[1]:rc[2]
     if (length(rr) > 3 && length(rc) > 3) {
+      #-- isolate the bounding box of this object; 
+      #-- invert to get its gaps
       x1 <- x2 <- xm[rr, rc, drop = FALSE]
       x2[x2 != id] <- 0
       x2 <- x2 == 0
+      #-- expand to avoid gaps touching the bounding box border
       x2 <- .expandMask(x2, val = 1)
-      #--- fill small spots
+      #-- label each gap as a connected component, 
+      #-- then rank by descending size
       x3 <- .labelMask(x2)
       x3 <- .relabelBySize(x3)
-      spot_th <- which(table(x3)[-1] <= spot.size)[1]
+      #-- find label ID whose gap size is <= spot.size 
+      #-- (NA if all gaps are large)
+      gap_th <- which(tabulate(x3) <= spot.size)[1]
+      #-- restore original bounding box size
       x3 <- .reduceMask(x3)
-      x1[x1 == 0 & x3 > spot_th] <- id
-      #--- fill small spots
+      #-- fill small gaps with the object's id
+      if (!is.na(gap_th)) x1[x1 == 0 & x3 > gap_th] <- id
+      #-- remove narrow tips
       x3 <- .removeTips(x2, n = 3)
       x3 <- .reduceMask(x3)
       x4 <- .reduceMask(x2)

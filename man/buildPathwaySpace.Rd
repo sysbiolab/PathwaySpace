@@ -27,6 +27,8 @@ A pre-processed \linkS4class{PathwaySpace} class object.
 PathwaySpace-class objects.
 }
 \examples{
+library(PathwaySpace)
+
 # Load a demo igraph
 data('gtoy1', package = 'RGraphSpace')
 

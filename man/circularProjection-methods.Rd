@@ -67,6 +67,8 @@ vertex-associated signals onto a 2D image space using a circular decay
 function.
 }
 \examples{
+library(PathwaySpace)
+
 # Load a demo igraph
 data('gtoy1', package = 'RGraphSpace')
 

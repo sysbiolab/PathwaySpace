@@ -42,7 +42,7 @@ if (packageVersion("RGraphSpace") < "1.4.1"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.4.0"){
+if (packageVersion("PathwaySpace") < "1.4.1"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -205,7 +205,8 @@ knitr::include_graphics("figs_fsets/fig3.png")
 ```{r Mapping summits - 2, eval=TRUE, message=FALSE}
 # Extracting summits from a PathwaySpace
 summits <- getPathwaySpace(p_space_PCv12, "summits")
-class(summits)
+# View the first few summit genes ("KLK5", "MMP2", "SERPINA1", ...)
+head(summits[[1]])
 ```
 
 

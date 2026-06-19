@@ -87,6 +87,8 @@ vertex-associated signals onto a 2D image space along graph edges, using
 a polar decay function.
 }
 \examples{
+library(PathwaySpace)
+
 # Load a demo igraph
 data('gtoy2', package = 'RGraphSpace')
 

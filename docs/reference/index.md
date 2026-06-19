@@ -55,6 +55,8 @@
   : Mapping Summits on PathwaySpace Images
 - [`summitWatershed()`](https://github.com/sysbiolab/PathwaySpace/reference/summitWatershed.md)
   : Variation of the watershed algorithm for summit detection
+- [`updateGraphSpace(`*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/updateGraphSpace.md)
+  : Update a PathwaySpace object
 - [`vertexSignal(`*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md)
   [`` `vertexSignal<-`( ``*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md)
   [`vertexDecay(`*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md)
