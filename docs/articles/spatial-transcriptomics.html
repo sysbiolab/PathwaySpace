@@ -80,7 +80,7 @@ projections on spot coordinates</h3>
                         <h4 data-toc-skip class="author">Sysbiolab
 Team</h4>
             
-            <h4 data-toc-skip class="date">2026-06-19</h4>
+            <h4 data-toc-skip class="date">2026-06-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sysbiolab/PathwaySpace/blob/HEAD/vignettes/articles/spatial-transcriptomics.Rmd"><code>vignettes/articles/spatial-transcriptomics.Rmd</code></a></small>
       <div class="d-none name"><code>spatial-transcriptomics.Rmd</code></div>
@@ -188,7 +188,7 @@ tissue image and normalize node coordinates to the image space.</p>
 <span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/as.GraphSpace.html" class="external-link">as.GraphSpace</a></span><span class="op">(</span><span class="va">seurat_obj</span>, space <span class="op">=</span> <span class="st">"spatial"</span>, scale <span class="op">=</span> <span class="st">"lowres"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Seurat object converted to GraphSpace:</span></span>
-<span><span class="co"># ℹ space=spatial, layer=default, features=2696, cells=17668, scale="lowres"</span></span>
+<span><span class="co"># ℹ space=spatial, layer=default, features=17668, cells=2696, scale="lowres"</span></span>
 <span><span class="co"># Node spatial boundaries:</span></span>
 <span><span class="co"># ℹ x: [76, 493] (cols)</span></span>
 <span><span class="co"># ℹ y: [138, 541] (rows)</span></span></code></pre></div>
@@ -226,7 +226,7 @@ fine-grained control; the subsequent tutorials use the higher-level
 <span><span class="co"># Left: 'seurat_clusters' annotation overlaid on tissue image</span></span>
 <span><span class="va">cpal1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DiscretePalette.html" class="external-link">DiscretePalette</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nlevels.html" class="external-link">nlevels</a></span><span class="op">(</span><span class="va">gs</span><span class="op">$</span><span class="va">seurat_clusters</span><span class="op">)</span>, <span class="st">"polychrome"</span><span class="op">)</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace.html" class="external-link">annotation_gspace_image</a></span><span class="op">(</span><span class="va">gs</span>, opacity <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace_image.html" class="external-link">annotation_gspace_image</a></span><span class="op">(</span><span class="va">gs</span>, opacity <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/geom_nodespace.html" class="external-link">geom_nodespace</a></span><span class="op">(</span>mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="va">seurat_clusters</span><span class="op">)</span>, size<span class="op">=</span><span class="fl">0.8</span>, pch<span class="op">=</span><span class="fl">19</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_discrete.html" class="external-link">scale_colour_discrete</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="va">cpal1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/theme_gspace.html" class="external-link">theme_gspace_legend</a></span><span class="op">(</span>discrete_colour <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
@@ -235,7 +235,7 @@ fine-grained control; the subsequent tutorials use the higher-level
 <span><span class="co"># Right: Camk2n1 gene expression overlaid on tissue image</span></span>
 <span><span class="va">cpal2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">hcl.colors</a></span><span class="op">(</span><span class="fl">100</span>, palette <span class="op">=</span> <span class="st">"Spectral"</span>, rev <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace.html" class="external-link">annotation_gspace_image</a></span><span class="op">(</span><span class="va">gs</span>, opacity <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace_image.html" class="external-link">annotation_gspace_image</a></span><span class="op">(</span><span class="va">gs</span>, opacity <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/geom_nodespace.html" class="external-link">geom_nodespace</a></span><span class="op">(</span>mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="va">Camk2n1</span><span class="op">)</span>, size<span class="op">=</span><span class="fl">0.8</span>, pch<span class="op">=</span><span class="fl">19</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_continuous.html" class="external-link">scale_colour_continuous</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="va">cpal2</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="va">spatial_theme</span></span>
@@ -283,7 +283,7 @@ is sliced to form the mask. Increasing the baseline (in
 <span></span>
 <span><span class="co"># Check the silhouette plot</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace.html" class="external-link">annotation_gspace_image</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace_image.html" class="external-link">annotation_gspace_image</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="../reference/annotation_pspace.html">annotation_pspace_signal</a></span><span class="op">(</span><span class="va">pspace_obj</span>, si.alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="va">spatial_theme</span></span></code></pre></div>
 <p><img src="figs_spatl/fig2.png" class="r-plt" alt="" width="90%" style="display: block; margin: auto;"></p>
@@ -320,12 +320,12 @@ highlight key settings.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Left: tissue image only, no signal overlay</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace.html" class="external-link">annotation_gspace_image</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace_image.html" class="external-link">annotation_gspace_image</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="va">spatial_theme</span></span>
 <span></span>
 <span><span class="co"># Right: signal overlaid on tissue image with low opacity</span></span>
 <span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace.html" class="external-link">annotation_gspace_image</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace_image.html" class="external-link">annotation_gspace_image</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="../reference/annotation_pspace.html">annotation_pspace_signal</a></span><span class="op">(</span><span class="va">pspace_obj</span>, si.alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="va">spatial_theme</span></span>
 <span></span>
@@ -334,13 +334,13 @@ highlight key settings.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Left: signal overlaid on tissue image with low opacity</span></span>
 <span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace.html" class="external-link">annotation_gspace_image</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace_image.html" class="external-link">annotation_gspace_image</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="../reference/annotation_pspace.html">annotation_pspace_signal</a></span><span class="op">(</span><span class="va">pspace_obj</span>, si.alpha <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="va">spatial_theme</span></span>
 <span></span>
 <span><span class="co"># Right: same, with signal truncated to the upper range (zlim &gt;= 0.5)</span></span>
 <span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace.html" class="external-link">annotation_gspace_image</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace_image.html" class="external-link">annotation_gspace_image</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="../reference/annotation_pspace.html">annotation_pspace_signal</a></span><span class="op">(</span><span class="va">pspace_obj</span>, si.alpha <span class="op">=</span> <span class="fl">0.25</span>, zlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="va">spatial_theme</span></span>
 <span></span>

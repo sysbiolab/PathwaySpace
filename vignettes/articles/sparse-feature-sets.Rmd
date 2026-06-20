@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
   fig.height = 5,
   out.width = "80%"
   )
-local_build <- TRUE
+local_build <- FALSE
 ```
 
 **Package**: PathwaySpace `r packageVersion('PathwaySpace')`
