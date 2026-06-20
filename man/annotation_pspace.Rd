@@ -49,7 +49,7 @@ used to quantize the signal. For \code{"negpos"} scale types, this is
 rounded up to the nearest even number.}
 
 \item{interpolate}{A logical value indicating whether to apply linear
-interpolation when rendering the raster at a different resolution than}
+interpolation with \code{\link[ggplot2]{geom_raster}}.}
 
 \item{...}{Additional parameters passed to the title annotation;
 see \code{\link[ggplot2]{geom_text}}.}

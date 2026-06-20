@@ -178,6 +178,8 @@ plotPathwaySpace(p_space_PCv12,
 
 ![](sparse-feature-sets_files/figure-html/PathwaySpace%20decoration%20-%208-1.png)
 
+![](figs_fsets/fig2.png)
+
 ## Mapping summits
 
 The summits represent regions within the graph that exhibit signal
@@ -203,6 +205,8 @@ plotPathwaySpace(p_space_PCv12,
 ```
 
 ![](sparse-feature-sets_files/figure-html/Mapping%20summits%20-%201-1.png)
+
+![](figs_fsets/fig3.png)
 
 ``` r
 

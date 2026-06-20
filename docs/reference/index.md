@@ -47,8 +47,6 @@
   : Create interpolated color palettes for PathwaySpace images
 - [`signalAggregation()`](https://github.com/sysbiolab/PathwaySpace/reference/signalAggregation.md)
   : Signal aggregation functions
-- [`signalDecay()`](https://github.com/sysbiolab/PathwaySpace/reference/signalDecay.md)
-  : Deprecated function
 - [`silhouetteMapping(`*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/silhouetteMapping-methods.md)
   : Decorating PathwaySpace Images with Graph Silhouettes
 - [`summitMapping(`*`<PathwaySpace>`*`)`](https://github.com/sysbiolab/PathwaySpace/reference/summitMapping-methods.md)

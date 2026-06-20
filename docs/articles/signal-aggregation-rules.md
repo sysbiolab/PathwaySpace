@@ -223,13 +223,13 @@ These functions represent fuzzy “AND” operations:
 # signal (logical AND, conservative intersection);
 # Input range in [0, 1]
 ps <- circularProjection(ps, k = 2, aggregate.fun = goedel.tnorm)
-plotPathwaySpace(ps, theme = "th3")
+plotPathwaySpace(ps, theme = "th3", title = "goedel.tnorm()")
 
 # Goguen t-norm: use when you want smooth multiplicative attenuation of 
 # overlapping signals (probabilistic AND);
 # Input range in [0, 1]
 ps <- circularProjection(ps, k = 2, aggregate.fun = goguen.tnorm)
-plotPathwaySpace(ps, theme = "th3")
+plotPathwaySpace(ps, theme = "th3", title = "goguen.tnorm()")
 
 # Hamacher product t-norm: use when you need smoothness in signal intersections;
 # Input range in [-Inf, Inf];
@@ -237,7 +237,7 @@ fuzzy.hamacher.tnorm <- function(x) {
   Reduce(function(a, b) (a * b) / (a + b - a * b), x)
 }
 ps <- circularProjection(ps, k = 2, aggregate.fun = fuzzy.hamacher.tnorm)
-plotPathwaySpace(ps, theme = "th3")
+plotPathwaySpace(ps, theme = "th3", title = "fuzzy.hamacher.tnorm()")
 
 # Einstein product t-norm: use when combining signals should preserve low values
 # without collapsing to zero;
@@ -246,7 +246,7 @@ fuzzy.einstein.tnorm <- function(x) {
   Reduce(function(a, b) (a * b) / (1 + (1 - a) * (1 - b)), x)
 }
 ps <- circularProjection(ps, k = 2, aggregate.fun = fuzzy.einstein.tnorm)
-plotPathwaySpace(ps, theme = "th3")
+plotPathwaySpace(ps, theme = "th3", title = "fuzzy.einstein.tnorm()")
 ```
 
 ![](figs_intro/fig_b1.png)
@@ -261,19 +261,19 @@ These functions represent fuzzy “OR” operations:
 # strongest signal fully dominates the aggregation;
 # Input range in [0, 1]
 ps <- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = goedel.tconorm)
-plotPathwaySpace(ps, theme = "th3")
+plotPathwaySpace(ps, theme = "th3", title = "goedel.tconorm()")
 
 # Goguen t-conorm: use when overlapping signals should reinforce each other in 
 # a probabilistic way (soft OR);
 # Input range in  [0, 1]
 ps <- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = goguen.tconorm)
-plotPathwaySpace(ps, theme = "th3")
+plotPathwaySpace(ps, theme = "th3", title = "goguen.tconorm()")
 
 # Lukasiewicz t-conorm: use when you want signal reinforcement, saturating at 1 
 # once contributions accumulate;
 # Input range in [0, 1]
 ps <- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = lukas.tconorm)
-plotPathwaySpace(ps, theme = "th3")
+plotPathwaySpace(ps, theme = "th3", title = "lukas.tconorm()")
 
 # Hamacher sum t-conorm: use when you prefer a moderate, nonlinear signal reinforcement 
 # that avoids rapid saturation;
@@ -283,7 +283,7 @@ fuzzy.hamacher.tconorm <- function(x) {
   Reduce(function(a, b) (a + b - 2 * a * b) / (1 - a * b), x)
 }
 ps <- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = fuzzy.hamacher.tconorm)
-plotPathwaySpace(ps, theme = "th3")
+plotPathwaySpace(ps, theme = "th3", title = "fuzzy.hamacher.tconorm()")
 
 # Einstein sum t-conorm: use when signal reinforcement should be smooth and symmetric,
 # limiting extreme increases;
@@ -292,7 +292,7 @@ fuzzy.einstein.tconorm <- function(x) {
   Reduce(function(a, b) (a + b) / (1 + a * b), x)
 }
 ps <- circularProjection(ps, k = gs_vcount(ps), aggregate.fun = fuzzy.einstein.tconorm)
-plotPathwaySpace(ps, theme = "th3")
+plotPathwaySpace(ps, theme = "th3", title = "fuzzy.einstein.tconorm()")
 ```
 
 ![](figs_intro/fig_b2.png)

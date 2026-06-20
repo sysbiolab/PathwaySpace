@@ -13,8 +13,7 @@ summitMapping(
   maxset = 30,
   minsize = 30,
   threshold = 0.5,
-  verbose = TRUE,
-  segm_fun = summitWatershed,
+  segm.fun = summitWatershed,
   ...
 )
 ```
@@ -41,12 +40,7 @@ summitMapping(
   A threshold provided as a fraction (in `[0,1]`) of the max signal
   intensity.
 
-- verbose:
-
-  A logical value specifying to display detailed messages (when
-  `verbose=TRUE`) or not (when `verbose=FALSE`).
-
-- segm_fun:
+- segm.fun:
 
   A segmentation function used to detect summits (see
   [`summitWatershed`](https://github.com/sysbiolab/PathwaySpace/reference/summitWatershed.md)).

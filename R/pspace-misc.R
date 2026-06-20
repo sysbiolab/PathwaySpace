@@ -184,7 +184,8 @@ NULL
 #' @export
 getNearestNode <- function(ps){
   if(!inherits(ps, "GraphSpace")){
-    stop("'ps' should be either a 'PathwaySpace' or 'GraphSpace' object.")
+    stop("'ps' should be either a 'PathwaySpace' or 'GraphSpace' object.", 
+      call. = FALSE)
   }
   nodes <- getGraphSpace(ps, "nodes")
   nnpg <- nn2(nodes[,c("x","y")], nodes[,c("x","y")], k=2)
@@ -275,7 +276,6 @@ pspace.pals <- function(
 #' @title A simple vector of colors for PathwaySpace images
 #'
 #' @param n The number of colors to generate in the output palette.
-#' @param ... Additional arguments (not used).
 #' @return A vector with hexadecimal color codes.
 #' @seealso \code{\link{plotPathwaySpace}}, \code{\link{pspace.pals}}
 #' @examples
@@ -285,7 +285,7 @@ pspace.pals <- function(
 #' @aliases pspace.cols
 #' @export
 #'
-pspace.cols <- function(n = 25, ...) {
+pspace.cols <- function(n = 25) {
   .validate.ps.args("singleInteger", "n", n)
   colors <- c("#303f9d","#578edb","#63b946","#f3930c","#a60d0d")
   colors <- .pspace_cols(colors)
@@ -352,10 +352,12 @@ pathDistances <- function(gdist, from, to, nperm = 1000, verbose=TRUE){
   .validate.ps.args("singleInteger", "nperm", nperm)
   .validate.ps.args("singleLogical", "verbose", verbose)
   if(!all(from %in% rownames(gdist))){
-    stop("All names in 'from' should be listed in 'gdist' rownames.")
+    stop("All names in 'from' should be listed in 'gdist' rownames.", 
+      call. = FALSE)
   }
   if(!all(to %in% colnames(gdist))){
-    stop("All names in 'to' should be listed in 'gdist' colnames.")
+    stop("All names in 'to' should be listed in 'gdist' colnames.", 
+      call. = FALSE)
   }
   res <- .psdist(gdist, from, to, nperm, verbose)
   return(res)

@@ -102,7 +102,8 @@ weibullDecay <- function(decay = 0.001, pdist = 0.15, shape = 1.05,
     return(p)
   } else {
     if(!missing(demo.signal)){
-      warning("The value of 'demo.signal' is ignored by the function constructor.")
+      warning("The value of 'demo.signal' is ignored by the function constructor.", 
+      call. = FALSE)
     }
     return(f)
   }
@@ -174,11 +175,11 @@ expDecay <- function(decay = 0.001, pdist = 0.15, plot = FALSE, demo.signal = 1)
     stop("'decay' must be in [0,1]", call. = FALSE)
   }
   if(pdist <= 0 || pdist > 1){
-    stop("'pdist' must be in [0,1]", call. = FALSE)
+    stop("'pdist' must be in (0,1]", call. = FALSE)
   }
   
   if(decay==0) decay <- .Machine$double.xmin
-  if(decay==1) decay <- 1 - (1/.Machine$longdouble.max.exp)
+  if(decay==1) decay <- 1 - .Machine$double.eps # largest double < 1
   f <- function(x, signal){
     y <- signal * decay^(x/pdist)
     return(y)
@@ -194,7 +195,8 @@ expDecay <- function(decay = 0.001, pdist = 0.15, plot = FALSE, demo.signal = 1)
     return(p) 
   } else {
     if(!missing(demo.signal)){
-      warning("The value of 'demo.signal' is ignored by the function constructor.")
+      warning("The value of 'demo.signal' is ignored by the function constructor.", 
+      call. = FALSE)
     }
     return(f)
   }
@@ -272,7 +274,7 @@ linearDecay <- function(decay = 0.001, pdist = 0.15, plot = FALSE,
     stop("'decay' must be in [0,1]", call. = FALSE)
   }
   if(pdist <= 0 || pdist > 1){
-    stop("'pdist' must be in [0,1]", call. = FALSE)
+    stop("'pdist' must be in (0,1]", call. = FALSE)
   }
   
   f <- function(x, signal){
@@ -293,7 +295,8 @@ linearDecay <- function(decay = 0.001, pdist = 0.15, plot = FALSE,
     return(p)
   } else {
     if(!missing(demo.signal)){
-      warning("The value of 'demo.signal' is ignored by the function constructor.")
+      warning("The value of 'demo.signal' is ignored by the function constructor.", 
+      call. = FALSE)
     }
     return(f)
   }
@@ -497,85 +500,60 @@ signalAggregation <- function(method = c("mean", "wmean", "log.wmean", "exp.wmea
 #' @export
 #' 
 polarDecay <- function(method = c("power", "gaussian", "logistic"), 
-    s = 0.5, k = 10, m = 0.5) {
+  s = 0.5, k = 10, m = 0.5) {
+  
+  .validate.ps.args("singleNumber", "s", s)
+  .validate.ps.args("singleNumber", "k", k)
+  .validate.ps.args("singleNumber", "m", m)
+  method <- match.arg(method)
+  
+  if (method == "power") {
+    if(!missing(s)){
+      warning("'s' ignored unless method is 'gaussian'.", call. = FALSE)
+    }
+    if(!missing(k)){
+      warning("'k' ignored unless method is 'logistic'.", call. = FALSE)
+    }
+    if(!missing(m)){
+      warning("'m' ignored unless method is 'logistic'.", call. = FALSE)
+    }
+    f <- function(x, beta){
+      y <- x ^ beta
+      return(y)
+    }
+    attributes(f)$name <- "power"
+    return(f)
     
-    .validate.ps.args("singleNumber", "s", s)
-    .validate.ps.args("singleNumber", "k", k)
-    .validate.ps.args("singleNumber", "m", m)
-    method <- match.arg(method)
-    
+  } else if (method == "gaussian") {
     if (s < 0 || s > 1) stop("'s' must be in [0,1]", call. = FALSE)
+    if(!missing(k)){
+      warning("'k' ignored unless method is 'logistic'.", call. = FALSE)
+    }
+    if(!missing(m)){
+      warning("'m' ignored unless method is 'logistic'.", call. = FALSE)
+    }
+    f <- function(x, beta){
+      y <- exp( - ((1 - x)^2) / (2*s^2) ) ^ beta
+      return(y)
+    }
+    body(f) <- do.call("substitute", list(body(f), list(s = s)))
+    attributes(f)$name <- "gaussian"
+    return(f)
+    
+  } else if (method == "logistic") {
     if (k < 1) stop("'k' must be >=1", call. = FALSE)
     if (m < 0 || m > 1) stop("'m' must be in [0,1]", call. = FALSE)
-    
-    if (method == "power") {
-        if(!missing(s)){
-            warning("'s' ignored unless method is 'gaussian'.")
-        }
-        if(!missing(k)){
-            warning("'k' ignored unless method is 'logistic'.")
-        }
-        if(!missing(m)){
-            warning("'m' ignored unless method is 'logistic'.")
-        }
-        f <- function(x, beta){
-            y <- x ^ beta
-            return(y)
-        }
-        attributes(f)$name <- "power"
-        return(f)
-        
-    } else if (method == "gaussian") {
-        if(!missing(k)){
-            warning("'k' ignored unless method is 'logistic'.")
-        }
-        if(!missing(m)){
-            warning("'m' ignored unless method is 'logistic'.")
-        }
-        f <- function(x, beta){
-            y <- exp( - ((1 - x)^2) / (2*s^2) ) ^ beta
-            return(y)
-        }
-        body(f) <- do.call("substitute", list(body(f), list(s = s)))
-        attributes(f)$name <- "gaussian"
-        return(f)
-        
-    } else if (method == "logistic") {
-        if(!missing(s)){
-            warning("'s' ignored unless method is 'gaussian'.")
-        }
-        f <- function(x, beta){
-            y <- ( 1 / (1 + exp(-k * (x - m))) ) ^ beta
-            return(y)
-        }
-        body(f) <- do.call("substitute", list(body(f), list(k = k, m = m)))
-        attributes(f)$name <- "logistic"
-        return(f)
-        
+    if(!missing(s)){
+      warning("'s' ignored unless method is 'gaussian'.", call. = FALSE)
     }
-}
-
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-
-#-------------------------------------------------------------------------------
-#' @title Deprecated function
-#'
-#' @description 
-#' Use \code{\link{weibullDecay}}, \code{\link{expDecay}}, 
-#' and \code{\link{linearDecay}}.
-#' 
-#' @param ... Deprecated arguments
-#' @return Stop unconditionally
-#' @author Sysbiolab Team
-#' @examples
-#' decay.fun <- weibullDecay()
-#' 
-#' @rdname signalDecay
-#' @export
-#'
-signalDecay <- function(...){
-  lifecycle::deprecate_stop("1.0.3", "signalDecay()", "weibullDecay()")
+    f <- function(x, beta){
+      y <- ( 1 / (1 + exp(-k * (x - m))) ) ^ beta
+      return(y)
+    }
+    body(f) <- do.call("substitute", list(body(f), list(k = k, m = m)))
+    attributes(f)$name <- "logistic"
+    return(f)
+    
+  }
 }
 

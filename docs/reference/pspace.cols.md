@@ -5,7 +5,7 @@ A simple vector of colors for PathwaySpace images
 ## Usage
 
 ``` r
-pspace.cols(n = 25, ...)
+pspace.cols(n = 25)
 ```
 
 ## Arguments
@@ -13,10 +13,6 @@ pspace.cols(n = 25, ...)
 - n:
 
   The number of colors to generate in the output palette.
-
-- ...:
-
-  Additional arguments (not used).
 
 ## Value
 

@@ -77,8 +77,8 @@ annotation_pspace_signal(
 
 - interpolate:
 
-  A logical value indicating whether to apply linear interpolation when
-  rendering the raster at a different resolution than
+  A logical value indicating whether to apply linear interpolation with
+  [`geom_raster`](https://ggplot2.tidyverse.org/reference/geom_tile.html).
 
 - ...:
 

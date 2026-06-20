@@ -25,10 +25,10 @@
 #' @param zlim The 'z' limits of the plot (a numeric vector with two numbers).
 #' If NULL, limits are determined from the range of the input values.
 #' @param slices An integer specifying the number of discrete color levels
-#'   used to quantize the signal. For \code{"negpos"} scale types, this is
-#'   rounded up to the nearest even number.
+#' used to quantize the signal. For \code{"negpos"} scale types, this is
+#' rounded up to the nearest even number.
 #' @param interpolate A logical value indicating whether to apply linear
-#'   interpolation when rendering the raster at a different resolution than
+#' interpolation with \code{\link[ggplot2]{geom_raster}}.
 #' @param ... Additional parameters passed to the title annotation; 
 #' see \code{\link[ggplot2]{geom_text}}.
 #'
@@ -71,8 +71,7 @@ annotation_pspace_signal <- function(ps,
   }
   .check_updated_ps(ps)
   if (!.checkStatus(ps, "Projection") && !.checkStatus(ps, "Silhouette")) {
-    stop("NOTE: 'ps' needs to be evaluated by a 'projection' method!",
-      call. = FALSE)
+    rlang::abort("NOTE: 'ps' needs to be evaluated by a 'projection' method!")
   }
   .validate.colors("allColors","colors", colors)
   .validate.colors("singleColor", "si.color", si.color)
@@ -83,10 +82,13 @@ annotation_pspace_signal <- function(ps,
   if(!is.na(bg.color) ){
     .validate.colors("singleColor", "bg.color", bg.color)
   }
+  if (si.alpha < 0 || si.alpha > 1) {
+    rlang::abort("'si.alpha' should be in [0,1]")
+  }
   if(!is.null(zlim)) {
     .validate.ps.args("numeric_vec", "zlim", zlim)
     if(length(zlim)!=2) 
-      stop("'zlim' should be a numeric vector of lenght 2.", call. = FALSE)
+      rlang::abort("'zlim' should be a numeric vector of lenght 2.")
   }
   if(!is.null(title)){
     .validate.ps.args("singleString", "title", title)

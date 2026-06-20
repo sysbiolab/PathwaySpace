@@ -26,7 +26,7 @@ silhouetteMapping(
 
 - pdist:
 
-  A term (in `[0,1]`) determining a distance unit for the silhouette
+  A term (in `(0,1]`) determining a distance unit for the silhouette
   projection.
 
 - baseline:

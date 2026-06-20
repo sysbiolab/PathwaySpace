@@ -251,10 +251,10 @@
     nodes <- getPathwaySpace(ps, "nodes")
     edges <- getPathwaySpace(ps, "edges")
     if(nrow(edges)==0){
-        msg <- paste0("Note, this 'PathwaySpace' object does not ",
-            "contain edges.\nThe 'polarProjection' method requires ",
-            "at least one edge for projection.")
-        stop(msg)
+      rlang::abort(c(
+        "This 'PathwaySpace' object does not contain edges.",
+        "i" = "The 'polarProjection' method requires at least one edge for projection."
+      ))
     }
     pars_ps <- getPathwaySpace(ps, "pars")
     pars_gs <- getGraphSpace(ps, "pars")
@@ -262,13 +262,13 @@
     pars_ps$configs <- .get_signal_scale(signal)
     
     if(pars_ps$directional){
-        if(pars_gs$is.directed){
-            rlang::inform("Using polar projection on directed graph...")
-        } else {
-            stop("'directional' used with undirected graph.")
-        }
+      if(pars_gs$is.directed){
+        if(verbose) rlang::inform("Using polar projection on directed graph...")
+      } else {
+        rlang::abort("'directional' used with undirected graph.")
+      }
     } else {
-        if(verbose) rlang::inform("Using polar projection on undirected graph...")
+      if(verbose) rlang::inform("Using polar projection on undirected graph...")
     }
     
     if(verbose) rlang::inform("Mapping 'x' and 'y' coordinates...")
@@ -405,7 +405,8 @@
       ## Estimate dth for isolated nodes
       if(pars_ps$directional){
         dth_iso <- 0
-      } else {
+      } else { 
+        ## (to revise)
         ## For isolated nodes, 'dth_iso' will aim the area of a cardioid,
         ## as result from the adjusted 'dist', computed in the expression: 
         ## dist_dth = dist * dth_iso^beta
@@ -453,11 +454,15 @@
   return(mdr)
 }
 .lehmer_mean <- function(x, p=2){
-  sum(x^(p+1)) / sum(x^p)
+  denom <- sum(x^p)
+  if (denom == 0) return(0)
+  sum(x^(p+1)) / denom
 }
 .weighted_mean <- function(x, w, p=1){
   w <- w^p
-  sum(w * x) / sum(w)
+  denom <- sum(w)
+  if (denom == 0) return(0)
+  sum(w * x) / denom
 }
 .angular_evenness <- function(x) {
   n <- length(x)
@@ -465,8 +470,8 @@
   gaps <- c(diff(x), 2*pi - (x[n] - x[1]))
   max_gap <- max(gaps)
   min_gap <- 2*pi / n
-  c <- 1 - (max_gap - min_gap) / (2*pi - min_gap)
-  return(c)
+  e <- 1 - (max_gap - min_gap) / (2*pi - min_gap)
+  return(e)
 }
 
 #-------------------------------------------------------------------------------
@@ -548,7 +553,7 @@
   dx <- p2[,"X"] - p1["X"]
   dy <- p2[,"Y"] - p1["Y"]
   dist <- sqrt(dx^2 + dy^2)
-  theta <- ifelse(dist < 1e-07, NA, atan2(dy, dx))
+  theta <- ifelse(dist < 1e-07, NA, atan2(dy, dx)) ## (to revise)
   names(theta) <- rownames(p2)
   return(theta)
 }
@@ -757,7 +762,7 @@
 ################################################################################
 ### Map summits for enrichment analysis
 ################################################################################
-.summitMapping <- function(ps, verbose = TRUE, ...) {
+.summitMapping <- function(ps, ...) {
   pars_ps <- getPathwaySpace(ps, "pars")
   gxy <- ps@projection@coordinates
   gxyz <- ps@projection@result
@@ -766,13 +771,13 @@
     maxset = pars_ps$summit$maxset, 
     minsize = pars_ps$summit$minsize,
     threshold = pars_ps$summit$summit_threshold,
-    segm_fun = pars_ps$summit$segm_fun, ...=...)
+    segm.fun = pars_ps$summit$segm.fun, ...=...)
   return(ps)
 }
 
 #-------------------------------------------------------------------------------
 .find_summits <- function(gxy, gxyz, maxset, minsize, threshold,
-    segm_fun, ...) {
+    segm.fun, ...) {
     #-- get coords
     lpts <- as.matrix(gxy[, c("X", "Y")])
     lpts[, "X"] <- round(lpts[, "X"])
@@ -782,13 +787,13 @@
     smt[smt < threshold] <- 0
     #-- run watershed
     # smt <- summitWatershed(smt, tolerance=tolerance, ext=1)
-    # smt <- base::do.call(segm_fun, c(list(x = smt), pars_ps$summit$segm_arg))
-    smt <- segm_fun(smt, ...=...)
+    # smt <- base::do.call(segm.fun, c(list(x = smt), pars_ps$summit$segm_arg))
+    smt <- segm.fun(smt, ...=...)
     xx <- .openPxEdges(smt > 0)
     smt[xx == 0] <- 0
     
-    #--- retrive itens
-    lset <- .retrive_items(smt, lpts)
+    #--- retrieve itens
+    lset <- .retrieve_items(smt, lpts)
     
     #--- apply minsize
     len <- unlist(lapply(lset, length))
@@ -811,8 +816,8 @@
     smt <- .relabelBySignal(gxyz, smt)
     smt[smt > maxset] <- 0
     
-    #--- retrive itens
-    lset <- .retrive_items(smt, lpts)
+    #--- retrieve itens
+    lset <- .retrieve_items(smt, lpts)
     nset <- length(lset)
     
     #--- get summit outlines
@@ -820,7 +825,7 @@
     
     return(list(lset = lset, cset = cset, mset = smt, nset = nset))
 }
-.retrive_items <- function(smt, lpts){
+.retrieve_items <- function(smt, lpts){
   nset <- length(table(as.numeric(smt))) - 1
   lset <- lapply(seq_len(nset), function(i) {
     xi <- smt == i
@@ -931,8 +936,10 @@
   fargs <- formalArgs(args(aggregate.fun))
   fargs <- fargs[ !fargs %in% c("...", "na.rm")]
   if(length(fargs)>1){
-    stop("'aggregate.fun' must be a unary function, e.g, function(x) {...}",
-      call. = FALSE)
+    rlang::abort(c(
+      "'aggregate.fun' must be a unary function.",
+      "i" = "e.g. function(x) { ... }"
+    ))
   }
   x <- seq(0,10)/10
   result <- tryCatch({
@@ -944,9 +951,12 @@
     error = function(e) { FALSE }
   )
   if(!result){
-    ms1 <-"The 'aggregate.fun' failed validation: "
-    ms2 <-"it should take a numeric vector and return a single scalar value."
-    stop(ms1,ms2, call. = FALSE)
+    rlang::abort(c(
+      "The 'aggregate.fun' failed validation on testing.",
+      "*" = "It must take a numeric vector and return a single scalar value.",
+      "*" = "It may have produced a warning, an error, or an invalid result.",
+      "i" = "Test it yourself with: `aggregate.fun(seq(0, 10) / 10)`"
+    ))
   }
   
   TRUE
@@ -956,8 +966,10 @@
 .validate_polar_fun <- function(polar.fun){
   fargs <- formalArgs(args(polar.fun))
   if (!all(c("x", "beta") %in% fargs)){
-    stop("the 'polar.fun' must have the signature: function(x, beta) {...}",
-      call. = FALSE)
+    rlang::abort(c(
+      "Invalid 'polar.fun'.",
+      "i" = "Expected signature: function(x, beta) { ... }"
+    ))
   }
   TRUE
 }

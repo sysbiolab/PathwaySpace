@@ -11,8 +11,7 @@
   maxset = 30,
   minsize = 30,
   threshold = 0.5,
-  verbose = TRUE,
-  segm_fun = summitWatershed,
+  segm.fun = summitWatershed,
   ...
 )
 }
@@ -28,10 +27,7 @@ of the summits.}
 \item{threshold}{A threshold provided as a fraction (in \code{[0,1]}) of the
 max signal intensity.}
 
-\item{verbose}{A logical value specifying to display detailed
-messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).}
-
-\item{segm_fun}{A segmentation function used to detect summits
+\item{segm.fun}{A segmentation function used to detect summits
 (see \code{\link{summitWatershed}}).}
 
 \item{...}{Additional arguments passed to the segmentation function.}

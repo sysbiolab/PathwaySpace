@@ -111,8 +111,10 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     
     #--- validate the ps object and args
     if (!.checkStatus(ps, "Projection") && !.checkStatus(ps, "Silhouette")) {
-      stop("NOTE: 'ps' needs to be evaluated by a 'projection' method!",
-        call. = FALSE)
+      rlang::abort(c(
+        "The 'ps' object has not been evaluated by a 'projection' method.",
+        "i" = "Run a projection method on 'ps' before calling this function."
+      ))
     }
     .validate.ps.args("singleNumber", "si.alpha", si.alpha)
     .validate.ps.args("singleString", "xlab", xlab)
@@ -146,10 +148,13 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     if(!is.null(zlim)) {
       .validate.ps.args("numeric_vec", "zlim", zlim)
       if(length(zlim)!=2) 
-        stop("'zlim' should be a numeric vector of lenght 2.", call. = FALSE)
+        rlang::abort("'zlim' should be a numeric vector of lenght 2.")
+      if (zlim[1] == zlim[2])
+        rlang::abort("'zlim' must have two distinct values.")
+      zlim <- sort(zlim)
     }
     if (si.alpha < 0 || si.alpha > 1) {
-      stop("'si.alpha' should be in [0,1]", call. = FALSE)
+      rlang::abort("'si.alpha' should be in [0,1]")
     }
     
     #--- get slots from ps
@@ -175,7 +180,6 @@ setMethod("plotPathwaySpace", "PathwaySpace",
       gxyz[gxyz < zlim[1]] <- zlim[1]
       gxyz[gxyz > zlim[2]] <- zlim[2]
     }
-    if (all(zlim == 0)) zlim[2] <- 1
     
     #--- set gspace theme
     gs_theme <- theme_gspace_coords(theme = theme, 
@@ -357,8 +361,8 @@ setMethod("plotPathwaySpace", "PathwaySpace",
   gxyz <- cbind(gxyz, C = cset$C)
   xy.tx <- NULL
   concav <- sort(unique(gxyz$C))[-1]
-  for (i in seq_along(concav)) {
-    xy.cv <- gxyz[gxyz$C == i, c("X", "Y")]
+  for (id in concav) {
+    xy.cv <- gxyz[gxyz$C == id, c("X", "Y")]
     xy.tx <- rbind(xy.tx, colMeans(xy.cv))
     if(add.summits){
       ggp <- ggp + ggplot2::annotate(geom = "tile", x = xy.cv[, 1], 
@@ -408,8 +412,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
   names(marks) <- ifelse(names(marks) == "", marks, names(marks))
   idx_df <- .get_mark_idx(marks, gxy_df)
   if(any(is.na(idx_df$idx))){
-    stop("All 'marks' should be annotated in the 'PathwaySpace' object.",
-      call. = FALSE)
+    rlang::abort("All 'marks' should be annotated in the 'PathwaySpace' object.")
   }
   
   # set df

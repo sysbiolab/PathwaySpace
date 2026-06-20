@@ -17,7 +17,7 @@
 \arguments{
 \item{ps}{A \linkS4class{PathwaySpace} class object.}
 
-\item{pdist}{A term (in \code{[0,1]}) determining a distance unit for the
+\item{pdist}{A term (in \code{(0,1]}) determining a distance unit for the
 silhouette projection.}
 
 \item{baseline}{A fraction (in \code{[0,1]}) of the silhouette projection,

@@ -43,13 +43,12 @@
 #' @export
 #' 
 buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE) {
-  if(verbose) rlang::inform("Validating arguments...")
-  #--- validate argument types
   .validate.ps.args("singleInteger", "nrc", nrc)
   .validate.ps.args("singleLogical", "verbose", verbose)
-  #--- validate argument values
+  if(verbose) rlang::inform("Validating arguments...")
+  #--- validate argument types
   if (nrc < 2) {
-    stop("'nrc' should be >=2", call. = FALSE)
+    rlang::abort("'nrc' must be >=2")
   }
   #--- validate the graph object
   if(is_igraph(gs)){
@@ -152,18 +151,18 @@ setMethod("circularProjection", "PathwaySpace", function(ps,
   }
   #--- validate the pipeline status
   if (!.checkStatus(ps, "Preprocess")) {
-    stop("NOTE: the 'ps' object needs preprocessing!", call. = FALSE)
+    rlang::abort("The 'ps' object has not been preprocessed.")
   }
-  if(verbose) rlang::inform("Validating arguments...")
   #--- validate argument types
   .validate.ps.args("singleInteger", "k", k)
   .validate.ps.args("function", "aggregate.fun", aggregate.fun)
   .validate.ps.args("function", "decay.fun", decay.fun)
   .validate.ps.args("singleLogical", "rescale", rescale)
   .validate.ps.args("singleLogical", "verbose", verbose)
+  if(verbose) rlang::inform("Validating arguments...")
   #--- validate argument values
   if (k < 1) {
-    stop("'k' should be >=1", call. = FALSE)
+    rlang::abort("'k' must be >=1")
   }
   n <- gs_vcount(ps)
   if (k > n) k <- n
@@ -296,7 +295,7 @@ setMethod("polarProjection", "PathwaySpace", function(ps,
   
   #--- validate the pipeline status
   if (!.checkStatus(ps, "Preprocess")) {
-    stop("NOTE: the 'ps' object needs preprocessing!", call. = FALSE)
+    rlang::abort("The 'ps' object has not been preprocessed.")
   }
   ### deprecated
   if (lifecycle::is_present(pdist)) {
@@ -304,7 +303,6 @@ setMethod("polarProjection", "PathwaySpace", function(ps,
       "polarProjection(decay.fun)")
   }
   ###
-  if(verbose) rlang::inform("Validating arguments...")
   .validate.ps.args("singleInteger", "k", k)
   .validate.ps.args("singleNumber", "beta", beta)
   .validate.ps.args("function", "decay.fun", decay.fun)
@@ -314,14 +312,14 @@ setMethod("polarProjection", "PathwaySpace", function(ps,
   .validate.ps.args("singleLogical", "edge.norm", edge.norm)
   .validate.ps.args("singleLogical", "rescale", rescale)
   .validate.ps.args("singleLogical", "verbose", verbose)
+  if(verbose) rlang::inform("Validating arguments...")
   if (k < 1) {
-    stop("'k' should be >=1", call. = FALSE)
+    rlang::abort("'k' must be >=1")
   }
   n <- gs_vcount(ps)
   if (k > n) k <- n
   if (beta < 0) {
-    msg <- paste0("'beta' should be an exponent in [0,+Inf)")
-    stop(msg, call. = FALSE)
+    rlang::abort("'beta' must be an exponent in [0,+Inf)")
   }
   
   #--- validate functions
@@ -362,7 +360,7 @@ setMethod("polarProjection", "PathwaySpace", function(ps,
 #' to outline the graph layout in a PathwaySpace image.
 #'
 #' @param ps A \linkS4class{PathwaySpace} class object.
-#' @param pdist A term (in \code{[0,1]}) determining a distance unit for the
+#' @param pdist A term (in \code{(0,1]}) determining a distance unit for the
 #' silhouette projection.
 #' @param baseline A fraction (in \code{[0,1]}) of the silhouette projection,
 #' representing the level over which a silhouette will outline the graph layout.
@@ -402,25 +400,26 @@ setMethod("polarProjection", "PathwaySpace", function(ps,
 setMethod("silhouetteMapping", "PathwaySpace", function(ps,
   pdist = 0.05, baseline = 0.01, fill.cavity = TRUE, verbose = TRUE) {
   
+  ps <- updateGraphSpace(ps)
+
   #--- validate the pipeline status
   if (!.checkStatus(ps, "Preprocess")) {
-    stop("NOTE: the 'ps' object needs preprocessing!", call. = FALSE)
+    rlang::abort("The 'ps' object has not been preprocessed.")
   }
   
-  ps <- updateGraphSpace(ps)
-  
-  if(verbose) rlang::inform("Validating arguments...")
   #--- validate argument types
   .validate.ps.args("singleNumber", "pdist", pdist)
   .validate.ps.args("singleNumber", "baseline", baseline)
   .validate.ps.args("singleLogical", "fill.cavity", fill.cavity)
   .validate.ps.args("singleLogical", "verbose", verbose)
+  if(verbose) rlang::inform("Validating arguments...")
+  
   #--- validate argument values
   if (baseline < 0 || baseline > 1) {
-    stop("'baseline' should be in [0,1]", call. = FALSE)
+    rlang::abort("'baseline' must be in [0,1]")
   }
-  if (pdist < 0 || pdist > 1) {
-    stop("'pdist' should be in [0,1]", call. = FALSE)
+  if (pdist <= 0 || pdist > 1) {
+    rlang::abort("'pdist' must be in (0,1]")
   }
   
   #--- pack args (for default projection)
@@ -451,9 +450,7 @@ setMethod("silhouetteMapping", "PathwaySpace", function(ps,
 #' of the summits.
 #' @param threshold A threshold provided as a fraction (in \code{[0,1]}) of the
 #' max signal intensity.
-#' @param verbose A logical value specifying to display detailed 
-#' messages (when \code{verbose=TRUE}) or not (when \code{verbose=FALSE}).
-#' @param segm_fun A segmentation function used to detect summits
+#' @param segm.fun A segmentation function used to detect summits
 #' (see \code{\link{summitWatershed}}).
 #' @param ... Additional arguments passed to the segmentation function.
 #' @return A preprocessed \linkS4class{PathwaySpace} class object.
@@ -475,45 +472,44 @@ setMethod("silhouetteMapping", "PathwaySpace", function(ps,
 #' @export
 #'
 setMethod("summitMapping", "PathwaySpace", function(ps, maxset = 30, 
-  minsize = 30, threshold = 0.5, verbose = TRUE, 
-  segm_fun = summitWatershed, ...) {
-  
-  #--- validate the pipeline status
-  if (!.checkStatus(ps, "Projection")) {
-    msg <- paste0("NOTE: the 'ps' object needs to be\n",
-      "evaluated by a 'projection' method!")
-    stop(msg, call. = FALSE)
-  }
+  minsize = 30, threshold = 0.5, segm.fun = summitWatershed, ...) {
   
   ps <- updateGraphSpace(ps)
+
+  #--- validate the pipeline status
+  if (!.checkStatus(ps, "Projection")) {
+    rlang::abort(c(
+      "The 'ps' object has not been evaluated by a 'projection' method.",
+      "i" = "Run a projection method on 'ps' before calling this function."
+    ))
+  }
   
   #--- validate argument types
   .validate.ps.args("singleInteger", "maxset", maxset)
   .validate.ps.args("singleInteger", "minsize", minsize)
   .validate.ps.args("singleNumber", "threshold", threshold)
-  .validate.ps.args("singleLogical", "verbose", verbose)
-  .validate.ps.args("function", "segm_fun", segm_fun)
+  .validate.ps.args("function", "segm.fun", segm.fun)
   
   #--- validate argument values
   if (maxset < 1) {
-    stop("'maxset' should be >=1", call. = FALSE)
+    rlang::abort("'maxset' must be >=1")
   }
   if (minsize < 1) {
-    stop("'minsize' should be >=1", call. = FALSE)
+    rlang::abort("'minsize' must be >=1")
   }
   if (threshold < 0 || threshold > 1) {
-    stop("'threshold' should be in [0,1]", call. = FALSE)
+    rlang::abort("'threshold' must be in [0,1]")
   }
   
   #--- pack args
   pars <- list(maxset = maxset, minsize = minsize,
-    summit_threshold = threshold, segm_fun = segm_fun,
+    summit_threshold = threshold, segm.fun = segm.fun,
     segm_arg = list(...=...))
   for (nm in names(pars)) {
     ps@pars_ps$summit[[nm]] <- pars[[nm]]
   }
   #--- run ps pipeline
-  ps <- .summitMapping(ps, verbose, ...=...)
+  ps <- .summitMapping(ps, ...=...)
   ps <- .updateStatus(ps, "Summits")
   return(ps)
 })
@@ -554,7 +550,7 @@ setMethod("getPathwaySpace", "PathwaySpace", function(ps, what = "status") {
     "summit_mask", "summit_contour")
   if (!what %in% opts) {
     opts <- paste0(opts, collapse = ", ")
-    stop("'what' must be one of:\n", opts, call. = FALSE)
+    rlang::abort(sprintf("'what' must be one of: %s", opts))
   }
   
   .check_updated_ps(ps)
@@ -698,7 +694,7 @@ setMethod("vertexSignal<-", "PathwaySpace",
     .check_updated_ps(x)
     
     if (!is.numeric(value) || !is.vector(value)){
-      stop("'signal' must be a numeric vector or scalar.", call. = FALSE)
+      rlang::abort("'signal' must be a numeric vector or scalar.")
     }
     gs_vertex_attr(x, "signal") <- value
     return(x)
@@ -761,9 +757,9 @@ setReplaceMethod("activeFeature", "PathwaySpace", function(x, value) {
     ))
   }
   if (b1 && b2) {
-    rlang::warn(sprintf(
-      "Feature '%s' found in both feature matrix and node attributes; using feature matrix.",
-      value
+    rlang::warn(c(
+      sprintf("Feature '%s' found in both feature matrix and node attributes.", value),
+      "i" = "Using the feature matrix."
     ))
   }
   if(b1){
@@ -830,7 +826,7 @@ setReplaceMethod(
     # Call the GraphSpace method first
     x <- callNextMethod()
     
-    x <- .validate_ps_containers(x)
+    x <- .validate_ps_containers(x, changed = name)
     
     return(x)
   }
@@ -847,17 +843,23 @@ setReplaceMethod(
     # Call the GraphSpace method first
     x <- callNextMethod()
     
-    x <- .validate_ps_containers(x)
+    x <- .validate_ps_containers(x, changed = name)
     
     return(x)
   }
 )
 
 #-------------------------------------------------------------------------------
-.validate_ps_containers <- function(ps) {
-  ps <- .validate_signal(ps)
-  ps <- .validate_weights(ps)
-  ps <- .validate_decayFunction(ps)
+.validate_ps_containers <- function(ps, changed = NULL) {
+  if (is.null(changed) || changed == "signal") {
+    ps <- .validate_signal(ps)
+  }
+  if (is.null(changed) || changed == "weight") {
+    ps <- .validate_weights(ps)
+  }
+  if (is.null(changed) || changed == "decayFunction") {
+    ps <- .validate_decayFunction(ps)
+  }
   return(ps)
 }
 
@@ -865,10 +867,10 @@ setReplaceMethod(
 .validate_signal <- function(ps) {
   signal <- gs_vertex_attr(ps, "signal")
   if(is.null(signal)){
-    stop("'signal' vertex attribute must be available.", call. = FALSE)
+    rlang::abort("'signal' vertex attribute must be available.")
   }
   if (!is.numeric(signal)){
-    stop("vertex 'signal' variable must be numeric.", call. = FALSE)
+    rlang::abort("vertex 'signal' variable must be numeric.")
   }
   ps@nodes$signal <- .revise_signal(signal)
   return(ps)
@@ -886,10 +888,10 @@ setReplaceMethod(
   if(gs_ecount(ps)>0){
     weight <- gs_edge_attr(ps, "weight")
     if(is.null(weight)){
-      stop("'weight' edge attribute must be available.", call. = FALSE)
+      rlang::abort("'weight' edge attribute must be available.")
     }
     if (!is.numeric(weight)){
-      stop("edge 'weight' variable must be numeric.", call. = FALSE)
+      rlang::abort("edge 'weight' variable must be numeric.")
     }
     ps@edges$weight <- .revise_weights(weight)
   }
@@ -911,15 +913,17 @@ setReplaceMethod(
 .validate_decayFunction <- function(ps){
   att <- names(gs_vertex_attr(ps))
   if(! "decayFunction" %in% att){
-    stop("Missing a vertex 'decayFunction' attribute.", call. = FALSE)
+    rlang::abort("Missing a vertex 'decayFunction' attribute.")
   }
   decayFunction <- gs_vertex_attr(ps, "decayFunction")
   # check function, args, and vertex attributes
   lg <- unlist(lapply(decayFunction, is.function))
   if(!all(lg)){
-    msg1 <- "Each vertex 'decay function' must be a function, e.g.,\n"
-    msg2 <- "function(x, signal) { ... }"
-    stop(msg1, msg2, call. = FALSE)
+    rlang::abort(c(
+      "Vertex 'decayFunction' attribute is invalid.",
+      "i" = "Each vertex 'decay function' must be a function.",
+      "i" = "e.g. function(x, signal) { ... }"
+    ))
   }
   not_used <- lapply(decayFunction, .check_decay_args, nodes=ps@nodes)
   if(.all_equal_fun(decayFunction)){
@@ -938,22 +942,37 @@ setReplaceMethod(
   fargs <- formalArgs(args(decay_fun))
   missing_args <- setdiff(args, fargs)
   if (length(missing_args) > 0) {
-    msg <- paste0("Invalid 'decay function':")
-    msg <- paste0(msg, " expected arguments 'x' and 'signal' not found.")
-    stop(msg, call. = FALSE)
+    rlang::abort(c(
+      "Invalid 'decay function'.",
+      "i" = "Expected 'x' and 'signal' arguments not found.",
+      "i" = "e.g. function(x, signal) { ... }"
+    ))
   }
+  
   decay_args <- c(args, setdiff(fargs, args))
+  
+  if ("..." %in% decay_args) {
+    rlang::abort(c(
+      "Invalid 'decay function'.",
+      "i" = "'...' is not supported; every argument must be named and match a vertex attribute.",
+      "i" = "e.g. function(x, signal, weight) { ... }"
+    ))
+  }
   
   if(!all(decay_args %in% colnames(nodes))){
     extra_args <- decay_args[!decay_args %in% colnames(nodes)]
-    msg1 <- "Each 'decay function' argument must correspond to a vertex attribute.\n"
-    msg2 <- paste0(sQuote(extra_args, q=FALSE), collapse = ", ")
-    msg2 <- paste0("The following argument(s) do not match any vertex attribute: ",
-      msg2)
-    stop(msg1, msg2, call. = FALSE)
+    extra_args <- paste0(sQuote(extra_args, q=FALSE), collapse = ", ")
+    rlang::abort(c(
+      "Each 'decay function' argument must correspond to a vertex attribute.",
+      "i" = paste0("The following argument(s) do not match any vertex attribute: ", 
+        extra_args)
+    ))
   }
+  
   TRUE
+  
 }
+
 .is_default_args <- function(decayFunction, args = c("x","signal")){
   fargs <- lapply(decayFunction, formalArgs)
   n_args <- unlist(lapply(fargs, length))
