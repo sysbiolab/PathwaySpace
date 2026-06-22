@@ -2,41 +2,42 @@
 ### Main constructor of PathwaySpace-class objects
 ################################################################################
 .buildPathwaySpace <- function(gs, nrc = 500, verbose = TRUE) {
-    
-    #--- initialize vertex signal
-    att <- names(gs_vertex_attr(gs))
-    if( ! "signal" %in% att ){
-      gs_vertex_attr(gs, "signal") <- 0
-    }
-    
-    #--- initialize decay function
-    att <- names(gs_vertex_attr(gs))
-    if( ! "decayFunction" %in% att ){
-      gs_vertex_attr(gs, "decayFunction") <- weibullDecay()
-    }
-    
-    #--- initialize edge weight
-    att <- names(gs_edge_attr(gs))
-    if( ! "weight" %in% att ){
-      gs_edge_attr(gs, "weight") <- 1
-    }
-    
-    #--- create a PathwaySpace object
-    if(verbose) rlang::inform("Creating a 'PathwaySpace' object...")
-    ps <- as(gs, "PathwaySpace")
-    
-    ps@pars_ps$nrc <- nrc
-    
-    #--- initialize status
-    pnames <- c("Preprocess", "CircularProjection", "PolarProjection",
-      "Silhouette", "Summits")
-    status <- rep("[ ]", length(pnames))
-    names(status) <- pnames
-    ps@status <- status
-    
-    ps <- .validate_ps_containers(ps)
-    
-    return(ps)
+  
+  #--- initialize vertex signal
+  att <- names(gs_vertex_attr(gs))
+  if( ! "signal" %in% att ){
+    gs_vertex_attr(gs, "signal") <- 0
+  }
+  
+  #--- initialize decay function
+  att <- names(gs_vertex_attr(gs))
+  if( ! "decayFunction" %in% att ){
+    gs_vertex_attr(gs, "decayFunction") <- weibullDecay()
+  }
+  
+  #--- initialize edge weight
+  att <- names(gs_edge_attr(gs))
+  if( ! "weight" %in% att ){
+    gs_edge_attr(gs, "weight") <- 1
+  }
+  
+  #--- create a PathwaySpace object
+  if(verbose) rlang::inform("Creating a 'PathwaySpace' object...")
+  ps <- as(gs, "PathwaySpace")
+  
+  ps@pars_ps$nrc <- nrc
+  
+  #--- initialize status
+  pnames <- c("Preprocess", "CircularProjection", "PolarProjection",
+    "Silhouette", "Summits")
+  status <- rep("[ ]", length(pnames))
+  names(status) <- pnames
+  ps@status <- status
+  
+  ps <- .validate_ps_containers(ps)
+  
+  return(ps)
+  
 }
 
 ################################################################################
@@ -93,24 +94,11 @@
       nsig[[i]] <- do.call(decay_fun, args_list)
     }
   }
-  # vectorize and sort projected signals
+  # vectorize for sorting projected signals
   nsig <- unlist(nsig)
   nn <- unlist(nnpg$nn)
 
-  ## Version 1: sort by signal strength (descending)
-  ## (sort + unique + find_nnu_positions)
-  # ord <- order(-abs(nsig))
-  # nsig <- nsig[ord]
-  # nn <- nn[ord]
-  ## pack into a list
-  # nnu <- unique(nn)
-  # nnl <- .find_nnu_positions(nnu, nn)
-  # dsig_lt <- as.list(rep(0, times = nrow(lpts)))
-  # for(i in seq_along(nnl)){
-  #   dsig_lt[[nnu[i]]] <- nsig[nnl[[i]]]
-  # }
-  
-  ## Version 2: group by pixel, sorted by descending |magnitude| within each pixel
+  ## group by pixel, sorted by descending |magnitude| within each pixel
   ## (one compound sort)
   ord <- order(nn, -abs(nsig))
   nsig <- nsig[ord]
@@ -150,38 +138,6 @@
   # values are only 0s
   Z[is.na(Z)] <- 0
   return(Z)
-}
-
-#-------------------------------------------------------------------------------
-#--- aggregate projected signals
-.summ_dsig_mt <- function(dsig_mt, pars_ps) {
-  if (pars_ps$k > 1) {
-    k <- min(pars_ps$k, ncol(dsig_mt))
-    dsig_mt <- dsig_mt[, seq_len(k), drop = FALSE]
-    Z <- apply(dsig_mt, 1, pars_ps$aggregate.fun)
-  } else {
-    Z <- dsig_mt[, 1]
-  }
-  # Note: NaNs may result from user's customized functions when signal 
-  # values are only 0s
-  Z[is.na(Z)] <- 0
-  return(Z)
-}
-
-#-------------------------------------------------------------------------------
-# Find positions of unique 'nnu' in 'nn'
-.find_nnu_positions <- function(nnu, nn) {
-  .find_positions <- function(i, nn_idx, starts, ends){
-    nn_idx[seq(starts[i], ends[i])]
-  }
-  nn_idx <- order(nn)
-  nn_ord <- nn[nn_idx]
-  nn_rev <- rev(nn_ord)
-  starts <- match(nnu, nn_ord)
-  ends <- length(nn_rev) - match(nnu, nn_rev) + 1
-  lapply(seq_along(nnu), function(i) {
-    .find_positions(i, nn_idx, starts, ends)
-  } )
 }
 
 #-------------------------------------------------------------------------------
@@ -267,67 +223,67 @@
 ################################################################################
 .polarProjection <- function(ps, verbose = TRUE) {
   
-    nodes <- getPathwaySpace(ps, "nodes")
-    edges <- getPathwaySpace(ps, "edges")
-    if(nrow(edges)==0){
-      rlang::abort(c(
-        "This 'PathwaySpace' object does not contain edges.",
-        "i" = "The 'polarProjection' method requires at least one edge for projection."
-      ))
-    }
-    pars_ps <- getPathwaySpace(ps, "pars")
-    pars_gs <- getGraphSpace(ps, "pars")
-    signal <- .get_edge_signal(nodes, edges)
-    pars_ps$configs <- .get_signal_scale(signal)
-    
-    if(pars_ps$directional){
-      if(pars_gs$is.directed){
-        if(verbose) rlang::inform("Using polar projection on directed graph...")
-      } else {
-        rlang::abort("'directional' used with undirected graph.")
-      }
-    } else {
-      if(verbose) rlang::inform("Using polar projection on undirected graph...")
-    }
-    
-    if(verbose) rlang::inform("Mapping 'x' and 'y' coordinates...")
-    gxy <- .rescale_coord(nodes, pars_ps$nrc)
-    
-    # 'weight' will adjust signals when variable or different from default
-    if (.is_variable(edges$weight) || any(edges$weight != 1)) {
-      if(verbose) rlang::inform("Scaling projection to edge weight...")
-      pars_ps$eweight <- TRUE
-    } else {
-      pars_ps$eweight <- FALSE
-    }
-    
-    if(verbose) rlang::inform("Computing linear and angular distances...")
-    # for polar, 'dist' is scaled to edge dist and polar coordinates
-    edges$edist <- .get_edge_dist(edges, gxy)
-    edges$emode <- .get_emode(edges$arrowType)
-    lpts <- .get_points_in_matrix(pars_ps$nrc)
-    nnpg <- .get_near_points(lpts, gxy, nodes, pars_ps)
-    nnpg <- .get_angular_dist(nnpg, lpts, gxy, edges, pars_ps)
-    nnpg <- .scale_dist_polar(nnpg, pars_ps)
-    # cleanup intermediate objects not needed downstream to save memory
-    nnpg$dtheta <- NULL
-    nnpg$edleng <- NULL
-    if (!pars_ps$eweight) nnpg$edwght <- NULL
+  nodes <- getPathwaySpace(ps, "nodes")
+  edges <- getPathwaySpace(ps, "edges")
+  if(nrow(edges)==0){
+    rlang::abort(c(
+      "This 'PathwaySpace' object does not contain edges.",
+      "i" = "The 'polarProjection' method requires at least one edge for projection."
+    ))
+  }
+  pars_ps <- getPathwaySpace(ps, "pars")
+  pars_gs <- getGraphSpace(ps, "pars")
+  signal <- .get_edge_signal(nodes, edges)
+  pars_ps$configs <- .get_signal_scale(signal)
   
-    # project signal
-    if(verbose) rlang::inform("Running signal convolution...")
-    xsig <- array(0, c(pars_ps$nrc, pars_ps$nrc))
-    if (nrow(gxy) > 0) {
-      xsig[lpts[, c("Y", "X")]] <- .get_ldsig_polar(nodes, 
-        pars_ps, nnpg, lpts)
+  if(pars_ps$directional){
+    if(pars_gs$is.directed){
+      if(verbose) rlang::inform("Using polar projection on directed graph...")
+    } else {
+      rlang::abort("'directional' used with undirected graph.")
     }
-    # image(.transpose_and_flip(xsig))
-    
-    # add projection
-    ps@projection@coordinates <- gxy
-    ps@projection@signal <- xsig
-    ps <- .update_projections(ps, pars_ps)
-    return(ps)
+  } else {
+    if(verbose) rlang::inform("Using polar projection on undirected graph...")
+  }
+  
+  if(verbose) rlang::inform("Mapping 'x' and 'y' coordinates...")
+  gxy <- .rescale_coord(nodes, pars_ps$nrc)
+  
+  # 'weight' will adjust signals when variable or different from default
+  if (.is_variable(edges$weight) || any(edges$weight != 1)) {
+    if(verbose) rlang::inform("Scaling projection to edge weight...")
+    pars_ps$eweight <- TRUE
+  } else {
+    pars_ps$eweight <- FALSE
+  }
+  
+  if(verbose) rlang::inform("Computing linear and angular distances...")
+  # for polar, 'dist' is scaled to edge dist and polar coordinates
+  edges$edist <- .get_edge_dist(edges, gxy)
+  edges$emode <- .get_emode(edges$arrowType)
+  lpts <- .get_points_in_matrix(pars_ps$nrc)
+  nnpg <- .get_near_points(lpts, gxy, nodes, pars_ps)
+  nnpg <- .get_angular_dist(nnpg, lpts, gxy, edges, pars_ps)
+  nnpg <- .scale_dist_polar(nnpg, pars_ps)
+  # cleanup intermediate objects not needed downstream to save memory
+  nnpg$dtheta <- NULL
+  nnpg$edleng <- NULL
+  if (!pars_ps$eweight) nnpg$edwght <- NULL
+  
+  # project signal
+  if(verbose) rlang::inform("Running signal convolution...")
+  xsig <- array(0, c(pars_ps$nrc, pars_ps$nrc))
+  if (nrow(gxy) > 0) {
+    xsig[lpts[, c("Y", "X")]] <- .get_ldsig_polar(nodes, 
+      pars_ps, nnpg, lpts)
+  }
+  # image(.transpose_and_flip(xsig))
+  
+  # add projection
+  ps@projection@coordinates <- gxy
+  ps@projection@signal <- xsig
+  ps <- .update_projections(ps, pars_ps)
+  return(ps)
 }
 .get_edge_signal <- function(nodes, edges){
   c( nodes[edges$vertex1,"signal"] * edges$weight,
@@ -368,23 +324,26 @@
       nsig[[i]] <- do.call(decay_fun, args_list)
     }
   }
-  # vectorize and sort projected signals
+  # vectorize for sorting projected signals
   nsig <- unlist(nsig)
   nn <- unlist(nnpg$nn)
-  idx <- order(-abs(nsig))
-  nsig <- nsig[idx]
-  nn <- nn[idx]
-  # arrange into a matrix
-  nnu <- unique(nn)
-  nnl <- .find_nnu_positions(nnu, nn)
-  n <- max(sapply(nnl, length))
-  dsig_mt <- matrix(0, nrow = nrow(lpts), ncol = n)
-  for(i in seq_along(nnl)){
-    s <- nsig[nnl[[i]]]
-    dsig_mt[nnu[i], seq_along(s) ] <- s
-  }
+  
+  ## group by pixel, sorted by descending |magnitude| within each pixel
+  ## (one compound sort)
+  ord <- order(nn, -abs(nsig))
+  nsig <- nsig[ord]
+  nn <- nn[ord]
+  boundary <- c(TRUE, nn[-1] != nn[-length(nn)])
+  group_start <- which(boundary)
+  group_pixel <- nn[group_start]
+  group_end <- c(group_start[-1] - 1, length(nn))
+  dsig_lt <- as.list(rep(0, times = nrow(lpts)))
+  dsig_lt[group_pixel] <- lapply(seq_along(group_start), function(i) {
+    nsig[group_start[i]:group_end[i]]
+  })
   # aggregate
-  Z <- .summ_dsig_mt(dsig_mt, pars_ps)
+  Z <- .summ_dsig_lt(dsig_lt, pars_ps)
+  
   return(Z)
 }
 
@@ -436,7 +395,7 @@
       # Equating the two and solving gives dth_iso^beta = 1/sqrt(2*beta+1):
       dth_iso <- (2*pars_ps$beta + 1) ^ (-1 / (2*pars_ps$beta))
       # At beta=0 this evaluates cleanly to 1 (R: 1^(-Inf) = 1).
-      ##--- Entry poit for possible future parameter to override projection of isolated nodes; 
+      ##--- Entry point for a future parameter to override projection of isolated nodes; 
       ##--- setting dth_iso to 0 would make them project as single points with no area,
       ##--- which may be desirable in some cases (i.e. dth_iso <- 0)
       dth <- rep(dth_iso, length(p_dst))
@@ -482,6 +441,8 @@
   }
   return(cbind(dth, eln, ewt))
 }
+
+#-------------------------------------------------------------------------------
 .get_delta_theta_looping <- function(p_theta, p_et, p_el, p_wt, pars_ps) {
   if (length(p_et) > 1){
     C <- ( 1 + ( 1 - .angular_evenness(p_et) ) ) ^ 2
@@ -547,46 +508,46 @@
 
 #-------------------------------------------------------------------------------
 .edge_list <- function(edges, gxy) {
-    nms <- rownames(gxy)
-    el <- lapply(nms, function(nm) {
-        e <- c(edges$name2[edges$name1==nm],
-            edges$name1[edges$name2==nm])
-        which(nms %in% e)
-    })
-    names(el) <- nms
-    return(el)
+  nms <- rownames(gxy)
+  el <- lapply(nms, function(nm) {
+    e <- c(edges$name2[edges$name1==nm],
+      edges$name1[edges$name2==nm])
+    which(nms %in% e)
+  })
+  names(el) <- nms
+  return(el)
 }
 .edge_attr <- function(edges, gxy, eattr = "edist") {
-    nms <- rownames(gxy)
-    el <- lapply(nms, function(nm) {
-        idx1 <- edges$name1 == nm
-        att1 <- edges[[eattr]][idx1]
-        names(att1) <- edges$name2[idx1]
-        idx2 <- edges$name2 == nm
-        att2 <- edges[[eattr]][idx2]
-        names(att2) <- edges$name1[idx2]
-        e <- c(att1, att2)
-        e[order(match(names(e), nms))]
-    })
-    names(el) <- nms
-    return(el)
+  nms <- rownames(gxy)
+  el <- lapply(nms, function(nm) {
+    idx1 <- edges$name1 == nm
+    att1 <- edges[[eattr]][idx1]
+    names(att1) <- edges$name2[idx1]
+    idx2 <- edges$name2 == nm
+    att2 <- edges[[eattr]][idx2]
+    names(att2) <- edges$name1[idx2]
+    e <- c(att1, att2)
+    e[order(match(names(e), nms))]
+  })
+  names(el) <- nms
+  return(el)
 }
 .edge_mode <- function(edges, gxy) {
-    nms <- rownames(gxy)
-    el <- lapply(nms, function(nm) {
-        idx1 <- edges$name1 == nm
-        att1 <- edges$emode[idx1]
-        names(att1) <- edges$name2[idx1]
-        att1[] <- as.numeric(att1>0)
-        idx2 <- edges$name2 == nm
-        att2 <- edges$emode[idx2]
-        names(att2) <- edges$name1[idx2]
-        att2[] <- as.numeric(att2==2)
-        e <- c(att1, att2)
-        e[order(match(names(e), nms))]
-    })
-    names(el) <- nms
-    return(el)
+  nms <- rownames(gxy)
+  el <- lapply(nms, function(nm) {
+    idx1 <- edges$name1 == nm
+    att1 <- edges$emode[idx1]
+    names(att1) <- edges$name2[idx1]
+    att1[] <- as.numeric(att1>0)
+    idx2 <- edges$name2 == nm
+    att2 <- edges$emode[idx2]
+    names(att2) <- edges$name1[idx2]
+    att2[] <- as.numeric(att2==2)
+    e <- c(att1, att2)
+    e[order(match(names(e), nms))]
+  })
+  names(el) <- nms
+  return(el)
 }
 
 #-------------------------------------------------------------------------------
@@ -718,42 +679,42 @@
 ################################################################################
 .silhouetteCircular <- function(ps, verbose = TRUE) {
   
-    nodes <- getPathwaySpace(ps, "nodes")
-    pars_ps <- getPathwaySpace(ps, "pars")
-    
-    if(verbose) rlang::inform("Mapping 'x' and 'y' coordinates...")
-    gxy <- .rescale_coord(nodes, pars_ps$nrc)
-    lpts <- .get_points_in_matrix(pars_ps$nrc)
-    
-    #--- get point-to-vertex distances for silhouettes
-    nnbg <- .get_silhouette_dists(lpts, gxy, pars_ps$silh$k)
-    
-    #--- project floor
-    xfloor <- array(0, c(pars_ps$nrc, pars_ps$nrc))
-    if (nrow(nodes)>0 & pars_ps$silh$pdist > 0) {
-        xfloor[lpts[, c("Y", "X")]] <- .get_ldfloor(pars_ps, nnbg)
-    }
-    # image(.transpose_and_flip(xfloor))
-    xfloor <- .cutfloor(xfloor, pars_ps)
-    xfloor[gxy[, c("Yint", "Xint")]] <- 1
-    
-    #---return silhouette
-    nbg <- sum(xfloor == 1)
-    sz <- round(nbg / prod(dim(xfloor)) * 100, 2)
-    if(verbose) {
-      rlang::inform(message = paste0("Silhouette: ", 
-        sz, "% of the landscape area!"))
-    }
-    
-    #--- add projection
-    ps@projection@coordinates <- gxy
-    ps@projection@floor <- xfloor
-    if (!.checkStatus(ps, "Projection")){
-      ps@projection@signal <- array(0, c(pars_ps$nrc, pars_ps$nrc))
-      pars_ps$configs <- .get_signal_scale(0)
-    }
-    ps <- .update_projections(ps, pars_ps)
-    return(ps)
+  nodes <- getPathwaySpace(ps, "nodes")
+  pars_ps <- getPathwaySpace(ps, "pars")
+  
+  if(verbose) rlang::inform("Mapping 'x' and 'y' coordinates...")
+  gxy <- .rescale_coord(nodes, pars_ps$nrc)
+  lpts <- .get_points_in_matrix(pars_ps$nrc)
+  
+  #--- get point-to-vertex distances for silhouettes
+  nnbg <- .get_silhouette_dists(lpts, gxy, pars_ps$silh$k)
+  
+  #--- project floor
+  xfloor <- array(0, c(pars_ps$nrc, pars_ps$nrc))
+  if (nrow(nodes)>0 & pars_ps$silh$pdist > 0) {
+    xfloor[lpts[, c("Y", "X")]] <- .get_ldfloor(pars_ps, nnbg)
+  }
+  # image(.transpose_and_flip(xfloor))
+  xfloor <- .cutfloor(xfloor, pars_ps)
+  xfloor[gxy[, c("Yint", "Xint")]] <- 1
+  
+  #---return silhouette
+  nbg <- sum(xfloor == 1)
+  sz <- round(nbg / prod(dim(xfloor)) * 100, 2)
+  if(verbose) {
+    rlang::inform(message = paste0("Silhouette: ", 
+      sz, "% of the landscape area!"))
+  }
+  
+  #--- add projection
+  ps@projection@coordinates <- gxy
+  ps@projection@floor <- xfloor
+  if (!.checkStatus(ps, "Projection")){
+    ps@projection@signal <- array(0, c(pars_ps$nrc, pars_ps$nrc))
+    pars_ps$configs <- .get_signal_scale(0)
+  }
+  ps <- .update_projections(ps, pars_ps)
+  return(ps)
 }
 
 #-------------------------------------------------------------------------------
@@ -768,23 +729,23 @@
 
 #-------------------------------------------------------------------------------
 .get_ldfloor <- function(pars_ps, nnbg) {
-    decay_fun <- pars_ps$silh$decay.fun
-    nn <- ncol(nnbg$nn)
-    sfloor <- vapply(seq_len(nrow(nnbg$nn)), function(ii) {
-        p_dst <- nnbg$dist[ii, ]
-        #--- scaling projection on pdist
-        pdist <- pars_ps$silh$pdist
-        #--- get floor of an ideal (max) signal
-        x <- p_dst / (pars_ps$nrc * pdist)
-        sfloor <- decay_fun(x=x, signal=1)
-        return(sfloor)
-    }, numeric(nn))
-    sfloor <- t(sfloor)
-    sfloor <- matrix(sfloor[order(row(sfloor), -sfloor)],
-        nrow = nrow(sfloor), byrow = TRUE)
-    sfloor <- sfloor[, seq_len(pars_ps$silh$k), drop = FALSE]
-    Z <- apply(sfloor, 1, mean)
-    return(Z)
+  decay_fun <- pars_ps$silh$decay.fun
+  nn <- ncol(nnbg$nn)
+  sfloor <- vapply(seq_len(nrow(nnbg$nn)), function(ii) {
+    p_dst <- nnbg$dist[ii, ]
+    #--- scaling projection on pdist
+    pdist <- pars_ps$silh$pdist
+    #--- get floor of an ideal (max) signal
+    x <- p_dst / (pars_ps$nrc * pdist)
+    sfloor <- decay_fun(x=x, signal=1)
+    return(sfloor)
+  }, numeric(nn))
+  sfloor <- t(sfloor)
+  sfloor <- matrix(sfloor[order(row(sfloor), -sfloor)],
+    nrow = nrow(sfloor), byrow = TRUE)
+  sfloor <- sfloor[, seq_len(pars_ps$silh$k), drop = FALSE]
+  Z <- apply(sfloor, 1, mean)
+  return(Z)
 }
 
 #-------------------------------------------------------------------------------
