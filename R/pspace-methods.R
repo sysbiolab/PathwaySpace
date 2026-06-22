@@ -260,7 +260,7 @@ setMethod("circularProjection", "PathwaySpace", function(ps,
 #' data('gtoy2', package = 'RGraphSpace')
 #' 
 #' # Create a new PathwaySpace object
-#' ps <- buildPathwaySpace(gtoy2, nrc = 100)
+#' ps <- buildPathwaySpace(gtoy2, nrc = 300)
 #' # note: adjust 'nrc' to increase image resolution
 #' 
 #' # Set '1s' as vertex signal
@@ -269,8 +269,13 @@ setMethod("circularProjection", "PathwaySpace", function(ps,
 #' # Set edge weight
 #' # gs_edge_attr(ps, "weight") <- c(-1, 1, 1, 1, 1, 1)
 #' 
+#' # Set a decay function for all vertices
+#' vertexDecay(ps) <- weibullDecay(shape=2, pdist = 0.2)
+#' 
 #' # Create a 2D-landscape image
-#' ps <- polarProjection(ps)
+#' ps <- polarProjection(ps, beta = 5)
+#' 
+#' plotPathwaySpace(ps)
 #' 
 #' @import methods
 #' @docType methods

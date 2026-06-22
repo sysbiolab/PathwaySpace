@@ -51,7 +51,7 @@
     msg <- paste0("'", name, "' should be a single logical value.")
     if (!.is_singleLogical(para)) stop(msg, call. = FALSE)
   } else {
-    warning("Skipped arg validation.", call. = FALSE)
+    stop("Skipped arg validation.", call. = FALSE)
   }
 }
 
@@ -68,7 +68,7 @@
       stop(msg, call. = FALSE)
     }
   } else {
-    warning("Skipped color validation.", call. = FALSE)
+    stop("Skipped color validation.", call. = FALSE)
   }
 }
 
@@ -83,7 +83,7 @@
       }
     }
   } else {
-    warning("Skipped arg validation.", call. = FALSE)
+    stop("Skipped arg validation.", call. = FALSE)
   }
 }
 
