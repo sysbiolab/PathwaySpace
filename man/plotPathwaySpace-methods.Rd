@@ -139,7 +139,7 @@ plotPathwaySpace(ps)
 
 }
 \seealso{
-\code{\link{circularProjection}}
+\code{\link{circularProjection}}, \code{\link{polarProjection}}
 }
 \author{
 Sysbiolab Team, Mauro Castro.

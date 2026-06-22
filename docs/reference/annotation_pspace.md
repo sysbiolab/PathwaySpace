@@ -30,6 +30,8 @@ annotation_pspace_signal(
   [PathwaySpace](https://github.com/sysbiolab/PathwaySpace/reference/PathwaySpace-class.md)
   object containing a valid signal projection. Run
   [`circularProjection`](https://github.com/sysbiolab/PathwaySpace/reference/circularProjection-methods.md)
+  or
+  [`polarProjection`](https://github.com/sysbiolab/PathwaySpace/reference/polarProjection-methods.md)
   before calling this function.
 
 - title:

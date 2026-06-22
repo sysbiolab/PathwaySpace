@@ -5,6 +5,8 @@ matrices produced during signal projection in a
 [PathwaySpace](https://github.com/sysbiolab/PathwaySpace/reference/PathwaySpace-class.md)
 object. It is created internally by
 [`circularProjection`](https://github.com/sysbiolab/PathwaySpace/reference/circularProjection-methods.md)
+or
+[`polarProjection`](https://github.com/sysbiolab/PathwaySpace/reference/polarProjection-methods.md)
 and is not intended to be constructed directly by the user.
 
 ## Value

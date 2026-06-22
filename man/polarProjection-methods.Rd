@@ -86,6 +86,16 @@ A preprocessed \linkS4class{PathwaySpace} class object.
 vertex-associated signals onto a 2D image space along graph edges, using
 a polar decay function.
 }
+\details{
+Nodes without edges (isolated nodes) still receive a projection: their
+signal is spread as a circle whose area matches that of a minimally
+connected (degree-1) node, so isolated nodes do not appear
+disproportionately large or small relative to connected ones. This
+treatment is the same whether \code{directional} is \code{TRUE} or
+\code{FALSE}. The area-matching guarantee is derived for the default
+\code{polarDecay("power")} method; it is not guaranteed to hold exactly
+for the \code{"gaussian"} or \code{"logistic"} alternatives.
+}
 \examples{
 library(PathwaySpace)
 
@@ -93,7 +103,7 @@ library(PathwaySpace)
 data('gtoy2', package = 'RGraphSpace')
 
 # Create a new PathwaySpace object
-ps <- buildPathwaySpace(gtoy2, nrc = 100)
+ps <- buildPathwaySpace(gtoy2, nrc = 300)
 # note: adjust 'nrc' to increase image resolution
 
 # Set '1s' as vertex signal
@@ -102,8 +112,13 @@ vertexSignal(ps) <- 1
 # Set edge weight
 # gs_edge_attr(ps, "weight") <- c(-1, 1, 1, 1, 1, 1)
 
+# Set a decay function for all vertices
+vertexDecay(ps) <- weibullDecay(shape=2, pdist = 0.2)
+
 # Create a 2D-landscape image
-ps <- polarProjection(ps)
+ps <- polarProjection(ps, beta = 5)
+
+plotPathwaySpace(ps)
 
 }
 \seealso{

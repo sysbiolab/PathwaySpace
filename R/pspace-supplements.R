@@ -59,7 +59,7 @@
   if(verbose) rlang::inform("Running signal convolution...")
   xsig <- array(0, c(pars_ps$nrc, pars_ps$nrc))
   if (nrow(nodes) > 0) {
-    xsig[lpts[, c("Y", "X")]] <- .get_ldsig(nodes, pars_ps, nnpg, lpts)
+    xsig[lpts[, c("Y", "X")]] <- .get_ldsig(nodes, pars_ps, nnpg)
   }
   # image(.transpose_and_flip(xsig))
   
@@ -71,7 +71,7 @@
 }
 
 #-------------------------------------------------------------------------------
-.get_ldsig <- function(nodes, pars_ps, nnpg, lpts) {
+.get_ldsig <- function(nodes, pars_ps, nnpg) {
   if (pars_ps$configs$maxsig == 0) {
     return(0)
   }
@@ -94,12 +94,24 @@
       nsig[[i]] <- do.call(decay_fun, args_list)
     }
   }
-  # vectorize for sorting projected signals
-  nsig <- unlist(nsig)
-  nn <- unlist(nnpg$nn)
+  
+  # vectorize and sort projected signals
+  dsig <- .vectorize_nsig(nsig, nn = nnpg$nn, 
+    np = pars_ps$nrc^2)
+  
+  # aggregate signals
+  Z <- .summ_dsig_lt(dsig, pars_ps)
 
+  return(Z)
+
+}
+
+#-------------------------------------------------------------------------------
+.vectorize_nsig <- function(nsig, nn, np){
   ## group by pixel, sorted by descending |magnitude| within each pixel
   ## (one compound sort)
+  nsig <- unlist(nsig)
+  nn <- unlist(nn)
   ord <- order(nn, -abs(nsig))
   nsig <- nsig[ord]
   nn <- nn[ord]
@@ -107,16 +119,11 @@
   group_start <- which(boundary)
   group_pixel <- nn[group_start]
   group_end <- c(group_start[-1] - 1, length(nn))
-  dsig_lt <- as.list(rep(0, times = nrow(lpts)))
+  dsig_lt <- as.list(rep(0, times = np))
   dsig_lt[group_pixel] <- lapply(seq_along(group_start), function(i) {
     nsig[group_start[i]:group_end[i]]
   })
-
-  # aggregate
-  Z <- .summ_dsig_lt(dsig_lt, pars_ps)
-
-  return(Z)
-
+  dsig_lt
 }
 
 #-------------------------------------------------------------------------------
@@ -274,8 +281,7 @@
   if(verbose) rlang::inform("Running signal convolution...")
   xsig <- array(0, c(pars_ps$nrc, pars_ps$nrc))
   if (nrow(gxy) > 0) {
-    xsig[lpts[, c("Y", "X")]] <- .get_ldsig_polar(nodes, 
-      pars_ps, nnpg, lpts)
+    xsig[lpts[, c("Y", "X")]] <- .get_ldsig_polar(nodes, pars_ps, nnpg)
   }
   # image(.transpose_and_flip(xsig))
   
@@ -298,7 +304,7 @@
 }
 
 #-------------------------------------------------------------------------------
-.get_ldsig_polar <- function(nodes, pars_ps, nnpg, lpts) {
+.get_ldsig_polar <- function(nodes, pars_ps, nnpg) {
   if (pars_ps$configs$maxsig == 0) {
     return(0)
   }
@@ -324,25 +330,12 @@
       nsig[[i]] <- do.call(decay_fun, args_list)
     }
   }
-  # vectorize for sorting projected signals
-  nsig <- unlist(nsig)
-  nn <- unlist(nnpg$nn)
   
-  ## group by pixel, sorted by descending |magnitude| within each pixel
-  ## (one compound sort)
-  ord <- order(nn, -abs(nsig))
-  nsig <- nsig[ord]
-  nn <- nn[ord]
-  boundary <- c(TRUE, nn[-1] != nn[-length(nn)])
-  group_start <- which(boundary)
-  group_pixel <- nn[group_start]
-  group_end <- c(group_start[-1] - 1, length(nn))
-  dsig_lt <- as.list(rep(0, times = nrow(lpts)))
-  dsig_lt[group_pixel] <- lapply(seq_along(group_start), function(i) {
-    nsig[group_start[i]:group_end[i]]
-  })
-  # aggregate
-  Z <- .summ_dsig_lt(dsig_lt, pars_ps)
+  # vectorize and sort projected signals
+  dsig <- .vectorize_nsig(nsig, nn=nnpg$nn, np = pars_ps$nrc^2)
+  
+  # aggregate signals
+  Z <- .summ_dsig_lt(dsig, pars_ps)
   
   return(Z)
 }

@@ -174,6 +174,9 @@ NULL
 #' 
 #' @param ps Either a \linkS4class{PathwaySpace} or 
 #' \link[RGraphSpace]{GraphSpace} object.
+#' @return A \code{data.frame} with columns \code{from}, \code{to}, and
+#' \code{dist}, listing each node's nearest neighbor and the Euclidean
+#' distance between them.
 #' @seealso \code{\link[RANN]{nn2}}
 #' @examples
 #' # See examples in the PathwaySpace's tutorials:

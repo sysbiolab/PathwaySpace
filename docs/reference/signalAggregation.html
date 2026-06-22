@@ -87,6 +87,32 @@ signal aggregation, returning either a customized <code><a href="https://rdrr.io
     <p>Returns a function of the form: <code>function(x) { ... }</code></p>
     </div>
     <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>At each point in pathway space, multiple vertices may each contribute a
+decayed signal value; <code>method</code> controls how these contributions are
+combined into a single value:</p><ul><li><p><strong>mean</strong>: a plain, unweighted average. Because the same
+number of potential contributors is assumed throughout the image,
+points reached by few vertices can show a diluted value compared to
+points reached by many, even when the underlying signals are equally
+strong.</p></li>
+<li><p><strong>wmean</strong>: each contribution is weighted by its own magnitude,
+so the strongest nearby signal dominates the result regardless of how many
+(or how weak) the other contributions are.</p></li>
+<li><p><strong>log.wmean</strong>: like <code>wmean</code>, but the weighting is
+compressed, giving moderate signals comparatively more influence
+relative to the single strongest one.</p></li>
+<li><p><strong>exp.wmean</strong>: like <code>wmean</code>, but the weighting is sharpened,
+so the strongest nearby signal dominates the result even more than
+under <code>wmean</code>.</p></li>
+</ul><p>Unlike <code>mean</code>, the weighted variants are not affected by the
+dilution described above, since contributions with zero weight do not
+affect their result. <code>mean</code> is a reasonable default for simple or
+binary signals, such as those used in introductory examples; for
+continuous, more nuanced analyses, <code>wmean</code> (or one of its variants)
+is generally preferable. For other aggregation rules, see <em>fuzzy logic</em>
+functions in the online tutorials: https://sysbiolab.github.io/PathwaySpace/</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="circularProjection-methods.html">circularProjection</a></code>, <code><a href="polarProjection-methods.html">polarProjection</a></code>,
 <code><a href="https://rdrr.io/r/stats/weighted.mean.html" class="external-link">weighted.mean</a></code></p></div>

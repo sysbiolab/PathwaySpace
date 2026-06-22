@@ -1,4 +1,5 @@
 
+#-------------------------------------------------------------------------------
 #' @title  Constructor of PathwaySpace-class Objects
 #' 
 #' @description \code{buildPathwaySpace} is a constructor of
@@ -253,6 +254,15 @@ setMethod("circularProjection", "PathwaySpace", function(ps,
 #' @return A preprocessed \linkS4class{PathwaySpace} class object.
 #' @author Sysbiolab Team
 #' @seealso \code{\link{buildPathwaySpace}}
+#' @details
+#' Nodes without edges (isolated nodes) still receive a projection: their
+#' signal is spread as a circle whose area matches that of a minimally
+#' connected (degree-1) node, so isolated nodes do not appear
+#' disproportionately large or small relative to connected ones. This
+#' treatment is the same whether \code{directional} is \code{TRUE} or
+#' \code{FALSE}. The area-matching guarantee is derived for the default
+#' \code{polarDecay("power")} method; it is not guaranteed to hold exactly
+#' for the \code{"gaussian"} or \code{"logistic"} alternatives.
 #' @examples
 #' library(PathwaySpace)
 #' 

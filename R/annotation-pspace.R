@@ -8,14 +8,14 @@
 #' raster heatmap bounded to the normalized unit space \code{[0, 1]}.
 #'
 #' @param ps A \linkS4class{PathwaySpace} object containing a valid signal
-#'   projection. Run \code{\link{circularProjection}} before calling this
-#'   function.
+#' projection. Run \code{\link{circularProjection}} or
+#' \code{\link{polarProjection}} before calling this function.
 #' @param title A string used as the plot title. Defaults to the active
-#'   feature name returned by \code{\link{activeFeature}}.
+#' feature name returned by \code{\link{activeFeature}}.
 #' @param colors A character vector of colors used to build the signal
-#'   palette. Defaults to \code{\link{pspace.cols}}.
+#' palette. Defaults to \code{\link{pspace.cols}}.
 #' @param bg.color A string specifying the background color, used for
-#'   zero-signal or masked regions. Defaults to \code{"grey95"}.
+#' zero-signal or masked regions. Defaults to \code{"grey95"}.
 #' @param si.color A single color for silhouette.
 #' (see \code{\link{silhouetteMapping}}).
 #' @param si.alpha A transparency level in `[0, 1]`, used to adjust the 
@@ -104,7 +104,7 @@ annotation_pspace_signal <- function(ps,
   if (length(gxyz) == 0) {
     rlang::abort(c(
       "x" = "No projections found in 'ps'.",
-      "i" = "Run `circularProjection()` before plotting."
+      "i" = "Run `circularProjection()` or `polarProjection()` before plotting."
     ))
   }
   

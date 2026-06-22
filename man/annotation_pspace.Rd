@@ -20,8 +20,8 @@ annotation_pspace_signal(
 }
 \arguments{
 \item{ps}{A \linkS4class{PathwaySpace} object containing a valid signal
-projection. Run \code{\link{circularProjection}} before calling this
-function.}
+projection. Run \code{\link{circularProjection}} or
+\code{\link{polarProjection}} before calling this function.}
 
 \item{title}{A string used as the plot title. Defaults to the active
 feature name returned by \code{\link{activeFeature}}.}

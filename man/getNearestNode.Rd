@@ -10,6 +10,11 @@ getNearestNode(ps)
 \item{ps}{Either a \linkS4class{PathwaySpace} or
 \link[RGraphSpace]{GraphSpace} object.}
 }
+\value{
+A \code{data.frame} with columns \code{from}, \code{to}, and
+\code{dist}, listing each node's nearest neighbor and the Euclidean
+distance between them.
+}
 \description{
 Retrieves the nearest neighbor for each node from a
 \linkS4class{PathwaySpace} object using Euclidean distance.

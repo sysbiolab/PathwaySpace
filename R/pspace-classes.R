@@ -6,8 +6,8 @@
 #' \code{SpaceProjection} is an S4 class that stores the intermediate and
 #' final matrices produced during signal projection in a
 #' \linkS4class{PathwaySpace} object. It is created internally by
-#' \code{\link{circularProjection}} and is not intended to be constructed
-#' directly by the user.
+#' \code{\link{circularProjection}} or \code{\link{polarProjection}} and is
+#' not intended to be constructed directly by the user.
 #'
 #' @slot coordinates A numeric matrix with one row per graph node and four
 #'   columns (\code{X}, \code{Y}, \code{Xint}, \code{Yint}), storing

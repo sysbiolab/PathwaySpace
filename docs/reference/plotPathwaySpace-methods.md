@@ -178,7 +178,8 @@ A ggplot-class object.
 
 ## See also
 
-[`circularProjection`](https://github.com/sysbiolab/PathwaySpace/reference/circularProjection-methods.md)
+[`circularProjection`](https://github.com/sysbiolab/PathwaySpace/reference/circularProjection-methods.md),
+[`polarProjection`](https://github.com/sysbiolab/PathwaySpace/reference/polarProjection-methods.md)
 
 ## Author
 

@@ -117,6 +117,17 @@ A preprocessed
 [PathwaySpace](https://github.com/sysbiolab/PathwaySpace/reference/PathwaySpace-class.md)
 class object.
 
+## Details
+
+Nodes without edges (isolated nodes) still receive a projection: their
+signal is spread as a circle whose area matches that of a minimally
+connected (degree-1) node, so isolated nodes do not appear
+disproportionately large or small relative to connected ones. This
+treatment is the same whether `directional` is `TRUE` or `FALSE`. The
+area-matching guarantee is derived for the default `polarDecay("power")`
+method; it is not guaranteed to hold exactly for the `"gaussian"` or
+`"logistic"` alternatives.
+
 ## See also
 
 [`buildPathwaySpace`](https://github.com/sysbiolab/PathwaySpace/reference/buildPathwaySpace.md)
@@ -134,7 +145,7 @@ library(PathwaySpace)
 data('gtoy2', package = 'RGraphSpace')
 
 # Create a new PathwaySpace object
-ps <- buildPathwaySpace(gtoy2, nrc = 100)
+ps <- buildPathwaySpace(gtoy2, nrc = 300)
 #> Validating arguments...
 #> Validating the 'igraph' object...
 #> Normalizing node coordinates to graph space...
@@ -147,11 +158,17 @@ vertexSignal(ps) <- 1
 # Set edge weight
 # gs_edge_attr(ps, "weight") <- c(-1, 1, 1, 1, 1, 1)
 
+# Set a decay function for all vertices
+vertexDecay(ps) <- weibullDecay(shape=2, pdist = 0.2)
+
 # Create a 2D-landscape image
-ps <- polarProjection(ps)
+ps <- polarProjection(ps, beta = 5)
 #> Validating arguments...
 #> Using polar projection on undirected graph...
 #> Mapping 'x' and 'y' coordinates...
 #> Computing linear and angular distances...
 #> Running signal convolution...
+
+plotPathwaySpace(ps)
+
 ```

@@ -20,6 +20,34 @@ and \code{\link{polarProjection}} internal calls. The aggregation should be
 symmetric with respect to signal polarity, ensuring that opposite signals
 produce corresponding outputs.
 }
+\details{
+At each point in pathway space, multiple vertices may each contribute a
+decayed signal value; \code{method} controls how these contributions are
+combined into a single value:
+\itemize{
+\item \strong{mean}: a plain, unweighted average. Because the same
+number of potential contributors is assumed throughout the image,
+points reached by few vertices can show a diluted value compared to
+points reached by many, even when the underlying signals are equally
+strong.
+\item \strong{wmean}: each contribution is weighted by its own magnitude,
+so the strongest nearby signal dominates the result regardless of how many
+(or how weak) the other contributions are.
+\item \strong{log.wmean}: like \code{wmean}, but the weighting is
+compressed, giving moderate signals comparatively more influence
+relative to the single strongest one.
+\item \strong{exp.wmean}: like \code{wmean}, but the weighting is sharpened,
+so the strongest nearby signal dominates the result even more than
+under \code{wmean}.
+}
+Unlike \code{mean}, the weighted variants are not affected by the
+dilution described above, since contributions with zero weight do not
+affect their result. \code{mean} is a reasonable default for simple or
+binary signals, such as those used in introductory examples; for
+continuous, more nuanced analyses, \code{wmean} (or one of its variants)
+is generally preferable. For other aggregation rules, see \emph{fuzzy logic}
+functions in the online tutorials: https://sysbiolab.github.io/PathwaySpace/
+}
 \examples{
 aggregate.fun <- signalAggregation()
 

@@ -20,6 +20,11 @@ getNearestNode(ps)
   [GraphSpace](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-methods.html)
   object.
 
+## Value
+
+A `data.frame` with columns `from`, `to`, and `dist`, listing each
+node's nearest neighbor and the Euclidean distance between them.
+
 ## See also
 
 [`nn2`](https://jefferislab.github.io/RANN/reference/nn2.html)

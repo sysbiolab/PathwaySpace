@@ -48,7 +48,7 @@
 #' image, when one is available (see \code{\link[RGraphSpace]{GraphSpace}}).
 #' @return A ggplot-class object.
 #' @author Sysbiolab Team, Mauro Castro.
-#' @seealso \code{\link{circularProjection}}
+#' @seealso \code{\link{circularProjection}}, \code{\link{polarProjection}}
 #' @examples
 #' # Load a demo igraph
 #' data('gtoy1', package = 'RGraphSpace')
