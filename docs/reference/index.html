@@ -38,6 +38,7 @@
     <li><a class="dropdown-item" href="../articles/sparse-feature-sets.html">Sparse feature sets</a></li>
     <li><a class="dropdown-item" href="../articles/spatial-transcriptomics.html">Spatial transcriptomics</a></li>
   </ul></li>
+<li class="active nav-item"><a class="nav-link" href="../reference/index.html">Index</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="nav-link" href="https://github.com/sysbiolab/PathwaySpace/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
@@ -53,7 +54,263 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="pathwayspace">PathwaySpace<a class="anchor" aria-label="anchor" href="#pathwayspace"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="PathwaySpace-class.html">PathwaySpace-class</a></code>
+
+        </dt>
+        <dd>PathwaySpace: An S4 class for signal projection on image spaces</dd>
+
+        <dt>
+
+          <code><a href="buildPathwaySpace.html">buildPathwaySpace()</a></code>
+
+        </dt>
+        <dd>Constructor of PathwaySpace-class Objects</dd>
+
+        <dt>
+
+          <code><a href="getPathwaySpace-methods.html">getPathwaySpace(<i>&lt;PathwaySpace&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Accessors for Fetching Slots from a PathwaySpace Object</dd>
+
+        <dt>
+
+          <code><a href="updatePathwaySpace.html">updatePathwaySpace(<i>&lt;PathwaySpace&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Update a PathwaySpace object</dd>
+      </dl></div><div class="section level2">
+      <h2 id="accessors">Accessors<a class="anchor" aria-label="anchor" href="#accessors"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="PathwaySpace-accessors.html">`gs_vertex_attr&lt;-`(<i>&lt;PathwaySpace&gt;</i>)</a></code> <code><a href="PathwaySpace-accessors.html">`gs_edge_attr&lt;-`(<i>&lt;PathwaySpace&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Accessor Functions for PathwaySpace Objects</dd>
+
+        <dt>
+
+          <code><a href="vertexSignal-accessors.html">vertexSignal(<i>&lt;PathwaySpace&gt;</i>)</a></code> <code><a href="vertexSignal-accessors.html">`vertexSignal&lt;-`(<i>&lt;PathwaySpace&gt;</i>)</a></code> <code><a href="vertexSignal-accessors.html">vertexDecay(<i>&lt;PathwaySpace&gt;</i>)</a></code> <code><a href="vertexSignal-accessors.html">`vertexDecay&lt;-`(<i>&lt;PathwaySpace&gt;</i>)</a></code> <code><a href="vertexSignal-accessors.html">activeFeature(<i>&lt;PathwaySpace&gt;</i>)</a></code> <code><a href="vertexSignal-accessors.html">`activeFeature&lt;-`(<i>&lt;PathwaySpace&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Accessor Functions for PathwaySpace Objects</dd>
+      </dl></div><div class="section level2">
+      <h2 id="projections">Projections<a class="anchor" aria-label="anchor" href="#projections"></a></h2>
+
+      <div class="section-desc"><p>Spatial projection methods and the SpaceProjection class</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="SpaceProjection-class.html">SpaceProjection-class</a></code>
+
+        </dt>
+        <dd>Projection Data Container for PathwaySpace Objects</dd>
+
+        <dt>
+
+          <code><a href="circularProjection-methods.html">circularProjection(<i>&lt;PathwaySpace&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Circular Projection of Graph-Associated Signals</dd>
+
+        <dt>
+
+          <code><a href="polarProjection-methods.html">polarProjection(<i>&lt;PathwaySpace&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Polar Projection of Graph-Associated Signals</dd>
+      </dl></div><div class="section level2">
+      <h2 id="decorations">Decorations<a class="anchor" aria-label="anchor" href="#decorations"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="silhouetteMapping-methods.html">silhouetteMapping(<i>&lt;PathwaySpace&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Decorating PathwaySpace Images with Graph Silhouettes</dd>
+
+        <dt>
+
+          <code><a href="summitMapping-methods.html">summitMapping(<i>&lt;PathwaySpace&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Mapping Summits on PathwaySpace Images</dd>
+
+        <dt>
+
+          <code><a href="summitWatershed.html">summitWatershed()</a></code>
+
+        </dt>
+        <dd>Variation of the watershed algorithm for summit detection</dd>
+      </dl></div><div class="section level2">
+      <h2 id="decay-functions">Decay functions<a class="anchor" aria-label="anchor" href="#decay-functions"></a></h2>
+
+      <div class="section-desc"><p>Signal decay models used in spatial projection</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="linearDecay.html">linearDecay()</a></code>
+
+        </dt>
+        <dd>Constructor of linear decay functions</dd>
+
+        <dt>
+
+          <code><a href="expDecay.html">expDecay()</a></code>
+
+        </dt>
+        <dd>Constructor of exponential decay functions</dd>
+
+        <dt>
+
+          <code><a href="polarDecay.html">polarDecay()</a></code>
+
+        </dt>
+        <dd>Polar transformation functions</dd>
+
+        <dt>
+
+          <code><a href="weibullDecay.html">weibullDecay()</a></code>
+
+        </dt>
+        <dd>Constructor of Weibull decay functions</dd>
+      </dl></div><div class="section level2">
+      <h2 id="aggregation-functions">Aggregation functions<a class="anchor" aria-label="anchor" href="#aggregation-functions"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="signalAggregation.html">signalAggregation()</a></code>
+
+        </dt>
+        <dd>Signal aggregation functions</dd>
+      </dl></div><div class="section level2">
+      <h2 id="path-distances">Path distances<a class="anchor" aria-label="anchor" href="#path-distances"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="pathDistances.html">pathDistances()</a></code>
+
+        </dt>
+        <dd>Calculate a pathway space distance between two vectors</dd>
+
+        <dt>
+
+          <code><a href="plotPathDistances.html">plotPathDistances()</a></code>
+
+        </dt>
+        <dd>Accessory function to plot pathway space distances</dd>
+
+        <dt>
+
+          <code><a href="getNearestNode.html">getNearestNode()</a></code>
+
+        </dt>
+        <dd>getNearestNode</dd>
+      </dl></div><div class="section level2">
+      <h2 id="plotting">Plotting<a class="anchor" aria-label="anchor" href="#plotting"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="plotPathwaySpace-methods.html">plotPathwaySpace(<i>&lt;PathwaySpace&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Plotting 2D-landscape images for the PathwaySpace package</dd>
+
+        <dt>
+
+          <code><a href="annotation_pspace_signal.html">annotation_pspace_signal()</a></code>
+
+        </dt>
+        <dd>Annotation Functions for PathwaySpace Plots</dd>
+      </dl></div><div class="section level2">
+      <h2 id="utilities">Utilities<a class="anchor" aria-label="anchor" href="#utilities"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="pspace.cols.html">pspace.cols()</a></code>
+
+        </dt>
+        <dd>A simple vector of colors for PathwaySpace images</dd>
+
+        <dt>
+
+          <code><a href="pspace.pals.html">pspace.pals()</a></code>
+
+        </dt>
+        <dd>Create interpolated color palettes for PathwaySpace images</dd>
+
+        <dt>
+
+          <code><a href="gimage.html">gimage</a></code>
+
+        </dt>
+        <dd>An image matrix</dd>
+      </dl></div><div class="section level2">
+      <h2 id="data">Data<a class="anchor" aria-label="anchor" href="#data"></a></h2>
 
 
 
@@ -82,183 +339,25 @@
 
         </dt>
         <dd>A pruned and laid out igraph object from Pathway Commons V12</dd>
+      </dl></div><div class="section level2">
+      <h2 id="package">Package<a class="anchor" aria-label="anchor" href="#package"></a></h2>
 
-        <dt>
 
-          <code><a href="PathwaySpace-accessors.html">`gs_vertex_attr&lt;-`(<i>&lt;PathwaySpace&gt;</i>)</a></code> <code><a href="PathwaySpace-accessors.html">`gs_edge_attr&lt;-`(<i>&lt;PathwaySpace&gt;</i>)</a></code>
 
-        </dt>
-        <dd>Accessor Functions for PathwaySpace Objects</dd>
+      <dl></dl></div><div class="section level2">
 
-        <dt>
 
-          <code><a href="PathwaySpace-class.html">PathwaySpace-class</a></code>
 
-        </dt>
-        <dd>PathwaySpace: An S4 class for signal projection on image spaces</dd>
 
-        <dt>
+      <dl><dt>
 
-          <code><a href="SpaceProjection-class.html">SpaceProjection-class</a></code>
+          <code><a href="PathwaySpace-package.html">PathwaySpace</a></code> <code><a href="PathwaySpace-package.html">PathwaySpace-package</a></code>
 
         </dt>
-        <dd>Projection Data Container for PathwaySpace Objects</dd>
-
-        <dt>
-
-          <code><a href="annotation_pspace.html">annotation_pspace_signal()</a></code>
-
-        </dt>
-        <dd>Annotation Functions for PathwaySpace Plots</dd>
-
-        <dt>
-
-          <code><a href="buildPathwaySpace.html">buildPathwaySpace()</a></code>
-
-        </dt>
-        <dd>Constructor of PathwaySpace-class Objects</dd>
-
-        <dt>
-
-          <code><a href="circularProjection-methods.html">circularProjection(<i>&lt;PathwaySpace&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Circular Projection of Graph-Associated Signals</dd>
-
-        <dt>
-
-          <code><a href="expDecay.html">expDecay()</a></code>
-
-        </dt>
-        <dd>Constructor of exponential decay functions</dd>
-
-        <dt>
-
-          <code><a href="getNearestNode.html">getNearestNode()</a></code>
-
-        </dt>
-        <dd>getNearestNode</dd>
-
-        <dt>
-
-          <code><a href="getPathwaySpace-methods.html">getPathwaySpace(<i>&lt;PathwaySpace&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Accessors for Fetching Slots from a PathwaySpace Object</dd>
-
-        <dt>
-
-          <code><a href="gimage.html">gimage</a></code>
-
-        </dt>
-        <dd>An image matrix</dd>
-
-        <dt>
-
-          <code><a href="linearDecay.html">linearDecay()</a></code>
-
-        </dt>
-        <dd>Constructor of linear decay functions</dd>
-
-        <dt>
-
-          <code><a href="pathDistances.html">pathDistances()</a></code>
-
-        </dt>
-        <dd>Calculate a pathway space distance between two vectors</dd>
-
-        <dt>
-
-          <code><a href="plotPathDistances.html">plotPathDistances()</a></code>
-
-        </dt>
-        <dd>Accessory function to plot pathway space distances</dd>
-
-        <dt>
-
-          <code><a href="plotPathwaySpace-methods.html">plotPathwaySpace(<i>&lt;PathwaySpace&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Plotting 2D-landscape images for the PathwaySpace package</dd>
-
-        <dt>
-
-          <code><a href="polarDecay.html">polarDecay()</a></code>
-
-        </dt>
-        <dd>Polar transformation functions</dd>
-
-        <dt>
-
-          <code><a href="polarProjection-methods.html">polarProjection(<i>&lt;PathwaySpace&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Polar Projection of Graph-Associated Signals</dd>
-
-        <dt>
-
-          <code><a href="pspace.cols.html">pspace.cols()</a></code>
-
-        </dt>
-        <dd>A simple vector of colors for PathwaySpace images</dd>
-
-        <dt>
-
-          <code><a href="pspace.pals.html">pspace.pals()</a></code>
-
-        </dt>
-        <dd>Create interpolated color palettes for PathwaySpace images</dd>
-
-        <dt>
-
-          <code><a href="signalAggregation.html">signalAggregation()</a></code>
-
-        </dt>
-        <dd>Signal aggregation functions</dd>
-
-        <dt>
-
-          <code><a href="silhouetteMapping-methods.html">silhouetteMapping(<i>&lt;PathwaySpace&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Decorating PathwaySpace Images with Graph Silhouettes</dd>
-
-        <dt>
-
-          <code><a href="summitMapping-methods.html">summitMapping(<i>&lt;PathwaySpace&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Mapping Summits on PathwaySpace Images</dd>
-
-        <dt>
-
-          <code><a href="summitWatershed.html">summitWatershed()</a></code>
-
-        </dt>
-        <dd>Variation of the watershed algorithm for summit detection</dd>
-
-        <dt>
-
-          <code><a href="updatePathwaySpace.html">updatePathwaySpace(<i>&lt;PathwaySpace&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Update a PathwaySpace object</dd>
-
-        <dt>
-
-          <code><a href="vertexSignal-accessors.html">vertexSignal(<i>&lt;PathwaySpace&gt;</i>)</a></code> <code><a href="vertexSignal-accessors.html">`vertexSignal&lt;-`(<i>&lt;PathwaySpace&gt;</i>)</a></code> <code><a href="vertexSignal-accessors.html">vertexDecay(<i>&lt;PathwaySpace&gt;</i>)</a></code> <code><a href="vertexSignal-accessors.html">`vertexDecay&lt;-`(<i>&lt;PathwaySpace&gt;</i>)</a></code> <code><a href="vertexSignal-accessors.html">activeFeature(<i>&lt;PathwaySpace&gt;</i>)</a></code> <code><a href="vertexSignal-accessors.html">`activeFeature&lt;-`(<i>&lt;PathwaySpace&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Accessor Functions for PathwaySpace Objects</dd>
-
-        <dt>
-
-          <code><a href="weibullDecay.html">weibullDecay()</a></code>
-
-        </dt>
-        <dd>Constructor of Weibull decay functions</dd>
+        <dd>PathwaySpace: Spatial Projection of Network Signals along Geodesic Paths</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

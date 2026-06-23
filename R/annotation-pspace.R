@@ -53,7 +53,7 @@
 #' @importFrom ggplot2 geom_raster geom_point scale_fill_gradientn annotate
 #' @importFrom grDevices as.raster colorRampPalette
 #' @importFrom ggnewscale new_scale_fill
-#' @rdname annotation_pspace
+#' @rdname annotation_pspace_signal
 #' @export
 annotation_pspace_signal <- function(ps, 
   title = activeFeature(ps),

@@ -689,13 +689,16 @@ setMethod("getPathwaySpace", "PathwaySpace", function(ps, what = "status") {
 #' 
 #' @import methods
 #' @docType methods
-#' @rdname vertexSignal-accessors
+#' @name vertexSignal-accessors
 #' @aliases vertexSignal
 #' @aliases vertexSignal<-
 #' @aliases vertexDecay
 #' @aliases vertexDecay<-
 #' @aliases activeFeature
 #' @aliases activeFeature<-
+NULL
+
+#' @rdname vertexSignal-accessors
 #' @export
 setMethod("vertexSignal", "PathwaySpace", function(x){
   gs_vertex_attr(x, "signal")
@@ -827,11 +830,15 @@ setReplaceMethod("activeFeature", "PathwaySpace", function(x, value) {
 #' # Replace an entire edge attribute
 #' gs_edge_attr(ps, "weight") <- 1
 #' 
-#' @rdname PathwaySpace-accessors
+#' @name PathwaySpace-accessors
 #' @importFrom RGraphSpace gs_vertex_attr<- gs_edge_attr<-
 #' @importFrom RGraphSpace gs_vertex_attr gs_edge_attr
 #' @importFrom RGraphSpace gs_ecount gs_vcount
 #' @aliases gs_vertex_attr<-
+#' @aliases gs_edge_attr<-
+NULL
+
+#' @rdname PathwaySpace-accessors
 #' @export
 setReplaceMethod(
   "gs_vertex_attr","PathwaySpace", function(x, name, ..., value) {
@@ -848,7 +855,6 @@ setReplaceMethod(
 )
 
 #' @rdname PathwaySpace-accessors
-#' @aliases gs_edge_attr<-
 #' @export
 setReplaceMethod(
   "gs_edge_attr","PathwaySpace", function(x, name, ..., value) {

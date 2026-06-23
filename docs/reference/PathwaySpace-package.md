@@ -16,31 +16,30 @@ and Ellrott et al. (2025)
 [doi:10.1016/j.ccell.2024.12.002](https://doi.org/10.1016/j.ccell.2024.12.002)
 .
 
-## Index
+## Details
 
-|  |  |
-|----|----|
-| [PathwaySpace-class](https://github.com/sysbiolab/PathwaySpace/reference/PathwaySpace-class.md): | An S4 class for signal propagation on pathway spaces. |
-| [buildPathwaySpace](https://github.com/sysbiolab/PathwaySpace/reference/buildPathwaySpace.md): | Constructor of PathwaySpace-class objects. |
-| [circularProjection](https://github.com/sysbiolab/PathwaySpace/reference/circularProjection-methods.md): | Creating 2D-landscape images from graph objects. |
-| [polarProjection](https://github.com/sysbiolab/PathwaySpace/reference/polarProjection-methods.md): | Creating 2D-landscape images from graph objects. |
-| [silhouetteMapping](https://github.com/sysbiolab/PathwaySpace/reference/silhouetteMapping-methods.md): | Mapping graph silhouettes on PathwaySpace images. |
-| [summitMapping](https://github.com/sysbiolab/PathwaySpace/reference/summitMapping-methods.md): | Mapping summits on a 2D-landscape image. |
-| [getPathwaySpace](https://github.com/sysbiolab/PathwaySpace/reference/getPathwaySpace-methods.md): | Accessory method for fetching slots from a PathwaySpace object. |
-| [plotPathwaySpace](https://github.com/sysbiolab/PathwaySpace/reference/plotPathwaySpace-methods.md): | Plotting 2D-landscape images for the PathwaySpace package. |
+For a hands-on introduction, see the vignette:
+[`vignette("PathwaySpace")`](https://github.com/sysbiolab/PathwaySpace/articles/PathwaySpace.md).
 
-Further information is available in the vignettes by typing
-[`vignette('PathwaySpace')`](https://github.com/sysbiolab/PathwaySpace/articles/PathwaySpace.md).
-Documented topics are also available in HTML by typing
+The full set of documented topics can also be browsed in HTML by running
 [`help.start()`](https://rdrr.io/r/utils/help.start.html) and selecting
-the PathwaySpace package from the menu.
+the PathwaySpace package from the package list.
 
 ## References
 
-Sysbiolab Team (2026). *RGraphSpace: A lightweight interface between
-'igraph' and 'ggplot2' graphics*. R package version 1.4.1 (Doi:
-10.32614/CRAN.package.RGraphSpace),
-<https://CRAN.R-project.org/package=RGraphSpace>.
+Tercan B, Apolonio VH, Chagas VS, Wong CK, Lee JA, Yau C, Benz CC,
+Stuart JM, Karlberg BJ, Ellrott K, Grewal JK, Jones SJ, Network TCGAA,
+Zenklusen JC, Robertson AG, Laird PW, Cherniack AD, Castro MA (2025).
+"Protocol for assessing distances in pathway space for classifier
+feature sets from machine learning methods." *STAR Protocols*, *6*(2),
+103681. doi:10.1016/j.xpro.2025.103681
+<https://doi.org/10.1016/j.xpro.2025.103681>.
+
+Ellrott K, Wong CK, Yau C, Castro MA, Lee JA, Karlberg BJ, Grewal JK,
+Lagani V, Tercan B, al. e (2025). "Classification of non-TCGA cancer
+samples to TCGA molecular subtypes using compact feature sets." *Cancer
+Cell*, *43*(1), 1. doi:10.1016/j.ccell.2024.12.002
+<https://doi.org/10.1016/j.ccell.2024.12.002>.
 
 ## See also
 

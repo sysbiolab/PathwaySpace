@@ -1,34 +1,20 @@
 ################################################################################
 ### Package documentation
 ################################################################################
-#' @aliases PathwaySpace-package
-#'
-#' @section Index:
-#' \tabular{ll}{
-#' \link{PathwaySpace-class}: 
-#' \tab An S4 class for signal propagation on pathway spaces.\cr
-#' \link{buildPathwaySpace}: 
-#' \tab Constructor of PathwaySpace-class objects.\cr
-#' \link{circularProjection}: 
-#' \tab Creating 2D-landscape images from graph objects.\cr
-#' \link{polarProjection}: 
-#' \tab Creating 2D-landscape images from graph objects.\cr
-#' \link{silhouetteMapping}: 
-#' \tab Mapping graph silhouettes on PathwaySpace images.\cr
-#' \link{summitMapping}: 
-#' \tab Mapping summits on a 2D-landscape image.\cr
-#' \link{getPathwaySpace}: 
-#' \tab Accessory method for fetching slots from a PathwaySpace object.\cr
-#' \link{plotPathwaySpace}: 
-#' \tab Plotting 2D-landscape images for the PathwaySpace package.\cr
-#' }
-#' Further information is available in the vignettes by typing
-#' \code{vignette('PathwaySpace')}. Documented topics are also available in
-#' HTML by typing \code{help.start()} and selecting the PathwaySpace package
-#' from the menu.
+#' @details
+#' 
+#' For a hands-on introduction, see the vignette:
+#' \code{vignette("PathwaySpace")}.
+#' 
+#' The full set of documented topics can also be browsed in HTML by
+#' running \code{help.start()} and selecting the PathwaySpace package
+#' from the package list.
 #'
 #' @references
-#' `r paste(format(citation("RGraphSpace"), style = "text"), collapse = "\n\n")`
+#' `r paste(format(citation("PathwaySpace"), style = "text"), collapse = "\n\n")`
+#' 
+#' @aliases PathwaySpace-package
+#' @keywords internal
 #' 
 #' @keywords internal
 "_PACKAGE"

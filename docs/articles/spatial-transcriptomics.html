@@ -55,6 +55,7 @@
     <li><a class="dropdown-item" href="../articles/spatial-transcriptomics.html">Spatial transcriptomics</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Index</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -284,7 +285,7 @@ is sliced to form the mask. Increasing the baseline (in
 <span><span class="co"># Check the silhouette plot</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace_image.html" class="external-link">annotation_gspace_image</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="../reference/annotation_pspace.html">annotation_pspace_signal</a></span><span class="op">(</span><span class="va">pspace_obj</span>, si.alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/annotation_pspace_signal.html">annotation_pspace_signal</a></span><span class="op">(</span><span class="va">pspace_obj</span>, si.alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="va">spatial_theme</span></span></code></pre></div>
 <p><img src="figs_spatl/fig2.png" class="r-plt" alt="" width="90%" style="display: block; margin: auto;"></p>
 <p>Next, we specify the signal to be projected. Here we use expression
@@ -326,7 +327,7 @@ highlight key settings.</p>
 <span><span class="co"># Right: signal overlaid on tissue image with low opacity</span></span>
 <span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace_image.html" class="external-link">annotation_gspace_image</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="../reference/annotation_pspace.html">annotation_pspace_signal</a></span><span class="op">(</span><span class="va">pspace_obj</span>, si.alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="../reference/annotation_pspace_signal.html">annotation_pspace_signal</a></span><span class="op">(</span><span class="va">pspace_obj</span>, si.alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="va">spatial_theme</span></span>
 <span></span>
 <span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code></pre></div>
@@ -335,13 +336,13 @@ highlight key settings.</p>
 <code class="sourceCode R"><span><span class="co"># Left: signal overlaid on tissue image with low opacity</span></span>
 <span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace_image.html" class="external-link">annotation_gspace_image</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="../reference/annotation_pspace.html">annotation_pspace_signal</a></span><span class="op">(</span><span class="va">pspace_obj</span>, si.alpha <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="../reference/annotation_pspace_signal.html">annotation_pspace_signal</a></span><span class="op">(</span><span class="va">pspace_obj</span>, si.alpha <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="va">spatial_theme</span></span>
 <span></span>
 <span><span class="co"># Right: same, with signal truncated to the upper range (zlim &gt;= 0.5)</span></span>
 <span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/annotation_gspace_image.html" class="external-link">annotation_gspace_image</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="../reference/annotation_pspace.html">annotation_pspace_signal</a></span><span class="op">(</span><span class="va">pspace_obj</span>, si.alpha <span class="op">=</span> <span class="fl">0.25</span>, zlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="../reference/annotation_pspace_signal.html">annotation_pspace_signal</a></span><span class="op">(</span><span class="va">pspace_obj</span>, si.alpha <span class="op">=</span> <span class="fl">0.25</span>, zlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="va">spatial_theme</span></span>
 <span></span>
 <span><span class="va">p2</span> <span class="op">+</span> <span class="va">p3</span></span></code></pre></div>

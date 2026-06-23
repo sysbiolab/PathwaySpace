@@ -45,6 +45,74 @@ navbar:
         href: articles/sparse-feature-sets.html
       - text: "Spatial transcriptomics"
         href: articles/spatial-transcriptomics.html
+    - text: Index
+      href: reference/index.html
+
+reference:
+
+- title: PathwaySpace
+  contents:
+    - PathwaySpace-class
+    - buildPathwaySpace
+    - getPathwaySpace
+    - updatePathwaySpace
+
+- title: Accessors
+  contents:
+    - PathwaySpace-accessors
+    - vertexSignal-accessors
+    
+- title: Projections
+  desc: Spatial projection methods and the SpaceProjection class
+  contents:
+    - SpaceProjection-class
+    - circularProjection
+    - polarProjection
+    
+- title: Decorations
+  contents:
+    - silhouetteMapping
+    - summitMapping
+    - summitWatershed
+    
+- title: Decay functions
+  desc: Signal decay models used in spatial projection
+  contents:
+    - linearDecay
+    - expDecay
+    - polarDecay
+    - weibullDecay
+
+- title: Aggregation functions
+  contents:
+    - signalAggregation
+
+- title: Path distances
+  contents:
+    - pathDistances
+    - plotPathDistances
+    - getNearestNode
+    
+- title: Plotting
+  contents:
+    - plotPathwaySpace
+    - annotation_pspace_signal
+
+- title: Utilities
+  contents:
+    - pspace.cols
+    - pspace.pals
+    - gimage
+
+- title: Data
+  contents:
+    - CGC_20211118
+    - Hallmarks_v2023_1_Hs_symbols
+    - PCv12_pruned_igraph
+
+- title: Package
+  contents:
+    - PathwaySpace-package
 
 home:
   sidebar:

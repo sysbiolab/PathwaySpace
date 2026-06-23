@@ -8,37 +8,28 @@
 \description{
 For a given graph containing vertices, edges, and a signal associated with the vertices, the 'PathwaySpace' package performs a convolution operation, which involves a weighted combination of neighboring vertices and their associated signals. The package uses a decay function to project these signals, creating geodesic paths on a 2D-image space. 'PathwaySpace' has various applications, such as visualizing network data in a graphical format that highlights the relationships and signal strengths between vertices. By combining graph theory, signal processing, and visualization, 'PathwaySpace' provides a way of representing graph data on a continuous projection space. Based on methods introduced in Tercan et al. (2025) \doi{10.1016/j.xpro.2025.103681} and Ellrott et al. (2025) \doi{10.1016/j.ccell.2024.12.002}.
 }
-\section{Index}{
+\details{
+For a hands-on introduction, see the vignette:
+\code{vignette("PathwaySpace")}.
 
-\tabular{ll}{
-\link{PathwaySpace-class}:
-\tab An S4 class for signal propagation on pathway spaces.\cr
-\link{buildPathwaySpace}:
-\tab Constructor of PathwaySpace-class objects.\cr
-\link{circularProjection}:
-\tab Creating 2D-landscape images from graph objects.\cr
-\link{polarProjection}:
-\tab Creating 2D-landscape images from graph objects.\cr
-\link{silhouetteMapping}:
-\tab Mapping graph silhouettes on PathwaySpace images.\cr
-\link{summitMapping}:
-\tab Mapping summits on a 2D-landscape image.\cr
-\link{getPathwaySpace}:
-\tab Accessory method for fetching slots from a PathwaySpace object.\cr
-\link{plotPathwaySpace}:
-\tab Plotting 2D-landscape images for the PathwaySpace package.\cr
+The full set of documented topics can also be browsed in HTML by
+running \code{help.start()} and selecting the PathwaySpace package
+from the package list.
 }
-Further information is available in the vignettes by typing
-\code{vignette('PathwaySpace')}. Documented topics are also available in
-HTML by typing \code{help.start()} and selecting the PathwaySpace package
-from the menu.
-}
-
 \references{
-Sysbiolab Team (2026). \emph{RGraphSpace: A lightweight interface between
-'igraph' and 'ggplot2' graphics}. R package version 1.4.1 (Doi:
-10.32614/CRAN.package.RGraphSpace),
-\url{https://CRAN.R-project.org/package=RGraphSpace}.
+Tercan B, Apolonio VH, Chagas VS, Wong CK, Lee JA, Yau C, Benz CC,
+Stuart JM, Karlberg BJ, Ellrott K, Grewal JK, Jones SJ, Network TCGAA,
+Zenklusen JC, Robertson AG, Laird PW, Cherniack AD, Castro MA (2025).
+"Protocol for assessing distances in pathway space for classifier
+feature sets from machine learning methods." \emph{STAR Protocols}, \emph{6}(2),
+103681. doi:10.1016/j.xpro.2025.103681
+\url{https://doi.org/10.1016/j.xpro.2025.103681}.
+
+Ellrott K, Wong CK, Yau C, Castro MA, Lee JA, Karlberg BJ, Grewal JK,
+Lagani V, Tercan B, al. e (2025). "Classification of non-TCGA cancer
+samples to TCGA molecular subtypes using compact feature sets." \emph{Cancer
+Cell}, \emph{43}(1), 1. doi:10.1016/j.ccell.2024.12.002
+\url{https://doi.org/10.1016/j.ccell.2024.12.002}.
 }
 \seealso{
 Useful links:

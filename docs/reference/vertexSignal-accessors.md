@@ -125,7 +125,7 @@ vertexDecay(ps)[["n3"]]
 #>     y <- signal * 0.001^((x/0.15)^1.05)
 #>     return(y)
 #> }
-#> <environment: 0x5f3a431e3d30>
+#> <environment: 0x55f42086c780>
 #> attr(,"name")
 #> [1] "weibullDecay"
 
