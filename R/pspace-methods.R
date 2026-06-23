@@ -143,7 +143,7 @@ setMethod("circularProjection", "PathwaySpace", function(ps,
   rescale = TRUE, verbose = TRUE, 
   pdist = deprecated()) {
   
-  ps <- updateGraphSpace(ps)
+  ps <- updatePathwaySpace(ps)
   
   ### deprecate
   if (lifecycle::is_present(pdist)) {
@@ -306,7 +306,7 @@ setMethod("polarProjection", "PathwaySpace", function(ps,
   verbose = TRUE, 
   pdist = deprecated()) {
   
-  ps <- updateGraphSpace(ps)
+  ps <- updatePathwaySpace(ps)
   
   #--- validate the pipeline status
   if (!.checkStatus(ps, "Preprocess")) {
@@ -415,7 +415,7 @@ setMethod("polarProjection", "PathwaySpace", function(ps,
 setMethod("silhouetteMapping", "PathwaySpace", function(ps,
   pdist = 0.05, baseline = 0.01, fill.cavity = TRUE, verbose = TRUE) {
   
-  ps <- updateGraphSpace(ps)
+  ps <- updatePathwaySpace(ps)
 
   #--- validate the pipeline status
   if (!.checkStatus(ps, "Preprocess")) {
@@ -489,7 +489,7 @@ setMethod("silhouetteMapping", "PathwaySpace", function(ps,
 setMethod("summitMapping", "PathwaySpace", function(ps, maxset = 30, 
   minsize = 30, threshold = 0.5, segm.fun = summitWatershed, ...) {
   
-  ps <- updateGraphSpace(ps)
+  ps <- updatePathwaySpace(ps)
 
   #--- validate the pipeline status
   if (!.checkStatus(ps, "Projection")) {

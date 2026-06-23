@@ -7,7 +7,7 @@ versions, adding any missing slots with default values.
 
 ``` r
 # S4 method for class 'PathwaySpace'
-updateGraphSpace(x, verbose = FALSE)
+updatePathwaySpace(x, verbose = TRUE)
 ```
 
 ## Arguments
