@@ -80,27 +80,23 @@ and
 all sharing a consistent argument structure for practical use and
 comparison:
 
-``` math
-y = signal \times \text{decay}^{\left(\frac{x}{\text{pdist}}\right)^{\text{shape}}} \quad \text{(Weibull)}
-```
+\\ y = signal \times
+\text{decay}^{\left(\frac{x}{\text{pdist}}\right)^{\text{shape}}} \quad
+\text{(Weibull)} \\
 
-``` math
-y = signal \times \text{decay}^{\left(\frac{x}{\text{pdist}}\right)} \quad \text{(Exponential)}
-```
+\\ y = signal \times \text{decay}^{\left(\frac{x}{\text{pdist}}\right)}
+\quad \text{(Exponential)} \\
 
-``` math
-y = signal \times \left(1 - (1 - \text{decay}) \times \frac{x}{\text{pdist}}\right) \quad \text{(Linear*)}
-```
+\\ y = signal \times \left(1 - (1 - \text{decay}) \times
+\frac{x}{\text{pdist}}\right) \quad \text{(Linear\*)} \\
 
-``` math
-\text{*output clipped to prevent flipping sign}
-```
+\\ \text{\*output clipped to prevent flipping sign} \\
 
-where $`\textbf{signal}`$ represents the initial intensity,
-$`\textbf{decay}`$ controls the rate of attenuation, $`\textbf{x}`$ is a
-vector of normalized distances, $`\textbf{shape}`$ adjusts the curvature
-of the decay, $`\textbf{pdist}`$ is a normalization term, and
-$`\textbf{y}`$ is the resulting signal decay values. Next, the main
+where \\\textbf{signal}\\ represents the initial intensity,
+\\\textbf{decay}\\ controls the rate of attenuation, \\\textbf{x}\\ is a
+vector of normalized distances, \\\textbf{shape}\\ adjusts the curvature
+of the decay, \\\textbf{pdist}\\ is a normalization term, and
+\\\textbf{y}\\ is the resulting signal decay values. Next, the main
 arguments are illustrated using the
 [`weibullDecay()`](https://github.com/sysbiolab/PathwaySpace/reference/weibullDecay.md)
 constructor, which returns a decay function with customized parameters.
@@ -113,7 +109,7 @@ weibullDecay(decay = 0.25, shape = 2, pdist = 0.75)
 #>     y <- signal * 0.25^((x/0.75)^2)
 #>     return(y)
 #> }
-#> <environment: 0x5843ff539c68>
+#> <environment: 0x5b5f28733180>
 #> attr(,"name")
 #> [1] "weibullDecay"
 ```
@@ -139,13 +135,13 @@ p1 + p2 + p3
 
 ![](modeling-signal-decay_files/figure-html/Creating%20a%20decay%20function%20-%204.2-1.png)
 
-Note that the normalization term $`\textbf{pdist}`$ anchors the decay to
-a reference distance where the initial signal $`S_0`$ decreases to
-$`S_0 * \textbf{decay}`$, controlling the extent over which the signal
-is projected along the x-axis. The $`\textbf{shape}`$ parameter, on the
+Note that the normalization term \\\textbf{pdist}\\ anchors the decay to
+a reference distance where the initial signal \\S_0\\ decreases to \\S_0
+\* \textbf{decay}\\, controlling the extent over which the signal is
+projected along the x-axis. The \\\textbf{shape}\\ parameter, on the
 other hand, controls the curvature of the decay function: When
-$`\textbf{shape} = 1`$, the function follows an exponential decay; and
-for $`\textbf{shape} > 1`$, the curve transitions from convex to
+\\\textbf{shape} = 1\\, the function follows an exponential decay; and
+for \\\textbf{shape} \> 1\\, the curve transitions from convex to
 concave, increasingly sigmoidal.
 
 Next, we demonstrate the
@@ -176,12 +172,12 @@ conceptual representation in [**Figure
 1A**](https://github.com/sysbiolab/PathwaySpace/articles/overview.md))
 to radially symmetric peaks in the exponential model, with the Weibull
 model transitioning between them to form dome-like surfaces depending on
-its $`\textbf{shape}`$ parameter.
+its \\\textbf{shape}\\ parameter.
 
 ## Assigning a decay model
 
 Returning to our lattice example, next we assign a linear decay model to
-the *PathwaySpace* object, setting $`\textbf{pdist}`$ as the average
+the *PathwaySpace* object, setting \\\textbf{pdist}\\ as the average
 center-to-center distance between vertices. For more details, refer to
 the documentation of the
 [`vertexDecay()`](https://github.com/sysbiolab/PathwaySpace/reference/vertexSignal-accessors.md)
