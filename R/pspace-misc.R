@@ -11,7 +11,7 @@
 #' from the package list.
 #'
 #' @references
-#' `r paste(format(citation("PathwaySpace"), style = "text"), collapse = "\n\n")`
+#' To cite this package, use \code{citation("PathwaySpace")}.
 #' 
 #' @aliases PathwaySpace-package
 #' @keywords internal

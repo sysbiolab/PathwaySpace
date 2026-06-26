@@ -2,9 +2,9 @@
 \title{PathwaySpace News}
 \encoding{UTF-8}
 
-\section{CHANGES IN VERSION 1.4.1 (2026-06-21)}{
+\section{CHANGES IN VERSION 1.4.1 (2026-06-25)}{
   \itemize{
-    \item Improved integration with ggplot2 ecosystem.
+    \item Improved integration with RGraphSpace and ggplot2 ecosystem.
     \item Added accessors and annotation functions for spatial data analysis.
     \item Performance and memory improvements for large graphs.
   }

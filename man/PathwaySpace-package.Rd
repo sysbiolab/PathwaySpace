@@ -17,19 +17,7 @@ running \code{help.start()} and selecting the PathwaySpace package
 from the package list.
 }
 \references{
-Tercan B, Apolonio VH, Chagas VS, Wong CK, Lee JA, Yau C, Benz CC,
-Stuart JM, Karlberg BJ, Ellrott K, Grewal JK, Jones SJ, Network TCGAA,
-Zenklusen JC, Robertson AG, Laird PW, Cherniack AD, Castro MA (2025).
-"Protocol for assessing distances in pathway space for classifier
-feature sets from machine learning methods." \emph{STAR Protocols}, \emph{6}(2),
-103681. doi:10.1016/j.xpro.2025.103681
-\url{https://doi.org/10.1016/j.xpro.2025.103681}.
-
-Ellrott K, Wong CK, Yau C, Castro MA, Lee JA, Karlberg BJ, Grewal JK,
-Lagani V, Tercan B, al. e (2025). "Classification of non-TCGA cancer
-samples to TCGA molecular subtypes using compact feature sets." \emph{Cancer
-Cell}, \emph{43}(1), 1. doi:10.1016/j.ccell.2024.12.002
-\url{https://doi.org/10.1016/j.ccell.2024.12.002}.
+To cite this package, use \code{citation("PathwaySpace")}.
 }
 \seealso{
 Useful links:
