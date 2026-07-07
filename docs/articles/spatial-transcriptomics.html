@@ -220,13 +220,19 @@ tissue image and normalize node coordinates to the image space.</p>
 <span><span class="co"># Inspect the 'gs' object</span></span>
 <span><span class="va">gs</span></span>
 <span><span class="co">#&gt; A GraphSpace-class object for:</span></span>
-<span><span class="co">#&gt; IGRAPH 381ac9a UN-- 2696 0 -- </span></span>
-<span><span class="co">#&gt; + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c), nodeSize</span></span>
-<span><span class="co">#&gt; | (v/n), cell (v/c), orig.ident (v/x), nCount_Spatial (v/n),</span></span>
-<span><span class="co">#&gt; | nFeature_Spatial (v/n), slice (v/n), region (v/c), nCount_SCT</span></span>
-<span><span class="co">#&gt; | (v/n), nFeature_SCT (v/n), SCT_snn_res.0.8 (v/x), seurat_clusters</span></span>
-<span><span class="co">#&gt; | (v/x), arrowType (e/n)</span></span>
-<span><span class="co">#&gt; + features: 17668 (Xkr4, Sox17, Mrpl15, Lypla1, ...)</span></span></code></pre></div>
+<span><span class="co">#&gt; IGRAPH 77bd03b UN-- 2696 0 -- </span></span>
+<span><span class="co">#&gt; + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c), nodeSize (v/n), cell (v/c),</span></span>
+<span><span class="co">#&gt; | orig.ident (v/x), nCount_Spatial (v/n), nFeature_Spatial (v/n), slice (v/n), region (v/c),</span></span>
+<span><span class="co">#&gt; | nCount_SCT (v/n), nFeature_SCT (v/n), SCT_snn_res.0.8 (v/x), seurat_clusters (v/x),</span></span>
+<span><span class="co">#&gt; | arrowType (e/n)</span></span>
+<span><span class="co">#&gt; + features: 17668 (Xkr4, Sox17, Mrpl15, Lypla1, ...)</span></span>
+<span><span class="co">#&gt; + samples: 2696 (AAACAAGTATCTCCCA-1, AAACACCAATAACTGC-1, ...)</span></span>
+<span><span class="co">#&gt; + node spatial boundaries: normalized to image space</span></span>
+<span><span class="co">#&gt; | x: [76, 493] -&gt; [0, 1] (cols)</span></span>
+<span><span class="co">#&gt; | y: [138, 541] -&gt; [0, 1] (rows)</span></span>
+<span><span class="co">#&gt; + image spatial boundaries: cropped to graph space</span></span>
+<span><span class="co">#&gt; | x: [1, 600] -&gt; [1, 522] (cols)</span></span>
+<span><span class="co">#&gt; | y: [1, 599] -&gt; [1, 522] (rows)</span></span></code></pre></div>
 <p>In this tutorial we use the low-level <em>ggplot2</em> interface for
 fine-grained control; the subsequent tutorials use the higher-level
 <code><a href="../reference/plotPathwaySpace-methods.html">plotPathwaySpace()</a></code> wrapper for convenience.</p>
@@ -270,7 +276,16 @@ combinations of these parameters to correct the alignment.</p>
 </h3>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a PathwaySpace object</span></span>
-<span><span class="va">pspace_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/buildPathwaySpace.html">buildPathwaySpace</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">pspace_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/buildPathwaySpace.html">buildPathwaySpace</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># PathwaySpace extends the GraphSpace class</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">pspace_obj</span>, <span class="st">"GraphSpace"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "PathwaySpace"</span></span>
+<span><span class="co">#&gt; attr(,"package")</span></span>
+<span><span class="co">#&gt; [1] "PathwaySpace"</span></span></code></pre></div>
 <p>Before running the projection, we need to specify a distance unit for
 the signal decay function. This unit will affect the extent over which
 the signal is projected on the coordinate space. We will use the
@@ -417,7 +432,20 @@ dataset, see <em>Seurat</em>’s <a href="https://satijalab.org/seurat/articles/
 </h3>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a PathwaySpace from the 'gs' object</span></span>
-<span><span class="va">pspace_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/buildPathwaySpace.html">buildPathwaySpace</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">pspace_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/buildPathwaySpace.html">buildPathwaySpace</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">pspace_obj</span></span>
+<span><span class="co">#&gt; A PathwaySpace-class object for:</span></span>
+<span><span class="co">#&gt; IGRAPH 45cb626 UNW- 53173 0 -- </span></span>
+<span><span class="co">#&gt; + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c), nodeSize (v/n), cells (v/c),</span></span>
+<span><span class="co">#&gt; | orig.ident (v/x), nCount_Spatial (v/n), nFeature_Spatial (v/n), signal (v/n),</span></span>
+<span><span class="co">#&gt; | decayFunction (v/x), arrowType (e/n), weight (e/n)</span></span>
+<span><span class="co">#&gt; + features: 23264 (0610005C13RIK, 0610007P14RIK, 0610009B22RIK, 0610009E02RIK, ...)</span></span>
+<span><span class="co">#&gt; + samples: 53173 (AACGTCATAATCGT, TACTTTAGCGCAGT, ...)</span></span>
+<span><span class="co">#&gt; + node spatial boundaries: normalized to graph space</span></span>
+<span><span class="co">#&gt; | x: [879, 5685] -&gt; [0, 1] (cols)</span></span>
+<span><span class="co">#&gt; | y: [762, 5595] -&gt; [0, 1] (rows)</span></span>
+<span><span class="co">#&gt; + status: Preprocess[x]  Projection[ ]  Silhouette[ ]  Summits[ ] </span></span></code></pre></div>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get distance to the nearest spot</span></span>
 <span><span class="va">nspot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getNearestNode.html">getNearestNode</a></span><span class="op">(</span><span class="va">pspace_obj</span><span class="op">)</span></span>

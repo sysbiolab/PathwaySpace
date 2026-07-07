@@ -132,13 +132,19 @@ gs <- normalizeGraphSpace(gs)
 # Inspect the 'gs' object
 gs
 #> A GraphSpace-class object for:
-#> IGRAPH 381ac9a UN-- 2696 0 -- 
-#> + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c), nodeSize
-#> | (v/n), cell (v/c), orig.ident (v/x), nCount_Spatial (v/n),
-#> | nFeature_Spatial (v/n), slice (v/n), region (v/c), nCount_SCT
-#> | (v/n), nFeature_SCT (v/n), SCT_snn_res.0.8 (v/x), seurat_clusters
-#> | (v/x), arrowType (e/n)
+#> IGRAPH 77bd03b UN-- 2696 0 -- 
+#> + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c), nodeSize (v/n), cell (v/c),
+#> | orig.ident (v/x), nCount_Spatial (v/n), nFeature_Spatial (v/n), slice (v/n), region (v/c),
+#> | nCount_SCT (v/n), nFeature_SCT (v/n), SCT_snn_res.0.8 (v/x), seurat_clusters (v/x),
+#> | arrowType (e/n)
 #> + features: 17668 (Xkr4, Sox17, Mrpl15, Lypla1, ...)
+#> + samples: 2696 (AAACAAGTATCTCCCA-1, AAACACCAATAACTGC-1, ...)
+#> + node spatial boundaries: normalized to image space
+#> | x: [76, 493] -> [0, 1] (cols)
+#> | y: [138, 541] -> [0, 1] (rows)
+#> + image spatial boundaries: cropped to graph space
+#> | x: [1, 600] -> [1, 522] (cols)
+#> | y: [1, 599] -> [1, 522] (rows)
 ```
 
 In this tutorial we use the low-level *ggplot2* interface for fine-grained control; the subsequent tutorials use the higher-level `plotPathwaySpace()` wrapper for convenience.
@@ -184,6 +190,15 @@ knitr::include_graphics("figs_spatl/fig1.png")
 ```{r Create a PathwaySpace, eval=FALSE, message=FALSE}
 # Create a PathwaySpace object
 pspace_obj <- buildPathwaySpace(gs)
+
+# PathwaySpace extends the GraphSpace class
+inherits(pspace_obj, "GraphSpace")
+#> [1] TRUE
+
+class(pspace_obj)
+#> [1] "PathwaySpace"
+#> attr(,"package")
+#> [1] "PathwaySpace"
 ```
 
 Before running the projection, we need to specify a distance unit for the signal decay function. This unit will affect the extent over which the signal is projected on the coordinate space. We will use the center-to-center distance between spots, corresponding to 100 µm in Visium v1 technology.
@@ -354,6 +369,19 @@ gs <- normalizeGraphSpace(gs, flip.y = TRUE, rotate.xy = TRUE)
 ```{r , eval=FALSE, message=FALSE}
 # Create a PathwaySpace from the 'gs' object
 pspace_obj <- buildPathwaySpace(gs)
+
+pspace_obj
+#> A PathwaySpace-class object for:
+#> IGRAPH 45cb626 UNW- 53173 0 -- 
+#> + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c), nodeSize (v/n), cells (v/c),
+#> | orig.ident (v/x), nCount_Spatial (v/n), nFeature_Spatial (v/n), signal (v/n),
+#> | decayFunction (v/x), arrowType (e/n), weight (e/n)
+#> + features: 23264 (0610005C13RIK, 0610007P14RIK, 0610009B22RIK, 0610009E02RIK, ...)
+#> + samples: 53173 (AACGTCATAATCGT, TACTTTAGCGCAGT, ...)
+#> + node spatial boundaries: normalized to graph space
+#> | x: [879, 5685] -> [0, 1] (cols)
+#> | y: [762, 5595] -> [0, 1] (rows)
+#> + status: Preprocess[x]  Projection[ ]  Silhouette[ ]  Summits[ ] 
 ```
 
 ```{r , eval=FALSE, message=FALSE}
