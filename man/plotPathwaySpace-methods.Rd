@@ -21,19 +21,19 @@
   font.color = "white",
   zlim = NULL,
   slices = 25,
+  add.image = FALSE,
   add.grid = TRUE,
   grid.color = "white",
-  add.summits = TRUE,
-  label.summits = TRUE,
-  summit.color = "white",
-  add.marks = FALSE,
-  marks = NULL,
+  marks = FALSE,
   mark.size = 3,
   mark.color = "white",
   mark.padding = 0.5,
   mark.line.width = 0.5,
   use.dotmark = FALSE,
-  add.image = FALSE
+  add.summits = TRUE,
+  label.summits = TRUE,
+  summit.color = "white",
+  add.marks = deprecated()
 )
 }
 \arguments{
@@ -72,21 +72,14 @@ If NULL, limits are determined from the range of the input values.}
 \item{slices}{A single positive integer value used to split
 the image signal into equally-spaced intervals.}
 
+\item{add.image}{A logical value indicating whether to add a background
+image, when one is available (see \code{\link[RGraphSpace]{GraphSpace}}).}
+
 \item{add.grid}{A logical value indicating whether to add gridlines to
 the image space. However, gridlines will only appear when the image
 is decorated with graph silhouettes (see \code{\link{silhouetteMapping}}).}
 
 \item{grid.color}{A color passed to \code{\link[ggplot2]{geom_point}}.}
-
-\item{add.summits}{A logical value indicating whether to add contour
-lines to 'summits' (when summits are available;
-see \code{\link{summitMapping}}).}
-
-\item{label.summits}{A logical value indicating whether to label summits.}
-
-\item{summit.color}{A color passed to 'summits'.}
-
-\item{add.marks}{A logical value indicating whether to plot vertex labels.}
 
 \item{marks}{A vector of vertex names to be highlighted in the
 image space. This argument overrides 'add.labels'.}
@@ -104,8 +97,15 @@ image space. This argument overrides 'add.labels'.}
 \item{use.dotmark}{A logical value indicating whether "marks" should be
 represented as dots.}
 
-\item{add.image}{A logical value indicating whether to add a background
-image, when one is available (see \code{\link[RGraphSpace]{GraphSpace}}).}
+\item{add.summits}{A logical value indicating whether to add contour
+lines to 'summits' (when summits are available;
+see \code{\link{summitMapping}}).}
+
+\item{label.summits}{A logical value indicating whether to label summits.}
+
+\item{summit.color}{A color passed to 'summits'.}
+
+\item{add.marks}{Deprecated. Use \code{marks} instead.}
 }
 \value{
 A ggplot-class object.

@@ -56,6 +56,7 @@ data('gtoy1', package = 'RGraphSpace')
 # Check graph validity
 gs <- GraphSpace(gtoy1)
 #> Validating the 'igraph' object...
+#> Ignoring graph-level attributes: 'name', 'mode', 'center'
 #> Creating a 'GraphSpace' object...
 
 gs <- normalizeGraphSpace(gs)

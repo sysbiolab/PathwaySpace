@@ -72,21 +72,6 @@
   }
 }
 
-#-------------------------------------------------------------------------------
-# Validate custom plot args
-.validate.psplot.args <- function(name, para) {
-  if (name == "marks") {
-    if (!is.null(para)) {
-      if (!.all_characterValues(para)) {
-        msg <- paste0("'", name, "' should be a vector with strings.")
-        stop(msg, call. = FALSE)
-      }
-    }
-  } else {
-    stop("Skipped arg validation.", call. = FALSE)
-  }
-}
-
 #-------------------------------------------------------------------
 .is_singleNumber <- function(para) {
   (is.integer(para) || is.numeric(para)) &&

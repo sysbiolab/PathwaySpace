@@ -34,11 +34,11 @@ In this tutorial, we demonstrate how to model signal decay functions targeted at
 
 ```{r Check required versions, eval=TRUE, message=FALSE}
 # Check versions
-if (packageVersion("RGraphSpace") < "1.4.1"){
+if (packageVersion("RGraphSpace") < "1.4.2"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.4.1"){
+if (packageVersion("PathwaySpace") < "1.4.2"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -61,7 +61,7 @@ g <- make_lattice(c(9, 9), directed = FALSE)
 V(g)$name <- paste0("n",1:vcount(g))
 gs <- GraphSpace(g, layout = layout_on_grid(g))
 gs <- normalizeGraphSpace(gs)
-plotGraphSpace(gs, add.labels = TRUE)
+plotGraphSpace(gs, node.labels = TRUE)
 ```
 
 ```{r Setting basic input data - 2, eval=TRUE, message=FALSE}

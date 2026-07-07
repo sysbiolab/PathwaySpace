@@ -46,5 +46,4 @@ data(PCv12_pruned_igraph)
 ## Suggestion to vizualize this igraph in R:
 library(RGraphSpace)
 plotGraphSpace(PCv12_pruned_igraph)
-#> Normalizing node coordinates to graph space...
 ```

@@ -38,11 +38,11 @@ In what follows, this tutorial demonstrates how to create different signal aggre
 
 ```{r Check required versions, eval=TRUE, message=FALSE}
 # Check versions
-if (packageVersion("RGraphSpace") < "1.4.1"){
+if (packageVersion("RGraphSpace") < "1.4.2"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.4.1"){
+if (packageVersion("PathwaySpace") < "1.4.2"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -66,7 +66,7 @@ V(g)$name <- paste0("n",1:vcount(g))
 set.seed(123) # for reproducible 'layout_with_fr'
 gs <- GraphSpace(g, layout = layout_with_fr(g))
 gs <- normalizeGraphSpace(gs)
-plotGraphSpace(gs, add.labels = TRUE)
+plotGraphSpace(gs, node.labels = TRUE)
 ```
 
 ```{r Modeling signal decay - 2, eval=TRUE, message=FALSE}

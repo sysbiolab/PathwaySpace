@@ -81,11 +81,11 @@ Our graph is now ready for the *PathwaySpace* package. We can check its layout u
 
 ```{r GraphSpace constructor - 2, eval=local_build, message=FALSE, fig.height=4.5, fig.width=4.5, out.width = '70%'}
 # Check the graph layout
-plotGraphSpace(gs1, add.labels = TRUE)
+plotGraphSpace(gs1, node.labels = TRUE)
 ```
 
 ```{r fig2.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-# gg <- plotGraphSpace(gs1, add.labels = TRUE)
+# gg <- plotGraphSpace(gs1, node.labels = TRUE)
 # ggsave(filename = "./vignettes/figures/fig2.png", height=4.5, width=4.5,
 #   units="in", device="png", dpi=250, plot=gg)
 ```
@@ -145,11 +145,11 @@ p_space1 <- circularProjection(p_space1, k = 1,
   decay.fun = weibullDecay(pdist = 0.4))
 
 # Plot a PathwaySpace image
-plotPathwaySpace(p_space1, add.marks = TRUE)
+plotPathwaySpace(p_space1, marks = TRUE)
 ```
 
 ```{r fig3.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-# gg <- plotPathwaySpace(p_space1, add.marks = TRUE)
+# gg <- plotPathwaySpace(p_space1, marks = TRUE)
 # ggsave(filename = "./vignettes/figures/fig3.png", height=4.5, width=5,
 #   units="in", device="png", dpi=350, plot=gg)
 ```
@@ -196,11 +196,11 @@ gs2 <- normalizeGraphSpace(gs2, mar = 0.2)
 
 ```{r Polar projection - 2, eval=local_build, message=FALSE, fig.height=4.5, fig.width=4.5, out.width = '70%'}
 # Check the graph layout
-plotGraphSpace(gs2, add.labels = TRUE)
+plotGraphSpace(gs2, node.labels = TRUE)
 ```
 
 ```{r fig5.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-# gg <- plotGraphSpace(gs2, add.labels = TRUE)
+# gg <- plotGraphSpace(gs2, node.labels = TRUE)
 # ggsave(filename = "./vignettes/figures/fig5.png", height=4.5, width=4.5,
 #   units="in", device="png", dpi=250, plot=gg)
 ```
@@ -234,11 +234,11 @@ In polar projections, the `pdist` term defines a reference distance related to e
 p_space2 <- polarProjection(p_space2, beta = 10)
 
 # Plot PathwaySpace
-plotPathwaySpace(p_space2, theme = "th2", add.marks = TRUE)
+plotPathwaySpace(p_space2, theme = "th2", marks = TRUE)
 ```
 
 ```{r fig6.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
-# gg <- plotPathwaySpace(p_space2, theme = "th2", add.marks = TRUE)
+# gg <- plotPathwaySpace(p_space2, theme = "th2", marks = TRUE)
 # ggsave(filename = "./vignettes/figures/fig6.png", height=4.5, width=5,
 #   units="in", device="png", dpi=350, plot=gg)
 ```
@@ -290,13 +290,13 @@ p_space1 <- circularProjection(p_space1,
 
 # Plot PathwaySpace
 plotPathwaySpace(p_space1, bg.color = "white", 
-  font.color = "grey20", add.marks = TRUE, 
+  font.color = "grey20", marks = TRUE, 
   mark.color = "magenta", theme = "th3")
 ```
 
 ```{r fig8.png, eval=FALSE, message=FALSE, echo=FALSE, include=FALSE, purl=FALSE}
 # gg <- plotPathwaySpace(p_space1, bg.color = "white", font.color = "grey20",
-#   add.marks = TRUE, mark.color = "magenta", theme = "th3")
+#   marks = TRUE, mark.color = "magenta", theme = "th3")
 # ggsave(filename = "./vignettes/figures/fig8.png", height=4.5, width=4.5,
 #   units="in", device="png", dpi=350, plot=gg)
 ```

@@ -22,19 +22,19 @@ plotPathwaySpace(
   font.color = "white",
   zlim = NULL,
   slices = 25,
+  add.image = FALSE,
   add.grid = TRUE,
   grid.color = "white",
-  add.summits = TRUE,
-  label.summits = TRUE,
-  summit.color = "white",
-  add.marks = FALSE,
-  marks = NULL,
+  marks = FALSE,
   mark.size = 3,
   mark.color = "white",
   mark.padding = 0.5,
   mark.line.width = 0.5,
   use.dotmark = FALSE,
-  add.image = FALSE
+  add.summits = TRUE,
+  label.summits = TRUE,
+  summit.color = "white",
+  add.marks = deprecated()
 )
 ```
 
@@ -106,6 +106,12 @@ plotPathwaySpace(
   A single positive integer value used to split the image signal into
   equally-spaced intervals.
 
+- add.image:
+
+  A logical value indicating whether to add a background image, when one
+  is available (see
+  [`GraphSpace`](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-methods.html)).
+
 - add.grid:
 
   A logical value indicating whether to add gridlines to the image
@@ -117,24 +123,6 @@ plotPathwaySpace(
 
   A color passed to
   [`geom_point`](https://ggplot2.tidyverse.org/reference/geom_point.html).
-
-- add.summits:
-
-  A logical value indicating whether to add contour lines to 'summits'
-  (when summits are available; see
-  [`summitMapping`](https://github.com/sysbiolab/PathwaySpace/reference/summitMapping-methods.md)).
-
-- label.summits:
-
-  A logical value indicating whether to label summits.
-
-- summit.color:
-
-  A color passed to 'summits'.
-
-- add.marks:
-
-  A logical value indicating whether to plot vertex labels.
 
 - marks:
 
@@ -166,11 +154,23 @@ plotPathwaySpace(
   A logical value indicating whether "marks" should be represented as
   dots.
 
-- add.image:
+- add.summits:
 
-  A logical value indicating whether to add a background image, when one
-  is available (see
-  [`GraphSpace`](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-methods.html)).
+  A logical value indicating whether to add contour lines to 'summits'
+  (when summits are available; see
+  [`summitMapping`](https://github.com/sysbiolab/PathwaySpace/reference/summitMapping-methods.md)).
+
+- label.summits:
+
+  A logical value indicating whether to label summits.
+
+- summit.color:
+
+  A color passed to 'summits'.
+
+- add.marks:
+
+  Deprecated. Use `marks` instead.
 
 ## Value
 
@@ -194,6 +194,7 @@ data('gtoy1', package = 'RGraphSpace')
 # # Check graph validity
 gs <- GraphSpace(gtoy1)
 #> Validating the 'igraph' object...
+#> Ignoring graph-level attributes: 'name', 'mode', 'center'
 #> Creating a 'GraphSpace' object...
 
 gs <- normalizeGraphSpace(gs)

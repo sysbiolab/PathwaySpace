@@ -167,25 +167,10 @@ setMethod("coerce", c("PathwaySpace", "GraphSpace"),
 # show summary information on screen
 setMethod("show", "PathwaySpace", function(object) {
   cat("A PathwaySpace-class object for:\n")
-  summary(object@graph)
-  if (.hasSlot(object, "fdata")) {
-    nfeat <- ncol(object@fdata)
-    if (nfeat > 0) {
-      feat <- .ps_preview(colnames(object@fdata))
-      cat("+ features: ", nfeat, " (", paste(feat, collapse = ", "), ")\n", sep = "")
-    }
-  }
+  RGraphSpace::summary(object)
   cat("+ status:", .summariseStatus(object), "\n")
   invisible(object)
 })
-
-#' @importFrom utils head
-.ps_preview <- function(x, n = 4) {
-  if (length(x) == 0) return("<empty>")
-  out <- head(x, n)
-  if (length(x) > n) out <- c(out, "...")
-  paste(out, collapse = ", ")
-}
 
 #-------------------------------------------------------------------------------
 .summariseStatus <- function(ps){

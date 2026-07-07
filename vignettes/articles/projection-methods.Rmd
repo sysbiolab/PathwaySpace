@@ -36,11 +36,11 @@ This tutorial introduces the core *PathwaySpace* methods using simple toy exampl
 
 ```{r Check required versions, eval=TRUE, message=FALSE}
 # Check versions
-if (packageVersion("RGraphSpace") < "1.4.1"){
+if (packageVersion("RGraphSpace") < "1.4.2"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.4.1"){
+if (packageVersion("PathwaySpace") < "1.4.2"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -86,7 +86,7 @@ Our graph is now ready for the *PathwaySpace* package. We can check its layout u
 
 ```{r GraphSpace constructor - 2, eval=TRUE, message=FALSE}
 # Check the graph layout
-plotGraphSpace(gs1, add.labels = TRUE)
+plotGraphSpace(gs1, node.labels = TRUE)
 ```
 
 # Creating a *PathwaySpace* object
@@ -139,7 +139,7 @@ p_space1 <- circularProjection(p_space1, k = 1,
   decay.fun = weibullDecay(pdist = 0.4))
 
 # Plot a PathwaySpace image
-plotPathwaySpace(p_space1, add.marks = TRUE)
+plotPathwaySpace(p_space1, marks = TRUE)
 ```
 
 Next, we reassess the same *PathwaySpace* object, using `pdist = 0.2`, `k = 2` and adjusting the `shape` of the decay function (for further details, see the [**modeling signal decay**](modeling-signal-decay.html) tutorial).
@@ -170,7 +170,7 @@ gs2 <- normalizeGraphSpace(gs2, mar = 0.2)
 
 ```{r Polar projection - 2, eval=TRUE, message=FALSE}
 # Check the graph layout
-plotGraphSpace(gs2, add.labels = TRUE)
+plotGraphSpace(gs2, node.labels = TRUE)
 ```
 
 ```{r Polar projection - 3, eval=TRUE, message=FALSE}
@@ -198,7 +198,7 @@ In polar projections, the `pdist` term defines a reference distance related to e
 p_space2 <- polarProjection(p_space2, beta = 10)
 
 # Plot PathwaySpace
-plotPathwaySpace(p_space2, theme = "th2", add.marks = TRUE)
+plotPathwaySpace(p_space2, theme = "th2", marks = TRUE)
 ```
 
 Note that this projection distributes signals on the edges regardless of direction. To incorporate edge orientation, we set `directional = TRUE`, which channels the projection along the paths:
@@ -234,7 +234,7 @@ p_space1 <- circularProjection(p_space1,
 
 # Plot PathwaySpace
 plotPathwaySpace(p_space1, bg.color = "white", 
-  font.color = "grey20", add.marks = TRUE,
+  font.color = "grey20", marks = TRUE,
   mark.color = "magenta", theme = "th3")
 ```
 

@@ -1,6 +1,6 @@
 # Network signal projections
 
-**Package**: PathwaySpace 1.4.1  
+**Package**: PathwaySpace 1.4.2  
 
 ## Overview
 
@@ -21,11 +21,11 @@ are installed.
 ``` r
 
 # Check versions
-if (packageVersion("RGraphSpace") < "1.4.1"){
+if (packageVersion("RGraphSpace") < "1.4.2"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.4.1"){
+if (packageVersion("PathwaySpace") < "1.4.2"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -93,7 +93,7 @@ function.
 ``` r
 
 # Check the graph layout
-plotGraphSpace(gs1, add.labels = TRUE)
+plotGraphSpace(gs1, node.labels = TRUE)
 ```
 
 ![](projection-methods_files/figure-html/GraphSpace%20constructor%20-%202-1.png)
@@ -176,7 +176,7 @@ p_space1 <- circularProjection(p_space1, k = 1,
   decay.fun = weibullDecay(pdist = 0.4))
 
 # Plot a PathwaySpace image
-plotPathwaySpace(p_space1, add.marks = TRUE)
+plotPathwaySpace(p_space1, marks = TRUE)
 ```
 
 ![](projection-methods_files/figure-html/Circular%20projection%20-%201-1.png)
@@ -229,7 +229,7 @@ gs2 <- normalizeGraphSpace(gs2, mar = 0.2)
 ``` r
 
 # Check the graph layout
-plotGraphSpace(gs2, add.labels = TRUE)
+plotGraphSpace(gs2, node.labels = TRUE)
 ```
 
 ![](projection-methods_files/figure-html/Polar%20projection%20-%202-1.png)
@@ -271,7 +271,7 @@ exponent will control the angular span; for values greater than zero,
 p_space2 <- polarProjection(p_space2, beta = 10)
 
 # Plot PathwaySpace
-plotPathwaySpace(p_space2, theme = "th2", add.marks = TRUE)
+plotPathwaySpace(p_space2, theme = "th2", marks = TRUE)
 ```
 
 ![](projection-methods_files/figure-html/Polar%20projection%20-%205-1.png)
@@ -329,7 +329,7 @@ p_space1 <- circularProjection(p_space1,
 
 # Plot PathwaySpace
 plotPathwaySpace(p_space1, bg.color = "white", 
-  font.color = "grey20", add.marks = TRUE,
+  font.color = "grey20", marks = TRUE,
   mark.color = "magenta", theme = "th3")
 ```
 
@@ -357,7 +357,7 @@ If you use *PathwaySpace*, please cite:
 
 ## Session information
 
-    #> R version 4.6.0 (2026-04-24)
+    #> R version 4.6.1 (2026-06-24)
     #> Platform: x86_64-pc-linux-gnu
     #> Running under: Ubuntu 24.04.4 LTS
     #> 
@@ -380,21 +380,21 @@ If you use *PathwaySpace*, please cite:
     #> [1] stats     graphics  grDevices utils     datasets  methods   base     
     #> 
     #> other attached packages:
-    #> [1] PathwaySpace_1.4.1 RGraphSpace_1.4.1  ggplot2_4.0.3      igraph_2.3.2      
+    #> [1] PathwaySpace_1.4.2 RGraphSpace_1.4.2  ggplot2_4.0.3      igraph_2.3.3      
     #> 
     #> loaded via a namespace (and not attached):
     #>  [1] sass_0.4.10        generics_0.1.4     tidyr_1.3.2        lattice_0.22-9    
-    #>  [5] digest_0.6.39      magrittr_2.0.5     evaluate_1.0.5     grid_4.6.0        
+    #>  [5] digest_0.6.39      magrittr_2.0.5     evaluate_1.0.5     grid_4.6.1        
     #>  [9] RColorBrewer_1.1-3 fastmap_1.2.0      jsonlite_2.0.0     Matrix_1.7-5      
     #> [13] ggrepel_0.9.8      ggnewscale_0.5.2   ggrastr_1.0.2      purrr_1.2.2       
     #> [17] scales_1.4.0       textshaping_1.0.5  jquerylib_0.1.4    cli_3.6.6         
-    #> [21] rlang_1.2.0        tidygraph_1.3.1    RANN_2.6.2         withr_3.0.2       
+    #> [21] rlang_1.2.0        tidygraph_1.3.1    RANN_2.6.2         withr_3.0.3       
     #> [25] cachem_1.1.0       yaml_2.3.12        otel_0.2.0         ggbeeswarm_0.7.3  
-    #> [29] tools_4.6.0        dplyr_1.2.1        colorspace_2.1-2   vctrs_0.7.3       
+    #> [29] tools_4.6.1        dplyr_1.2.1        colorspace_2.1-2   vctrs_0.7.3       
     #> [33] R6_2.6.1           lifecycle_1.0.5    fs_2.1.0           htmlwidgets_1.6.4 
     #> [37] vipor_0.4.7        ragg_1.5.2         fontawesome_0.5.3  pkgconfig_2.0.3   
     #> [41] beeswarm_0.4.0     desc_1.4.3         pkgdown_2.2.0      pillar_1.11.1     
     #> [45] bslib_0.11.0       gtable_0.3.6       Rcpp_1.1.1-1.1     glue_1.8.1        
-    #> [49] systemfonts_1.3.2  xfun_0.58          tibble_3.3.1       tidyselect_1.2.1  
-    #> [53] rstudioapi_0.18.0  knitr_1.51         farver_2.1.2       patchwork_1.3.2   
-    #> [57] htmltools_0.5.9    rmarkdown_2.31     compiler_4.6.0     S7_0.2.2
+    #> [49] systemfonts_1.3.2  xfun_0.59          tibble_3.3.1       tidyselect_1.2.1  
+    #> [53] rstudioapi_0.19.0  knitr_1.51         farver_2.1.2       patchwork_1.3.2   
+    #> [57] htmltools_0.5.9    rmarkdown_2.31     compiler_4.6.1     S7_0.2.2

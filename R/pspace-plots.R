@@ -24,16 +24,12 @@
 #' If NULL, limits are determined from the range of the input values.
 #' @param slices A single positive integer value used to split 
 #' the image signal into equally-spaced intervals.
+#' @param add.image A logical value indicating whether to add a background 
+#' image, when one is available (see \code{\link[RGraphSpace]{GraphSpace}}).
 #' @param add.grid A logical value indicating whether to add gridlines to 
 #' the image space. However, gridlines will only appear when the image 
 #' is decorated with graph silhouettes (see \code{\link{silhouetteMapping}}).
 #' @param grid.color A color passed to \code{\link[ggplot2]{geom_point}}.
-#' @param add.summits A logical value indicating whether to add contour 
-#' lines to 'summits' (when summits are available; 
-#' see \code{\link{summitMapping}}).
-#' @param label.summits A logical value indicating whether to label summits.
-#' @param summit.color A color passed to 'summits'.
-#' @param add.marks A logical value indicating whether to plot vertex labels.
 #' @param marks A vector of vertex names to be highlighted in the 
 #' image space. This argument overrides 'add.labels'.
 #' @param mark.size A size argument passed to \code{\link[ggplot2]{geom_text}}.
@@ -44,8 +40,12 @@
 #' \code{\link[ggrepel]{geom_text_repel}}.
 #' @param use.dotmark A logical value indicating whether "marks" should be 
 #' represented as dots.
-#' @param add.image A logical value indicating whether to add a background 
-#' image, when one is available (see \code{\link[RGraphSpace]{GraphSpace}}).
+#' @param add.summits A logical value indicating whether to add contour 
+#' lines to 'summits' (when summits are available; 
+#' see \code{\link{summitMapping}}).
+#' @param label.summits A logical value indicating whether to label summits.
+#' @param summit.color A color passed to 'summits'.
+#' @param add.marks Deprecated. Use \code{marks} instead.
 #' @return A ggplot-class object.
 #' @author Sysbiolab Team, Mauro Castro.
 #' @seealso \code{\link{circularProjection}}, \code{\link{polarProjection}}
@@ -84,7 +84,7 @@
 #' @importFrom grDevices convertColor col2rgb rgb as.raster
 #' @importFrom grDevices adjustcolor colorRampPalette
 #' @importFrom stats runif
-#' @importFrom RGraphSpace plotGraphSpace theme_gspace_coords
+#' @importFrom RGraphSpace plotGraphSpace theme_gspace_coords gs_image
 #' @importFrom patchwork wrap_plots
 #' @rdname plotPathwaySpace-methods
 #' @aliases plotPathwaySpace
@@ -100,12 +100,18 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     ylab = "Graph coordinates 2", 
     zlab = "Density", 
     font.size = 1, font.color = "white",
-    zlim = NULL, slices = 25, 
+    zlim = NULL, slices = 25, add.image = FALSE,
     add.grid = TRUE, grid.color = "white", 
-    add.summits = TRUE, label.summits = TRUE, summit.color = "white",
-    add.marks = FALSE, marks = NULL, mark.size = 3, mark.color = "white", 
+    marks = FALSE, mark.size = 3, mark.color = "white", 
     mark.padding = 0.5, mark.line.width = 0.5, use.dotmark = FALSE, 
-    add.image = FALSE) {
+    add.summits = TRUE, label.summits = TRUE, summit.color = "white",
+    add.marks = deprecated()) {
+    
+    if (lifecycle::is_present(add.marks)) {
+      lifecycle::deprecate_soft("1.4.2", "plotPathwaySpace(add.marks)",
+        details = "Use `plotPathwaySpace(marks)` instead.")
+      marks <- add.marks
+    }
     
     .check_updated_ps(ps)
     
@@ -125,7 +131,6 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     .validate.ps.args("singleLogical", "add.grid", add.grid)
     .validate.ps.args("singleLogical", "add.summits", add.summits)
     .validate.ps.args("singleLogical", "label.summits", label.summits)
-    .validate.ps.args("singleLogical", "add.marks", add.marks)
     .validate.ps.args("singleNumber", "mark.size", mark.size)
     .validate.ps.args("singleNumber", "mark.padding", mark.padding)
     .validate.ps.args("singleNumber","mark.line.width", mark.line.width)
@@ -137,7 +142,6 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     .validate.colors("singleColor", "font.color", font.color)
     .validate.colors("singleColor", "grid.color", grid.color)
     .validate.colors("singleColor", "summit.color", summit.color)
-    .validate.psplot.args("marks", marks)
     if(!is.na(bg.color) ){
       .validate.colors("singleColor", "bg.color", bg.color)
     }
@@ -223,8 +227,8 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     ggp <- .set_pspace(gxyz, zlab, cl, si.color) + gs_theme
     
     #--- add image
-    if(pars_gs$image.layer){
-      img <- getPathwaySpace(ps, "image")
+    if(pars_gs$image.space %||% FALSE){
+      img <- gs_image(ps)
       if(add.image){
         ggp <- .add_image(ggp, img)
       } else {
@@ -249,12 +253,13 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     }
     
     #--- add marks if available
-    if (!is.null(marks)) {
-      ggp <- .add_marks(ggp, gxy, pars_ps, marks, mark.size,
-        mark.color, mark.padding, mark.line.width, use.dotmark)
-    } else if(add.marks){
+    if(isTRUE(marks)){
       ggp <- .add_marks(ggp, gxy, pars_ps, marks = rownames(gxy), 
         mark.size, mark.color, mark.padding, mark.line.width, use.dotmark)
+    } else if(is.character(marks)){
+      .validate.ps.args("allCharacter", "marks", marks)
+      ggp <- .add_marks(ggp, gxy, pars_ps, marks = marks, mark.size,
+        mark.color, mark.padding, mark.line.width, use.dotmark)
     }
     
     #--- add annotations

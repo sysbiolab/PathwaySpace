@@ -46,11 +46,11 @@ This vignette assumes prior experience with [*Seurat*](https://satijalab.org/seu
 
 ```{r Check required versions, eval=TRUE, message=FALSE}
 # Check required versions
-if (packageVersion("RGraphSpace") < "1.4.1"){
+if (packageVersion("RGraphSpace") < "1.4.2"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.4.1"){
+if (packageVersion("PathwaySpace") < "1.4.2"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -108,21 +108,19 @@ seurat_obj <- FindClusters(seurat_obj, verbose = FALSE)
 ```{r Extract data - 1, eval=FALSE, message=FALSE, results='hide'}
 # Create a GraphSpace from 'seurat_obj'
 gs <- as.GraphSpace(seurat_obj, space = "spatial", scale = "lowres")
-
-# Seurat object converted to GraphSpace:
-# ℹ space=spatial, layer=default, features=17668, samples=2696, scale="lowres"
-# Node spatial boundaries:
-# ℹ x: [76, 493] (cols)
-# ℹ y: [138, 541] (rows)
+#> Seurat object converted to GraphSpace:
+#> ℹ space=spatial, layer=default, features=17668, samples=2696, scale="lowres"
+#> Node spatial boundaries:
+#> ℹ x: [76, 493] (cols)
+#> ℹ y: [138, 541] (rows)
 ```
 
 ```{r Extract data - 2, eval=FALSE, message=FALSE, results='hide'}
 # If available, add tissue image 
 gs_image(gs) <- SeuratObject::GetImage(seurat_obj, mode = "raster")
-
-# Image spatial boundaries:
-# ℹ x: [1, 600] (cols)
-# ℹ y: [1, 599] (rows)
+#> Image spatial boundaries:
+#> ℹ x: [1, 600] (cols)
+#> ℹ y: [1, 599] (rows)
 ```
 
 ```{r Extract data - 3, eval=FALSE, message=FALSE, results='hide'}
@@ -133,14 +131,14 @@ gs <- normalizeGraphSpace(gs)
 
 # Inspect the 'gs' object
 gs
-# A GraphSpace-class object for:
-# IGRAPH 381ac9a UN-- 2696 0 -- 
-# + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c), nodeSize
-# | (v/n), cell (v/c), orig.ident (v/x), nCount_Spatial (v/n),
-# | nFeature_Spatial (v/n), slice (v/n), region (v/c), nCount_SCT
-# | (v/n), nFeature_SCT (v/n), SCT_snn_res.0.8 (v/x), seurat_clusters
-# | (v/x), arrowType (e/n)
-# + features: 17668 (Xkr4, Sox17, Mrpl15, Lypla1, ...)
+#> A GraphSpace-class object for:
+#> IGRAPH 381ac9a UN-- 2696 0 -- 
+#> + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c), nodeSize
+#> | (v/n), cell (v/c), orig.ident (v/x), nCount_Spatial (v/n),
+#> | nFeature_Spatial (v/n), slice (v/n), region (v/c), nCount_SCT
+#> | (v/n), nFeature_SCT (v/n), SCT_snn_res.0.8 (v/x), seurat_clusters
+#> | (v/x), arrowType (e/n)
+#> + features: 17668 (Xkr4, Sox17, Mrpl15, Lypla1, ...)
 ```
 
 In this tutorial we use the low-level *ggplot2* interface for fine-grained control; the subsequent tutorials use the higher-level `plotPathwaySpace()` wrapper for convenience.
@@ -193,10 +191,11 @@ Before running the projection, we need to specify a distance unit for the signal
 ```{r Check spot distances, eval=FALSE, message=FALSE}
 # Get distance to the nearest spot
 nspot <- getNearestNode(pspace_obj)
-pdist <- mean(nspot$dist) # average distance
-# 'pdist' is set as the average center-to-center distance between spots
+
+# Set 'pdist' to the average distance
+pdist <- mean(nspot$dist)
 pdist
-# [1] 0.013
+#> [1] 0.013
 ```
 
 As an optional step, the `silhouetteMapping()` function generates an image mask that outlines the graph layout, over which the subsequent methods will project a landscape image. The `baseline` argument controls the level at which a silhouette is sliced to form the mask. Increasing the baseline (in `[0,1]`) produces a more detailed, granular silhouette.
@@ -329,18 +328,18 @@ seurat_obj <- LoadData("ssHippo")
 # we use log-normalization for demonstration purposes.
 seurat_obj <- NormalizeData(seurat_obj)
 seurat_obj
-# An object of class Seurat 
-# 23264 features across 53173 samples within 1 assay 
-# Active assay: Spatial (23264 features, 0 variable features)
-#  2 layers present: counts, data
-#  1 image present: image
+#> An object of class Seurat 
+#> 23264 features across 53173 samples within 1 assay 
+#> Active assay: Spatial (23264 features, 0 variable features)
+#>  2 layers present: counts, data
+#>  1 image present: image
 ```
 
 ```{r , eval=FALSE, message=FALSE, results='hide'}
 # Create a GraphSpace from 'seurat_obj'
 gs <- as.GraphSpace(seurat_obj, space = "spatial", layer = "data")
 
-#Note: the `ssHippo` dataset does not include a tissue image
+# Note: the `ssHippo` dataset does not include a tissue image
 
 # Normalize node coordinates; adjust 'flip.y' and 'rotate.xy' to 
 # follow image orientation in Seurat's vignette
@@ -360,10 +359,11 @@ pspace_obj <- buildPathwaySpace(gs)
 ```{r , eval=FALSE, message=FALSE}
 # Get distance to the nearest spot
 nspot <- getNearestNode(pspace_obj)
-pdist <- mean(nspot$dist) # average distance
-# 'pdist' set as the average center-to-center distance between spots
+
+# Set 'pdist' to the average distance
+pdist <- mean(nspot$dist)
 pdist
-# [1] 0.0024
+#> [1] 0.0024
 ```
 
 ```{r , eval=FALSE, message=FALSE}
@@ -450,7 +450,7 @@ seurat_obj <- Load10X_Spatial(data.dir = localdir, bin.size = 16)
 
 # Check default assay
 Assays(seurat_obj)
-# [1] "Spatial.016um"
+#> [1] "Spatial.016um"
 ```
 
 ```{r , eval=FALSE, message=FALSE, results='hide'}
@@ -482,10 +482,11 @@ pspace_obj <- buildPathwaySpace(gs, nrc = 700)
 ```{r , eval=FALSE, message=FALSE}
 # Get distance to the nearest spot
 nspot <- getNearestNode(pspace_obj)
-pdist <- mean(nspot$dist) # average distance
-# 'pdist' set as the average center-to-center distance between spots
+
+# Set 'pdist' to the average distance
+pdist <- mean(nspot$dist)
 pdist
-# [1] 0.0024
+#> [1] 0.0024
 ```
 
 ```{r , eval=FALSE, message=FALSE}
