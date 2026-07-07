@@ -165,6 +165,7 @@ setMethod("coerce", c("PathwaySpace", "GraphSpace"),
 
 #-------------------------------------------------------------------------------
 # show summary information on screen
+#' @importFrom RGraphSpace summary
 setMethod("show", "PathwaySpace", function(object) {
   cat("A PathwaySpace-class object for:\n")
   RGraphSpace::summary(object)
