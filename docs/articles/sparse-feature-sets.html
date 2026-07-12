@@ -44,7 +44,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">PathwaySpace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,7 +92,7 @@
                         <h4 data-toc-skip class="author">Sysbiolab
 Team</h4>
             
-            <h4 data-toc-skip class="date">2026-07-07</h4>
+            <h4 data-toc-skip class="date">2026-07-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sysbiolab/PathwaySpace/blob/HEAD/vignettes/articles/sparse-feature-sets.Rmd"><code>vignettes/articles/sparse-feature-sets.Rmd</code></a></small>
       <div class="d-none name"><code>sparse-feature-sets.Rmd</code></div>
@@ -100,7 +100,7 @@ Team</h4>
 
     
     
-<p><strong>Package</strong>: PathwaySpace 1.4.2 <br></p>
+<p><strong>Package</strong>: PathwaySpace 1.4.3 <br></p>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
@@ -117,7 +117,7 @@ structure. The examples in this section are adapted from <span class="citation">
 al.</span> (2025)</span>.</p>
 <p>We will start by loading an <em>igraph</em> object containing gene
 interaction data available from the <em>Pathway Commons</em> database
-(version 12) <span class="citation">(Rodchenkov et al. 2019)</span>.</p>
+(version 12) <span class="citation">(<strong>Rodchenkov2019?</strong>)</span>.</p>
 </div>
 <div class="section level2">
 <h2 id="required-packages">Required packages<a class="anchor" aria-label="anchor" href="#required-packages"></a>
@@ -127,11 +127,11 @@ Before proceeding, ensure that all packages described in the <a href="install.ht
 installed.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check versions</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"RGraphSpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.4.2"</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"RGraphSpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.4.3"</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Need to update 'RGraphSpace' for this vignette"</span><span class="op">)</span></span>
 <span>  <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"sysbiolab/RGraphSpace"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"PathwaySpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.4.2"</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"PathwaySpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.4.3"</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Need to update 'PathwaySpace' for this vignette"</span><span class="op">)</span></span>
 <span>  <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"sysbiolab/PathwaySpace"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
@@ -177,9 +177,9 @@ installed.</p>
 <span>  label.color <span class="op">=</span> <span class="st">"blue"</span>, </span>
 <span>  theme <span class="op">=</span> <span class="st">"th3"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sparse-feature-sets_files/figure-html/PathwaySpace%20decoration%20-%203-1.png" class="r-plt" alt="" width="80%" style="display: block; margin: auto;"></p>
-<p>We now load gene sets from the <em>MSigDB</em> collection <span class="citation">(Liberzon et al. 2015)</span>, which are subsequently
-used to project a binary signal onto the <em>PathwaySpace</em>
-image.</p>
+<p>We now load gene sets from the <em>MSigDB</em> collection <span class="citation">(<strong>Liberzon2015?</strong>)</span>, which are
+subsequently used to project a binary signal onto the
+<em>PathwaySpace</em> image.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load a list with Hallmark gene sets</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Hallmarks_v2023_1_Hs_symbols"</span>, package <span class="op">=</span> <span class="st">"PathwaySpace"</span><span class="op">)</span></span>
@@ -310,7 +310,7 @@ molecular subtypes using compact feature sets. <em>Cancer Cell</em>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] igraph_2.3.3       PathwaySpace_1.4.2 RGraphSpace_1.4.2  ggplot2_4.0.3     </span></span>
+<span><span class="co">#&gt; [1] igraph_2.3.3       PathwaySpace_1.4.3 RGraphSpace_1.4.3  ggplot2_4.0.3     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] sass_0.4.10        generics_0.1.4     tidyr_1.3.2        lattice_0.22-9    </span></span>
@@ -326,8 +326,8 @@ molecular subtypes using compact feature sets. <em>Cancer Cell</em>
 <span><span class="co">#&gt; [41] beeswarm_0.4.0     desc_1.4.3         pkgdown_2.2.0      pillar_1.11.1     </span></span>
 <span><span class="co">#&gt; [45] bslib_0.11.0       gtable_0.3.6       Rcpp_1.1.1-1.1     glue_1.8.1        </span></span>
 <span><span class="co">#&gt; [49] systemfonts_1.3.2  xfun_0.59          tibble_3.3.1       tidyselect_1.2.1  </span></span>
-<span><span class="co">#&gt; [53] rstudioapi_0.19.0  knitr_1.51         farver_2.1.2       patchwork_1.3.2   </span></span>
-<span><span class="co">#&gt; [57] htmltools_0.5.9    rmarkdown_2.31     compiler_4.6.1     S7_0.2.2</span></span></code></pre>
+<span><span class="co">#&gt; [53] rstudioapi_0.19.0  knitr_1.51         farver_2.1.2       htmltools_0.5.9   </span></span>
+<span><span class="co">#&gt; [57] rmarkdown_2.31     compiler_4.6.1     S7_0.2.2</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -338,17 +338,6 @@ molecular subtypes using compact feature sets. <em>Cancer Cell</em>
 Mauro A A Castro, et al.</span> 2025. <span>“Classification of Non-TCGA
 Cancer Samples to TCGA Molecular Subtypes Using Compact Feature
 Sets.”</span> <em>Cancer Cell</em> 43 (2): 195–212. <a href="https://doi.org/10.1016/j.ccell.2024.12.002" class="external-link">https://doi.org/10.1016/j.ccell.2024.12.002</a>.
-</div>
-<div id="ref-Liberzon2015" class="csl-entry">
-Liberzon, Arthur, Chet Birger, Helga Thorvaldsdottir, Mahmoud Ghandi,
-Jill Mesirov, and Pablo Tamayo. 2015. <span>“The Molecular Signatures
-Database (MSigDB) Hallmark Gene Set Collection.”</span> <em>Cell
-Systems</em> 1 (5): 417–25. <a href="https://doi.org/10.1016/j.cels.2015.12.004" class="external-link">https://doi.org/10.1016/j.cels.2015.12.004</a>.
-</div>
-<div id="ref-Rodchenkov2019" class="csl-entry">
-Rodchenkov, Igor, Ozgun Babur, Augustin Luna, et al. 2019. <span>“<span class="nocase">Pathway Commons 2019 Update: integration, analysis and
-exploration of pathway data</span>.”</span> <em>Nucleic Acids
-Research</em> 48 (D1): D489–97. <a href="https://doi.org/10.1093/nar/gkz946" class="external-link">https://doi.org/10.1093/nar/gkz946</a>.
 </div>
 <div id="ref-Tercan2025" class="csl-entry">
 <span class="nocase">Tercan, Bahar, Victor H Apolonio, Vinicius S

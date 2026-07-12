@@ -1,6 +1,6 @@
 # Visualizing spatial transcriptomics
 
-**Package**: PathwaySpace 1.4.2  
+**Package**: PathwaySpace 1.4.3  
 
 ## Overview
 
@@ -41,11 +41,11 @@ are installed.
 ``` r
 
 # Check required versions
-if (packageVersion("RGraphSpace") < "1.4.2"){
+if (packageVersion("RGraphSpace") < "1.4.3"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.4.2"){
+if (packageVersion("PathwaySpace") < "1.4.3"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -141,6 +141,8 @@ gs_image(gs) <- SeuratObject::GetImage(seurat_obj, mode = "raster")
 # By default, this attempts to align the graph's bottom-up
 # coordinates with the image's top-down matrix layout.
 gs <- normalizeGraphSpace(gs)
+#> Normalizing node coordinates to image space...
+#> Flipping y-coordinates...
 
 # Inspect the 'gs' object
 gs
@@ -200,7 +202,7 @@ coordinates and image follow origin placements or axis orientations that
 differ from the package’s internal coordinate definitions (e.g.,
 top-left versus bottom-left origins). To accommodate these differences,
 [`normalizeGraphSpace()`](https://sysbiolab.github.io/RGraphSpace/reference/normalizeGraphSpace-methods.html)
-provides orientation controls through the `flip.*` and `rotate.*`
+provides orientation controls through the `flip.*` and `swap.*`
 arguments. If the spots appear misaligned with the input image, try
 alternative combinations of these parameters to correct the alignment.
 
@@ -391,9 +393,9 @@ gs <- as.GraphSpace(seurat_obj, space = "spatial", layer = "data")
 
 # Note: the `ssHippo` dataset does not include a tissue image
 
-# Normalize node coordinates; adjust 'flip.y' and 'rotate.xy' to 
+# Normalize node coordinates; adjust 'flip.y' and 'swap.xy' to 
 # follow image orientation in Seurat's vignette
-gs <- normalizeGraphSpace(gs, flip.y = TRUE, rotate.xy = TRUE)
+gs <- normalizeGraphSpace(gs, flip.y = TRUE, swap.xy = TRUE)
 
 # If needed, remove seurat_obj to free memory
 # rm(seurat_obj)
@@ -647,7 +649,7 @@ If you use *PathwaySpace*, please cite:
     #>  [3] ssHippo.SeuratData_3.1.4  pbmc3k.SeuratData_3.1.4  
     #>  [5] SeuratData_0.2.2.9002     Seurat_5.5.1             
     #>  [7] SeuratObject_5.4.0        sp_2.2-1                 
-    #>  [9] PathwaySpace_1.4.2        RGraphSpace_1.4.2        
+    #>  [9] PathwaySpace_1.4.3        RGraphSpace_1.4.3        
     #> [11] ggplot2_4.0.3            
     #> 
     #> loaded via a namespace (and not attached):

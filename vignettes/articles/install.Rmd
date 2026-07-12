@@ -32,6 +32,7 @@ install.packages("Seurat")
 install.packages("hdf5r")
 install.packages("arrow")
 install.packages("lfl")
+install.packages("patchwork")
 
 remotes::install_github("satijalab/Seurat")
 remotes::install_github("satijalab/seurat-data")

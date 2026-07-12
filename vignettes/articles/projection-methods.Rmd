@@ -36,11 +36,11 @@ This tutorial introduces the core *PathwaySpace* methods using simple toy exampl
 
 ```{r Check required versions, eval=TRUE, message=FALSE}
 # Check versions
-if (packageVersion("RGraphSpace") < "1.4.2"){
+if (packageVersion("RGraphSpace") < "1.4.3"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.4.2"){
+if (packageVersion("PathwaySpace") < "1.4.3"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }

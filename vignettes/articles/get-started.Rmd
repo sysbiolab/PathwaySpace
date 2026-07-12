@@ -22,6 +22,8 @@ library(bs4cards)
 <br/>
 **Package**: PathwaySpace `r packageVersion('PathwaySpace')`
 
+For a self-contained introduction that works offline, run **vignette("PathwaySpace")** after installing the package.
+
 # Introductory vignettes
 
 These tutorials introduce *PathwaySpace* using simple toy examples: **Network Signal Projections** walks through the main *PathwaySpace* projection methods; **Signal Decay Functions** describes how to set up decay functions to model specific network nodes; and **Signal Aggregation Rules** demonstrates how to create signal aggregation functions to emphasize patterns in the data.

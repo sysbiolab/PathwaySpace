@@ -44,7 +44,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">PathwaySpace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,7 +94,7 @@ projections on spot coordinates</h3>
                         <h4 data-toc-skip class="author">Sysbiolab
 Team</h4>
             
-            <h4 data-toc-skip class="date">2026-07-07</h4>
+            <h4 data-toc-skip class="date">2026-07-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sysbiolab/PathwaySpace/blob/HEAD/vignettes/articles/spatial-transcriptomics.Rmd"><code>vignettes/articles/spatial-transcriptomics.Rmd</code></a></small>
       <div class="d-none name"><code>spatial-transcriptomics.Rmd</code></div>
@@ -102,7 +102,7 @@ Team</h4>
 
     
     
-<p><strong>Package</strong>: PathwaySpace 1.4.2 <br></p>
+<p><strong>Package</strong>: PathwaySpace 1.4.3 <br></p>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
@@ -138,11 +138,11 @@ Ensure that all packages described in the <a href="install.html"><em>Installatio
 installed.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check required versions</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"RGraphSpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.4.2"</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"RGraphSpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.4.3"</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Need to update 'RGraphSpace' for this vignette"</span><span class="op">)</span></span>
 <span>  <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"sysbiolab/RGraphSpace"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"PathwaySpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.4.2"</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"PathwaySpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.4.3"</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Need to update 'PathwaySpace' for this vignette"</span><span class="op">)</span></span>
 <span>  <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"sysbiolab/PathwaySpace"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -216,6 +216,8 @@ tissue image and normalize node coordinates to the image space.</p>
 <span><span class="co"># By default, this attempts to align the graph's bottom-up</span></span>
 <span><span class="co"># coordinates with the image's top-down matrix layout.</span></span>
 <span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/normalizeGraphSpace-methods.html" class="external-link">normalizeGraphSpace</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Normalizing node coordinates to image space...</span></span>
+<span><span class="co">#&gt; Flipping y-coordinates...</span></span>
 <span></span>
 <span><span class="co"># Inspect the 'gs' object</span></span>
 <span><span class="va">gs</span></span>
@@ -267,9 +269,9 @@ spot coordinates and image follow origin placements or axis orientations
 that differ from the package’s internal coordinate definitions (e.g.,
 top-left versus bottom-left origins). To accommodate these differences,
 <code><a href="https://sysbiolab.github.io/RGraphSpace/reference/normalizeGraphSpace-methods.html" class="external-link">normalizeGraphSpace()</a></code> provides orientation controls through
-the <code>flip.*</code> and <code>rotate.*</code> arguments. If the
-spots appear misaligned with the input image, try alternative
-combinations of these parameters to correct the alignment.</p>
+the <code>flip.*</code> and <code>swap.*</code> arguments. If the spots
+appear misaligned with the input image, try alternative combinations of
+these parameters to correct the alignment.</p>
 </div>
 <div class="section level3">
 <h3 id="running-pathwayspace">Running <em>PathwaySpace</em><a class="anchor" aria-label="anchor" href="#running-pathwayspace"></a>
@@ -420,9 +422,9 @@ dataset, see <em>Seurat</em>’s <a href="https://satijalab.org/seurat/articles/
 <span></span>
 <span><span class="co"># Note: the `ssHippo` dataset does not include a tissue image</span></span>
 <span></span>
-<span><span class="co"># Normalize node coordinates; adjust 'flip.y' and 'rotate.xy' to </span></span>
+<span><span class="co"># Normalize node coordinates; adjust 'flip.y' and 'swap.xy' to </span></span>
 <span><span class="co"># follow image orientation in Seurat's vignette</span></span>
-<span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/normalizeGraphSpace-methods.html" class="external-link">normalizeGraphSpace</a></span><span class="op">(</span><span class="va">gs</span>, flip.y <span class="op">=</span> <span class="cn">TRUE</span>, rotate.xy <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sysbiolab.github.io/RGraphSpace/reference/normalizeGraphSpace-methods.html" class="external-link">normalizeGraphSpace</a></span><span class="op">(</span><span class="va">gs</span>, flip.y <span class="op">=</span> <span class="cn">TRUE</span>, swap.xy <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># If needed, remove seurat_obj to free memory</span></span>
 <span><span class="co"># rm(seurat_obj)</span></span></code></pre></div>
@@ -638,7 +640,7 @@ molecular subtypes using compact feature sets. <em>Cancer Cell</em>
 <span><span class="co">#&gt;  [3] ssHippo.SeuratData_3.1.4  pbmc3k.SeuratData_3.1.4  </span></span>
 <span><span class="co">#&gt;  [5] SeuratData_0.2.2.9002     Seurat_5.5.1             </span></span>
 <span><span class="co">#&gt;  [7] SeuratObject_5.4.0        sp_2.2-1                 </span></span>
-<span><span class="co">#&gt;  [9] PathwaySpace_1.4.2        RGraphSpace_1.4.2        </span></span>
+<span><span class="co">#&gt;  [9] PathwaySpace_1.4.3        RGraphSpace_1.4.3        </span></span>
 <span><span class="co">#&gt; [11] ggplot2_4.0.3            </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>

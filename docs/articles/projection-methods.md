@@ -1,6 +1,6 @@
 # Network signal projections
 
-**Package**: PathwaySpace 1.4.2  
+**Package**: PathwaySpace 1.4.3  
 
 ## Overview
 
@@ -21,11 +21,11 @@ are installed.
 ``` r
 
 # Check versions
-if (packageVersion("RGraphSpace") < "1.4.2"){
+if (packageVersion("RGraphSpace") < "1.4.3"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.4.2"){
+if (packageVersion("PathwaySpace") < "1.4.3"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -380,7 +380,7 @@ If you use *PathwaySpace*, please cite:
     #> [1] stats     graphics  grDevices utils     datasets  methods   base     
     #> 
     #> other attached packages:
-    #> [1] PathwaySpace_1.4.2 RGraphSpace_1.4.2  ggplot2_4.0.3      igraph_2.3.3      
+    #> [1] PathwaySpace_1.4.3 RGraphSpace_1.4.3  ggplot2_4.0.3      igraph_2.3.3      
     #> 
     #> loaded via a namespace (and not attached):
     #>  [1] sass_0.4.10        generics_0.1.4     tidyr_1.3.2        lattice_0.22-9    
@@ -396,5 +396,5 @@ If you use *PathwaySpace*, please cite:
     #> [41] beeswarm_0.4.0     desc_1.4.3         pkgdown_2.2.0      pillar_1.11.1     
     #> [45] bslib_0.11.0       gtable_0.3.6       Rcpp_1.1.1-1.1     glue_1.8.1        
     #> [49] systemfonts_1.3.2  xfun_0.59          tibble_3.3.1       tidyselect_1.2.1  
-    #> [53] rstudioapi_0.19.0  knitr_1.51         farver_2.1.2       patchwork_1.3.2   
-    #> [57] htmltools_0.5.9    rmarkdown_2.31     compiler_4.6.1     S7_0.2.2
+    #> [53] rstudioapi_0.19.0  knitr_1.51         farver_2.1.2       htmltools_0.5.9   
+    #> [57] rmarkdown_2.31     compiler_4.6.1     S7_0.2.2

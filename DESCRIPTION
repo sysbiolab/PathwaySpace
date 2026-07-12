@@ -1,7 +1,7 @@
 Package: PathwaySpace
 Type: Package
 Title: Spatial Projection of Network Signals along Geodesic Paths
-Version: 1.4.2
+Version: 1.4.3
 Authors@R: 
     c(person("Sysbiolab Team", role = "aut"),
       person("Victor", "Apolonio", role = "ctb"),
@@ -14,8 +14,8 @@ Authors@R:
               comment = c(ORCID = "0000-0003-4942-8131"))
       )
 Depends: R(>= 4.5), methods, RGraphSpace(>= 1.4.1)
-Imports: grDevices, rlang, stats, scales, RANN, igraph, ggplot2, grid, ggnewscale, ggrepel, colorspace, patchwork, lifecycle
-Suggests: knitr, rmarkdown, testthat, RedeR
+Imports: grDevices, rlang, stats, scales, RANN, igraph, ggplot2, grid, ggnewscale, ggrepel, colorspace, lifecycle
+Suggests: knitr, rmarkdown, testthat, RedeR, patchwork
 Description: For a given graph containing vertices, edges, and a signal 
     associated with the vertices, the 'PathwaySpace' package performs a convolution 
     operation, which involves a weighted combination of neighboring vertices and 

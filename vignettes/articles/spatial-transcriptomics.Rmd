@@ -46,11 +46,11 @@ This vignette assumes prior experience with [*Seurat*](https://satijalab.org/seu
 
 ```{r Check required versions, eval=TRUE, message=FALSE}
 # Check required versions
-if (packageVersion("RGraphSpace") < "1.4.2"){
+if (packageVersion("RGraphSpace") < "1.4.3"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.4.2"){
+if (packageVersion("PathwaySpace") < "1.4.3"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -128,6 +128,8 @@ gs_image(gs) <- SeuratObject::GetImage(seurat_obj, mode = "raster")
 # By default, this attempts to align the graph's bottom-up
 # coordinates with the image's top-down matrix layout.
 gs <- normalizeGraphSpace(gs)
+#> Normalizing node coordinates to image space...
+#> Flipping y-coordinates...
 
 # Inspect the 'gs' object
 gs
@@ -183,7 +185,7 @@ p1 + p2
 knitr::include_graphics("figs_spatl/fig1.png")
 ```
 
-**Note on image alignment**: Proper spatial alignment between spot coordinates and the background image requires consistent coordinate conventions. Spatial misalignment may occur when the input spot coordinates and image follow origin placements or axis orientations that differ from the package's internal coordinate definitions (e.g., top-left versus bottom-left origins). To accommodate these differences, `normalizeGraphSpace()` provides orientation controls through the `flip.*` and `rotate.*` arguments. If the spots appear misaligned with the input image, try alternative combinations of these parameters to correct the alignment.
+**Note on image alignment**: Proper spatial alignment between spot coordinates and the background image requires consistent coordinate conventions. Spatial misalignment may occur when the input spot coordinates and image follow origin placements or axis orientations that differ from the package's internal coordinate definitions (e.g., top-left versus bottom-left origins). To accommodate these differences, `normalizeGraphSpace()` provides orientation controls through the `flip.*` and `swap.*` arguments. If the spots appear misaligned with the input image, try alternative combinations of these parameters to correct the alignment.
 
 ## Running *PathwaySpace*
 
@@ -356,9 +358,9 @@ gs <- as.GraphSpace(seurat_obj, space = "spatial", layer = "data")
 
 # Note: the `ssHippo` dataset does not include a tissue image
 
-# Normalize node coordinates; adjust 'flip.y' and 'rotate.xy' to 
+# Normalize node coordinates; adjust 'flip.y' and 'swap.xy' to 
 # follow image orientation in Seurat's vignette
-gs <- normalizeGraphSpace(gs, flip.y = TRUE, rotate.xy = TRUE)
+gs <- normalizeGraphSpace(gs, flip.y = TRUE, swap.xy = TRUE)
 
 # If needed, remove seurat_obj to free memory
 # rm(seurat_obj)

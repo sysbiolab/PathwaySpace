@@ -18,11 +18,26 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE, purl=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  echo = TRUE,
+  collapse = TRUE,
+  comment = "#>",
+  fig.align = "center",
+  fig.width = 7,
+  fig.height = 5,
+  out.width="90%"
+  )
 local_build <- FALSE
 ```
 
+<br/>
 **Package**: PathwaySpace `r packageVersion('PathwaySpace')`
+
+```{r clipboard, echo=FALSE, results='asis'}
+if (!identical(Sys.getenv("IN_PKGDOWN"), "true")) {
+  cat('<script src="clipboard.js"></script>')
+}
+```
 
 # Highlights
 * Produces landscape images representing graphs by geodesic paths

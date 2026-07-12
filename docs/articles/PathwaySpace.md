@@ -1,6 +1,7 @@
 # Getting started with \*PathwaySpace\* projection methods
 
-**Package**: PathwaySpace 1.4.2
+  
+**Package**: PathwaySpace 1.4.3
 
 ## Highlights
 
@@ -152,26 +153,17 @@ example, in order to get vertex names and signal values:
 
 # Check the number of vertices in a PathwaySpace object
 gs_vcount(p_space1)
-```
-
-    ## [1] 5
-
-``` r
+#> [1] 5
 
 # Check vertex names
 names(p_space1)
-```
-
-    ## [1] "n1" "n2" "n3" "n4" "n5"
-
-``` r
+#> [1] "n1" "n2" "n3" "n4" "n5"
 
 # Check signal (initialized with '0')
 vertexSignal(p_space1)
+#> n1 n2 n3 n4 n5 
+#>  0  0  0  0  0
 ```
-
-    ## n1 n2 n3 n4 n5 
-    ##  0  0  0  0  0
 
 …and for setting new signal values in a *PathwaySpace* object:
 
@@ -188,10 +180,9 @@ vertexSignal(p_space1)["n1"] <- 6
 
 # Check updated signal values
 vertexSignal(p_space1)
+#> n1 n2 n3 n4 n5 
+#>  6  4  2  4  3
 ```
-
-    ## n1 n2 n3 n4 n5 
-    ##  6  4  2  4  3
 
 ## Signal projection
 
@@ -356,10 +347,9 @@ vertexSignal(p_space1)[c("n3","n4")] <- c(-2, -4)
 
 # Check updated signal vector
 vertexSignal(p_space1)
+#> n1 n2 n3 n4 n5 
+#>  6  4 -2 -4  3
 ```
-
-    ## n1 n2 n3 n4 n5 
-    ##  6  4 -2 -4  3
 
 ``` r
 
@@ -409,44 +399,44 @@ If you use *PathwaySpace*, please cite:
 
 ## Session information
 
-    ## R version 4.6.1 (2026-06-24)
-    ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 24.04.4 LTS
-    ## 
-    ## Matrix products: default
-    ## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
-    ## LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0
-    ## 
-    ## locale:
-    ##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-    ##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
-    ##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
-    ##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
-    ##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-    ## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
-    ## 
-    ## time zone: America/Sao_Paulo
-    ## tzcode source: system (glibc)
-    ## 
-    ## attached base packages:
-    ## [1] stats     graphics  grDevices utils     datasets  methods   base     
-    ## 
-    ## other attached packages:
-    ## [1] PathwaySpace_1.4.2 RGraphSpace_1.4.2  ggplot2_4.0.3      igraph_2.3.3      
-    ## 
-    ## loaded via a namespace (and not attached):
-    ##  [1] sass_0.4.10        generics_0.1.4     tidyr_1.3.2        lattice_0.22-9    
-    ##  [5] digest_0.6.39      magrittr_2.0.5     evaluate_1.0.5     grid_4.6.1        
-    ##  [9] RColorBrewer_1.1-3 fastmap_1.2.0      jsonlite_2.0.0     Matrix_1.7-5      
-    ## [13] ggrepel_0.9.8      ggnewscale_0.5.2   ggrastr_1.0.2      purrr_1.2.2       
-    ## [17] scales_1.4.0       textshaping_1.0.5  jquerylib_0.1.4    cli_3.6.6         
-    ## [21] rlang_1.2.0        tidygraph_1.3.1    RANN_2.6.2         withr_3.0.3       
-    ## [25] cachem_1.1.0       yaml_2.3.12        otel_0.2.0         ggbeeswarm_0.7.3  
-    ## [29] tools_4.6.1        dplyr_1.2.1        colorspace_2.1-2   vctrs_0.7.3       
-    ## [33] R6_2.6.1           lifecycle_1.0.5    fs_2.1.0           htmlwidgets_1.6.4 
-    ## [37] vipor_0.4.7        ragg_1.5.2         pkgconfig_2.0.3    beeswarm_0.4.0    
-    ## [41] desc_1.4.3         pkgdown_2.2.0      pillar_1.11.1      bslib_0.11.0      
-    ## [45] gtable_0.3.6       Rcpp_1.1.1-1.1     glue_1.8.1         systemfonts_1.3.2 
-    ## [49] xfun_0.59          tibble_3.3.1       tidyselect_1.2.1   rstudioapi_0.19.0 
-    ## [53] knitr_1.51         farver_2.1.2       patchwork_1.3.2    htmltools_0.5.9   
-    ## [57] rmarkdown_2.31     compiler_4.6.1     S7_0.2.2
+    #> R version 4.6.1 (2026-06-24)
+    #> Platform: x86_64-pc-linux-gnu
+    #> Running under: Ubuntu 24.04.4 LTS
+    #> 
+    #> Matrix products: default
+    #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
+    #> LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0
+    #> 
+    #> locale:
+    #>  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+    #>  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+    #>  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+    #>  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+    #>  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+    #> [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+    #> 
+    #> time zone: America/Sao_Paulo
+    #> tzcode source: system (glibc)
+    #> 
+    #> attached base packages:
+    #> [1] stats     graphics  grDevices utils     datasets  methods   base     
+    #> 
+    #> other attached packages:
+    #> [1] PathwaySpace_1.4.3 RGraphSpace_1.4.3  ggplot2_4.0.3      igraph_2.3.3      
+    #> 
+    #> loaded via a namespace (and not attached):
+    #>  [1] sass_0.4.10        generics_0.1.4     tidyr_1.3.2        lattice_0.22-9    
+    #>  [5] digest_0.6.39      magrittr_2.0.5     evaluate_1.0.5     grid_4.6.1        
+    #>  [9] RColorBrewer_1.1-3 fastmap_1.2.0      jsonlite_2.0.0     Matrix_1.7-5      
+    #> [13] ggrepel_0.9.8      ggnewscale_0.5.2   ggrastr_1.0.2      purrr_1.2.2       
+    #> [17] scales_1.4.0       textshaping_1.0.5  jquerylib_0.1.4    cli_3.6.6         
+    #> [21] rlang_1.2.0        tidygraph_1.3.1    RANN_2.6.2         withr_3.0.3       
+    #> [25] cachem_1.1.0       yaml_2.3.12        otel_0.2.0         ggbeeswarm_0.7.3  
+    #> [29] tools_4.6.1        dplyr_1.2.1        colorspace_2.1-2   vctrs_0.7.3       
+    #> [33] R6_2.6.1           lifecycle_1.0.5    fs_2.1.0           htmlwidgets_1.6.4 
+    #> [37] vipor_0.4.7        ragg_1.5.2         pkgconfig_2.0.3    beeswarm_0.4.0    
+    #> [41] desc_1.4.3         pkgdown_2.2.0      pillar_1.11.1      bslib_0.11.0      
+    #> [45] gtable_0.3.6       Rcpp_1.1.1-1.1     glue_1.8.1         systemfonts_1.3.2 
+    #> [49] xfun_0.59          tibble_3.3.1       tidyselect_1.2.1   rstudioapi_0.19.0 
+    #> [53] knitr_1.51         farver_2.1.2       htmltools_0.5.9    rmarkdown_2.31    
+    #> [57] compiler_4.6.1     S7_0.2.2

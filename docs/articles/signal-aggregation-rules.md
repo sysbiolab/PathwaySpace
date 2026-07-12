@@ -1,6 +1,6 @@
 # Creating signal aggregation rules
 
-**Package**: PathwaySpace 1.4.2  
+**Package**: PathwaySpace 1.4.3  
 
 ## Overview
 
@@ -42,11 +42,11 @@ are installed.
 ``` r
 
 # Check versions
-if (packageVersion("RGraphSpace") < "1.4.2"){
+if (packageVersion("RGraphSpace") < "1.4.3"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.4.2"){
+if (packageVersion("PathwaySpace") < "1.4.3"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -196,10 +196,10 @@ minimal values between two neighbor vertices.
 
 This section lists *fuzzy logic* functions that can be used to aggregate
 signals in *PathwaySpace*, mostly available from the *lfl* package
-(Burda and Štěpnička 2021). A fuzzy intersection measures how strongly
-all signals agree at a given point, typically using a *t-norm* like
-minimum or product. A fuzzy union, in contrast, measures how strong any
-of the signals are at a given point, using a *t-conorm* like maximum. By
+(**Burda2021?**). A fuzzy intersection measures how strongly all signals
+agree at a given point, typically using a *t-norm* like minimum or
+product. A fuzzy union, in contrast, measures how strong any of the
+signals are at a given point, using a *t-conorm* like maximum. By
 combining fuzzy unions or intersections with decay functions, we can
 produce unified projections that integrate multiple signal sources into
 a single, interpretable representation.
@@ -340,7 +340,7 @@ compatible sign-symmetric aggregation strategies.
     #> [1] stats     graphics  grDevices utils     datasets  methods   base     
     #> 
     #> other attached packages:
-    #> [1] patchwork_1.3.2    PathwaySpace_1.4.2 RGraphSpace_1.4.2  ggplot2_4.0.3     
+    #> [1] patchwork_1.3.2    PathwaySpace_1.4.3 RGraphSpace_1.4.3  ggplot2_4.0.3     
     #> [5] igraph_2.3.3      
     #> 
     #> loaded via a namespace (and not attached):
@@ -361,7 +361,3 @@ compatible sign-symmetric aggregation strategies.
     #> [57] rmarkdown_2.31     compiler_4.6.1     S7_0.2.2
 
 ## References
-
-Burda, Michal, and Martin Štěpnička. 2021. “Lfl: An R Package for
-Linguistic Fuzzy Logic.” *Fuzzy Sets and Systems*, ahead of print.
-<https://doi.org/10.1016/j.fss.2021.07.007>.

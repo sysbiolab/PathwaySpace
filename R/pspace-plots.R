@@ -85,7 +85,6 @@
 #' @importFrom grDevices adjustcolor colorRampPalette
 #' @importFrom stats runif
 #' @importFrom RGraphSpace plotGraphSpace theme_gspace_coords gs_image
-#' @importFrom patchwork wrap_plots
 #' @rdname plotPathwaySpace-methods
 #' @aliases plotPathwaySpace
 #' @export

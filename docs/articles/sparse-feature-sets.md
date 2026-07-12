@@ -1,6 +1,6 @@
 # Visualizing sparse feature sets on large graphs
 
-**Package**: PathwaySpace 1.4.2  
+**Package**: PathwaySpace 1.4.3  
 
 ## Overview
 
@@ -16,7 +16,7 @@ from Ellrott et al. (2025) and Tercan et al. (2025).
 
 We will start by loading an *igraph* object containing gene interaction
 data available from the *Pathway Commons* database (version 12)
-(Rodchenkov et al. 2019).
+(**Rodchenkov2019?**).
 
 ## Required packages
 
@@ -29,11 +29,11 @@ are installed.
 ``` r
 
 # Check versions
-if (packageVersion("RGraphSpace") < "1.4.2"){
+if (packageVersion("RGraphSpace") < "1.4.3"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.4.2"){
+if (packageVersion("PathwaySpace") < "1.4.3"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -92,8 +92,8 @@ plotGraphSpace(g_space_PCv12,
 
 ![](sparse-feature-sets_files/figure-html/PathwaySpace%20decoration%20-%203-1.png)
 
-We now load gene sets from the *MSigDB* collection (Liberzon et al.
-2015), which are subsequently used to project a binary signal onto the
+We now load gene sets from the *MSigDB* collection (**Liberzon2015?**),
+which are subsequently used to project a binary signal onto the
 *PathwaySpace* image.
 
 ``` r
@@ -251,7 +251,7 @@ If you use *PathwaySpace*, please cite:
     #> [1] stats     graphics  grDevices utils     datasets  methods   base     
     #> 
     #> other attached packages:
-    #> [1] igraph_2.3.3       PathwaySpace_1.4.2 RGraphSpace_1.4.2  ggplot2_4.0.3     
+    #> [1] igraph_2.3.3       PathwaySpace_1.4.3 RGraphSpace_1.4.3  ggplot2_4.0.3     
     #> 
     #> loaded via a namespace (and not attached):
     #>  [1] sass_0.4.10        generics_0.1.4     tidyr_1.3.2        lattice_0.22-9    
@@ -267,8 +267,8 @@ If you use *PathwaySpace*, please cite:
     #> [41] beeswarm_0.4.0     desc_1.4.3         pkgdown_2.2.0      pillar_1.11.1     
     #> [45] bslib_0.11.0       gtable_0.3.6       Rcpp_1.1.1-1.1     glue_1.8.1        
     #> [49] systemfonts_1.3.2  xfun_0.59          tibble_3.3.1       tidyselect_1.2.1  
-    #> [53] rstudioapi_0.19.0  knitr_1.51         farver_2.1.2       patchwork_1.3.2   
-    #> [57] htmltools_0.5.9    rmarkdown_2.31     compiler_4.6.1     S7_0.2.2
+    #> [53] rstudioapi_0.19.0  knitr_1.51         farver_2.1.2       htmltools_0.5.9   
+    #> [57] rmarkdown_2.31     compiler_4.6.1     S7_0.2.2
 
 ## References
 
@@ -276,16 +276,6 @@ Ellrott, Kyle, Christopher K Wong, Christina Yau, Mauro A A Castro, et
 al. 2025. “Classification of Non-TCGA Cancer Samples to TCGA Molecular
 Subtypes Using Compact Feature Sets.” *Cancer Cell* 43 (2): 195–212.
 <https://doi.org/10.1016/j.ccell.2024.12.002>.
-
-Liberzon, Arthur, Chet Birger, Helga Thorvaldsdottir, Mahmoud Ghandi,
-Jill Mesirov, and Pablo Tamayo. 2015. “The Molecular Signatures Database
-(MSigDB) Hallmark Gene Set Collection.” *Cell Systems* 1 (5): 417–25.
-<https://doi.org/10.1016/j.cels.2015.12.004>.
-
-Rodchenkov, Igor, Ozgun Babur, Augustin Luna, et al. 2019. “Pathway
-Commons 2019 Update: integration, analysis and exploration of pathway
-data.” *Nucleic Acids Research* 48 (D1): D489–97.
-<https://doi.org/10.1093/nar/gkz946>.
 
 Tercan, Bahar, Victor H Apolonio, Vinicius S Chagas, Christopher K Wong,
 et al. 2025. “Protocol for Assessing Distances in Pathway Space for

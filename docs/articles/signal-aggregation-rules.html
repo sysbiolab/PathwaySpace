@@ -44,7 +44,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">PathwaySpace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,7 +92,7 @@
                         <h4 data-toc-skip class="author">Sysbiolab
 Team</h4>
             
-            <h4 data-toc-skip class="date">2026-07-07</h4>
+            <h4 data-toc-skip class="date">2026-07-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sysbiolab/PathwaySpace/blob/HEAD/vignettes/articles/signal-aggregation-rules.Rmd"><code>vignettes/articles/signal-aggregation-rules.Rmd</code></a></small>
       <div class="d-none name"><code>signal-aggregation-rules.Rmd</code></div>
@@ -100,7 +100,7 @@ Team</h4>
 
     
     
-<p><strong>Package</strong>: PathwaySpace 1.4.2 <br></p>
+<p><strong>Package</strong>: PathwaySpace 1.4.3 <br></p>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
@@ -138,11 +138,11 @@ Before proceeding, ensure that all packages described in the <a href="install.ht
 installed.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check versions</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"RGraphSpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.4.2"</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"RGraphSpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.4.3"</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Need to update 'RGraphSpace' for this vignette"</span><span class="op">)</span></span>
 <span>  <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"sysbiolab/RGraphSpace"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"PathwaySpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.4.2"</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"PathwaySpace"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.4.3"</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Need to update 'PathwaySpace' for this vignette"</span><span class="op">)</span></span>
 <span>  <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"sysbiolab/PathwaySpace"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
@@ -263,14 +263,14 @@ vertices.</p>
 </h3>
 <p>This section lists <em>fuzzy logic</em> functions that can be used to
 aggregate signals in <em>PathwaySpace</em>, mostly available from the
-<em>lfl</em> package <span class="citation">(Burda and Štěpnička
-2021)</span>. A fuzzy intersection measures how strongly all signals
-agree at a given point, typically using a <em>t-norm</em> like minimum
-or product. A fuzzy union, in contrast, measures how strong any of the
-signals are at a given point, using a <em>t-conorm</em> like maximum. By
-combining fuzzy unions or intersections with decay functions, we can
-produce unified projections that integrate multiple signal sources into
-a single, interpretable representation.</p>
+<em>lfl</em> package <span class="citation">(<strong>Burda2021?</strong>)</span>. A fuzzy
+intersection measures how strongly all signals agree at a given point,
+typically using a <em>t-norm</em> like minimum or product. A fuzzy
+union, in contrast, measures how strong any of the signals are at a
+given point, using a <em>t-conorm</em> like maximum. By combining fuzzy
+unions or intersections with decay functions, we can produce unified
+projections that integrate multiple signal sources into a single,
+interpretable representation.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st">"lfl"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"lfl"</span><span class="op">)</span></span>
@@ -401,7 +401,7 @@ compatible sign-symmetric aggregation strategies.</p>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] patchwork_1.3.2    PathwaySpace_1.4.2 RGraphSpace_1.4.2  ggplot2_4.0.3     </span></span>
+<span><span class="co">#&gt; [1] patchwork_1.3.2    PathwaySpace_1.4.3 RGraphSpace_1.4.3  ggplot2_4.0.3     </span></span>
 <span><span class="co">#&gt; [5] igraph_2.3.3      </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
@@ -422,15 +422,8 @@ compatible sign-symmetric aggregation strategies.</p>
 <span><span class="co">#&gt; [57] rmarkdown_2.31     compiler_4.6.1     S7_0.2.2</span></span></code></pre>
 </div>
 <div class="section level2">
-<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-Burda2021" class="csl-entry">
-Burda, Michal, and Martin Štěpnička. 2021. <span>“Lfl: An <span>R</span>
-Package for Linguistic Fuzzy Logic.”</span> <em>Fuzzy Sets and
-Systems</em>, ahead of print. <a href="https://doi.org/10.1016/j.fss.2021.07.007" class="external-link">https://doi.org/10.1016/j.fss.2021.07.007</a>.
-</div>
-</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
