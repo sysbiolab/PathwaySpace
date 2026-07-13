@@ -341,6 +341,15 @@ p2 + p3
 
 ![](figs_spatl/fig4.png)
 
+For reference, see the [10x
+Visium](https://satijalab.org/seurat/articles/spatial_vignette#x-visium)
+subsection in *Seurat*’s vignette. While *Seurat*’s spatially variable
+feature plots display gene expression as discrete, spot-level
+measurements, *PathwaySpace* complements this by projecting the same
+signal into a continuous landscape, offering a different visual lens
+that may help reveal smooth expression gradients and broader spatial
+patterns across the tissue microenvironment.
+
 ## Slide-seq v2 dataset
 
 ### Setting input data
@@ -480,6 +489,11 @@ p1 + p2
 
 ![](figs_spatl/fig6.png)
 
+For reference, see the
+[Slide-seq](https://satijalab.org/seurat/articles/spatial_vignette#slide-seq)
+subsection in *Seurat*’s vignette and the corresponding [feature
+plots](https://satijalab.org/seurat/articles/spatial_vignette_files/figure-html/spatial.vf.plot.ss-1.png).
+
 ## Visium HD dataset
 
 ### Setting input data
@@ -606,6 +620,11 @@ p1 + p2
 ```
 
 ![](figs_spatl/fig8.png)
+
+For reference, see the [Visium
+HD](https://satijalab.org/seurat/articles/visiumhd_analysis_vignette)
+subsection in *Seurat*’s vignette and and the corresponding [feature
+plots](https://satijalab.org/seurat/articles/visiumhd_analysis_vignette_files/figure-html/feature.plots-1.png).
 
 ## Citation
 
