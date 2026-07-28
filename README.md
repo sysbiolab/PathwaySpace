@@ -17,6 +17,10 @@
 * Projects signals using a decay function to model signal attenuation
 * Applies a convolution algorithm to combine signals from neighboring vertices
 
+### Tutorials
+
+* https://sysbiolab.github.io/PathwaySpace
+
 ### Overview
 
 *PathwaySpace* is an R package that creates landscape images from graphs 
@@ -46,10 +50,6 @@ install.packages("remotes")
 remotes::install_github("sysbiolab/RGraphSpace", build_vignettes=TRUE)
 remotes::install_github("sysbiolab/PathwaySpace", build_vignettes=TRUE)
 ```
-
-### Tutorials
-
-* https://sysbiolab.github.io/PathwaySpace
 
 ### Citation
 

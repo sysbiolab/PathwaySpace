@@ -1,5 +1,5 @@
 ---
-title: "Getting started with *PathwaySpace* projection methods"
+title: "Getting started with PathwaySpace projection methods"
 author: "Sysbiolab Team"
 date: "`r Sys.Date()`"
 bibliography: bibliography.bib
@@ -12,7 +12,7 @@ output:
     toc_depth: 2
     css: custom.css
 vignette: >
-  %\VignetteIndexEntry{"PathwaySpace: signals along geodesic paths"}
+  %\VignetteIndexEntry{PathwaySpace: signals along geodesic paths}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

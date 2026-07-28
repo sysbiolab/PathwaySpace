@@ -1,6 +1,6 @@
 # Visualizing spatial transcriptomics
 
-**Package**: PathwaySpace 1.4.3  
+**Package**: PathwaySpace 1.5.0  
 
 ## Overview
 
@@ -41,11 +41,11 @@ are installed.
 ``` r
 
 # Check required versions
-if (packageVersion("RGraphSpace") < "1.4.3"){
+if (packageVersion("RGraphSpace") < "1.5.0"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.4.3"){
+if (packageVersion("PathwaySpace") < "1.5.0"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -668,7 +668,7 @@ If you use *PathwaySpace*, please cite:
     #>  [3] ssHippo.SeuratData_3.1.4  pbmc3k.SeuratData_3.1.4  
     #>  [5] SeuratData_0.2.2.9002     Seurat_5.5.1             
     #>  [7] SeuratObject_5.4.0        sp_2.2-1                 
-    #>  [9] PathwaySpace_1.4.3        RGraphSpace_1.4.3        
+    #>  [9] PathwaySpace_1.5.0        RGraphSpace_1.5.01       
     #> [11] ggplot2_4.0.3            
     #> 
     #> loaded via a namespace (and not attached):
@@ -689,11 +689,11 @@ If you use *PathwaySpace*, please cite:
     #>  [43] irlba_2.3.7            textshaping_1.0.5      progressr_0.19.0      
     #>  [46] spatstat.sparse_3.2-0  httr_1.4.8             polyclip_1.10-7       
     #>  [49] abind_1.4-8            compiler_4.6.1         withr_3.0.3           
-    #>  [52] S7_0.2.2               fastDummies_1.7.6      MASS_7.3-65           
+    #>  [52] S7_0.2.2               fastDummies_1.7.6      MASS_7.3-66           
     #>  [55] rappdirs_0.3.4         tools_4.6.1            vipor_0.4.7           
     #>  [58] lmtest_0.9-40          otel_0.2.0             beeswarm_0.4.0        
     #>  [61] httpuv_1.6.17          future.apply_1.20.2    goftest_1.2-3         
-    #>  [64] glue_1.8.1             nlme_3.1-169           promises_1.5.0        
+    #>  [64] glue_1.8.1             nlme_3.1-170           promises_1.5.0        
     #>  [67] grid_4.6.1             Rtsne_0.17             cluster_2.1.8.2       
     #>  [70] reshape2_1.4.5         generics_0.1.4         gtable_0.3.6          
     #>  [73] spatstat.data_3.1-9    tidyr_1.3.2            data.table_1.18.4     
@@ -701,7 +701,7 @@ If you use *PathwaySpace*, please cite:
     #>  [79] ggrepel_0.9.8          RANN_2.6.2             pillar_1.11.1         
     #>  [82] stringr_1.6.0          spam_2.11-4            RcppHNSW_0.7.0        
     #>  [85] later_1.4.8            splines_4.6.1          dplyr_1.2.1           
-    #>  [88] lattice_0.22-9         survival_3.8-6         deldir_2.0-4          
+    #>  [88] lattice_0.22-9         survival_3.8-9         deldir_2.0-4          
     #>  [91] tidyselect_1.2.1       miniUI_0.1.2           pbapply_1.7-4         
     #>  [94] knitr_1.51             gridExtra_2.3.1        scattermore_1.2       
     #>  [97] xfun_0.59              matrixStats_1.5.0      stringi_1.8.7         

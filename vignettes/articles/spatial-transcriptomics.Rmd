@@ -26,11 +26,11 @@ knitr::opts_chunk$set(
 
 # Overview
 
-This vignette introduces *PathwaySpace* as an extension for the *Seurat* package [@Yuhan2024], providing methods for signal projection and visualization in spatial transcriptomics. It extends existing spatial analysis workflows to explore signal patterns in tissue microenvironments. In what follows, we present three step-by-step tutorials describing how to prepare input data for *PathwaySpace*. The results reproduce and refine examples featured in *Seurat*'s tutorials, so users are encouraged to see how these packages can be used together.
+This vignette introduces *PathwaySpace* as an extension for the *Seurat* package [@Hao2024], providing methods for signal projection and visualization in spatial transcriptomics. It extends existing spatial analysis workflows to explore signal patterns in tissue microenvironments. In what follows, we present three step-by-step tutorials describing how to prepare input data for *PathwaySpace*. The results reproduce and refine examples featured in *Seurat*'s tutorials, so users are encouraged to see how these packages can be used together.
 
 # Before you start
 
-This vignette assumes prior experience with [*Seurat*](https://satijalab.org/seurat/){target="_blank" rel="noopener"} [@Yuhan2024], especially for handling spatial transcriptomics data.
+This vignette assumes prior experience with [*Seurat*](https://satijalab.org/seurat/){target="_blank" rel="noopener"} [@Hao2024], especially for handling spatial transcriptomics data.
 
 `r fontawesome::fa("exclamation-triangle", fill = "orange")` **Note:** If you are new to *Seurat*'s spatial workflows, we recommend reviewing the [spatial analysis tutorials](https://satijalab.org/seurat/articles/get_started_v5_new#spatial-analysis){target="_blank" rel="noopener"} before continuing.
 
@@ -46,11 +46,11 @@ This vignette assumes prior experience with [*Seurat*](https://satijalab.org/seu
 
 ```{r Check required versions, eval=TRUE, message=FALSE}
 # Check required versions
-if (packageVersion("RGraphSpace") < "1.4.3"){
+if (packageVersion("RGraphSpace") < "1.5.0"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.4.3"){
+if (packageVersion("PathwaySpace") < "1.5.0"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -75,7 +75,7 @@ library("patchwork")
 
 ## Setting input data
 
-For this tutorial, we will use the `stxBrain` dataset from the *SeuratData* package, consisting of spatial transcriptomics data from sagittal mouse brain sections generated with Visium v1 technology. This dataset is commonly used to demonstrate *Seurat* spatial workflows [@Yuhan2024]. Here, we will preprocess it with *Seurat* and then extract the relevant data for *PathwaySpace* downstream analyses.
+For this tutorial, we will use the `stxBrain` dataset from the *SeuratData* package, consisting of spatial transcriptomics data from sagittal mouse brain sections generated with Visium v1 technology. This dataset is commonly used to demonstrate *Seurat* spatial workflows [@Hao2024]. Here, we will preprocess it with *Seurat* and then extract the relevant data for *PathwaySpace* downstream analyses.
 
 ```{r Intall dataset, eval=FALSE, message=FALSE, results='hide'}
 ## Install a Seurat dataset (this step is required only once)

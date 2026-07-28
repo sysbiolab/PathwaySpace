@@ -1,7 +1,7 @@
-# Getting started with \*PathwaySpace\* projection methods
+# Getting started with PathwaySpace projection methods
 
   
-**Package**: PathwaySpace 1.4.3
+**Package**: PathwaySpace 1.5.0
 
 ## Highlights
 
@@ -422,7 +422,7 @@ If you use *PathwaySpace*, please cite:
     #> [1] stats     graphics  grDevices utils     datasets  methods   base     
     #> 
     #> other attached packages:
-    #> [1] PathwaySpace_1.4.3 RGraphSpace_1.4.3  ggplot2_4.0.3      igraph_2.3.3      
+    #> [1] PathwaySpace_1.5.0 RGraphSpace_1.5.01 ggplot2_4.0.3      igraph_2.3.3      
     #> 
     #> loaded via a namespace (and not attached):
     #>  [1] sass_0.4.10        generics_0.1.4     tidyr_1.3.2        lattice_0.22-9    

@@ -1,6 +1,6 @@
 # Visualizing sparse feature sets on large graphs
 
-**Package**: PathwaySpace 1.4.3  
+**Package**: PathwaySpace 1.5.0  
 
 ## Overview
 
@@ -29,11 +29,11 @@ are installed.
 ``` r
 
 # Check versions
-if (packageVersion("RGraphSpace") < "1.4.3"){
+if (packageVersion("RGraphSpace") < "1.5.0"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.4.3"){
+if (packageVersion("PathwaySpace") < "1.5.0"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
@@ -251,7 +251,7 @@ If you use *PathwaySpace*, please cite:
     #> [1] stats     graphics  grDevices utils     datasets  methods   base     
     #> 
     #> other attached packages:
-    #> [1] igraph_2.3.3       PathwaySpace_1.4.3 RGraphSpace_1.4.3  ggplot2_4.0.3     
+    #> [1] igraph_2.3.3       PathwaySpace_1.5.0 RGraphSpace_1.5.01 ggplot2_4.0.3     
     #> 
     #> loaded via a namespace (and not attached):
     #>  [1] sass_0.4.10        generics_0.1.4     tidyr_1.3.2        lattice_0.22-9    
