@@ -36,9 +36,9 @@ This vignette assumes prior experience with [*Seurat*](https://satijalab.org/seu
 
 **Computational requirement:**
 
-* Hardware: RAM >= 16 GB
+* Hardware: Workstation with RAM >= 16 GB
 
-* Software: R (>=4.5) and RStudio
+* Software: R (>=4.5); RStudio recommended
 
 # Required packages
 
@@ -46,15 +46,15 @@ This vignette assumes prior experience with [*Seurat*](https://satijalab.org/seu
 
 ```{r Check required versions, eval=TRUE, message=FALSE}
 # Check required versions
-if (packageVersion("RGraphSpace") < "1.5.0"){
+if (packageVersion("RGraphSpace") < "1.5.2"){
   message("Need to update 'RGraphSpace' for this vignette")
   remotes::install_github("sysbiolab/RGraphSpace")
 }
-if (packageVersion("PathwaySpace") < "1.5.0"){
+if (packageVersion("PathwaySpace") < "1.5.1"){
   message("Need to update 'PathwaySpace' for this vignette")
   remotes::install_github("sysbiolab/PathwaySpace")
 }
-if (packageVersion("Seurat") < "5.5.0"){
+if (packageVersion("Seurat") < "5.5.1"){
   message("Need to update 'Seurat' for this vignette")
   remotes::install_github("satijalab/Seurat")
 }
@@ -475,6 +475,19 @@ Here, we will use a higher-resolution spatial dataset from mouse brain generated
 * MD5: 2e728d1c1bda99a36535ba45b4319a98
 * Size: 4.62 GB
 
+ The repository provides a batch download option from the terminal, using `wget` or `curl`; the `wget` command is reproduced below.
+ 
+```{bash Download dataset, eval=FALSE, message=FALSE, results='hide'}
+# Download output files in a 'localdir' directory
+wget https://cf.10xgenomics.com/samples/spatial-exp/3.0.0/Visium_HD_Mouse_Brain/Visium_HD_Mouse_Brain_binned_outputs.tar.gz
+
+# Extract the outputs
+tar -xzf Visium_HD_Mouse_Brain_binned_outputs.tar.gz
+```
+
+```{r , eval=FALSE, message=FALSE, results='hide', include=FALSE}
+# localdir <- "~/Documents/RWork/xPackages/PathwaySpace/devel/diversos/data_gitpages/"
+```
 
 ```{r , eval=FALSE, message=FALSE, results='hide'}
 # Extract the tar.gz and set 'localdir' to the dataset folder

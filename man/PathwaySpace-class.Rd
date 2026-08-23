@@ -16,22 +16,6 @@ by the \pkg{PathwaySpace} package.
 \section{Slots}{
 
 \describe{
-\item{\code{nodes}}{Inherited from \linkS4class[RGraphSpace]{GraphSpace}.}
-
-\item{\code{edges}}{Inherited from \linkS4class[RGraphSpace]{GraphSpace}.}
-
-\item{\code{graph}}{Inherited from \linkS4class[RGraphSpace]{GraphSpace}.}
-
-\item{\code{image}}{Inherited from \linkS4class[RGraphSpace]{GraphSpace}.}
-
-\item{\code{fdata}}{Inherited from \linkS4class[RGraphSpace]{GraphSpace}.}
-
-\item{\code{pars}}{Inherited from \linkS4class[RGraphSpace]{GraphSpace}.}
-
-\item{\code{misc}}{Inherited from \linkS4class[RGraphSpace]{GraphSpace}.}
-
-\item{\code{uuid}}{Inherited from \linkS4class[RGraphSpace]{GraphSpace}.}
-
 \item{\code{projection}}{A \linkS4class{SpaceProjection} object storing the
 intermediate and final matrices produced by a projection method.}
 

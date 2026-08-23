@@ -75,15 +75,7 @@ setValidity("SpaceProjection", function(object) {
 #' signal projection slots. It stores projected signal matrices,
 #' projection parameters, and workflow status, and is the main object used
 #' by the \pkg{PathwaySpace} package.
-#' 
-#' @slot nodes Inherited from \linkS4class[RGraphSpace]{GraphSpace}.
-#' @slot edges Inherited from \linkS4class[RGraphSpace]{GraphSpace}.
-#' @slot graph Inherited from \linkS4class[RGraphSpace]{GraphSpace}.
-#' @slot image Inherited from \linkS4class[RGraphSpace]{GraphSpace}.
-#' @slot fdata Inherited from \linkS4class[RGraphSpace]{GraphSpace}.
-#' @slot pars Inherited from \linkS4class[RGraphSpace]{GraphSpace}.
-#' @slot misc Inherited from \linkS4class[RGraphSpace]{GraphSpace}.
-#' @slot uuid Inherited from \linkS4class[RGraphSpace]{GraphSpace}.
+#'
 #' @slot projection A \linkS4class{SpaceProjection} object storing the 
 #' intermediate and final matrices produced by a projection method.
 #' @slot pars_ps A list with PathwaySpace parameters.

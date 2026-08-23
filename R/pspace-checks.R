@@ -98,10 +98,11 @@
 }
 .all_integerValues <- function(para, notNA = TRUE) {
   if (length(para) == 0L) return(FALSE)
+  if (is.character(para) || is.list(para)) return(FALSE)
   lg <- is.integer(para) || is.numeric(para) || all(is.na(para))
   if (lg) {
     para <- abs(para)
-    lg <- all(abs(para - round(para)) <= .Machine$double.eps, na.rm=TRUE)
+    lg <- all( abs(para - round(para)) <= .Machine$double.eps, na.rm=TRUE)
   }
   if(lg && notNA) lg <- !any(is.na(para))
   return(lg)

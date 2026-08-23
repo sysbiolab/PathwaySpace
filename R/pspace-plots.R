@@ -188,7 +188,7 @@ setMethod("plotPathwaySpace", "PathwaySpace",
     gs_theme <- theme_gspace_coords(theme = theme, 
       is_norm = TRUE, xlab = xlab, ylab = ylab, 
       txt_size = font.size, leg_size = font.size, 
-      bg_color = "grey95")
+      bg_colour = "grey95")
     
     gs_pars <- attributes(gs_theme)$gspace_pars
     

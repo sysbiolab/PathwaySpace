@@ -12,46 +12,6 @@ A `PathwaySpace` object.
 
 ## Slots
 
-- `nodes`:
-
-  Inherited from
-  [GraphSpace](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-class.html).
-
-- `edges`:
-
-  Inherited from
-  [GraphSpace](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-class.html).
-
-- `graph`:
-
-  Inherited from
-  [GraphSpace](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-class.html).
-
-- `image`:
-
-  Inherited from
-  [GraphSpace](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-class.html).
-
-- `fdata`:
-
-  Inherited from
-  [GraphSpace](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-class.html).
-
-- `pars`:
-
-  Inherited from
-  [GraphSpace](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-class.html).
-
-- `misc`:
-
-  Inherited from
-  [GraphSpace](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-class.html).
-
-- `uuid`:
-
-  Inherited from
-  [GraphSpace](https://sysbiolab.github.io/RGraphSpace/reference/GraphSpace-class.html).
-
 - `projection`:
 
   A
