@@ -109,18 +109,16 @@ seurat_obj <- FindClusters(seurat_obj, verbose = FALSE)
 # Create a GraphSpace from 'seurat_obj'
 gs <- as.GraphSpace(seurat_obj, space = "spatial", scale = "lowres")
 #> Seurat object converted to GraphSpace:
-#> ℹ space=spatial, layer=default, features=17668, samples=2696, scale="lowres"
-#> Node spatial boundaries:
-#> ℹ x: [76, 493] (cols)
-#> ℹ y: [138, 541] (rows)
+#> Coercing 'Seurat' to 'GraphSpace'...
+#> Converting input data to an 'igraph' object...
+#> Validating the 'igraph' object...
+#> Creating a 'GraphSpace' object...
+#> Adding 'layer' data to the 'GraphSpace' object...
 ```
 
 ```{r Extract data - 2, eval=FALSE, message=FALSE, results='hide'}
 # If available, add tissue image 
 gs_image(gs) <- SeuratObject::GetImage(seurat_obj, mode = "raster")
-#> Image spatial boundaries:
-#> ℹ x: [1, 600] (cols)
-#> ℹ y: [1, 599] (rows)
 ```
 
 ```{r Extract data - 3, eval=FALSE, message=FALSE, results='hide'}
@@ -134,11 +132,11 @@ gs <- normalizeGraphSpace(gs)
 # Inspect the 'gs' object
 gs
 #> A GraphSpace-class object for:
-#> IGRAPH 77bd03b UN-- 2696 0 -- 
-#> + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c), nodeSize (v/n), cell (v/c),
-#> | orig.ident (v/x), nCount_Spatial (v/n), nFeature_Spatial (v/n), slice (v/n), region (v/c),
-#> | nCount_SCT (v/n), nFeature_SCT (v/n), SCT_snn_res.0.8 (v/x), seurat_clusters (v/x),
-#> | arrowType (e/n)
+#> IGRAPH 074a887 UN-- 2696 0 -- 
+#> + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c), nodeSize (v/n),
+#> | cell (v/c), orig.ident (v/x), nCount_Spatial (v/n), nFeature_Spatial
+#> | (v/n), slice (v/n), region (v/c), nCount_SCT (v/n), nFeature_SCT
+#> | (v/n), SCT_snn_res.0.8 (v/x), seurat_clusters (v/x), arrowType (e/n)
 #> + features: 17668 (Xkr4, Sox17, Mrpl15, Lypla1, ...)
 #> + samples: 2696 (AAACAAGTATCTCCCA-1, AAACACCAATAACTGC-1, ...)
 #> + node spatial boundaries: normalized to image space
@@ -376,16 +374,16 @@ pspace_obj <- buildPathwaySpace(gs)
 
 pspace_obj
 #> A PathwaySpace-class object for:
-#> IGRAPH 45cb626 UNW- 53173 0 -- 
-#> + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c), nodeSize (v/n), cells (v/c),
-#> | orig.ident (v/x), nCount_Spatial (v/n), nFeature_Spatial (v/n), signal (v/n),
-#> | decayFunction (v/x), arrowType (e/n), weight (e/n)
-#> + features: 23264 (0610005C13RIK, 0610007P14RIK, 0610009B22RIK, 0610009E02RIK, ...)
+#> IGRAPH 0456d8a UNW- 53173 0 -- 
+#> + attr: x (v/n), y (v/n), name (v/c), nodeLabel (v/c), nodeSize (v/n),
+#> | cells (v/c), orig.ident (v/x), nCount_Spatial (v/n), nFeature_Spatial
+#> | (v/n), signal (v/n), decayFunction (v/x), arrowType (e/n), weight (e/n)
+#> + features: 23264 (0610005C13RIK, 0610007P14RIK, 0610009B22RIK, ...)
 #> + samples: 53173 (AACGTCATAATCGT, TACTTTAGCGCAGT, ...)
 #> + node spatial boundaries: normalized to graph space
 #> | x: [879, 5685] -> [0, 1] (cols)
 #> | y: [762, 5595] -> [0, 1] (rows)
-#> + status: Preprocess[x]  Projection[ ]  Silhouette[ ]  Summits[ ] 
+#> + status: Preprocess[x]  Projection[x]  Silhouette[x]  Summits[ ] 
 ```
 
 ```{r , eval=FALSE, message=FALSE}
