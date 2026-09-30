@@ -298,10 +298,24 @@
 
 #-------------------------------------------------------------------------------
 .get_emode <- function(arrow_type){
-  emode <- abs(arrow_type)
-  emode[emode>3] <- 3
-  return(emode)
+  if(is.numeric(arrow_type)){
+    emode <- abs(arrow_type)
+    emode[emode>3] <- 3
+    return(emode)
+  }
+  # RGraphSpace >= 1.5.6 exports glyph_mode(); use it when available.
+  # Temporary fallback for older versions: remove it once this package
+  # requires RGraphSpace >= 1.5.6, and call RGraphSpace::glyph_mode()
+  if ("glyph_mode" %in% getNamespaceExports("RGraphSpace")) {
+    glyph_mode <- getExportedValue("RGraphSpace", "glyph_mode")
+    return(glyph_mode(arrow_type))
+  }
+  tk <- utils::getFromNamespace(".arrowtype_to_tokens", "RGraphSpace")(arrow_type)
+  has_start <- tk[, "start"] != "-"
+  has_end <- tk[, "end"] != "-"
+  as.integer(has_end) + (as.integer(has_start) * 2L)
 }
+
 
 #-------------------------------------------------------------------------------
 .get_ldsig_polar <- function(nodes, pars_ps, nnpg) {

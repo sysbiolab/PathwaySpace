@@ -1,7 +1,7 @@
 # Getting started with PathwaySpace
 
-  
-**Package**: PathwaySpace 1.5.1
+\
+**Package**: PathwaySpace 1.5.2
 
 For a self-contained introduction that works offline, run
 **vignette(“PathwaySpace”)** after installing the package.
